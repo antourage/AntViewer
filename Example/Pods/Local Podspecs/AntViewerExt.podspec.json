@@ -1,0 +1,30 @@
+{
+  "name": "AntViewerExt",
+  "platforms": {
+    "ios": "11"
+  },
+  "summary": "AntViewerExt lets a user select an ice cream flavor.",
+  "requires_arc": true,
+  "version": "1.0.0",
+  "license": "MIT",
+  "authors": {
+    "Mykola Vaniurskyi": "mv@leobit.co"
+  },
+  "homepage": "https://github.com/blabla",
+  "source": {
+    "path": "."
+  },
+  "frameworks": "UIKit",
+  "pod_target_xcconfig": {
+    "DEFINES_MODULE": "YES"
+  },
+  "static_framework": true,
+  "xcconfig": {
+    "SWIFT_INCLUDE_PATHS": "$(PODS_ROOT)/Firebase/CoreOnly/Sources",
+    "HEADER_SEARCH_PATHS": "$(PODS_ROOT)/Firebase/CoreOnly/Sources"
+  },
+  "source_files": "AntViewerExt/**/*.{swift}",
+  "resources": "AntViewerExt/Resources/*.{png,jpeg,jpg,json,xcassets,plist}",
+  "swift_versions": "4.2",
+  "swift_version": "4.2"
+}

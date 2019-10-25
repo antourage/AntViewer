@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EditProfileView" customModule="AntViewer_ios">
+            <connections>
+                <outlet property="confirmButton" destination="dN4-AO-pwZ" id="ngl-4X-gKI"/>
+                <outlet property="contentView" destination="iN0-l3-epB" id="DdG-5M-KXw"/>
+                <outlet property="displayNameTextField" destination="fOd-rW-MCk" id="sO1-B6-jRH"/>
+                <outlet property="userImage" destination="rDN-RB-4H7" id="EV5-I9-4VG"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="380" height="178"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4I0-hh-HkO">
+                    <rect key="frame" x="0.0" y="0.0" width="380" height="178"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" spacing="13" translatesAutoresizingMaskIntoConstraints="NO" id="cxn-Px-KdY">
+                            <rect key="frame" x="20" y="119" width="340" height="44"/>
+                            <subviews>
+                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pP7-Mk-mYN">
+                                    <rect key="frame" x="0.0" y="0.0" width="126" height="44"/>
+                                    <color key="backgroundColor" red="0.84705882352941175" green="0.84705882352941175" blue="0.84705882352941175" alpha="1" colorSpace="calibratedRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="MTw-fc-63Y"/>
+                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="126" id="Xls-j6-9hc"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <state key="normal" title="CANCEL">
+                                        <color key="titleColor" name="a_backgroundDarkGrey"/>
+                                    </state>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="2"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="cancelButtonPressed:" destination="-1" eventType="touchUpInside" id="ujD-by-bjo"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dN4-AO-pwZ">
+                                    <rect key="frame" x="139" y="0.0" width="201" height="44"/>
+                                    <color key="backgroundColor" red="0.019607843137254902" green="0.6588235294117647" blue="0.32941176470588235" alpha="1" colorSpace="calibratedRGB"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="44" id="VC0-pJ-DnV"/>
+                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="201" id="zsZ-85-zBK"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                    <color key="tintColor" red="0.80000000000000004" green="0.93333333333333335" blue="0.8666666666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <state key="normal" title="CONFIRM">
+                                        <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </state>
+                                    <connections>
+                                        <action selector="confirmButtonPressed:" destination="-1" eventType="touchUpInside" id="uHV-v2-PXC"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                        </stackView>
+                        <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="rDN-RB-4H7" customClass="CacheImageView" customModule="AntViewer_ios">
+                            <rect key="frame" x="20" y="46" width="48" height="48"/>
+                            <gestureRecognizers/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="48" id="Few-7i-Ss7"/>
+                                <constraint firstAttribute="height" constant="48" id="Jcd-cZ-fGg"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="avaPic"/>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="24"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="SeV-n7-6Nv" appends="YES" id="HfH-Zd-nzE"/>
+                            </connections>
+                        </imageView>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Q9O-ut-Fh9">
+                            <rect key="frame" x="92" y="46" width="268" height="53"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Type your display name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fOd-rW-MCk">
+                                    <rect key="frame" x="0.0" y="0.0" width="268" height="42"/>
+                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </textField>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="D7p-b8-Ghv">
+                                    <rect key="frame" x="0.0" y="52" width="268" height="1"/>
+                                    <subviews>
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Bfb-KF-qtg">
+                                            <rect key="frame" x="0.0" y="0.0" width="268" height="1"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.040000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="1" id="V4e-yQ-iKM"/>
+                                            </constraints>
+                                        </view>
+                                    </subviews>
+                                </stackView>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="Q9O-ut-Fh9" secondAttribute="trailing" constant="20" id="05Y-iD-q2X"/>
+                        <constraint firstItem="cxn-Px-KdY" firstAttribute="top" secondItem="rDN-RB-4H7" secondAttribute="bottom" constant="25" id="5sm-3K-ath"/>
+                        <constraint firstItem="rDN-RB-4H7" firstAttribute="leading" secondItem="4I0-hh-HkO" secondAttribute="leading" constant="20" id="BIH-nd-QWn"/>
+                        <constraint firstAttribute="bottom" secondItem="cxn-Px-KdY" secondAttribute="bottom" constant="15" id="HiI-z9-JD0"/>
+                        <constraint firstItem="Q9O-ut-Fh9" firstAttribute="leading" secondItem="rDN-RB-4H7" secondAttribute="trailing" constant="24" id="Yai-GM-Zxc"/>
+                        <constraint firstItem="cxn-Px-KdY" firstAttribute="top" secondItem="Q9O-ut-Fh9" secondAttribute="bottom" constant="20" id="chg-vC-Kud"/>
+                        <constraint firstItem="Q9O-ut-Fh9" firstAttribute="top" secondItem="rDN-RB-4H7" secondAttribute="top" id="hUg-D9-4ru"/>
+                        <constraint firstAttribute="trailing" secondItem="cxn-Px-KdY" secondAttribute="trailing" constant="20" id="tCp-gF-BGu"/>
+                        <constraint firstItem="cxn-Px-KdY" firstAttribute="leading" secondItem="4I0-hh-HkO" secondAttribute="leading" constant="20" id="tV7-Po-B11"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="2"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <constraints>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="centerX" secondItem="GzB-bf-gYz" secondAttribute="centerX" id="8iJ-Hx-rgx"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="centerY" secondItem="GzB-bf-gYz" secondAttribute="centerY" id="AC7-qj-ylT"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="G0E-d0-Yv3"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="Q9X-FB-Zcf"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="GzB-bf-gYz"/>
+            <point key="canvasLocation" x="228.98550724637684" y="206.91964285714286"/>
+        </view>
+        <tapGestureRecognizer id="SeV-n7-6Nv">
+            <connections>
+                <action selector="onUserAvatarTapped:" destination="-1" id="7I9-Al-Wx1"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+    <resources>
+        <image name="avaPic" width="24" height="24"/>
+        <namedColor name="a_backgroundDarkGrey">
+            <color red="0.13333333333333333" green="0.13333333333333333" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

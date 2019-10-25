@@ -1,0 +1,11 @@
+framework module AntViewerExt {
+  umbrella header "AntViewerExt.h"
+
+  export *
+  module * { export * }
+}
+
+module AntViewerExt.Swift {
+    header "AntViewerExt-Swift.h"
+    requires objc
+}

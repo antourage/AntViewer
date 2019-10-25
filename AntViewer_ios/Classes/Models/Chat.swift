@@ -1,0 +1,81 @@
+//
+//  Chat.swift
+//  AntViewer
+//
+//  Created by Mykola Vaniurskyi on 6/7/19.
+//
+
+import Foundation
+import Firebase
+import AntViewerExt
+
+public class Chat {
+  
+  private var ref: DocumentReference?
+  
+  private var stateListener: ListenerRegistration?
+  private var messagesListener: ListenerRegistration?
+  
+  public var onAdd: ((Message) -> ())?
+  public var onRemove: ((Message) -> ())?
+  public var onStateChange: ((Bool) -> ())?
+  
+  public init(streamID: Int) {
+    let app = FirebaseApp.app(name: "AntViewerFirebase")!
+    self.ref = Firestore.firestore(app: app).collection("antourage/\(Environment.currentEnvironment.rawValue)/streams").document("\(streamID)")
+    messagesListener = ref?.collection("messages").order(by: "timestamp").addSnapshotListener(messagesHandler())
+    stateListener = ref?.addSnapshotListener(stateHandler())
+  }
+  
+  deinit {
+    stateListener?.remove()
+    messagesListener?.remove()
+    print("Chat delocated.")
+  }
+  
+  private func messagesHandler() -> FIRQuerySnapshotBlock {
+    return { [weak self] (querySnapshot, error) in
+      guard let `self` = self else { return }
+      guard let snapshot = querySnapshot else {
+        print("Error fetching snapshots: \(error!)")
+        return
+      }
+      snapshot.documentChanges.forEach { diff in
+        switch diff.type {
+        case .added:
+          print("New message: \(diff.document.data())")
+          if let message = Message(snapshot: diff.document) {
+            self.onAdd?(message)
+          }
+        case .removed:
+          print("Removed message: \(diff.document.data())")
+          if let message = Message(snapshot: diff.document) {
+            self.onRemove?(message)
+          }
+        default:
+          break
+        }
+      }
+    }
+  }
+  
+  private func stateHandler() -> FIRDocumentSnapshotBlock {
+    return { [weak self] (documentSnapshot, error) in
+      guard let document = documentSnapshot?.data() else {
+        print("Error fetching snapshots: \(error)")
+        return
+      }
+      let isActive = (document["isChatActive"] as? Bool) ?? false
+      
+      self?.onStateChange?(isActive)
+    }
+  }
+  
+  public func send(message: Message, withCompletionBlock: @escaping (Error?) -> ()) {
+    ref?.collection("messages").addDocument(data: message.toAnyObject(), completion: { (error) in
+      withCompletionBlock(error)
+    })
+  }
+  
+  
+}

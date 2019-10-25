@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PollCell" customModule="AntViewer_ios"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="pollCell" rowHeight="156" id="KGk-i7-Jjw" customClass="PollCell" customModule="AntViewer_ios">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="100"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="99.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Z6-xG-NDM" userLabel="background">
+                        <rect key="frame" x="20" y="18" width="280" height="63.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CR6-vx-yj7">
+                                <rect key="frame" x="10" y="22" width="260" height="19.5"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="CR6-vx-yj7" firstAttribute="leading" secondItem="9Z6-xG-NDM" secondAttribute="leading" constant="10" id="2T6-MJ-Oin"/>
+                            <constraint firstItem="CR6-vx-yj7" firstAttribute="centerY" secondItem="9Z6-xG-NDM" secondAttribute="centerY" id="42X-aV-vLb"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="CR6-vx-yj7" secondAttribute="bottom" constant="12" id="ESu-pD-p7h"/>
+                            <constraint firstAttribute="trailing" secondItem="CR6-vx-yj7" secondAttribute="trailing" constant="10" id="aMk-Vp-Uvt"/>
+                            <constraint firstItem="CR6-vx-yj7" firstAttribute="top" relation="greaterThanOrEqual" secondItem="9Z6-xG-NDM" secondAttribute="top" constant="12" id="r0q-Ya-Azg"/>
+                        </constraints>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                <integer key="value" value="5"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+                <color key="backgroundColor" name="a_background_grey"/>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="9Z6-xG-NDM" secondAttribute="bottom" constant="18" id="J3L-Sm-key"/>
+                    <constraint firstAttribute="trailing" secondItem="9Z6-xG-NDM" secondAttribute="trailing" constant="20" id="OqF-bt-PFE"/>
+                    <constraint firstItem="9Z6-xG-NDM" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="lUr-iU-xf7"/>
+                    <constraint firstItem="9Z6-xG-NDM" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="18" id="uJP-Wv-ccx"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="backgroundCellView" destination="9Z6-xG-NDM" id="zzp-qT-Tfp"/>
+                <outlet property="pollChoiceLabel" destination="CR6-vx-yj7" id="SBI-MX-qwl"/>
+            </connections>
+            <point key="canvasLocation" x="140.80000000000001" y="160.11994002998503"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <namedColor name="a_background_grey">
+            <color red="0.12941176470588237" green="0.12941176470588237" blue="0.12941176470588237" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

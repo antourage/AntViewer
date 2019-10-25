@@ -1,0 +1,14 @@
+CONFIGURATION_BUILD_DIR = ${PODS_CONFIGURATION_BUILD_DIR}/AntViewer_ios
+DEFINES_MODULE = YES
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/../../AntViewer_ios/MyFrameworks" "${PODS_ROOT}/FirebaseAnalytics/Frameworks" "${PODS_ROOT}/GoogleAppMeasurement/Frameworks"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/BoringSSL-GRPC" "${PODS_ROOT}/Headers/Public/gRPC-C++" "${PODS_ROOT}/Headers/Public/gRPC-Core" "${PODS_ROOT}/Headers/Public/leveldb-library" $(PODS_ROOT)/Firebase/CoreOnly/Sources
+OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS -import-underlying-module -Xcc -fmodule-map-file="${SRCROOT}/${MODULEMAP_FILE}"
+PODS_BUILD_DIR = ${BUILD_DIR}
+PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
+PODS_ROOT = ${SRCROOT}
+PODS_TARGET_SRCROOT = ${PODS_ROOT}/../..
+PRODUCT_BUNDLE_IDENTIFIER = org.cocoapods.${PRODUCT_NAME:rfc1034identifier}
+SKIP_INSTALL = YES
+SWIFT_INCLUDE_PATHS = $(inherited) $(PODS_ROOT)/Firebase/CoreOnly/Sources
+USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES
