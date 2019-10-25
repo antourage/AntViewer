@@ -1,5 +1,5 @@
 PODS:
-  - AntViewer_ios (0.3.18):
+  - AntViewer (0.0.1):
     - Firebase/Auth
     - Firebase/Core (~> 5.11)
     - Firebase/Firestore
@@ -111,15 +111,15 @@ PODS:
   - gRPC-Core/Interface (1.17.0)
   - GTMSessionFetcher/Core (1.3.0)
   - leveldb-library (1.22)
-  - nanopb (0.3.901):
-    - nanopb/decode (= 0.3.901)
-    - nanopb/encode (= 0.3.901)
-  - nanopb/decode (0.3.901)
-  - nanopb/encode (0.3.901)
+  - nanopb (0.3.9011):
+    - nanopb/decode (= 0.3.9011)
+    - nanopb/encode (= 0.3.9011)
+  - nanopb/decode (0.3.9011)
+  - nanopb/encode (0.3.9011)
   - Protobuf (3.10.0)
 
 DEPENDENCIES:
-  - AntViewer_ios (from `../`)
+  - AntViewer (from `../`)
   - Firebase/Core
   - Firebase/Messaging
 
@@ -145,11 +145,11 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
-  AntViewer_ios:
+  AntViewer:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AntViewer_ios: 7dba0fae5c7f8a27f8d039fdb74c5571d8ce6a7d
+  AntViewer: 2cf7a6fcaca007dcc7bbccf170af2a615ac5dad2
   BoringSSL-GRPC: 2a230d9cd93e7ce39916044f645cebb31f37dde6
   Firebase: 0c8cf33f266410c61ab3e2265cfa412200351d9c
   FirebaseAnalytics: ece1aa57a4f43c64d53a648b5a5e05151aae947b
@@ -166,9 +166,9 @@ SPEC CHECKSUMS:
   gRPC-Core: 4028031ed2c5267cca0d846c876d8046b1ecb9b6
   GTMSessionFetcher: 43b8b64263023d4f32caa0b40f4c8bfa3c5f36d8
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
-  nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
 
-PODFILE CHECKSUM: 4b84827e7b16e5c3876228b44b1e128749ccea25
+PODFILE CHECKSUM: 53210703cc52264384f589f374703150ca138891
 
 COCOAPODS: 1.8.4

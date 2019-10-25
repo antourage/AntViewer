@@ -300,8 +300,8 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/AntViewerExt.framework",
-				"${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/Lottie.framework",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/Lottie.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -320,8 +320,8 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/AntViewerExt.framework",
-				"${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/Lottie.framework",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/Lottie.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -340,22 +340,22 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-resources.sh",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/AntWidget.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Controllers/PlayerController.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Controllers/PollController.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Controllers/StreamListController.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/GoogleService-Kek.plist",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/EditProfileView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/EmptyDataSourceView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/EmptyView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/HeaderView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/LandscapeMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/NewStreamCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/PollCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/PollStatisticCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/PortraitMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/StreamViewCell.xib",
-				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer_ios/AntWidget.bundle",
+				"${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/EditProfileView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollStatisticCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib",
+				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";
@@ -412,22 +412,22 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-resources.sh",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/AntWidget.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Controllers/PlayerController.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Controllers/PollController.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Controllers/StreamListController.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/GoogleService-Kek.plist",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/EditProfileView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/EmptyDataSourceView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/EmptyView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/HeaderView.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/LandscapeMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/NewStreamCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/PollCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/PollStatisticCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/PortraitMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer_ios/Classes/Views/StreamViewCell.xib",
-				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer_ios/AntWidget.bundle",
+				"${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/EditProfileView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollStatisticCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib",
+				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle",
 			);
 			name = "[CP] Copy Pods Resources";

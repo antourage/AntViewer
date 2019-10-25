@@ -31,18 +31,18 @@ Pod::Spec.new do |s|
   s.source           = { :git => 'https://github.com/antourage/AntViewer.git', :tag => s.version.to_s }
 
   s.platform     = :ios, "11.3"
-  s.source_files = 'AntViewer_ios/Classes/**/*.{swift}'
+  s.source_files = 'AntViewer/Classes/**/*.{swift}'
 
   if isDebug
-    s.ios.vendored_frameworks = 'AntViewer_ios/MyFrameworks/Lottie.framework'
+    s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/Lottie.framework'
     s.dependency 'AntViewerExt'
   else
-    s.ios.vendored_frameworks = 'AntViewer_ios/MyFrameworks/AntViewerExt.framework', 'AntViewer_ios/MyFrameworks/Lottie.framework'
+    s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/AntViewerExt.framework', 'AntViewer/MyFrameworks/Lottie.framework'
   end
 
-  s.resources = 'AntViewer_ios/Classes/**/*.{storyboard,xib,plist}'
+  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist}'
   s.resource_bundles = {
-    'AntWidget' => ['AntViewer_ios/Assets/*']
+    'AntWidget' => ['AntViewer/Assets/*']
   }
   s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
   s.static_framework = true

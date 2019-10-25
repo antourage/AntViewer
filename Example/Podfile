@@ -2,7 +2,7 @@ platform :ios, '11.3'
 #use_frameworks!
 
 target 'AntViewer_ios_Example' do
-  pod 'AntViewer_ios', :path => '../'
+  pod 'AntViewer', :path => '../'
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
   

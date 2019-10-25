@@ -4,12 +4,12 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>AntViewer_ios-AntWidget.xcscheme</key>
+		<key>AntViewer-AntWidget.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>AntViewer_ios.xcscheme</key>
+		<key>AntViewer.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>

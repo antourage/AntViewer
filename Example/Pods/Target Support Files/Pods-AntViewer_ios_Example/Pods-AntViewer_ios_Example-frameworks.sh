@@ -161,12 +161,12 @@ strip_invalid_archs() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_framework "${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/AntViewerExt.framework"
-  install_framework "${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/Lottie.framework"
+  install_framework "${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework"
+  install_framework "${PODS_ROOT}/../../AntViewer/MyFrameworks/Lottie.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework "${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/AntViewerExt.framework"
-  install_framework "${PODS_ROOT}/../../AntViewer_ios/MyFrameworks/Lottie.framework"
+  install_framework "${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework"
+  install_framework "${PODS_ROOT}/../../AntViewer/MyFrameworks/Lottie.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait
