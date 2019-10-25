@@ -59,11 +59,12 @@ senderID = 1090288296965
       //MARK: Handle result
     }
   }
-      
-  Messaging.messaging().subscribe(toTopic: "topicName") 
-```
 
-Programmatically: 
+  Messaging.messaging().subscribe(toTopic: "topicName")
+```
+### Add UI part
+
+Programmatically:
 ```swift
 class ViewController: UIViewController {
 
@@ -84,7 +85,7 @@ class ViewController: UIViewController {
   }
 }
 ```
-Or by interface builder: 
+Or by interface builder:
 Just add UIView, type AntWidget to class field, link to outlet. Thats all.
 
 
