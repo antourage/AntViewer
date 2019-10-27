@@ -14,18 +14,20 @@ The entry point for a user is the magnetic button that appears on the host app, 
 
 When a video is live, the button changes state and shows the title of the broadcast, and the name of the broadcaster. If the user taps the button at this point, they are taken directly to the live broadcast.
 
-![Antourage Widget Screenshots](screenshots/widget_Live.jpeg)
+<img src="/screenshots/widget_Live.jpeg" alt="Screenshots" width="200" />
 
 When no video is live, the button shows how many on-demand videos the viewer has not yet watched. If they tap the button at this point, they are taken to the main view:
 
-![Antourage Widget Screenshots](screenshots/list_VOD_new.jpeg)
+<img src="/screenshots/list_VOD_new.jpeg" alt="Screenshots" width="200" />
 
 ### Viewing Live Broadcasts
 
 The video player may be used in portrait or landscape mode. In both modes, the viewer can watch the broadcast, see and contribute to comments, and see and respond to polls.
 
-![Antourage Widget Screenshots](screenshots/player_portrait.jpeg)
-![Antourage Widget Screenshots](screenshots/landscape_poll_chat.jpeg)
+<div>
+  <img src="/screenshots/player_portrait.jpeg" alt="Screenshots" width="200" />
+  <img src="/screenshots/landscape_poll_chat.jpeg" alt="Screenshots" width="200" />
+</div>
 
 ### Viewing On-demand videos
 
@@ -45,7 +47,7 @@ Comments are contributed by viewers of the live broadcast only. When a video is 
 
 Polls are created by the broadcaster, and sent out during a live broadcast. They appear on the screen when they are first pushed out to the audience, and viewers can respond or simply close the poll if they do not want to answer. If they answer, they are shown the results right away, and they can see updated results as they come in.
 
-![Antourage Widget Screenshots](screenshots/poll_opened.jpeg)
+<img src="/screenshots/poll_opened.jpeg" alt="Screenshots" width="200" />
 
 ### Curation
 
