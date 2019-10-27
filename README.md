@@ -26,7 +26,7 @@ The video player may be used in portrait or landscape mode. In both modes, the v
 
 <div>
   <img src="/screenshots/player_portrait.jpeg" alt="Screenshots" width="200" />
-  <img src="/screenshots/landscape_poll_chat.jpeg" alt="Screenshots" width="200" />
+  <img src="/screenshots/landscape_poll_chat.jpeg" alt="Screenshots" width="400" />
 </div>
 
 ### Viewing On-demand videos
