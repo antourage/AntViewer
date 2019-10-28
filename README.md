@@ -56,8 +56,9 @@ Content can only be created by those who have been actively selected by our cust
 
 ### Third Party Technology
 
-To support our functionality, we use a few third-party services and applications.
-Firebase: used for push notifications and comments with polls.
+To support our functionality, we use a few third-party services and applications.   
+Firebase: used for push notifications, comments and polls.   
+Amazon Media Live: used for streaming and hosting our content
 
 ## Example
 
