@@ -173,8 +173,8 @@ public class AntWidget: UIView {
     AntViewerManager.shared.authWith(apiKey: apiKey, refUserId: refUserId, nickname: nickname, completionHandler: completionHandler)
   }
   
-  public static func registerNotifications(FCMToken: String, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-   
+  public static func registerNotifications(FCMToken: String, completionHandler: @escaping (Result<Bool, Error>) -> Void) {
+    AntViewerManager.shared.registerNotificationsWith(FCMToken: FCMToken, completionHandler: completionHandler)
   }
   
   private func updateColours() {
