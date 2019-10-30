@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PollController" customModule="AntViewer_ios" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PollController" customModule="AntViewer">
             <connections>
                 <outlet property="bottomView" destination="PBf-vI-3Qw" id="Q9l-Kc-mr1"/>
                 <outlet property="heightBottomView" destination="Ww5-tu-a7o" id="rNl-NL-kPr"/>
@@ -27,7 +24,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eta-4i-Pcx" userLabel="conteinerView">
-                    <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aAy-ra-Rlw" userLabel="PollQuestionView">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="80"/>
@@ -93,11 +90,11 @@
                             </constraints>
                         </view>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="IwL-oX-3Mv">
-                            <rect key="frame" x="0.0" y="80" width="375" height="506"/>
+                            <rect key="frame" x="0.0" y="80" width="375" height="526"/>
                             <color key="backgroundColor" name="a_background_grey"/>
                         </tableView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBf-vI-3Qw" userLabel="bottomView">
-                            <rect key="frame" x="0.0" y="586" width="375" height="61"/>
+                            <rect key="frame" x="0.0" y="606" width="375" height="61"/>
                             <subviews>
                                 <view alpha="0.14999999999999999" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lA4-dY-FqB">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
@@ -162,6 +159,7 @@
                 <constraint firstItem="eta-4i-Pcx" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="nuH-eV-2mJ"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="140" y="135"/>
         </view>
     </objects>
     <resources>

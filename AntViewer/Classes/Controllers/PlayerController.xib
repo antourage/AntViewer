@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayerController" customModule="AntViewer_ios" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayerController" customModule="AntViewer">
             <connections>
                 <outlet property="broadcasterProfileImage" destination="4BV-vq-lH5" id="brF-Th-aJ2"/>
                 <outlet property="collapsedPollButton" destination="xKO-OA-awd" id="MgP-p6-yLy"/>
@@ -67,7 +67,7 @@
             <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6SG-AQ-Vmv" customClass="AVPlayerView" customModule="AntViewer_ios">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6SG-AQ-Vmv" customClass="AVPlayerView" customModule="AntViewer">
                     <rect key="frame" x="0.0" y="44" width="375" height="211"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aEk-7a-LBQ">
@@ -164,7 +164,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8SL-UD-Dki">
                             <rect key="frame" x="0.0" y="310" width="289.66666666666669" height="40"/>
                             <subviews>
-                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ikx-Jm-vPR" customClass="IQTextView" customModule="AntViewer_ios" customModuleProvider="target">
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Ikx-Jm-vPR" customClass="IQTextView" customModule="AntViewer" customModuleProvider="target">
                                     <rect key="frame" x="10" y="4" width="185.66666666666666" height="32"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
@@ -375,7 +375,7 @@
                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="D5e-Ta-wsb">
                                     <rect key="frame" x="18" y="56" width="290.66666666666669" height="40"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="WYk-B6-n5o" customClass="CacheImageView" customModule="AntViewer_ios">
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="WYk-B6-n5o" customClass="CacheImageView" customModule="AntViewer">
                                             <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" secondItem="WYk-B6-n5o" secondAttribute="height" multiplier="1:1" id="z6o-9O-WdY"/>
@@ -629,7 +629,7 @@
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NOw-C0-xhw">
                                             <rect key="frame" x="0.0" y="7.3333333333333144" width="50" height="40"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="4BV-vq-lH5" customClass="CacheImageView" customModule="AntViewer_ios">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="4BV-vq-lH5" customClass="CacheImageView" customModule="AntViewer">
                                                     <rect key="frame" x="10" y="0.0" width="40" height="40"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" secondItem="4BV-vq-lH5" secondAttribute="height" multiplier="1:1" id="2Wz-iJ-dYL"/>
@@ -779,7 +779,7 @@
                         <constraint firstItem="8X7-Ir-5Dp" firstAttribute="top" relation="greaterThanOrEqual" secondItem="xub-15-3yi" secondAttribute="bottom" priority="999" constant="12" id="irC-B0-yTR"/>
                     </constraints>
                 </view>
-                <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="AntViewer_ios">
+                <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="AntViewer">
                     <rect key="frame" x="-2" y="240" width="379" height="31"/>
                     <color key="tintColor" name="a_pink"/>
                     <color key="minimumTrackTintColor" name="a_pink"/>
@@ -811,7 +811,7 @@
                                 <constraint firstAttribute="height" constant="1" id="ci6-ER-waX"/>
                             </constraints>
                         </view>
-                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="USO-QN-U7b" customClass="IQTextView" customModule="AntViewer_ios" customModuleProvider="target">
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="USO-QN-U7b" customClass="IQTextView" customModule="AntViewer">
                             <rect key="frame" x="20" y="9" width="250" height="30"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>

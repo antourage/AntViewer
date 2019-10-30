@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptyDataSourceView" customModule="AntViewer_ios">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptyDataSourceView" customModule="AntViewer">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="OrU-AZ-kne"/>
                 <outletCollection property="fakeCellsArray" destination="doZ-Z8-mut" collectionClass="NSMutableArray" id="AZx-oB-Dj8"/>
@@ -39,7 +40,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="doZ-Z8-mut">
                             <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="OGd-4r-MaS" customClass="CacheImageView" customModule="AntViewer_ios">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="OGd-4r-MaS" customClass="CacheImageView" customModule="AntViewer">
                                     <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
                                     <color key="tintColor" name="a_backgroundDarkGrey"/>
                                     <userDefinedRuntimeAttributes>
@@ -59,7 +60,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ScU-ep-ZVF">
                             <rect key="frame" x="0.0" y="267.5" width="424" height="237.5"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="99e-HD-Dsm" customClass="CacheImageView" customModule="AntViewer_ios">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="99e-HD-Dsm" customClass="CacheImageView" customModule="AntViewer">
                                     <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
                                     <color key="tintColor" name="a_backgroundDarkGrey"/>
                                     <userDefinedRuntimeAttributes>
@@ -78,7 +79,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="37R-QU-BQx">
                             <rect key="frame" x="0.0" y="535" width="424" height="237.5"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="rLd-DR-Ga0" customClass="CacheImageView" customModule="AntViewer_ios">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="rLd-DR-Ga0" customClass="CacheImageView" customModule="AntViewer">
                                     <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
                                     <color key="tintColor" name="a_backgroundDarkGrey"/>
                                     <userDefinedRuntimeAttributes>
@@ -97,7 +98,7 @@
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="njq-o7-szo">
                             <rect key="frame" x="0.0" y="802.5" width="424" height="237.5"/>
                             <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="kn2-y7-RzN" customClass="CacheImageView" customModule="AntViewer_ios">
+                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="kn2-y7-RzN" customClass="CacheImageView" customModule="AntViewer">
                                     <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
                                     <color key="tintColor" name="a_backgroundDarkGrey"/>
                                     <userDefinedRuntimeAttributes>
