@@ -103,9 +103,9 @@ AntWidget.authWith(apiKey: "put_your_apiKey_there", refUserId: "put_user_id_from
   }
 }
 ```
-### Push notifications (in progress...)
+### Push notifications 
 
-We use Firebase for PN in our project. To support PN on your side you should retrieve token for our senderID, send all needed data to us and subscribe yourself to our topic.
+We use Firebase for PN in our project. To support PN on your side you should retrieve token for our senderID, send all needed data to us right after successful auth (you can call it in auth success block) and subscribe yourself to our topic.   
 senderID = 1090288296965
 
 ```swift
