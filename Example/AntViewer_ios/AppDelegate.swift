@@ -8,7 +8,7 @@
 
 import UIKit
 import Firebase
-import AntViewer_ios
+import AntViewer
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -27,19 +27,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     AntWidget.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil) { result in
       switch result {
       case .success:
-        break
+        //MARK: Connect PN to Antourage Firebase app
+        Messaging.messaging().retrieveFCMToken(forSenderID: "1090288296965") { (token, error) in
+          guard let token = token else { return }
+          AntWidget.registerNotifications(FCMToken: token) { (result) in
+            
+          }
+        }
       case .failure(let error):
         print(error)
       }
     }
     
-    //MARK: Connect PN to Antourage Firebase app
-    Messaging.messaging().retrieveFCMToken(forSenderID: "1090288296965") { (token, error) in
-      guard let token = token else { return }
-      AntWidget.registerNotifications(FCMToken: token) { (result) in
-        
-      }
-    }
+
     
     
     Messaging.messaging().subscribe(toTopic: "test") { error in

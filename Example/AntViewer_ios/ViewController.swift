@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import AntViewer_ios
+import AntViewer
 
 class ViewController: UIViewController {
   

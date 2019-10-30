@@ -57,7 +57,7 @@
 		DB868818FFC73F4A69E3A0DA /* Pods-AntViewer_ios_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AntViewer_ios_Tests.release.xcconfig"; path = "Target Support Files/Pods-AntViewer_ios_Tests/Pods-AntViewer_ios_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		E1F95A928F532FE807835E1E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		E411A4CA7F802F67048895F2 /* Pods-AntViewer_ios_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AntViewer_ios_Example.release.xcconfig"; path = "Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example.release.xcconfig"; sourceTree = "<group>"; };
-		EBC22EEF660EBF0D0443B8D2 /* AntViewer_ios.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = AntViewer_ios.podspec; path = ../AntViewer_ios.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		EBC22EEF660EBF0D0443B8D2 /* AntViewer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = AntViewer.podspec; path = ../AntViewer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -147,7 +147,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				EBC22EEF660EBF0D0443B8D2 /* AntViewer_ios.podspec */,
+				EBC22EEF660EBF0D0443B8D2 /* AntViewer.podspec */,
 				110DA8AD54DC23D2994E5A6D /* README.md */,
 				E1F95A928F532FE807835E1E /* LICENSE */,
 			);
