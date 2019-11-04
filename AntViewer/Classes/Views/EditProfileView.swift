@@ -27,6 +27,16 @@ class EditProfileView: UIView {
     }
   }
   
+  var selectedImage: UIImage? {
+    didSet {
+      isConfirmButtonEnable = true
+      userImage.image = selectedImage
+      if selectedImage == nil, displayNameTextField.text?.isEmpty ?? true {
+        isConfirmButtonEnable = false
+      }
+    }
+  }
+  
   public var currentDisplayName: String = "" {
     didSet {
 
@@ -37,7 +47,7 @@ class EditProfileView: UIView {
  private let confirmButtonDisabledColor = UIColor(red: 204/255, green: 238/255, blue: 221/255, alpha: 1)
   
  private let maxCharactersCount = 50
-  
+
   var confirmButtonPressed: ((String, UIImage?) -> ())?
   var cancelButtonPressed: (() -> ())?
   var changeProfileImage: (() -> ())?
@@ -53,9 +63,7 @@ class EditProfileView: UIView {
   }
   
   init() {
-    let _width = (UIScreen.main.bounds.width * 0.9) < 360 ? UIScreen.main.bounds.width * 0.9 : 360
-    let _height: CGFloat = 150
-    super.init(frame: CGRect(origin: CGPoint.zero, size: CGSize(width: _width, height: _height)))
+    super.init(frame: .zero)
     commonInit()
   }
   
@@ -65,9 +73,9 @@ class EditProfileView: UIView {
   
   private func commonInit() {
     Bundle(for: type(of: self)).loadNibNamed("EditProfileView", owner: self, options: nil)
-    addSubview(contentView)
-    contentView.frame = bounds
+    contentView.fixInView(self)
     isConfirmButtonEnable = false
+    self.translatesAutoresizingMaskIntoConstraints = false
   }
   
   override func removeFromSuperview() {
@@ -81,7 +89,7 @@ class EditProfileView: UIView {
   
   @IBAction func confirmButtonPressed(_ sender: UIButton) {
     let text = displayNameTextField.text!
-    confirmButtonPressed?(text, nil)
+    confirmButtonPressed?(text, selectedImage)
   }
   
   @IBAction func onUserAvatarTapped(_ sender: UITapGestureRecognizer) {
@@ -91,10 +99,6 @@ class EditProfileView: UIView {
 }
 
 extension EditProfileView: UITextFieldDelegate {
-  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-    textField.resignFirstResponder()
-    return false
-  }
   
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     let currentText = textField.text ?? ""
@@ -103,7 +107,9 @@ extension EditProfileView: UITextFieldDelegate {
     isConfirmButtonEnable = true
     
     guard !updatedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+      if selectedImage == nil {
       isConfirmButtonEnable = false
+      }
       return true
     }
     

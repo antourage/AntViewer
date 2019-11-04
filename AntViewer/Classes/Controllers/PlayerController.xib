@@ -16,11 +16,13 @@
                 <outlet property="durationLabel" destination="KO9-Sd-0gB" id="Ydf-G5-C6g"/>
                 <outlet property="durationView" destination="af6-F1-ziF" id="S3H-xM-XKQ"/>
                 <outlet property="infoPortraitView" destination="N5N-dm-mUJ" id="OBt-zp-WXG"/>
+                <outlet property="landscapeBottomContainerView" destination="8SL-UD-Dki" id="T0N-md-mWq"/>
                 <outlet property="landscapeBroadcasterProfileImage" destination="WYk-B6-n5o" id="Ral-gI-4ig"/>
                 <outlet property="landscapeChatLeading" destination="XOC-6d-vvP" id="aaq-Ok-owm"/>
                 <outlet property="landscapeCollapsedPollLabel" destination="dzt-lK-6IA" id="p3R-6u-3gz"/>
                 <outlet property="landscapeCollapsedPollView" destination="0TZ-WQ-IDP" id="AXi-pZ-cL1"/>
                 <outlet property="landscapeCreatorNameLabel" destination="yfs-ht-YO6" id="FXX-zt-i40"/>
+                <outlet property="landscapeEditProfileButton" destination="nDf-aH-q5S" id="B5T-6z-AF0"/>
                 <outlet property="landscapeMessageBottomSpace" destination="26q-cN-sPe" id="EaG-0X-XKw"/>
                 <outlet property="landscapeMessageContainerHeight" destination="ahY-1K-8PX" id="lWx-U9-RvW"/>
                 <outlet property="landscapeMessageHeight" destination="4CH-Is-D2K" id="Awv-I0-USh"/>
@@ -44,6 +46,7 @@
                 <outlet property="pollContainerView" destination="CfQ-pS-qRe" id="Vap-Wo-Kv9"/>
                 <outlet property="portraitBottomContainerView" destination="6KR-R7-XLO" id="vIV-ok-OVn"/>
                 <outlet property="portraitBottomContainerViewHeightConstraint" destination="Jxr-18-cEd" id="foQ-fd-eaS"/>
+                <outlet property="portraitEditProfileButton" destination="Xs1-WZ-pEi" id="bIA-bW-RuY"/>
                 <outlet property="portraitMessageBottomSpace" destination="ebD-fg-S9C" id="QxB-lQ-sfo"/>
                 <outlet property="portraitMessageHeight" destination="xZn-yB-jRM" id="VE8-in-BAm"/>
                 <outlet property="portraitSeekSlider" destination="O7y-qk-2G8" id="Pun-DS-VNm"/>
@@ -190,7 +193,7 @@
                                         <constraint firstAttribute="width" secondItem="nDf-aH-q5S" secondAttribute="height" multiplier="1:1" id="HnS-Tq-yrl"/>
                                         <constraint firstAttribute="height" constant="32" id="P1c-HB-M27"/>
                                     </constraints>
-                                    <color key="tintColor" red="0.019607843140000001" green="0.6588235294" blue="0.3294117647" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" image="user"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="user"/>
@@ -214,7 +217,7 @@
                                     </connections>
                                 </button>
                             </subviews>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.40138094190140844" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" red="0.023529411764705882" green="0.0" blue="0.0" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstItem="nDf-aH-q5S" firstAttribute="leading" secondItem="Ikx-Jm-vPR" secondAttribute="trailing" constant="10" id="4WT-Ih-dCR"/>
                                 <constraint firstItem="Ikx-Jm-vPR" firstAttribute="leading" secondItem="8SL-UD-Dki" secondAttribute="leading" constant="10" id="QLg-gn-5Qj"/>
@@ -656,13 +659,13 @@
                                             <rect key="frame" x="58" y="0.0" width="297" height="54.666666666666664"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Naked players on the field bla bla bla bla bla" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="z3C-rz-EgN">
-                                                    <rect key="frame" x="0.0" y="0.0" width="297" height="31.666666666666668"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="297" height="40"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Paul labile Pogba" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="1Mf-4J-uwh">
-                                                    <rect key="frame" x="0.0" y="31.666666666666686" width="297" height="23"/>
+                                                    <rect key="frame" x="0.0" y="40" width="297" height="14.666666666666664"/>
                                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -831,13 +834,13 @@
                                 <outlet property="delegate" destination="-1" id="wF2-TK-zM5"/>
                             </connections>
                         </textView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xs1-WZ-pEi">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xs1-WZ-pEi">
                             <rect key="frame" x="285" y="9" width="30" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="Xs1-WZ-pEi" secondAttribute="height" multiplier="1:1" id="93q-0h-Cie"/>
                                 <constraint firstAttribute="height" constant="30" id="ykM-wN-CT5"/>
                             </constraints>
-                            <color key="tintColor" red="0.019607843140000001" green="0.6588235294" blue="0.3294117647" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <state key="normal" image="user"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="user"/>

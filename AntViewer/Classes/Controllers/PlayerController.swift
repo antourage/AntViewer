@@ -88,7 +88,13 @@ class PlayerController: UIViewController {
     }
   }
   
-  var editProfileView: EditProfileView?
+  var editProfileView: EditProfileView? {
+    didSet {
+      let tintColor: UIColor = editProfileView == nil ? .darkGray : .white
+      portraitEditProfileButton.tintColor = tintColor
+      landscapeEditProfileButton.tintColor = tintColor
+    }
+  }
   var dataSource: DataSource!
   override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
     return OrientationUtility.isLandscape ? .top : .bottom
@@ -96,11 +102,20 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var portraitBottomContainerView: UIView!
   @IBOutlet weak var portraitBottomContainerViewHeightConstraint: NSLayoutConstraint!
-  @IBOutlet weak var editProfileButton: UIButton! {
+  @IBOutlet weak var portraitEditProfileButton: UIButton! {
     didSet {
-      editProfileButton.isHidden = videoContent is Vod
+      portraitEditProfileButton.isHidden = videoContent is Vod
     }
   }
+  @IBOutlet weak var landscapeEditProfileButton: UIButton!{
+    didSet {
+      landscapeEditProfileButton.isHidden = videoContent is Vod
+    }
+  }
+  private var editProfileViewPortraitConstraints = [NSLayoutConstraint]()
+  private var editProfileViewLandscapeConstraints = [NSLayoutConstraint]()
+  
+  @IBOutlet weak var landscapeBottomContainerView: UIView!
   
   @IBOutlet weak var durationLabel: UILabel! {
     didSet {
@@ -223,11 +238,10 @@ class PlayerController: UIViewController {
           seekTo = nil
         }
         adjustHeightForTextView(landscapeTextView)
+        if let _ = editProfileView {
+        editProfileSetConstraints(isPortrait: currentOrientation.isPortrait)
+        }
         if OrientationUtility.isLandscape {
-          if self.editProfileView != nil {
-            self.editProfileView?.removeFromSuperview()
-            self.editProfileView = nil
-          }
           let leftInset = view.safeAreaInsets.left
           if leftInset > 0 {
             landscapeStreamInfoLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ? 18 : 30 + 10
@@ -317,6 +331,7 @@ class PlayerController: UIViewController {
   
   private var isChatEnabled = false {
     didSet {
+      portraitEditProfileButton.isHidden = !isChatEnabled
       portraitSendButton.isEnabled = isChatEnabled
       portraitTextView.isEditable = isChatEnabled
       portraitTextView.placeholder = isChatEnabled ? "Say something" : "Chat not available"
@@ -433,7 +448,6 @@ class PlayerController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-
     chatFieldLeading = landscapeStreamInfoStackView.frame.origin.x
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
@@ -644,6 +658,9 @@ class PlayerController: UIViewController {
   
   @objc
   private func onSliderValChanged(slider: UISlider, event: UIEvent) {
+  
+    event.allTouches?.enumerated().forEach({ print("EVENT \($0.offset): \($0.element.phase.rawValue)") })
+    
     if let touchEvent = event.allTouches?.first {
       switch touchEvent.phase {
       case .began:
@@ -894,44 +911,105 @@ class PlayerController: UIViewController {
       sender.isEnabled = true
     }
   }
+
   
-  func showEditProfileView() {
+  private func editProfileSetConstraints(isPortrait: Bool) {
+    let bottomItem = isPortrait ? portraitBottomContainerView : landscapeBottomContainerView
+    let leadingConst = NSLayoutConstraint(item: editProfileView as Any,
+                                          attribute: .leading,
+                                          relatedBy: .equal,
+                                          toItem: view,
+                                          attribute: .leading,
+                                          multiplier: 1,
+                                          constant: 0)
+    let trailingConst = NSLayoutConstraint(item: view as Any,
+                                           attribute: .trailing,
+                                           relatedBy: .equal,
+                                           toItem: editProfileView as Any,
+                                           attribute: .trailing,
+                                           multiplier: 1,
+                                           constant: 0)
+    
+    let bottomConst = NSLayoutConstraint(item: editProfileView as Any,
+                                         attribute: .bottom,
+                                         relatedBy: .equal,
+                                         toItem: bottomItem,
+                                         attribute: .top,
+                                         multiplier: 1,
+                                         constant: 0)
+    let constArr = [bottomConst, leadingConst, trailingConst]
+    if isPortrait {
+      self.editProfileViewPortraitConstraints = constArr
+    } else {
+      self.editProfileViewLandscapeConstraints = constArr
+    }
+    self.editProfileViewPortraitConstraints.forEach { $0.isActive = isPortrait }
+    self.editProfileViewLandscapeConstraints.forEach { $0.isActive = !isPortrait}
+  }
+  
+  func showEditProfileView(isPortrait: Bool) {
     if self.editProfileView != nil {
       self.editProfileView?.removeFromSuperview()
       self.editProfileView = nil
+      setMessageTextFieldsEnable(true)
       return
     }
     self.editProfileView = EditProfileView()
     self.editProfileView?.currentDisplayName = User.current?.displayName ?? ""
+    self.editProfileView?.displayNameTextField.becomeFirstResponder()
     self.view.addSubview(editProfileView!)
-    editProfileView?.center.x = self.view.center.x
-    editProfileView?.center.y = portraitBottomContainerView.frame.origin.y - (editProfileView?.bounds.height ?? 0) / 2
+    
+   editProfileSetConstraints(isPortrait: isPortrait)
+    
+    
+    
     if let imageURL = User.current?.imageUrl {
       self.editProfileView?.userImage.load(url: URL(string: imageURL), placeholder: nil)
     }
     
-    self.portraitTextView.isUserInteractionEnabled = false
-    self.portraitTextView.resignFirstResponder()
+    setMessageTextFieldsEnable(false)
     
     editProfileView?.confirmButtonPressed = { (text, image) in
-      AntViewerManager.shared.change(displayName: text) { (result) in
+      
+      let group = DispatchGroup()
+      group.enter()
+      AntViewerManager.shared.change(displayName: text) { [weak self] (result) in
+        guard let `self` = self else { return }
         switch result {
         case .success:
           self.editProfileView?.currentDisplayName = User.current?.displayName ?? ""
-          self.editProfileView?.removeFromSuperview()
-          self.editProfileView = nil
-          self.portraitTextView.isUserInteractionEnabled = true
           break
         case .failure:
           break
         }
+        group.leave()
       }
+      
+      if let image = image, let data = image.jpegData(compressionQuality: 0.5) {
+        group.enter()
+        AntViewerManager.shared.uploadImage(data: data) { (response) in
+          switch response {
+          case .success:
+            break
+          case .failure(let error):
+            print("Error uploading image: \(error.localizedDescription)")
+          }
+          group.leave()
+        }
+      }
+      
+      group.notify(queue: .main) { [weak self] in
+        self?.editProfileView?.removeFromSuperview()
+        self?.editProfileView = nil
+        self?.setMessageTextFieldsEnable(true)
+      }
+      
     }
     
     editProfileView?.cancelButtonPressed = { [weak self] in
       self?.editProfileView?.removeFromSuperview()
       self?.editProfileView = nil
-      self?.portraitTextView.isUserInteractionEnabled = true
+      self?.setMessageTextFieldsEnable(true)
     }
     
     editProfileView?.changeProfileImage = { [weak self] in
@@ -939,11 +1017,17 @@ class PlayerController: UIViewController {
     }
   }
   
+  func setMessageTextFieldsEnable(_ isEnable: Bool) {
+    self.portraitTextView.isUserInteractionEnabled = isEnable
+    self.landscapeTextView.isUserInteractionEnabled = isEnable
+    self.landscapeTextView.resignFirstResponder()
+    self.portraitTextView.resignFirstResponder()
+    self.portraitSendButton.isEnabled = isEnable
+    self.landscapeSendButton.isEnabled = isEnable
+  }
+  
   @IBAction func editProfileButtonPressed(_ sender: UIButton?) {
-    if OrientationUtility.currentOrientatin != .portrait {
-      OrientationUtility.rotateToOrientation(.portrait)
-    }
-    showEditProfileView()
+    showEditProfileView(isPortrait: OrientationUtility.currentOrientatin == .portrait)
   }
   
   fileprivate func adjustHeightForTextView(_ textView: UITextView) {
@@ -1109,7 +1193,7 @@ extension PlayerController {
           self.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
         }
         self.updateContentInsetForTableView(self.currentTableView)
-        self.editProfileView?.center.y -= keyboardSize.height - bottomPadding
+//        zself.editProfileView?.center.y -= keyboardSize.height - bottomPadding
 
       }, completion: { value in
         self.currentTableView.beginUpdates()
@@ -1143,7 +1227,7 @@ extension PlayerController {
           self.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
         }
         self.updateContentInsetForTableView(self.currentTableView)
-        self.editProfileView?.center.y = self.portraitBottomContainerView.frame.origin.y - (self.editProfileView?.bounds.height ?? 0) / 2
+//        self.editProfileView?.center.y = self.portraitBottomContainerView.frame.origin.y - (self.editProfileView?.bounds.height ?? 0) / 2
 
       }, completion: { value in
         self.currentTableView.beginUpdates()
@@ -1225,23 +1309,13 @@ extension PlayerController: PollControllerDelegate {
 extension PlayerController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
   func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
     
-    guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
-    let data = image.jpegData(compressionQuality: 0.5) else {
+    guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage else {
       picker.dismiss(animated: false, completion: nil)
       assert(false, "Failed to load edited image data")
       return
     }
-    self.editProfileView?.userImage.image = image
-    
-      AntViewerManager.shared.uploadImage(data: data) { (response) in
-        switch response {
-        case .success:
-          break
-        case .failure(let error):
-          print("Error uploading image: \(error.localizedDescription)")
-        }
-      }
-      picker.dismiss(animated: true, completion: nil)
+    self.editProfileView?.selectedImage = image
+    picker.dismiss(animated: true, completion: nil)
    
   }
 }
