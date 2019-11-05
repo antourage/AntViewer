@@ -20,6 +20,8 @@ class EditProfileView: UIView {
   @IBOutlet weak var infoLabel: UILabel!
   @IBOutlet weak var userImage: CacheImageView! 
   
+  @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+  
   var isConfirmButtonEnable = false {
     didSet {
       confirmButton.backgroundColor = isConfirmButtonEnable ? confirmButtonEnabledColor : confirmButtonDisabledColor
@@ -39,7 +41,6 @@ class EditProfileView: UIView {
   
   public var currentDisplayName: String = "" {
     didSet {
-
       displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Type your display name" : currentDisplayName
     }
   }
@@ -48,7 +49,7 @@ class EditProfileView: UIView {
   
  private let maxCharactersCount = 50
 
-  var confirmButtonPressed: ((String, UIImage?) -> ())?
+  var confirmButtonPressed: ((String?, UIImage?) -> ())?
   var cancelButtonPressed: (() -> ())?
   var changeProfileImage: (() -> ())?
   
@@ -88,8 +89,11 @@ class EditProfileView: UIView {
   }
   
   @IBAction func confirmButtonPressed(_ sender: UIButton) {
-    let text = displayNameTextField.text!
-    confirmButtonPressed?(text, selectedImage)
+    let text = displayNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true ? nil : displayNameTextField.text
+    DispatchQueue.main.async { [weak self] in
+      self?.confirmButtonPressed?(text, self?.selectedImage)
+    }
+    
   }
   
   @IBAction func onUserAvatarTapped(_ sender: UITapGestureRecognizer) {

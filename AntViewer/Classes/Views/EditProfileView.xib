@@ -2,7 +2,6 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="landscape" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -14,6 +13,7 @@
                 <outlet property="confirmButton" destination="dN4-AO-pwZ" id="ngl-4X-gKI"/>
                 <outlet property="contentView" destination="iN0-l3-epB" id="DdG-5M-KXw"/>
                 <outlet property="displayNameTextField" destination="fOd-rW-MCk" id="sO1-B6-jRH"/>
+                <outlet property="heightConstraint" destination="1o9-ZE-x7f" id="PkM-Ns-nwm"/>
                 <outlet property="userImage" destination="rDN-RB-4H7" id="EV5-I9-4VG"/>
             </connections>
         </placeholder>
@@ -114,7 +114,7 @@
                                 </button>
                             </subviews>
                         </stackView>
-                        <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="rDN-RB-4H7" customClass="CacheImageView" customModule="AntViewer">
+                        <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="avaPic" translatesAutoresizingMaskIntoConstraints="NO" id="rDN-RB-4H7" customClass="CacheImageView" customModule="AntViewer">
                             <rect key="frame" x="20" y="51" width="48" height="48"/>
                             <gestureRecognizers/>
                             <constraints>
@@ -138,7 +138,7 @@
                                     <rect key="frame" x="0.0" y="0.0" width="84" height="20"/>
                                     <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                    <textInputTraits key="textInputTraits"/>
+                                    <textInputTraits key="textInputTraits" keyboardAppearance="alert"/>
                                 </textField>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="D7p-b8-Ghv">
                                     <rect key="frame" x="0.0" y="30" width="84" height="1"/>
@@ -179,6 +179,7 @@
                         <constraint firstAttribute="trailing" secondItem="cxn-Px-KdY" secondAttribute="trailing" constant="20" id="tCp-gF-BGu"/>
                         <constraint firstItem="cxn-Px-KdY" firstAttribute="leading" secondItem="4I0-hh-HkO" secondAttribute="leading" constant="20" id="tV7-Po-B11"/>
                     </constraints>
+                    <viewLayoutGuide key="safeArea" id="3jW-B0-iBh"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                             <integer key="value" value="2"/>
@@ -189,6 +190,11 @@
                             <exclude reference="2w1-Pj-W0x"/>
                             <exclude reference="Cvg-BH-Tyz"/>
                             <exclude reference="iFk-TL-Ey5"/>
+                            <exclude reference="05Y-iD-q2X"/>
+                            <exclude reference="dLf-Um-7d2"/>
+                            <exclude reference="e2z-Vo-0mQ"/>
+                            <exclude reference="gqF-g4-8Lt"/>
+                            <exclude reference="hUg-D9-4ru"/>
                             <exclude reference="19x-3p-OyH"/>
                             <exclude reference="5sm-3K-ath"/>
                             <exclude reference="8tH-rq-GGo"/>
@@ -198,19 +204,14 @@
                             <exclude reference="chg-vC-Kud"/>
                             <exclude reference="pAL-8f-NLZ"/>
                             <exclude reference="tV7-Po-B11"/>
-                            <exclude reference="05Y-iD-q2X"/>
-                            <exclude reference="dLf-Um-7d2"/>
-                            <exclude reference="e2z-Vo-0mQ"/>
-                            <exclude reference="gqF-g4-8Lt"/>
-                            <exclude reference="hUg-D9-4ru"/>
                         </mask>
                     </variation>
                     <variation key="heightClass=compact">
                         <mask key="constraints">
                             <include reference="Cvg-BH-Tyz"/>
+                            <include reference="e2z-Vo-0mQ"/>
                             <include reference="C7n-52-ERy"/>
                             <include reference="pAL-8f-NLZ"/>
-                            <include reference="e2z-Vo-0mQ"/>
                         </mask>
                     </variation>
                     <variation key="widthClass=regular">
@@ -221,36 +222,36 @@
                     <variation key="heightClass=compact-widthClass=regular">
                         <mask key="constraints">
                             <exclude reference="iFk-TL-Ey5"/>
-                            <include reference="J4a-1t-S3i"/>
                             <exclude reference="dLf-Um-7d2"/>
+                            <include reference="J4a-1t-S3i"/>
                         </mask>
                     </variation>
                     <variation key="heightClass=regular-widthClass=compact">
                         <mask key="constraints">
+                            <include reference="05Y-iD-q2X"/>
+                            <include reference="hUg-D9-4ru"/>
                             <include reference="5sm-3K-ath"/>
                             <include reference="HiI-z9-JD0"/>
                             <include reference="chg-vC-Kud"/>
                             <include reference="tV7-Po-B11"/>
-                            <include reference="05Y-iD-q2X"/>
-                            <include reference="hUg-D9-4ru"/>
                         </mask>
                     </variation>
                 </view>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="GzB-bf-gYz" firstAttribute="trailing" secondItem="4I0-hh-HkO" secondAttribute="trailing" id="0Qx-9K-x05"/>
-                <constraint firstItem="4I0-hh-HkO" firstAttribute="bottom" secondItem="GzB-bf-gYz" secondAttribute="bottom" id="2s3-9T-vnK"/>
-                <constraint firstItem="4I0-hh-HkO" firstAttribute="leading" secondItem="GzB-bf-gYz" secondAttribute="leading" id="4HG-Nz-7A0"/>
-                <constraint firstItem="4I0-hh-HkO" firstAttribute="top" secondItem="GzB-bf-gYz" secondAttribute="top" id="876-Ka-MVS"/>
-                <constraint firstItem="4I0-hh-HkO" firstAttribute="centerY" secondItem="GzB-bf-gYz" secondAttribute="centerY" id="AC7-qj-ylT"/>
+                <constraint firstAttribute="trailing" secondItem="4I0-hh-HkO" secondAttribute="trailing" id="0Qx-9K-x05"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="bottom" secondItem="iN0-l3-epB" secondAttribute="bottom" id="2s3-9T-vnK"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="4HG-Nz-7A0"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="876-Ka-MVS"/>
+                <constraint firstItem="4I0-hh-HkO" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="AC7-qj-ylT"/>
                 <constraint firstItem="4I0-hh-HkO" firstAttribute="height" secondItem="iN0-l3-epB" secondAttribute="height" id="WKl-e8-VYs"/>
             </constraints>
             <nil key="simulatedTopBarMetrics"/>
             <nil key="simulatedBottomBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="GzB-bf-gYz"/>
-            <point key="canvasLocation" x="-1321" y="125"/>
+            <viewLayoutGuide key="safeArea" id="QFM-qY-I3B"/>
+            <point key="canvasLocation" x="-1321.8890554722639" y="124.8"/>
         </view>
         <tapGestureRecognizer id="SeV-n7-6Nv">
             <connections>

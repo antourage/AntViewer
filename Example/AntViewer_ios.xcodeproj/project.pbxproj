@@ -341,6 +341,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-resources.sh",
 				"${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib",
@@ -361,6 +362,7 @@
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntWidget.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditProfileViewController.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PlayerController.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PollController.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamListController.nib",
@@ -413,6 +415,7 @@
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-resources.sh",
 				"${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib",
@@ -433,6 +436,7 @@
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntWidget.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EditProfileViewController.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PlayerController.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PollController.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamListController.nib",
