@@ -16,6 +16,26 @@ class EditProfileViewController: UIViewController {
   var leadingConstraint: NSLayoutConstraint!
   var trailingConstraint: NSLayoutConstraint!
   
+  var isFirstTimePortrait = true
+  var isFirstTimeLandscape = true
+  
+  var portraitKeyboardHeight: CGFloat = 0 {
+    didSet {
+      if isFirstTimePortrait {
+        self.editProfileViewBottomConstraint.constant = portraitKeyboardHeight
+        isFirstTimePortrait = false
+      }
+    }
+  }
+  var landscapeKeyboardHeight: CGFloat = 0 {
+    didSet {
+      if isFirstTimeLandscape {
+        self.editProfileViewBottomConstraint.constant = landscapeKeyboardHeight
+        isFirstTimeLandscape = false
+      }
+    }
+  }
+
   weak var playerController: PlayerController?
   
   var heightOfMessageTextView: CGFloat? {
@@ -31,31 +51,38 @@ class EditProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
       sutupUI()
-      
       var token: NSObjectProtocol?
       token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
         guard let `self` = self else {
           NotificationCenter.default.removeObserver(token!)
           return
         }
-
-        self.leadingConstraint.constant = self.margins
-        self.trailingConstraint.constant = self.margins
-        self.view.layoutIfNeeded()
+        if OrientationUtility.isPortrait {
+          guard self.portraitKeyboardHeight != 0 else { return }
+          self.editProfileViewBottomConstraint.constant = self.portraitKeyboardHeight
+        } else {
+          guard self.landscapeKeyboardHeight != 0 else { return }
+          self.editProfileViewBottomConstraint.constant = self.landscapeKeyboardHeight
+        }
       }
-      
         // Do any additional setup after loading the view.
     }
   
+  
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardDidChangeFrameNotification, object: nil)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self)
+  }
+  
+  override func viewDidLayoutSubviews() {
+    self.leadingConstraint.constant = self.margins
+    self.trailingConstraint.constant = self.margins
+    self.view.layoutIfNeeded()
   }
   
   @IBAction func handleTapOnFreeArea(_ sender: UITapGestureRecognizer) {
@@ -127,6 +154,7 @@ class EditProfileViewController: UIViewController {
   deinit {
     playerController?.portraitEditProfileButton.tintColor = .darkGray
     playerController?.landscapeEditProfileButton.tintColor = .darkGray
+    editProfileView?.displayNameTextField.resignFirstResponder()
     print("EDIT PROFILE CONTROLLER DEINITED")
   }
   
@@ -185,29 +213,17 @@ class EditProfileViewController: UIViewController {
   }
   
   @objc
-    fileprivate func keyboardWillShow(notification: NSNotification) {
+  fileprivate func keyboardWillChangeFrame(notification: NSNotification) {
       if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-        let userInfo = notification.userInfo!
-        let animationDuration = (userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
-        let rawAnimationCurve = (notification.userInfo![UIResponder.keyboardAnimationCurveUserInfoKey] as! NSNumber).uint32Value << 16
-        let animationCurve = UIView.AnimationOptions.init(rawValue: UInt(rawAnimationCurve))
-        
-        editProfileViewBottomConstraint.constant = keyboardSize.height + (heightOfMessageTextView ?? 0)
-        UIView.animate(withDuration: animationDuration, delay: 0, options: [.beginFromCurrentState, animationCurve], animations: {
-          self.view.layoutIfNeeded()
-        }, completion: nil)
-      }
-    }
-    
-    @objc
-    fileprivate func keyboardWillHide(notification: NSNotification) {
-      if let _ = (notification.userInfo?[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-        editProfileViewBottomConstraint.constant = heightOfMessageTextView ?? 0
-        UIView.animate(withDuration: 0.3) {
-          self.view.layoutIfNeeded()
+        guard keyboardSize.height != 0 else { return }
+        if OrientationUtility.isPortrait {
+          portraitKeyboardHeight = keyboardSize.height + (heightOfMessageTextView ?? 0)
+        } else {
+          landscapeKeyboardHeight = keyboardSize.height + (heightOfMessageTextView ?? 0)
         }
       }
     }
+
   
 }
 

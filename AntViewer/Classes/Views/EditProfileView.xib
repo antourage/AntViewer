@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="landscape" appearance="light"/>
+    <device id="retina4_0" orientation="landscape" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
@@ -34,8 +34,8 @@
                                     <constraints>
                                         <constraint firstAttribute="width" constant="85" id="8Ri-t7-afO"/>
                                         <constraint firstAttribute="height" constant="44" id="MTw-fc-63Y"/>
-                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="126" id="Xls-j6-9hc"/>
                                         <constraint firstAttribute="width" constant="85" id="iUi-eD-gX5"/>
+                                        <constraint firstAttribute="width" constant="110" id="uom-g5-Cls"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <state key="normal" title="CANCEL">
@@ -49,8 +49,8 @@
                                     <variation key="default">
                                         <mask key="constraints">
                                             <exclude reference="8Ri-t7-afO"/>
-                                            <exclude reference="Xls-j6-9hc"/>
                                             <exclude reference="iUi-eD-gX5"/>
+                                            <exclude reference="uom-g5-Cls"/>
                                         </mask>
                                     </variation>
                                     <variation key="heightClass=compact">
@@ -65,7 +65,7 @@
                                     </variation>
                                     <variation key="heightClass=regular-widthClass=compact">
                                         <mask key="constraints">
-                                            <include reference="Xls-j6-9hc"/>
+                                            <include reference="uom-g5-Cls"/>
                                         </mask>
                                     </variation>
                                     <connections>
@@ -79,7 +79,6 @@
                                         <constraint firstAttribute="width" constant="85" id="9Yu-Ur-Ozq"/>
                                         <constraint firstAttribute="height" constant="44" id="VC0-pJ-DnV"/>
                                         <constraint firstAttribute="width" constant="85" id="oWe-7K-fHs"/>
-                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="201" id="zsZ-85-zBK"/>
                                     </constraints>
                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                     <color key="tintColor" red="0.80000000000000004" green="0.93333333333333335" blue="0.8666666666666667" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -90,7 +89,6 @@
                                         <mask key="constraints">
                                             <exclude reference="9Yu-Ur-Ozq"/>
                                             <exclude reference="oWe-7K-fHs"/>
-                                            <exclude reference="zsZ-85-zBK"/>
                                         </mask>
                                     </variation>
                                     <variation key="heightClass=compact">
@@ -101,11 +99,6 @@
                                     <variation key="heightClass=compact-widthClass=regular">
                                         <mask key="constraints">
                                             <include reference="9Yu-Ur-Ozq"/>
-                                        </mask>
-                                    </variation>
-                                    <variation key="heightClass=regular-widthClass=compact">
-                                        <mask key="constraints">
-                                            <include reference="zsZ-85-zBK"/>
                                         </mask>
                                     </variation>
                                     <connections>
