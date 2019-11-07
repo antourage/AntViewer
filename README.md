@@ -103,7 +103,7 @@ AntWidget.authWith(apiKey: "put_your_apiKey_there", refUserId: "put_user_id_from
   }
 }
 ```
-### Push notifications 
+### Push notifications
 
 We use Firebase for PN in our project. To support PN on your side you should retrieve token for our senderID, send all needed data to us right after successful auth (you can call it in auth success block) and subscribe yourself to our topic.   
 senderID = 1090288296965
@@ -112,11 +112,14 @@ senderID = 1090288296965
   //MARK: Connect PN to Antourage Firebase app
   Messaging.messaging().retrieveFCMToken(forSenderID: "1090288296965") { (token, error) in
     AntWidget.registerNotifications(FCMToken: token) { (result) in
-      //MARK: Handle result
+      switch result {
+       case .success(let topic):
+         Messaging.messaging().subscribe(toTopic: topic)
+       case .failure(let notificationError):
+         print(notificationError.localizedDescription)
+       }
     }
   }
-
-  Messaging.messaging().subscribe(toTopic: "topicName")
 ```
 ### Add UI part
 
