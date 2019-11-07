@@ -10,7 +10,7 @@ import UIKit
 import AntViewerExt
 
 protocol PollControllerDelegate: class {
-  func closeButtonPressed()
+  func pollControllerCloseButtonPressed()
 }
 
 let colors = ["a_poll1LightOrange", "a_poll2Terracotta", "a_poll3Blue", "a_poll4Green"]
@@ -78,7 +78,7 @@ class PollController: UIViewController {
   }
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
-    delegate?.closeButtonPressed()
+    delegate?.pollControllerCloseButtonPressed()
   }
   
   deinit {

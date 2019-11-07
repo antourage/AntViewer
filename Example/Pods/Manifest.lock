@@ -1,5 +1,5 @@
 PODS:
-  - AntViewer (0.0.1):
+  - AntViewer (0.0.2):
     - Firebase/Auth
     - Firebase/Core (~> 5.11)
     - Firebase/Firestore
@@ -149,7 +149,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  AntViewer: 2cf7a6fcaca007dcc7bbccf170af2a615ac5dad2
+  AntViewer: 95ddead2b8b8fa5da6b6c144741a8acee76e21f6
   BoringSSL-GRPC: 2a230d9cd93e7ce39916044f645cebb31f37dde6
   Firebase: 0c8cf33f266410c61ab3e2265cfa412200351d9c
   FirebaseAnalytics: ece1aa57a4f43c64d53a648b5a5e05151aae947b

@@ -98,6 +98,7 @@ EOM
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib"
@@ -117,6 +118,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib"

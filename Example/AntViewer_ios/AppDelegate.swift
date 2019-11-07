@@ -31,7 +31,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Messaging.messaging().retrieveFCMToken(forSenderID: "1090288296965") { (token, error) in
           guard let token = token else { return }
           AntWidget.registerNotifications(FCMToken: token) { (result) in
-            
+            switch result {
+            case .success(let topic):
+              Messaging.messaging().subscribe(toTopic: topic) { error in
+                if error == nil {
+                  print("Subscribed to topic")
+                }
+              }
+            case .failure(let notificationError):
+              print(notificationError.localizedDescription)
+            }
           }
         }
       case .failure(let error):
@@ -39,15 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       }
     }
     
-
-    
-    
-    Messaging.messaging().subscribe(toTopic: "test") { error in
-      if error == nil {
-        print("Subscribed to test topic")
-      }
-      
-    }
     return true
   }
   
