@@ -147,11 +147,11 @@ class StreamListController: UICollectionViewController {
   fileprivate func configureCell(_ cell: NewStreamCell, forIndexPath indexPath: IndexPath) -> NewStreamCell {
     let item = getItemForIndexPath(indexPath)
     cell.streamNameLabel.text = item.title
-    cell.liveLabel.isHidden = item is Vod
     cell.startTimeLabel.text = item.date.timeAgo()
+    cell.liveLabel.isHidden = item is Vod
     if let item = item as? Vod {
       cell.viewersCountLabel.text = "\(item.viewsCount) views"
-      cell.streamDurationLabel.text = item.duration
+      cell.videoDuration = item.duration
       cell.isContentNew = item.isNew
       cell.watchedTime = item.isNew ? 0 : item.stopTime.duration()
     } else if let item = item as? AntViewerExt.Stream {

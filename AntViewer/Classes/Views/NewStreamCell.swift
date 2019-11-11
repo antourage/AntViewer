@@ -54,6 +54,13 @@ public class NewStreamCell: UICollectionViewCell {
     }
   }
   
+  public var videoDuration: String = "" {
+    didSet {
+      streamDurationView.isHidden = false
+      streamDurationLabel.text = videoDuration
+    }
+  }
+  
   override public func layoutSubviews() {
     super.layoutSubviews()
     //FIXME: Gradient updates with delay
