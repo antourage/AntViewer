@@ -16,7 +16,7 @@ class CacheImageView: UIImageView {
     imageUrlString = url.absoluteString
     if !ImageService.getImage(withURL: url, completion: { (newImage) in
       if self.imageUrlString == url.absoluteString {
-        self.image = newImage
+        self.image = newImage ?? placeholder
       }
     }) {
       image = placeholder
