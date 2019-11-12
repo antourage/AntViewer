@@ -484,6 +484,9 @@
                                             <real key="value" value="4"/>
                                         </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="onSliderValChangedWithSlider:event:" destination="-1" eventType="valueChanged" id="NKq-uc-o14"/>
+                                    </connections>
                                 </slider>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.55000000000000004" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -1021,17 +1024,17 @@
             </variation>
             <point key="canvasLocation" x="135.19999999999999" y="149.26108374384236"/>
         </view>
-        <swipeGestureRecognizer direction="right" id="eka-0d-1Xr">
+        <swipeGestureRecognizer cancelsTouchesInView="NO" direction="right" id="eka-0d-1Xr">
             <connections>
                 <action selector="handleSwipeGesture:" destination="-1" id="MPY-oV-05H"/>
             </connections>
         </swipeGestureRecognizer>
-        <swipeGestureRecognizer direction="left" id="dxZ-5N-CrK">
+        <swipeGestureRecognizer cancelsTouchesInView="NO" direction="left" id="dxZ-5N-CrK">
             <connections>
                 <action selector="handleSwipeGesture:" destination="-1" id="Yea-gB-KZd"/>
             </connections>
         </swipeGestureRecognizer>
-        <tapGestureRecognizer id="pUl-9a-wpr">
+        <tapGestureRecognizer cancelsTouchesInView="NO" id="pUl-9a-wpr">
             <connections>
                 <action selector="handleTouchOnVideo:" destination="-1" id="hFY-A4-G34"/>
                 <outlet property="delegate" destination="-1" id="KfK-KO-YgK"/>

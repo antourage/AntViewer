@@ -649,12 +649,8 @@ class PlayerController: UIViewController {
     videoContainerView.showActivityIndicator()
   }
   
-  
   @objc
-  private func onSliderValChanged(slider: UISlider, event: UIEvent) {
-    
-    event.allTouches?.enumerated().forEach({ print("EVENT \($0.offset): \($0.element.phase.rawValue)") })
-    
+   private func onSliderValChanged(slider: UISlider, event: UIEvent) {
     if let touchEvent = event.allTouches?.first {
       switch touchEvent.phase {
       case .began:
@@ -970,6 +966,7 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleSwipeGesture(_ sender: UISwipeGestureRecognizer) {
+    guard editProfileContainerView.isHidden else { return }
     let halfOfViewWidth = view.bounds.width / 2
     guard OrientationUtility.isLandscape, sender.location(in: view).x <= halfOfViewWidth else {return}
     
@@ -1191,3 +1188,4 @@ extension PlayerController: EditProfileControllerDelegate {
     dismissEditProfileView()
   }
 }
+
