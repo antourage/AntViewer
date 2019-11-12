@@ -267,11 +267,16 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
   override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     let vodsSection = dataSource.streams.count == 0 ? 0 : 1
     guard indexPath.section == vodsSection else { return }
-    if indexPath.row == dataSource.videos.count - 1 && !isLoading {
-      dataSource.fetchNextItemsFrom(index: dataSource.videos.count) { [weak self] (result) in
+    if indexPath.row == dataSource.videos.count - 1 && !isLoading, dataSource.videos.count % 15 == 0 {
+      let index = dataSource.videos.count
+      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
         switch result {
         case .success :
-          self?.collectionView.reloadData()
+          let count = self?.dataSource.videos.count ?? 0
+          let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
+          self?.collectionView.insertItems(at: indexPaths)
+          
+          self?.isLoading = false
           break
         case .failure:
           //TODO: handle error
