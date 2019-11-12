@@ -15,7 +15,7 @@ private let maxUserNameLength = 50
 
 class PlayerController: UIViewController {
   
-  private var player :AVPlayer?
+  private var player: AVPlayer?
   private var playerItem: AVPlayerItem?
   
   @IBOutlet weak var landscapeStreamInfoLeading: NSLayoutConstraint!
@@ -459,6 +459,22 @@ class PlayerController: UIViewController {
       pollManager?.observePolls(completion: { [weak self] (poll) in
         self?.activePoll = poll
       })
+      var streamToken: NSObjectProtocol?
+      streamToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
+        guard let `self` = self else {
+          NotificationCenter.default.removeObserver(streamToken!)
+          return
+        }
+        if !self.dataSource.streams.contains(where: {$0.streamId == self.videoContent.streamId}) {
+          self.videoContainerView.image = UIImage.image("thanks_for_watching")
+          self.videoContainerView.layer.sublayers?.first?.isHidden = true
+          
+        }
+        if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
+          self.viewersCountLabel.text = "\(stream.viewersCount) Viewers"
+        }
+        
+      }
     }
     self.chat = Chat(streamID: videoContent.streamId)
     
@@ -470,18 +486,6 @@ class PlayerController: UIViewController {
         return
       }
       self.currentOrientation = OrientationUtility.currentOrientatin
-      
-    }
-    
-    var streamToken: NSObjectProtocol?
-    streamToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-      guard let `self` = self else {
-        NotificationCenter.default.removeObserver(streamToken!)
-        return
-      }
-      if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
-        self.viewersCountLabel.text = "\(stream.viewersCount) Viewers"
-      }
       
     }
     
