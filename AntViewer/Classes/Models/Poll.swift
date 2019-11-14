@@ -88,7 +88,7 @@ public class Poll {
         self?.answeredByUser = true
       }
       
-      let answers = documents.compactMap {$0.data()["choosenAnswer"] as? Int}
+      let answers = documents.compactMap {$0.data()["chosenAnswer"] as? Int}
       let answersDict = Dictionary(grouping: answers, by: {$0})
       var result = [Int]()
       self?.pollAnswers.enumerated().forEach {
@@ -102,7 +102,7 @@ public class Poll {
   
   public func saveAnswerWith(index: Int) {
     if let id = AppAuth.shared.userID {
-      ref?.collection("answeredUsers").document(id).setData(["choosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
+      ref?.collection("answeredUsers").document(id).setData(["chosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
     }
   }
   
