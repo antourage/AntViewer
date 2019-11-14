@@ -1006,6 +1006,9 @@ class PlayerController: UIViewController {
     pollController.didMove(toParent: self)
     pollController.delegate = self
     pollContainerView.isHidden = false
+    infoPortraitView.isHidden = true
+    portraitTableView.isHidden = true
+    portraitBottomContainerView.isHidden = true
     let oldValue = shouldShowBigPollMessage
     shouldShowBigPollMessage = oldValue
   }
@@ -1177,6 +1180,9 @@ extension PlayerController: PollControllerDelegate {
     pollController?.removeFromParent()
     pollController = nil
     pollContainerView.isHidden = true
+    infoPortraitView.isHidden = false
+    portraitTableView.isHidden = false
+    portraitBottomContainerView.isHidden = false
     if activePoll != nil {
       shouldShowBigPollMessage = false
     }
