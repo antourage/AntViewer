@@ -18,9 +18,29 @@ class StreamListController: UICollectionViewController {
   fileprivate var cellHeight: CGFloat!
   fileprivate var isLoading = false {
     didSet {
+      collectionView.isUserInteractionEnabled = !isLoading
       emptyDataSourceView?.isLoading = isLoading
+      emptyDataSourceView?.isDataSourceEmpty = isDataSourceEmpty
     }
   }
+  
+  fileprivate var isStreamsLoaded = false {
+    didSet {
+      disableLoading()
+    }
+  }
+  
+  fileprivate var isVideosLoaded = false {
+    didSet {
+      disableLoading()
+    }
+  }
+  
+  fileprivate var isAllContentLoaded: Bool {
+    isStreamsLoaded && isVideosLoaded
+  }
+  
+  
   
   fileprivate var isDataSourceEmpty: Bool {
    return dataSource.videos.isEmpty && dataSource.streams.isEmpty
@@ -31,9 +51,7 @@ class StreamListController: UICollectionViewController {
   var dataSource: DataSource!
   var isReadyToUpdate = false {
     didSet {
-      isLoading = !isReadyToUpdate
-      collectionView.isUserInteractionEnabled = isReadyToUpdate
-      collectionView.reloadData()
+      reloadCollectionViewDataSource()
     }
   }
   private var isFetchingNextItems = false
@@ -67,8 +85,8 @@ class StreamListController: UICollectionViewController {
       switch result {
       case .success:
         guard self.isReadyToUpdate else { return }
-        self.isLoading = false
-        self.collectionView.reloadData()
+        self.isVideosLoaded = true
+        self.reloadCollectionViewDataSource()
       case .failure(let error):
         print(error)
       }
@@ -76,14 +94,13 @@ class StreamListController: UICollectionViewController {
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
       guard let `self` = self, self.isReadyToUpdate else { return }
-      self.isLoading = false
+      self.isStreamsLoaded = true
       
       if self.isDataSourceEmpty {
         self.collectionView.backgroundView = self.emptyDataSourceView
-      } else {
-        self.collectionView.reloadData()
-        
       }
+      
+      self.reloadCollectionViewDataSource()
     }
     
     refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
@@ -100,6 +117,19 @@ class StreamListController: UICollectionViewController {
   
   deinit {
     print("StreamListController deinited.")
+  }
+  
+  private func reloadCollectionViewDataSource() {
+    if !isDataSourceEmpty {
+      isLoading = false
+      collectionView.reloadData()
+    }
+  }
+  
+  private func disableLoading() {
+    if isAllContentLoaded {
+      isLoading = false
+    }
   }
   
   private func setupNavigationBar() {
@@ -132,7 +162,6 @@ class StreamListController: UICollectionViewController {
     dataSource.updateVods { [weak self] (result) in
       self?.refreshControl.endRefreshing()
       self?.collectionView.reloadData()
-      
     }
   }
   

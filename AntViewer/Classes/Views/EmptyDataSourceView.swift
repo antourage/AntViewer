@@ -13,6 +13,7 @@ public class EmptyDataSourceView: UIView {
   let kCONTENT_XIB_NAME = "EmptyDataSourceView"
   
   @IBOutlet var contentView: UIView!
+  @IBOutlet weak var titleLabel: UILabel!
   
   @IBOutlet private var fakeCellsArray: [UIView]!
   private var stateArray = [true, true, true, false]
@@ -28,6 +29,13 @@ public class EmptyDataSourceView: UIView {
         stopTimer()
         fakeCellsArray.forEach { $0.backgroundColor = UIColor.white.withAlphaComponent(0.1)}
       }
+    }
+  }
+  
+  public var isDataSourceEmpty = true {
+    didSet {
+      guard isDataSourceEmpty, !isLoading else { return }
+      titleLabel.text = "New videos are loading soon"
     }
   }
   
