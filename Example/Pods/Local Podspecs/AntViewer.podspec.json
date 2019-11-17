@@ -45,7 +45,7 @@
   ],
   "dependencies": {
     "Firebase/Core": [
-      "~> 5.11"
+
     ],
     "Firebase/Auth": [
 

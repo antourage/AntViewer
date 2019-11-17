@@ -50,7 +50,7 @@ Pod::Spec.new do |s|
     'HEADER_SEARCH_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources'
   }
   s.frameworks = 'UIKit', 'AVKit'
-  s.dependency 'Firebase/Core', '~> 5.11'
+  s.dependency 'Firebase/Core'
   s.dependency 'Firebase/Auth'
   s.dependency 'Firebase/Firestore'
 
