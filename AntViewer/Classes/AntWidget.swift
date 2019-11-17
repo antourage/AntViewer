@@ -177,6 +177,30 @@ public class AntWidget: UIView {
     AntViewerManager.shared.registerNotificationsWith(FCMToken: FCMToken, completionHandler: completionHandler)
   }
   
+  @objc
+  public static func objc_authWith(apiKey: String, refUserId: String?, nickname: String?, completionHandler: @escaping (Error?) -> Void) {
+    AntViewerManager.shared.authWith(apiKey: apiKey, refUserId: refUserId, nickname: nickname) { (result) in
+      switch result {
+      case .success():
+        completionHandler(nil)
+      case .failure(let error):
+        completionHandler(error)
+      }
+    }
+  }
+  
+  @objc
+  public static func objc_registerNotifications(FCMToken: String, completionHandler: @escaping (String?, Error?) -> Void) {
+    AntViewerManager.shared.registerNotificationsWith(FCMToken: FCMToken) { (result) in
+      switch result {
+      case .success(let topic):
+        completionHandler(topic, nil)
+      case .failure(let error):
+        completionHandler(nil, error)
+      }
+    }
+  }
+  
   private func updateColours() {
     antButton.tintColor = isLightMode ? .black : .white
     antButton.backgroundColor = isLightMode ? .white : UIColor.color("a_backgroundDarkGrey")

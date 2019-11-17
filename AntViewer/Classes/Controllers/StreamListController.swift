@@ -146,12 +146,9 @@ class StreamListController: UICollectionViewController {
     
     let changeHost = UIButton(type: .custom)
     changeHost.tintColor = .white
-    
+    changeHost.titleLabel?.font = changeHost.titleLabel?.font.withSize(10)
     changeHost.setTitle("", for: .normal)
-
-    let gestureRec = UITapGestureRecognizer(target: self, action:  #selector(changeHost(_:)))
-    gestureRec.numberOfTapsRequired = 3
-    changeHost.addGestureRecognizer(gestureRec)
+    changeHost.addTarget(self, action: #selector(changeHost(_:event:)), for: .touchDownRepeat)
     changeHost.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
     
     navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: changeHost)]
@@ -178,8 +175,18 @@ class StreamListController: UICollectionViewController {
   }
   
   @objc
-  private func changeHost(_ sender: UIButton) {
+  private func changeHost(_ sender: UIButton, event: UIEvent) {
+    guard let touches = event.allTouches?.first, touches.tapCount == 3 else {
+      return
+    }
     presentChangeHostAlert()
+    if let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String {
+      sender.setTitle(version, for: .normal)
+      DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak sender] in
+        sender?.setTitle(nil, for: .normal)
+      }
+    }
+    
   }
   
   @objc
