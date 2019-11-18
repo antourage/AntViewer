@@ -18,9 +18,29 @@ class StreamListController: UICollectionViewController {
   fileprivate var cellHeight: CGFloat!
   fileprivate var isLoading = false {
     didSet {
+      collectionView.isUserInteractionEnabled = !isLoading
       emptyDataSourceView?.isLoading = isLoading
+      emptyDataSourceView?.isDataSourceEmpty = isDataSourceEmpty
     }
   }
+  
+  fileprivate var isStreamsLoaded = false {
+    didSet {
+      disableLoading()
+    }
+  }
+  
+  fileprivate var isVideosLoaded = false {
+    didSet {
+      disableLoading()
+    }
+  }
+  
+  fileprivate var isAllContentLoaded: Bool {
+    isStreamsLoaded && isVideosLoaded
+  }
+  
+  
   
   fileprivate var isDataSourceEmpty: Bool {
    return dataSource.videos.isEmpty && dataSource.streams.isEmpty
@@ -31,12 +51,21 @@ class StreamListController: UICollectionViewController {
   var dataSource: DataSource!
   var isReadyToUpdate = false {
     didSet {
-      isLoading = !isReadyToUpdate
-      collectionView.isUserInteractionEnabled = isReadyToUpdate
-      collectionView.reloadData()
+      reloadCollectionViewDataSource()
     }
   }
-  
+  private var isFetchingNextItems = false
+  private var footerView: FooterView? {
+    didSet {
+      if let footerView = footerView {
+        if isFetchingNextItems {
+          footerView.activityIndicatorView.startAnimating()
+        } else {
+          footerView.activityIndicatorView.stopAnimating()
+        }
+      }
+    }
+  }
   private let refreshControl = UIRefreshControl()
 
   override func viewDidLoad() {
@@ -53,26 +82,18 @@ class StreamListController: UICollectionViewController {
     
     dataSource.updateVods { [weak self] (result) in
       guard let `self` = self else { return }
+      self.isVideosLoaded = true
       switch result {
       case .success:
-        guard self.isReadyToUpdate else { return }
-        self.isLoading = false
-        self.collectionView.reloadData()
+        self.reloadCollectionViewDataSource()
       case .failure(let error):
         print(error)
       }
     }
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-      guard let `self` = self, self.isReadyToUpdate else { return }
-      self.isLoading = false
-      
-      if self.isDataSourceEmpty {
-        self.collectionView.backgroundView = self.emptyDataSourceView
-      } else {
-        self.collectionView.reloadData()
-        
-      }
+      self?.isStreamsLoaded = true
+      self?.reloadCollectionViewDataSource()
     }
     
     refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
@@ -85,6 +106,29 @@ class StreamListController: UICollectionViewController {
     super.viewWillAppear(animated)
     guard isReadyToUpdate else { return }
     collectionView.reloadData()
+  }
+  
+  deinit {
+    print("StreamListController deinited.")
+  }
+  
+  private func reloadCollectionViewDataSource() {
+    guard isReadyToUpdate else { return }
+    if !isDataSourceEmpty {
+      isLoading = false
+    } else {
+      guard isAllContentLoaded else { return }
+      collectionView.backgroundView = emptyDataSourceView
+      emptyDataSourceView?.isDataSourceEmpty = true
+    }
+    collectionView.reloadData()
+  }
+  
+  private func disableLoading() {
+    guard isReadyToUpdate else { return }
+    if isAllContentLoaded {
+      isLoading = false
+    }
   }
   
   private func setupNavigationBar() {
@@ -101,12 +145,9 @@ class StreamListController: UICollectionViewController {
     
     let changeHost = UIButton(type: .custom)
     changeHost.tintColor = .white
-    
+    changeHost.titleLabel?.font = changeHost.titleLabel?.font.withSize(10)
     changeHost.setTitle("", for: .normal)
-
-    let gestureRec = UITapGestureRecognizer(target: self, action:  #selector(changeHost(_:)))
-    gestureRec.numberOfTapsRequired = 3
-    changeHost.addGestureRecognizer(gestureRec)
+    changeHost.addTarget(self, action: #selector(changeHost(_:event:)), for: .touchDownRepeat)
     changeHost.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
     
     navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: changeHost)]
@@ -117,7 +158,6 @@ class StreamListController: UICollectionViewController {
     dataSource.updateVods { [weak self] (result) in
       self?.refreshControl.endRefreshing()
       self?.collectionView.reloadData()
-      
     }
   }
   
@@ -126,14 +166,26 @@ class StreamListController: UICollectionViewController {
     collectionView.register(cellNib, forCellWithReuseIdentifier: reuseIdentifier)
     let headerNib = UINib(nibName: "HeaderView", bundle: Bundle(for: type(of: self)))
     collectionView.register(headerNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AntHeaderView")
+    let footerNib = UINib(nibName: "FooterView", bundle: Bundle(for: type(of: self)))
+    collectionView.register(footerNib, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AntFooterView")
     cellWidth = view.bounds.width * 0.85
     cellHeight = cellWidth * 0.56
     collectionView.reloadData()
   }
   
   @objc
-  private func changeHost(_ sender: UIButton) {
+  private func changeHost(_ sender: UIButton, event: UIEvent) {
+    guard let touches = event.allTouches?.first, touches.tapCount == 3 else {
+      return
+    }
     presentChangeHostAlert()
+    if let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String {
+      sender.setTitle(version, for: .normal)
+      DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak sender] in
+        sender?.setTitle(nil, for: .normal)
+      }
+    }
+    
   }
   
   @objc
@@ -206,22 +258,29 @@ extension StreamListController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    guard kind == UICollectionView.elementKindSectionHeader else {
+    
+    switch kind {
+    case UICollectionView.elementKindSectionHeader :
+      let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AntHeaderView", for: indexPath) as! HeaderView
+      header.titleLabel.isHidden = indexPath.section != 0
+      header.separatoView.isHidden = indexPath.section == 0
+      
+      if isDataSourceEmpty || isLoading {
+        header.titleLabel.text = ""
+      } else {
+        if isReadyToUpdate {
+        header.titleLabel.text = "Latest Videos"
+        }
+      }
+      return header
+      
+    case UICollectionView.elementKindSectionFooter :
+      let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AntFooterView", for: indexPath) as! FooterView
+      self.footerView = footer
+      return footer
+    default:
       return UICollectionReusableView()
     }
-    let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "AntHeaderView", for: indexPath) as! HeaderView
-    header.titleLabel.isHidden = indexPath.section != 0
-    header.separatoView.isHidden = indexPath.section == 0
-    
-    if isDataSourceEmpty || isLoading {
-      header.titleLabel.text = ""
-    } else {
-      if isReadyToUpdate {
-      header.titleLabel.text = "Latest Videos"
-      }
-    }
-
-    return header
   }
   
 }
@@ -264,25 +323,32 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
     return CGSize(width: collectionView.bounds.width, height: section == 0 ? 50 : 1)
   }
   
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+    let numberOfSections = collectionView.numberOfSections
+    return CGSize(width: collectionView.bounds.width, height: section == (numberOfSections - 1) ? 30 : 1)
+  }
+  
   override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     let vodsSection = dataSource.streams.count == 0 ? 0 : 1
     guard indexPath.section == vodsSection else { return }
     if indexPath.row == dataSource.videos.count - 1 && !isLoading, dataSource.videos.count % 15 == 0 {
       let index = dataSource.videos.count
+      self.isFetchingNextItems = true
       dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
+        guard let `self` = self else { return }
         switch result {
         case .success :
-          let count = self?.dataSource.videos.count ?? 0
+          let count = self.dataSource.videos.count
           let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
-          self?.collectionView.insertItems(at: indexPaths)
+          self.collectionView.insertItems(at: indexPaths)
           
-          self?.isLoading = false
           break
         case .failure:
           //TODO: handle error
           print("Error fetching vods")
           break
         }
+        self.isFetchingNextItems = false
       }
     }
   }

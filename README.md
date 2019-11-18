@@ -70,7 +70,7 @@ iOS 11.3 +
 
 ## Installation
 
-AntViewer_ios is available through [CocoaPods](https://cocoapods.org). To install
+AntViewer is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 `pod 'AntViewer'`.
 And run `$ pod install`

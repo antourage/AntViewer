@@ -10,6 +10,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptyDataSourceView" customModule="AntViewer">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="OrU-AZ-kne"/>
+                <outlet property="titleLabel" destination="jaF-xB-da4" id="YAx-Gp-9ce"/>
                 <outletCollection property="fakeCellsArray" destination="doZ-Z8-mut" collectionClass="NSMutableArray" id="AZx-oB-Dj8"/>
                 <outletCollection property="fakeCellsArray" destination="ScU-ep-ZVF" collectionClass="NSMutableArray" id="7bo-hi-O0q"/>
                 <outletCollection property="fakeCellsArray" destination="37R-QU-BQx" collectionClass="NSMutableArray" id="OA9-b3-jWX"/>
@@ -21,8 +22,8 @@
             <rect key="frame" x="0.0" y="0.0" width="499" height="1077"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="New videos are coming soon" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaF-xB-da4">
-                    <rect key="frame" x="89.5" y="10" width="320.5" height="31.5"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Latest Videos" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jaF-xB-da4">
+                    <rect key="frame" x="39.5" y="10" width="420" height="31.5"/>
                     <fontDescription key="fontDescription" type="system" pointSize="26"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
@@ -126,6 +127,7 @@
                 <constraint firstItem="doZ-Z8-mut" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.85" id="Fd0-c8-RDN"/>
                 <constraint firstItem="ScU-ep-ZVF" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.85" id="Gys-0L-1Jc"/>
                 <constraint firstItem="jaF-xB-da4" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Im1-c9-brE"/>
+                <constraint firstItem="jaF-xB-da4" firstAttribute="leading" secondItem="Zez-ue-X1C" secondAttribute="leading" constant="2" id="MP3-RX-pOp"/>
                 <constraint firstItem="isS-r8-VZi" firstAttribute="top" secondItem="jaF-xB-da4" secondAttribute="bottom" constant="10" id="MQq-rV-ytD"/>
                 <constraint firstItem="jaF-xB-da4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="dgw-Je-qJh"/>
                 <constraint firstItem="37R-QU-BQx" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.85" id="es2-C7-neW"/>

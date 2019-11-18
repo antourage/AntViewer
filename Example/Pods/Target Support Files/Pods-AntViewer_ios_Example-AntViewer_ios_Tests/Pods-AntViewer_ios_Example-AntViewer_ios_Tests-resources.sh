@@ -105,6 +105,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib"
@@ -113,7 +114,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle"
-  install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle"
+  install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib"
@@ -124,6 +125,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib"
@@ -132,7 +134,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle"
-  install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates.bundle"
+  install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"
