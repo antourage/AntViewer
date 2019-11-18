@@ -1162,9 +1162,15 @@ extension PlayerController: UITableViewDataSource {
     
     if let cell = cell as? MessageSupportable {
       let message = messagesDataSource[indexPath.row]
+      let isCurrentUser = Int(message.userID) == User.current?.id
       cell.messageLabel.text = message.text
-      cell.nameLabel.text = message.nickname
-      cell.avatarImageView.load(url: URL(string: message.avatarUrl ?? ""), placeholder: UIImage(named: "avaPic"))
+      if isCurrentUser {
+        cell.nameLabel.text = User.current?.displayName ?? message.nickname
+        cell.avatarImageView.load(url: URL(string: User.current?.imageUrl ?? ""), placeholder: UIImage(named: "avaPic"))
+      } else {
+        cell.nameLabel.text = message.nickname
+        cell.avatarImageView.load(url: URL(string: message.avatarUrl ?? ""), placeholder: UIImage(named: "avaPic"))
+      }
     }
     
     return cell
@@ -1194,7 +1200,10 @@ extension PlayerController: EditProfileControllerDelegate {
     editProfileControllerIsLoading = false
   }
   
-  func editProfileCloseButtonPressed() {
+  func editProfileCloseButtonPressed(withChanges: Bool) {
+    if withChanges {
+      currentTableView.reloadData()
+    }
     dismissEditProfileView()
   }
 }

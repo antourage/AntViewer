@@ -9,7 +9,7 @@ import UIKit
 import AntViewerExt
 
 protocol EditProfileControllerDelegate: class {
-  func editProfileCloseButtonPressed()
+  func editProfileCloseButtonPressed(withChanges: Bool)
   func editProfileLoaded()
 }
 
@@ -56,12 +56,12 @@ class EditProfileViewController: UIViewController {
     var isFirstTime = true
     
     @IBAction func cancelButtonPressed(_ sender: UIButton) {
-      delegate?.editProfileCloseButtonPressed()
+      delegate?.editProfileCloseButtonPressed(withChanges: false)
     }
     
     @IBAction func confirmButtonPressed(_ sender: UIButton) {
       let text = displayNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true ? nil : displayNameTextField.text
-  let group = DispatchGroup()
+      let group = DispatchGroup()
             if let text = text {
               group.enter()
              AntViewerManager.shared.change(displayName: text) { [weak self] (result) in
@@ -90,9 +90,9 @@ class EditProfileViewController: UIViewController {
                }
              }
       
-             group.notify(queue: .main) { [weak self] in
-              self?.delegate?.editProfileCloseButtonPressed()
-             }
+           group.notify(queue: .main) { [weak self] in
+            self?.delegate?.editProfileCloseButtonPressed(withChanges: true)
+           }
       
     }
     
@@ -109,8 +109,6 @@ class EditProfileViewController: UIViewController {
 
     }
   
-  
-//
   func sutupUI() {
      currentDisplayName = User.current?.displayName ?? ""
      displayNameTextField.becomeFirstResponder()
@@ -122,9 +120,6 @@ class EditProfileViewController: UIViewController {
   }
 //
   deinit {
-//    playerController?.portraitEditProfileButton.tintColor = .darkGray
-//    playerController?.landscapeEditProfileButton.tintColor = .darkGray
-//    editProfileView?.displayNameTextField.resignFirstResponder()
     print("EDIT PROFILE CONTROLLER DEINITED")
   }
   
