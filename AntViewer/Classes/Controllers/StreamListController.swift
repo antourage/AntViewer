@@ -82,10 +82,9 @@ class StreamListController: UICollectionViewController {
     
     dataSource.updateVods { [weak self] (result) in
       guard let `self` = self else { return }
+      self.isVideosLoaded = true
       switch result {
       case .success:
-        guard self.isReadyToUpdate else { return }
-        self.isVideosLoaded = true
         self.reloadCollectionViewDataSource()
       case .failure(let error):
         print(error)
@@ -93,14 +92,8 @@ class StreamListController: UICollectionViewController {
     }
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-      guard let `self` = self, self.isReadyToUpdate else { return }
-      self.isStreamsLoaded = true
-      
-      if self.isDataSourceEmpty {
-        self.collectionView.backgroundView = self.emptyDataSourceView
-      }
-      
-      self.reloadCollectionViewDataSource()
+      self?.isStreamsLoaded = true
+      self?.reloadCollectionViewDataSource()
     }
     
     refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
@@ -120,13 +113,19 @@ class StreamListController: UICollectionViewController {
   }
   
   private func reloadCollectionViewDataSource() {
+    guard isReadyToUpdate else { return }
     if !isDataSourceEmpty {
       isLoading = false
-      collectionView.reloadData()
+    } else {
+      guard isAllContentLoaded else { return }
+      collectionView.backgroundView = emptyDataSourceView
+      emptyDataSourceView?.isDataSourceEmpty = true
     }
+    collectionView.reloadData()
   }
   
   private func disableLoading() {
+    guard isReadyToUpdate else { return }
     if isAllContentLoaded {
       isLoading = false
     }
