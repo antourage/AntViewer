@@ -24,6 +24,7 @@ class PlayerNavigationController: UINavigationController {
 //    view.addGestureRecognizer(edgeSwipeGestureRecognizer)
     transitionCoordinatorHelper = TransitionCoordinator()
     delegate = transitionCoordinatorHelper
+    self.view.backgroundColor = UIColor(red: 34/255, green: 34/255, blue: 34/255, alpha: 1)
   }
   
   func pushViewController(_ viewController: UIViewController, withPopAnimation: Bool = false) {
