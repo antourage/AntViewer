@@ -57,16 +57,11 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var videoControlsView: UIView!
   @IBOutlet weak var playButton: UIButton!
-  @IBOutlet weak var nextButton: UIButton! {
-    didSet {
-      nextButton.isHidden = !(videoContent is Vod)
-    }
-  }
-  @IBOutlet weak var previousButton: UIButton! {
-    didSet {
-      previousButton.isHidden = !(videoContent is Vod)
-    }
-  }
+  @IBOutlet weak var nextButton: UIButton!
+  @IBOutlet weak var previousButton: UIButton!
+  
+  
+  
   @IBOutlet weak var pollContainerView: UIView!
   @IBOutlet weak var infoPortraitView: UIView! {
     didSet {
@@ -511,6 +506,7 @@ class PlayerController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
+    adjustVideoControlsButtons()
     //TODO: Debug it
     //    landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
 
@@ -702,6 +698,29 @@ class PlayerController: UIViewController {
       currentTableView.endUpdates()
       updateContentInsetForTableView(currentTableView)
       UIView.setAnimationsEnabled(true)
+    }
+  }
+  
+  private func adjustVideoControlsButtons() {
+    guard videoContent is Vod else {
+      nextButton.isHidden = true
+      previousButton.isHidden = true
+      return
+    }
+    let index = dataSource.videos.firstIndex(where: { $0.id == videoContent.id }) ?? 0
+    let videosCount = dataSource.videos.count
+    
+    switch index {
+    case 0:
+      previousButton?.isHidden = true
+    case videosCount - 2:
+      if videosCount % 15 == 0 {
+        dataSource.fetchNextItemsFrom(index: videosCount) { (_) in }
+      }
+    case videosCount - 1:
+      nextButton?.isHidden = true
+    default:
+      break
     }
   }
   
