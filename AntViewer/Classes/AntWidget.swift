@@ -244,7 +244,6 @@ public class AntWidget: UIView {
     if let stream = shownStream, !(sender is UIButton) {
       let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
       playerVC.videoContent = stream
-      playerVC.shouldNotify = true
       playerVC.dataSource = dataSource
       playerVC.modalPresentationStyle = .fullScreen
       navController.view.isHidden = true

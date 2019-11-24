@@ -34,16 +34,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "BC0350D5-24C4-430C-8DDC-D25446CB080E"
+            uuid = "238CEDE5-E1F5-4975-A3F7-4CAA01E71C89"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../AntViewer/Classes/Views/CacheImageView.swift"
+            filePath = "../AntViewer/Classes/Controllers/PlayerController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
-            landmarkName = "load(url:placeholder:)"
+            startingLineNumber = "625"
+            endingLineNumber = "625"
+            landmarkName = "startPlayer()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -44,6 +44,10 @@ public extension UIView {
     animationView.removeFromSuperview()
   }
   
+  var isActivityIndicatorLoaded: Bool {
+    subviews.first(where: {$0 is AnimationView}) != nil
+  }
+  
   func fixInView(_ container: UIView!) -> Void{
     self.translatesAutoresizingMaskIntoConstraints = false;
     self.frame = container.frame;
