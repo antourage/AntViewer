@@ -623,6 +623,7 @@ class PlayerController: UIViewController {
     
     player.playerReadyToPlay = { [weak self] in
       self?.isControlsEnabled = true
+      self?.videoContainerView.image = nil
     }
     
     //TODO: AirPlay
