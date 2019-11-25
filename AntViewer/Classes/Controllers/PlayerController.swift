@@ -248,11 +248,14 @@ class PlayerController: UIViewController {
   }
   
   fileprivate var pollManager: PollManager?
-  
-  fileprivate var activePoll: Poll? {
+  fileprivate var isShouldShowPollAnswers = false
+  fileprivate var pollAnswersDebouncer = Debouncer(delay: 15)
+  fileprivate var activePoll:  Poll? {
     didSet {
       NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : activePoll ?? 0])
       guard let poll = activePoll else {
+        pollAnswersDebouncer.call {}
+        self.isShouldShowPollAnswers = false
         collapsedPollButton.alpha = 0
         UIView.transition(with: collapsedPollButton, duration: 0.3, options: .transitionFlipFromTop, animations: {
           self.pollControllerCloseButtonPressed()
@@ -266,14 +269,13 @@ class PlayerController: UIViewController {
         return
       }
       pollNameLabels.forEach {$0.text = poll.pollQuestion}
-      
-      
+      self.shouldShowBigPollMessage = true
+       
       poll.onUpdate = { [weak self] in
         guard let _ = self?.activePoll else { return }
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : self?.activePoll ?? 0])
-        self?.shouldShowBigPollMessage = self?.activePoll?.answeredByUser == false
-        
-        if self?.activePoll?.answeredByUser == true {
+        if self?.activePoll?.answeredByUser == true || self?.isShouldShowPollAnswers == true {
+          self?.shouldShowBigPollMessage = false
           let count = self?.activePoll?.answersCount.reduce(0, +) ?? 0
           self?.landscapeCollapsedPollLabel.text = "\(count)"
         } else {
@@ -294,6 +296,16 @@ class PlayerController: UIViewController {
       self.landscapeCollapsedPollView.isHidden = self.shouldShowBigPollMessage || !self.pollContainerView.isHidden || isKeyboardShown
       self.view.layoutIfNeeded()
       self.updateContentInsetForTableView(self.portraitTableView)
+      
+      if !shouldShowBigPollMessage, oldValue {
+        self.pollAnswersDebouncer.call { [weak self] in
+          self?.isShouldShowPollAnswers = true
+          if let count = self?.activePoll?.answersCount.reduce(0, +), count != 0 {
+          self?.landscapeCollapsedPollLabel.text = "\(count)"
+          }
+        }
+      }
+      
     }
   }
   
