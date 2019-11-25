@@ -15,8 +15,7 @@ private let maxUserNameLength = 50
 
 class PlayerController: UIViewController {
   
-  private var player: AVPlayer?
-  private var playerItem: AVPlayerItem?
+  private var player: Player!
   
   @IBOutlet weak var landscapeStreamInfoLeading: NSLayoutConstraint!
   @IBOutlet weak var portraitMessageBottomSpace: NSLayoutConstraint!
@@ -57,16 +56,11 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var videoControlsView: UIView!
   @IBOutlet weak var playButton: UIButton!
-  @IBOutlet weak var nextButton: UIButton! {
-    didSet {
-      nextButton.isHidden = !(videoContent is Vod)
-    }
-  }
-  @IBOutlet weak var previousButton: UIButton! {
-    didSet {
-      previousButton.isHidden = !(videoContent is Vod)
-    }
-  }
+  @IBOutlet weak var nextButton: UIButton!
+  @IBOutlet weak var previousButton: UIButton!
+  
+  
+  
   @IBOutlet weak var pollContainerView: UIView!
   @IBOutlet weak var infoPortraitView: UIView! {
     didSet {
@@ -362,7 +356,6 @@ class PlayerController: UIViewController {
   }
   
   var videoContent: VideoContent!
-  var shouldNotify = false
   fileprivate var isVideoEnd = false
   
   fileprivate var messagesDataSource = [Message]()
@@ -400,12 +393,10 @@ class PlayerController: UIViewController {
   fileprivate var seekTo: Int? {
     didSet {
       if seekTo == nil, let time = oldValue {
-        let previousRate = player?.rate
-        player?.rate = 0
+        player.player.rate = 0
         self.isVideoEnd = false
-        player?.seek(to: CMTime(seconds: Double(time), preferredTimescale: 1), completionHandler: { [weak self] (value) in
-          self?.player?.rate = previousRate ?? 0
-          self?.player?.isPlaying ?? false ? self?.player?.play() : self?.player?.pause()
+        player.seek(to: CMTime(seconds: Double(time), preferredTimescale: 1), completionHandler: { [weak self] (value) in
+          self?.player.isPlayerPaused ?? false ? self?.player.pause() : self?.player.play()
           
           if self?.isSeekByTappingMode ?? true {
             self?.isSeekByTappingMode = false
@@ -417,7 +408,7 @@ class PlayerController: UIViewController {
           currentTableView.scrollToRow(at: IndexPath(row: messagesDataSource.count - 1, section: 0), at: .bottom, animated: true)
         }
         controlsDebouncer.call { [weak self] in
-          if self?.player?.isPlaying == true {
+          if self?.player.isPlayerPaused == false {
             if OrientationUtility.isLandscape && self?.seekTo != nil {
               return
             }
@@ -468,6 +459,7 @@ class PlayerController: UIViewController {
         if !self.dataSource.streams.contains(where: {$0.streamId == self.videoContent.streamId}) {
           self.videoContainerView.image = UIImage.image("thanks_for_watching")
           self.videoContainerView.layer.sublayers?.first?.isHidden = true
+          self.player.pause()
           
         }
         if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
@@ -511,9 +503,10 @@ class PlayerController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
+    adjustVideoControlsButtons()
     //TODO: Debug it
     //    landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
-
+    
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     UIApplication.shared.isIdleTimerDisabled = true
   }
@@ -524,7 +517,8 @@ class PlayerController: UIViewController {
     //    landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
-    if let vod = videoContent as? Vod, let seconds = player?.currentTime().seconds {
+    if let vod = videoContent as? Vod {
+      let seconds = player.currentTime
       vod.isNew = false
       vod.stopTime = Int(seconds).durationString
       vod.stoped(at: vod.stopTime)
@@ -533,10 +527,6 @@ class PlayerController: UIViewController {
   
   deinit {
     pollManager?.removeFirObserver()
-    player?.currentItem?.removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
-    if let playerTimeObserver = playerTimeObserver {
-      player?.removeTimeObserver(playerTimeObserver)
-    }
     Statistic.send(state: .end(span: Int(activeSpendTime)), for: videoContent)
     print("PLAYER DEINITED")
   }
@@ -569,19 +559,6 @@ class PlayerController: UIViewController {
       }
       return
     }
-    
-    if let currentPlayer = player ,
-      let playerObject = object as? AVPlayerItem,
-      playerObject == currentPlayer.currentItem,
-      keyPath == #keyPath(AVPlayerItem.status) {
-      if currentPlayer.currentItem?.status == .readyToPlay {
-        if !isControlsEnabled {
-          currentPlayer.play()
-          isControlsEnabled = true
-        }
-      }
-      return
-    }
     super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
   }
   
@@ -603,58 +580,56 @@ class PlayerController: UIViewController {
   }
   
   private func startPlayer(){
-    playerItem =  AVPlayerItem(url: URL(string: videoContent.url)!)
-    player = AVPlayer(playerItem: playerItem)
-    player?.allowsExternalPlayback = true
-    player?.rate = 1.0
-    //TODO: AirPlay
     
-    let castedLayer = videoContainerView.layer as! AVPlayerLayer
-    castedLayer.player = player
-    playerItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.new, .initial], context: nil)
-    
-    if let vod = videoContent as? Vod,  vod.stopTime.duration() > 0 {
-      seekTo = vod.stopTime.duration()
-      seekTo = nil
+    var seekTo: Double?
+    if let vod = videoContent as? Vod {
+      seekTo = Double(vod.stopTime.duration())
     }
+    player = Player(url: URL(string:videoContent.url)!, seekTo: seekTo)
     
-    playerTimeObserver = player?.addPeriodicTimeObserver(forInterval: CMTimeMake(value: 1, timescale: 5), queue: .main, using: { [weak self] (time) in
-      guard let `self` = self else { return }
-      guard self.player?.currentItem?.status == .readyToPlay,
-        let isPlaybackBufferFull = self.player?.currentItem?.isPlaybackBufferFull,
-        let isPlaybackLikelyToKeepUp = self.player?.currentItem?.isPlaybackLikelyToKeepUp else { return }
-      
-      if isPlaybackBufferFull || isPlaybackLikelyToKeepUp {
+    player.addPeriodicTimeObserver { [weak self] (time, isLikelyToKeepUp) in
+      guard let `self` = self else {return}
+      if isLikelyToKeepUp {
         self.videoContainerView.removeActivityIndicator()
-        
         if !self.videoControlsView.isHidden {
           self.updatePlayButtonImage()
         }
-        
-      } else if self.player?.isPlaying == true {
+      } else if self.player.isPlayerPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
         self.videoContainerView.showActivityIndicator()
       }
-      
       self.activeSpendTime += 0.2
       
       if self.videoContent is Vod {
         self.handleVODsChat(forTime: Int(time.seconds))
         self.seekLabel.text = Int(time.seconds).durationString
-        if self.seekTo == nil, self.player?.isPlaying == true {
-          
+        if self.seekTo == nil, self.player.isPlayerPaused == false {
           self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
           self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)
         }
       }
-    })
+    }
+    
+    player.playerReadyToPlay = { [weak self] in
+      self?.isControlsEnabled = true
+    }
+    
+    //TODO: AirPlay
+    
+    let castedLayer = videoContainerView.layer as! AVPlayerLayer
+    castedLayer.player = player.player
+    
     if videoContent is Vod {
-      NotificationCenter.default.addObserver(self, selector: #selector(onVideoEnd), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player?.currentItem)
+      player.onVideoEnd = { [weak self] in
+        self?.isPlayerControlsHidden = false
+        self?.playButton.setImage(UIImage.image("play"), for: .normal)
+        self?.isVideoEnd = true
+      }
     }
     videoContainerView.showActivityIndicator()
   }
   
   @objc
-   private func onSliderValChanged(slider: UISlider, event: UIEvent) {
+  private func onSliderValChanged(slider: UISlider, event: UIEvent) {
     if let touchEvent = event.allTouches?.first {
       switch touchEvent.phase {
       case .began:
@@ -665,14 +640,6 @@ class PlayerController: UIViewController {
         seekTo = nil
       }
     }
-  }
-  
-  @objc
-  private func onVideoEnd() {
-    self.isPlayerControlsHidden = false//videoControlsView.isHidden = false
-    playButton.setImage(UIImage.image("play"), for: .normal)
-    self.isVideoEnd = true
-    //    player?.seek(to: .zero)
   }
   
   private func insertMessage(_ message: Message) {
@@ -705,6 +672,29 @@ class PlayerController: UIViewController {
     }
   }
   
+  private func adjustVideoControlsButtons() {
+    guard videoContent is Vod else {
+      nextButton.isHidden = true
+      previousButton.isHidden = true
+      return
+    }
+    let index = dataSource.videos.firstIndex(where: { $0.id == videoContent.id }) ?? 0
+    let videosCount = dataSource.videos.count
+    
+    switch index {
+    case 0:
+      previousButton?.isHidden = true
+    case videosCount - 2:
+      if videosCount % 15 == 0 {
+        dataSource.fetchNextItemsFrom(index: videosCount) { (_) in }
+      }
+    case videosCount - 1:
+      nextButton?.isHidden = true
+    default:
+      break
+    }
+  }
+  
   private func updateContentInsetForTableView(_ table: UITableView) {
     let numRows = tableView(table, numberOfRowsInSection: 0)
     var contentInsetTop = table.bounds.size.height
@@ -733,9 +723,6 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
-    if shouldNotify {
-      NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
-    }
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     dismiss(animated: true, completion: nil)
   }
@@ -786,12 +773,16 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
+    
+    let onPlayButton = playButton.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden
     guard isControlsEnabled else { return }
     if isKeyboardShown {
       portraitTextView.endEditing(true)
       landscapeTextView.endEditing(true)
       return
     }
+    
+    guard !onPlayButton else { return }
     //MARK: seek by typing
     self.updatePlayButtonImage()
     if self.isSeekByTappingMode {
@@ -835,7 +826,7 @@ class PlayerController: UIViewController {
       
       self.controlsDebouncer.call { [weak self] in
         
-        if self?.player?.isPlaying == true {
+        if self?.player.isPlayerPaused == false {
           if OrientationUtility.isLandscape && self?.seekTo != nil {
             return
           }
@@ -857,22 +848,24 @@ class PlayerController: UIViewController {
   @IBAction func playButtonPressed(_ sender: UIButton) {
     if self.isVideoEnd {
       self.isVideoEnd = false
-      self.player?.seek(to: .zero)
+      self.player.seek(to: .zero)
     }
-    if player?.isPlaying == true {
-      player?.pause()
-      controlsDebouncer.call {}
+    
+    if player.isPlayerPaused {
+      player.play()
+         controlsDebouncer.call { [weak self] in
+           self?.isPlayerControlsHidden = true
+         }
+     
     } else {
-      player?.play()
-      controlsDebouncer.call { [weak self] in
-        self?.isPlayerControlsHidden = true
-      }
+      player.pause()
+      controlsDebouncer.call {}
     }
     updatePlayButtonImage()
   }
   
   func updatePlayButtonImage() {
-    let image = (player?.isPlaying == true) ? UIImage.image("pause") : UIImage.image("play")
+    let image = (player.isPlayerPaused == false) ? UIImage.image("pause") : UIImage.image("play")
     self.playButton.setImage(image, for: .normal)
   }
   
@@ -1028,7 +1021,7 @@ class PlayerController: UIViewController {
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = nextContent
     playerVC.dataSource = dataSource
-    player?.pause()
+    player.pause()
     navController.pushViewController(playerVC, withPopAnimation: sender == previousButton)
     
   }
