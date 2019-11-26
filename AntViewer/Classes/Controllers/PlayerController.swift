@@ -786,6 +786,10 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
+    guard !landscapeSendButton.frame.contains(sender.location(in: landscapeSendButton.superview)) else {
+      sendButtonPressed(landscapeSendButton)
+      return
+    }
     
     let onPlayButton = playButton.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden
     guard isControlsEnabled else { return }
