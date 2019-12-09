@@ -201,6 +201,7 @@ class StreamListController: UICollectionViewController {
     cell.startTimeLabel.text = item.date.timeAgo()
     cell.liveLabel.isHidden = item is Vod
     if let item = item as? Vod {
+      cell.startTimeLabel.text = item.date.addingTimeInterval(TimeInterval(item.duration.duration())).timeAgo()
       cell.viewersCountLabel.text = "\(item.viewsCount) views"
       cell.videoDuration = item.duration
       cell.isContentNew = item.isNew
