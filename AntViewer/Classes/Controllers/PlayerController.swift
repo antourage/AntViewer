@@ -468,12 +468,6 @@ class PlayerController: UIViewController {
           NotificationCenter.default.removeObserver(streamToken!)
           return
         }
-        if !self.dataSource.streams.contains(where: {$0.streamId == self.videoContent.streamId}) {
-          self.videoContainerView.image = UIImage.image("thanks_for_watching")
-          self.videoContainerView.layer.sublayers?.first?.isHidden = true
-          self.player.pause()
-          
-        }
         if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
           self.viewersCountLabel.text = "\(stream.viewersCount) Viewers"
         }
@@ -631,13 +625,20 @@ class PlayerController: UIViewController {
     let castedLayer = videoContainerView.layer as! AVPlayerLayer
     castedLayer.player = player.player
     
-    if videoContent is Vod {
       player.onVideoEnd = { [weak self] in
-        self?.isPlayerControlsHidden = false
         self?.playButton.setImage(UIImage.image("play"), for: .normal)
-        self?.isVideoEnd = true
+        if self?.videoContent is Vod {
+          self?.isPlayerControlsHidden = false
+          self?.isVideoEnd = true
+        } else {
+          self?.videoContainerView.image = UIImage.image("thanks_for_watching")
+          self?.videoContainerView.layer.sublayers?.first?.isHidden = true
+          self?.liveLabelWidth.constant = 0
+          self?.playButton.isEnabled = false
+          self?.view.layoutIfNeeded()
+        }
+
       }
-    }
     videoContainerView.showActivityIndicator()
   }
   
