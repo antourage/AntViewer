@@ -70,15 +70,7 @@ class Player: NSObject {
         }
   }
   
-  deinit {
-    if let playerTimeObserver = playerTimeObserver {
-      player.removeTimeObserver(playerTimeObserver)
-    }
-    NotificationCenter.default.removeObserver(self)
-  }
-  
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    
     
     if keyPath == #keyPath(AVPlayerItem.status) {
       if player.currentItem?.status == .readyToPlay {
@@ -99,6 +91,13 @@ class Player: NSObject {
   func pause() {
     player.pause()
     isPlayerPaused = true
+  }
+  func stop() {
+    pause()
+    if let playerTimeObserver = playerTimeObserver {
+      player.removeTimeObserver(playerTimeObserver)
+    }
+    NotificationCenter.default.removeObserver(self)
   }
   
   func seek(to: CMTime, completionHandler: @escaping (Bool) -> Void) {

@@ -523,10 +523,11 @@ class PlayerController: UIViewController {
     //    landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
+    player.stop()
     if let vod = videoContent as? Vod {
       let seconds = player.currentTime
       vod.isNew = false
-      vod.stopTime = Int(seconds).durationString
+      vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString
       vod.stoped(at: vod.stopTime)
     }
   }
