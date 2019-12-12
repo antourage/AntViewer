@@ -220,9 +220,9 @@ class StreamListController: UICollectionViewController {
   
   fileprivate func getItemForIndexPath(_ indexPath: IndexPath) -> VideoContent {
     if dataSource.streams.isEmpty || dataSource.videos.isEmpty {
-      return dataSource.streams.isEmpty ? dataSource.videos[indexPath.row] : dataSource.streams[indexPath.row]
+      return dataSource.streams.isEmpty ? dataSource.videos[indexPath.row] : dataSource.streams.reversed()[indexPath.row]
     } else {
-      return indexPath.section == 0 ? dataSource.streams[indexPath.row] : dataSource.videos[indexPath.row]
+      return indexPath.section == 0 ? dataSource.streams.reversed()[indexPath.row] : dataSource.videos[indexPath.row]
     }
   }
 }
