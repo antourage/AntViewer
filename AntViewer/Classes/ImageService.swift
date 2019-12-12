@@ -7,10 +7,18 @@
 
 import Foundation
 
+extension UIImage: NSDiscardableContent {
+  public func beginContentAccess() -> Bool { true }
+  public func endContentAccess() {}
+  public func discardContentIfPossible() {}
+  public func isContentDiscarded() -> Bool { false }
+}
+
 class ImageService {
   
   static let cache: NSCache<NSString, UIImage> = {
     let newCache = NSCache<NSString, UIImage>()
+    newCache.evictsObjectsWithDiscardedContent = true
     newCache.countLimit = 150
     return newCache
   }()
