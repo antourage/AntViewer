@@ -154,7 +154,7 @@ public class AntWidget: UIView {
     NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil, queue: nil) { [weak self] (notification) in
       self?.onViewerDisappear?([:])
     }
-    antButton.setImage(UIImage.image("Burger")?.withRenderingMode(.alwaysTemplate), for: .normal)
+    antButton.setImage(UIImage.image("Burger"), for: .normal)
     shownStream = nil
     let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(handleSwipeGesture(_:)))
     rightSwipeGesture.direction = .right
@@ -202,7 +202,6 @@ public class AntWidget: UIView {
   }
   
   private func updateColours() {
-    antButton.tintColor = isLightMode ? .black : .white
     antButton.backgroundColor = isLightMode ? .white : UIColor.color("a_backgroundDarkGrey")
     tongueView.backgroundColor = isLightMode ? .white : UIColor.color("a_dark")
     streamNameLabel.textColor = isLightMode ? .black : .white
@@ -286,7 +285,6 @@ public class AntWidget: UIView {
   }
   
   private func updateAntButton(forLive: Bool = false) {
-    antButton.setImage(UIImage.image("Burger"), for: .normal)
     if forLive {
       antButton.addBadge(shape: .rect, text: "Live")
       return
