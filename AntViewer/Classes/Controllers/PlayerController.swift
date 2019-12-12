@@ -629,8 +629,8 @@ class PlayerController: UIViewController {
       player.onVideoEnd = { [weak self] in
         self?.playButton.setImage(UIImage.image("play"), for: .normal)
         if self?.videoContent is Vod {
-          self?.isPlayerControlsHidden = false
           self?.isVideoEnd = true
+          self?.isPlayerControlsHidden = false
         } else {
           self?.videoContainerView.image = UIImage.image("thanks_for_watching")
           self?.videoContainerView.layer.sublayers?.first?.isHidden = true

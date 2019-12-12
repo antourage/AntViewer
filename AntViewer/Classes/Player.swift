@@ -33,6 +33,7 @@ class Player: NSObject {
   private(set) var player: AVPlayer = {
     let newPlayer = AVPlayer()
     newPlayer.automaticallyWaitsToMinimizeStalling = false
+    newPlayer.actionAtItemEnd = .pause
     return newPlayer
   }()
   
@@ -144,6 +145,7 @@ class Player: NSObject {
   
   @objc
   private func onVideoEndHandler() {
+    isPlayerPaused = true
     onVideoEnd?()
   }
   
