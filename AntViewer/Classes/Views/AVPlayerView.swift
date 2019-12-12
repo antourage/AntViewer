@@ -9,6 +9,20 @@ import UIKit
 import AVFoundation
 
 class AVPlayerView: CacheImageView {
+  
+  var player: AVPlayer? {
+      get {
+          return playerLayer.player
+      }
+      set {
+          playerLayer.player = newValue
+      }
+  }
+  
+  var playerLayer: AVPlayerLayer {
+      return layer as! AVPlayerLayer
+  }
+  
   override public class var layerClass: AnyClass {
     return AVPlayerLayer.self
   }

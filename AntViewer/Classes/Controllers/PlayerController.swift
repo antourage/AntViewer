@@ -623,8 +623,7 @@ class PlayerController: UIViewController {
     
     //TODO: AirPlay
     
-    let castedLayer = videoContainerView.layer as! AVPlayerLayer
-    castedLayer.player = player.player
+    videoContainerView.player = player.player
     
       player.onVideoEnd = { [weak self] in
         self?.playButton.setImage(UIImage.image("play"), for: .normal)
