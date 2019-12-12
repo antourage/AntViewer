@@ -19,11 +19,13 @@ class Player: NSObject {
   
   var isPlayerPaused = false
   var playerReadyToPlay: (() -> Void)?
+  
   var onVideoEnd: (() -> Void)? {
     didSet {
         NotificationCenter.default.addObserver(self, selector: #selector(onVideoEndHandler), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
     }
   }
+  
   var currentTime: Double {
     player.currentTime().seconds
   }
@@ -38,7 +40,7 @@ class Player: NSObject {
   
   private var playerItem: AVPlayerItem? {
     didSet {
-      playerItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.new, .initial], context: nil)
+      playerItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.new], context: nil)
       
       if #available(iOS 13.0, *) {
         if let howFarNow = playerItem?.configuredTimeOffsetFromLive, let recommended = playerItem?.recommendedTimeOffsetFromLive {
@@ -64,7 +66,7 @@ class Player: NSObject {
     super.init()
     setupPeriodicTimeObserver()
     asset.loadValuesAsynchronously(forKeys: keys) { [weak self] in
-          if let asset = self?.asset, asset.isPlayable {
+      if let asset = self?.asset {//, asset.isPlayable {
             self?.playerItem = AVPlayerItem(asset: asset)
           }
         }
@@ -73,11 +75,22 @@ class Player: NSObject {
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
     
     if keyPath == #keyPath(AVPlayerItem.status) {
-      if player.currentItem?.status == .readyToPlay {
-        playerItem?.removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
-        playerReadyToPlay?()
-        player.playImmediately(atRate: 1.0)
+      
+      let newStatus: AVPlayerItem.Status
+      if let newStatusAsNumber = change?[NSKeyValueChangeKey.newKey] as? NSNumber {
+        newStatus = AVPlayerItem.Status(rawValue: newStatusAsNumber.intValue)!
+      } else {
+          newStatus = .unknown
       }
+      print("AVPLAYER: \(player.currentItem?.status)")
+      if newStatus == .readyToPlay {
+        playerReadyToPlay?()
+              player.playImmediately(atRate: 1.0)
+      } else if newStatus == .failed {
+        //player.replaceCurrentItem(with: playerItem)
+        print("AVPLAYER Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
+      }
+      
       return
     }
     super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
@@ -92,11 +105,13 @@ class Player: NSObject {
     player.pause()
     isPlayerPaused = true
   }
+  
   func stop() {
     pause()
     if let playerTimeObserver = playerTimeObserver {
       player.removeTimeObserver(playerTimeObserver)
     }
+    playerItem?.removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
     NotificationCenter.default.removeObserver(self)
   }
   

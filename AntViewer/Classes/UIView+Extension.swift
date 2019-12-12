@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import Lottie
 import AVFoundation
 
 public extension UIView {
@@ -24,28 +23,30 @@ public extension UIView {
   
   func showActivityIndicator() {
     removeActivityIndicator()
-    let podBundle = Bundle(for: AntWidget.self)
-    guard let url = podBundle.url(forResource: "AntWidget", withExtension: "bundle"),
-      let bundle = Bundle(url: url) else { return }
-    let animationView = AnimationView(name: "loader", bundle: bundle)
-    animationView.loopMode = .loop
+    let images = Array(0...29).compactMap {
+      UIImage.image("\($0)")
+    }
+    let animationView = UIImageView()
+    animationView.animationImages = images
+    animationView.tag = 1023
     addSubview(animationView)
     animationView.frame = CGRect(x: 0, y: 0, width: 100, height: 100)
     animationView.translatesAutoresizingMaskIntoConstraints = false
     let horizontalConstraint = NSLayoutConstraint(item: animationView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1, constant: 0)
     let verticalConstraint = NSLayoutConstraint(item: animationView, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: NSLayoutConstraint.Attribute.centerY, multiplier: 1, constant: 0)
     addConstraints([horizontalConstraint, verticalConstraint])
-    animationView.play()
+    animationView.startAnimating()
     
   }
   
   func removeActivityIndicator() {
-    guard let animationView = subviews.first(where: {$0 is AnimationView}) else {return}
+    guard let animationView = subviews.first(where: {$0.tag == 1023}) as? UIImageView else {return}
+    animationView.stopAnimating()
     animationView.removeFromSuperview()
   }
   
   var isActivityIndicatorLoaded: Bool {
-    subviews.first(where: {$0 is AnimationView}) != nil
+    subviews.first(where: {$0.tag == 1023}) != nil
   }
   
   func fixInView(_ container: UIView!) -> Void{

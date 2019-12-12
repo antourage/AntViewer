@@ -77,7 +77,7 @@ class EditProfileViewController: UIViewController {
              }
             }
       
-      if let image = self.selectedImage, let data = image.jpegData(compressionQuality: 0.5) {
+      if let image = self.selectedImage, let data = image.jpegData(compressionQuality: 0.3) {
                group.enter()
                AntViewerManager.shared.uploadImage(data: data) {  (response) in
                  switch response {

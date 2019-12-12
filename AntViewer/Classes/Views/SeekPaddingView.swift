@@ -5,7 +5,6 @@
 //  Created by Maryan Luchko on 09.10.2019.
 //
 
-import Lottie
 import UIKit
 import AntViewerExt
 
@@ -40,7 +39,7 @@ public class SeekPaddingView: UIView {
     }
   }
   private var isLastSeekBackward: Bool?
-  private var animationView: AnimationView? {
+  private var animationView: UIImageView? {
     didSet {
       guard let animationView = animationView else { return }
       seekView?.addSubview(animationView)
@@ -68,19 +67,19 @@ public class SeekPaddingView: UIView {
   public func seekBackward() {
     if isLastSeekBackward ?? false {
       updateCustomLayerColor()
-      self.animationView?.play()
+      self.animationView?.startAnimating()
       return
     }
     soughtTime = 0
     seekView?.removeFromSuperview()
     seekView = nil
-    self.seekView = UIView(frame: CGRect(x: 0, y: 0, width: (superviewFrame.width / 2) * 0.8, height: superviewFrame.height))
+    self.seekView = UIView(frame: CGRect(x: 0, y: 0, width: superviewFrame.width * 0.4, height: superviewFrame.height))
     let path = self.drawPath(isBackward: true)
     addCustomLayer(withPath: path)
     addAnimation(isBackward: true)
     addSeekTimeLabel()
     parentView.addSubview(self.seekView!)
-    animationView?.play()
+    animationView?.startAnimating()
     isLastSeekBackward = true
   }
   
@@ -91,13 +90,13 @@ public class SeekPaddingView: UIView {
   public func seekForward() {
     if !(isLastSeekBackward ?? true) {
       updateCustomLayerColor()
-      self.animationView?.play()
+      self.animationView?.startAnimating()
       return
     }
     soughtTime = 0
     seekView?.removeFromSuperview()
     seekView = nil
-    self.seekView = UIView(frame: CGRect(x: superviewFrame.width - ((superviewFrame.width / 2) * 0.8), y: 0, width: (superviewFrame.width / 2) * 0.8, height: superviewFrame.height))
+    self.seekView = UIView(frame: CGRect(x: superviewFrame.width - (superviewFrame.width * 0.4), y: 0, width: superviewFrame.width  * 0.4, height: superviewFrame.height))
     let path = self.drawPath(isBackward: false)
     addCustomLayer(withPath: path)
     addAnimation(isBackward: false)
@@ -105,7 +104,7 @@ public class SeekPaddingView: UIView {
     
     addSeekTimeLabel()
     parentView.addSubview(self.seekView!)
-    animationView?.play()
+    animationView?.startAnimating()
     isLastSeekBackward = false
   }
   
@@ -128,18 +127,22 @@ public class SeekPaddingView: UIView {
   }
   
   private func addAnimation(isBackward: Bool) {
-    //animation
-    let podBundle = Bundle(for: AntWidget.self)
-    guard let url = podBundle.url(forResource: "AntWidget", withExtension: "bundle"),
-      let bundle = Bundle(url: url) else { return }
-    let animation = isBackward ? "SkipB" : "SkipF"
-    let animationView = AnimationView(name: animation, bundle: bundle)
-    animationView.loopMode = .playOnce
+    let animation = isBackward ? "skip_B_" : "skip_F_"
+    
+    let images = Array(1...11).compactMap {
+      UIImage.image("\(animation)\($0)")
+    }
+    
+    let animationView = UIImageView()
+    animationView.contentMode = .scaleAspectFit
+    animationView.animationImages = images
+    animationView.animationRepeatCount = 1
+    animationView.animationDuration = 0.5
     guard let view = seekView else { return }
+//    seek
     animationView.frame = CGRect(x: 0, y: 0, width: 70, height: 50)
     animationView.center = CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2)
     self.animationView = animationView
-    //
   }
   
   private func updateCustomLayerColor() {

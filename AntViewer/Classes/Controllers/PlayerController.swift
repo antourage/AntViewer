@@ -635,7 +635,7 @@ class PlayerController: UIViewController {
           self?.videoContainerView.image = UIImage.image("thanks_for_watching")
           self?.videoContainerView.layer.sublayers?.first?.isHidden = true
           self?.liveLabelWidth.constant = 0
-          self?.playButton.isEnabled = false
+          self?.playButton.isHidden = true
           self?.view.layoutIfNeeded()
         }
 
