@@ -610,7 +610,7 @@ class PlayerController: UIViewController {
       if self.videoContent is Vod {
         self.handleVODsChat(forTime: Int(time.seconds))
         self.seekLabel.text = Int(time.seconds).durationString
-        if self.seekTo == nil, self.player.isPlayerPaused == false {
+        if self.seekTo == nil, self.player.player.rate == 1 {
           self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
           self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)
         }
