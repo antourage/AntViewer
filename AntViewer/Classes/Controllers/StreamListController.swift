@@ -269,7 +269,7 @@ extension StreamListController {
         header.titleLabel.text = ""
       } else {
         if isReadyToUpdate {
-        header.titleLabel.text = "Latest Videos"
+        header.titleLabel.text = "Latest videos"
         }
       }
       return header
