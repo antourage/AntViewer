@@ -598,11 +598,15 @@ class PlayerController: UIViewController {
       guard let `self` = self else {return}
       if isLikelyToKeepUp {
         self.videoContainerView.removeActivityIndicator()
+        self.playButton.isHidden = false
         if !self.videoControlsView.isHidden {
           self.updatePlayButtonImage()
         }
       } else if self.player.isPlayerPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
         self.videoContainerView.showActivityIndicator()
+        if !self.videoControlsView.isHidden {
+          self.playButton.isHidden = true
+        }
       }
       self.activeSpendTime += 0.2
       
