@@ -935,7 +935,7 @@ class PlayerController: UIViewController {
   
   func showEditProfileView() {
     editProfileControllerIsLoading = true
-    shouldEnableMessageTextFields(!editProfileContainerView.isHidden)
+    shouldEnableMessageTextFields(false)
     let editProfileController = EditProfileViewController(nibName: "EditProfileViewController", bundle: Bundle(for: type(of: self)))
     editProfileController.delegate = self
     addChild(editProfileController)
@@ -954,7 +954,7 @@ class PlayerController: UIViewController {
   }
   
   func dismissEditProfileView() {
-    shouldEnableMessageTextFields(!editProfileContainerView.isHidden)
+    shouldEnableMessageTextFields(true)
     portraitEditProfileButton.tintColor = .darkGray
     landscapeEditProfileButton.tintColor = .darkGray
     
