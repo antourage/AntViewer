@@ -64,6 +64,7 @@ class Player: NSObject {
   init(url: URL, seekTo: Double? = nil) {
     self.seekTo = seekTo
     self.asset = AVURLAsset(url: url)
+    print(url)
     super.init()
     setupPeriodicTimeObserver()
     asset.loadValuesAsynchronously(forKeys: keys) { [weak self] in

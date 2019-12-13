@@ -378,7 +378,6 @@ class PlayerController: UIViewController {
   
   fileprivate var messagesDataSource = [Message]()
   fileprivate var pollController: PollController?
-  fileprivate var playerTimeObserver: Any?
   fileprivate var currentTableView: UITableView {
     return OrientationUtility.isPortrait ? portraitTableView : landscapeTableView
   }
@@ -526,7 +525,6 @@ class PlayerController: UIViewController {
 //    landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
-    player.stop()
     if let vod = videoContent as? Vod {
       let seconds = player.currentTime
       vod.isNew = false
@@ -538,7 +536,6 @@ class PlayerController: UIViewController {
   deinit {
     pollManager?.removeFirObserver()
     Statistic.send(state: .end(span: Int(activeSpendTime)), for: videoContent)
-    print("PLAYER DEINITED")
   }
   
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -741,6 +738,7 @@ class PlayerController: UIViewController {
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    player.stop()
     dismiss(animated: true, completion: nil)
   }
   

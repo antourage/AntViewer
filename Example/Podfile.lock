@@ -158,7 +158,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AntViewer (0.0.4):
+  - AntViewer (0.0.10):
     - Firebase/Auth
     - Firebase/Core
     - Firebase/Firestore
@@ -288,7 +288,7 @@ PODS:
     - nanopb/encode (= 0.3.9011)
   - nanopb/decode (0.3.9011)
   - nanopb/encode (0.3.9011)
-  - Protobuf (3.10.0)
+  - Protobuf (3.11.1)
 
 DEPENDENCIES:
   - AntViewer (from `../`)
@@ -327,7 +327,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
-  AntViewer: 5cfa6a6f20719dc6d54c6d1732626c1ec54f47b5
+  AntViewer: 7f20c8aa147a7a103a89ef0f070ff8d501cf4c3a
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
   Firebase: 458d109512200d1aca2e1b9b6cf7d68a869a4a46
   FirebaseAnalytics: 45f36d9c429fc91d206283900ab75390cd05ee8a
@@ -349,7 +349,7 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 43b8b64263023d4f32caa0b40f4c8bfa3c5f36d8
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
-  Protobuf: a4dc852ad69c027ca2166ed287b856697814375b
+  Protobuf: 20d79da7f20b5928b80043b05080b816e802659e
 
 PODFILE CHECKSUM: 53210703cc52264384f589f374703150ca138891
 
