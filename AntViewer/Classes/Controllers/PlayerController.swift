@@ -513,6 +513,7 @@ class PlayerController: UIViewController {
     //TODO: Debug it
     //    landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     
+    NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     UIApplication.shared.isIdleTimerDisabled = true
   }
@@ -609,7 +610,7 @@ class PlayerController: UIViewController {
       if self.videoContent is Vod {
         self.handleVODsChat(forTime: Int(time.seconds))
         self.seekLabel.text = Int(time.seconds).durationString
-        if self.seekTo == nil, self.player.isPlayerPaused == false {
+        if self.seekTo == nil, self.player.player.rate == 1 {
           self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
           self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)
         }
@@ -739,6 +740,13 @@ class PlayerController: UIViewController {
   @IBAction func closeButtonPressed(_ sender: UIButton) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     dismiss(animated: true, completion: nil)
+  }
+  
+  @objc
+  private func didEnterBackgroundHandler() {
+    player.pause()
+    updatePlayButtonImage()
+    isPlayerControlsHidden = false
   }
   
   func handleSeekByTapping(_ sender: UITapGestureRecognizer) {
@@ -935,7 +943,7 @@ class PlayerController: UIViewController {
   
   func showEditProfileView() {
     editProfileControllerIsLoading = true
-    shouldEnableMessageTextFields(!editProfileContainerView.isHidden)
+    shouldEnableMessageTextFields(false)
     let editProfileController = EditProfileViewController(nibName: "EditProfileViewController", bundle: Bundle(for: type(of: self)))
     editProfileController.delegate = self
     addChild(editProfileController)
@@ -954,7 +962,7 @@ class PlayerController: UIViewController {
   }
   
   func dismissEditProfileView() {
-    shouldEnableMessageTextFields(!editProfileContainerView.isHidden)
+    shouldEnableMessageTextFields(true)
     portraitEditProfileButton.tintColor = .darkGray
     landscapeEditProfileButton.tintColor = .darkGray
     

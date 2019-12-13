@@ -83,11 +83,14 @@ class Player: NSObject {
       } else {
           newStatus = .unknown
       }
-      print("AVPLAYER: \(player.currentItem?.status)")
-      if newStatus == .readyToPlay, isPlayerReadyToPlay == false {
-        isPlayerReadyToPlay = true
-        playerReadyToPlay?()
-        player.playImmediately(atRate: 1.0)
+      if newStatus == .readyToPlay {
+        if isPlayerReadyToPlay == false {
+          isPlayerReadyToPlay = true
+          playerReadyToPlay?()
+          player.playImmediately(atRate: 1.0)
+        } else if isPlayerPaused == false {
+          player.playImmediately(atRate: 1.0)
+        }
       } else if newStatus == .failed {
         //player.replaceCurrentItem(with: playerItem)
         print("AVPLAYER Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
