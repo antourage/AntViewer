@@ -40,6 +40,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var landscapeTextView: IQTextView!
   @IBOutlet weak var portraitTableView: UITableView! {
     didSet {
+      setupChatTableView(portraitTableView)
       let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleHideKeyboardGesture(_:)))
       portraitTableView.addGestureRecognizer(tapGesture)
     }
@@ -47,6 +48,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var landscapeTableView: UITableView! {
     didSet {
       setupChatTableView(landscapeTableView)
+//      landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     }
   }
   @IBOutlet weak var portraitSendButton: UIButton!
@@ -450,7 +452,6 @@ class PlayerController: UIViewController {
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
     currentOrientation = OrientationUtility.currentOrientatin
-    setupChatTableView(portraitTableView)
     try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
     
     isChatEnabled = false
@@ -513,8 +514,6 @@ class PlayerController: UIViewController {
     super.viewWillAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
     adjustVideoControlsButtons()
-    //TODO: Debug it
-        landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -524,7 +523,7 @@ class PlayerController: UIViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self)
-        landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
+//    landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
     player.stop()
