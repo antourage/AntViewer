@@ -45,10 +45,17 @@ class PlayerController: UIViewController {
       portraitTableView.addGestureRecognizer(tapGesture)
     }
   }
+  
+  @IBOutlet weak var landscapeTableViewContainer: UIView! {
+    didSet {
+      chatGradientLayer.frame = landscapeTableViewContainer.bounds
+      landscapeTableViewContainer.layer.mask = chatGradientLayer
+       landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
+    }
+  }
   @IBOutlet weak var landscapeTableView: UITableView! {
     didSet {
       setupChatTableView(landscapeTableView)
-//      landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     }
   }
   @IBOutlet weak var portraitSendButton: UIButton!
@@ -441,8 +448,9 @@ class PlayerController: UIViewController {
   }
   
   override var prefersStatusBarHidden: Bool {
-    let bottomInset = view.safeAreaInsets.bottom
-    return bottomInset == 0
+    let window = UIApplication.shared.keyWindow
+    let bottomPadding = window?.safeAreaInsets.bottom
+    return bottomPadding == 0
   }
   
   override func viewDidLoad() {
@@ -511,7 +519,6 @@ class PlayerController: UIViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    setNeedsStatusBarAppearanceUpdate()
     adjustVideoControlsButtons()
     
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
@@ -522,7 +529,7 @@ class PlayerController: UIViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self)
-//    landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
+    landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
     if let vod = videoContent as? Vod {
@@ -604,9 +611,7 @@ class PlayerController: UIViewController {
         }
       } else if self.player.isPlayerPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
         self.videoContainerView.showActivityIndicator()
-        if !self.videoControlsView.isHidden {
-          self.playButton.isHidden = true
-        }
+        self.playButton.isHidden = true
       }
       self.activeSpendTime += 0.2
       
@@ -1067,10 +1072,6 @@ class PlayerController: UIViewController {
     case landscapeTableView:
       cellNib = UINib.init(nibName: "LandscapeMessageCell", bundle: Bundle(for: type(of: self)))
       reuseIdentifire = "landscapeCell"
-      if let superViewBounds = sender.superview?.bounds {
-        chatGradientLayer.frame = superViewBounds
-      }
-      sender.superview?.layer.mask = chatGradientLayer
     default:
       return
     }

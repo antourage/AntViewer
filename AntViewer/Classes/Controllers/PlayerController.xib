@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_9" orientation="landscape" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15508"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -39,6 +39,7 @@
                 <outlet property="landscapeStreamInfoStackView" destination="D5e-Ta-wsb" id="jku-Ca-dic"/>
                 <outlet property="landscapeStreamNameLabel" destination="vzs-cZ-pHi" id="BQi-P2-tyh"/>
                 <outlet property="landscapeTableView" destination="ng6-pd-xEZ" id="8U4-Nz-KXc"/>
+                <outlet property="landscapeTableViewContainer" destination="aEk-7a-LBQ" id="Wrr-G7-u4O"/>
                 <outlet property="landscapeTextView" destination="Ikx-Jm-vPR" id="o2c-DG-xrZ"/>
                 <outlet property="liveLabelWidth" destination="nto-WJ-giA" id="rZb-Gg-MYi"/>
                 <outlet property="newPollView" destination="FQG-8W-vcj" id="1IX-NM-wV5"/>
@@ -663,13 +664,13 @@
                                             <rect key="frame" x="58" y="0.0" width="297" height="54.666666666666664"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Naked players on the field bla bla bla bla bla" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="z3C-rz-EgN">
-                                                    <rect key="frame" x="0.0" y="0.0" width="297" height="31.666666666666668"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="297" height="40"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Paul labile Pogba" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="1Mf-4J-uwh">
-                                                    <rect key="frame" x="0.0" y="31.666666666666686" width="297" height="23"/>
+                                                    <rect key="frame" x="0.0" y="40" width="297" height="14.666666666666664"/>
                                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -958,19 +959,19 @@
                     <exclude reference="FJc-3f-swx"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="4Nv-gJ-7Te"/>
-                    <exclude reference="S6Y-lF-KiG"/>
+                    <exclude reference="SOF-aF-P0E"/>
+                    <exclude reference="fZf-Rf-yH2"/>
                     <exclude reference="NGl-W3-9ZB"/>
                     <exclude reference="Zof-hi-OiQ"/>
                     <exclude reference="ebD-fg-S9C"/>
                     <exclude reference="hDO-e0-jeW"/>
                     <exclude reference="zva-3g-aGJ"/>
-                    <exclude reference="MhO-Ik-UE5"/>
-                    <exclude reference="t6u-oH-s4c"/>
-                    <exclude reference="SOF-aF-P0E"/>
-                    <exclude reference="fZf-Rf-yH2"/>
+                    <exclude reference="4Nv-gJ-7Te"/>
+                    <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="uph-AO-afC"/>
                     <exclude reference="yhT-41-IPO"/>
+                    <exclude reference="MhO-Ik-UE5"/>
+                    <exclude reference="t6u-oH-s4c"/>
                     <exclude reference="ehL-hp-s5P"/>
                     <exclude reference="hc7-Vw-qgR"/>
                     <exclude reference="fDd-QS-XBE"/>
@@ -992,24 +993,24 @@
                     <include reference="FJc-3f-swx"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="4Nv-gJ-7Te"/>
-                    <include reference="S6Y-lF-KiG"/>
-                    <exclude reference="S6f-9L-rnb"/>
+                    <include reference="SOF-aF-P0E"/>
+                    <include reference="fZf-Rf-yH2"/>
                     <include reference="NGl-W3-9ZB"/>
                     <include reference="Zof-hi-OiQ"/>
                     <include reference="ebD-fg-S9C"/>
                     <include reference="hDO-e0-jeW"/>
                     <exclude reference="tf8-v9-FfC"/>
                     <include reference="zva-3g-aGJ"/>
+                    <include reference="4Nv-gJ-7Te"/>
+                    <include reference="S6Y-lF-KiG"/>
+                    <exclude reference="S6f-9L-rnb"/>
+                    <include reference="uph-AO-afC"/>
+                    <include reference="yhT-41-IPO"/>
                     <exclude reference="2fN-uq-9UC"/>
                     <include reference="MhO-Ik-UE5"/>
                     <exclude reference="hhr-Ab-UfO"/>
                     <exclude reference="qv8-1H-cX9"/>
                     <include reference="t6u-oH-s4c"/>
-                    <include reference="SOF-aF-P0E"/>
-                    <include reference="fZf-Rf-yH2"/>
-                    <include reference="uph-AO-afC"/>
-                    <include reference="yhT-41-IPO"/>
                     <include reference="ehL-hp-s5P"/>
                     <include reference="hc7-Vw-qgR"/>
                     <include reference="fDd-QS-XBE"/>
