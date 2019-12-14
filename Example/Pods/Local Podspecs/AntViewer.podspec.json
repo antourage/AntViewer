@@ -1,6 +1,6 @@
 {
   "name": "AntViewer",
-  "version": "0.0.4",
+  "version": "0.0.10",
   "summary": "AntViewer provides to users possibility to watch streams and use chat and polls",
   "description": "AntViewer provides to users possibility to watch streams and use chat and polls.",
   "homepage": "https://github.com/antourage",
@@ -13,17 +13,14 @@
   },
   "source": {
     "git": "https://github.com/antourage/AntViewer.git",
-    "tag": "0.0.4"
+    "tag": "0.0.10"
   },
   "platforms": {
     "ios": "11.3"
   },
   "source_files": "AntViewer/Classes/**/*.{swift}",
   "ios": {
-    "vendored_frameworks": [
-      "AntViewer/MyFrameworks/AntViewerExt.framework",
-      "AntViewer/MyFrameworks/Lottie.framework"
-    ]
+    "vendored_frameworks": "AntViewer/MyFrameworks/AntViewerExt.framework"
   },
   "resources": "AntViewer/Classes/**/*.{storyboard,xib,plist}",
   "resource_bundles": {

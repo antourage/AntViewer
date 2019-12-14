@@ -35,7 +35,7 @@ public class EmptyDataSourceView: UIView {
   public var isDataSourceEmpty = true {
     didSet {
       guard isDataSourceEmpty, !isLoading else { return }
-      titleLabel.text = "New videos are loading soon"
+      titleLabel.text = "New videos are coming soon"
     }
   }
   

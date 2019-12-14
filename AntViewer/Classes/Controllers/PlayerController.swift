@@ -40,11 +40,24 @@ class PlayerController: UIViewController {
   @IBOutlet weak var landscapeTextView: IQTextView!
   @IBOutlet weak var portraitTableView: UITableView! {
     didSet {
+      setupChatTableView(portraitTableView)
       let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleHideKeyboardGesture(_:)))
       portraitTableView.addGestureRecognizer(tapGesture)
     }
   }
-  @IBOutlet weak var landscapeTableView: UITableView!
+  
+  @IBOutlet weak var landscapeTableViewContainer: UIView! {
+    didSet {
+      chatGradientLayer.frame = landscapeTableViewContainer.bounds
+      landscapeTableViewContainer.layer.mask = chatGradientLayer
+       landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
+    }
+  }
+  @IBOutlet weak var landscapeTableView: UITableView! {
+    didSet {
+      setupChatTableView(landscapeTableView)
+    }
+  }
   @IBOutlet weak var portraitSendButton: UIButton!
   @IBOutlet weak var landscapeSendButton: UIButton!
   @IBOutlet weak var videoContainerView: AVPlayerView! {
@@ -372,7 +385,6 @@ class PlayerController: UIViewController {
   
   fileprivate var messagesDataSource = [Message]()
   fileprivate var pollController: PollController?
-  fileprivate var playerTimeObserver: Any?
   fileprivate var currentTableView: UITableView {
     return OrientationUtility.isPortrait ? portraitTableView : landscapeTableView
   }
@@ -436,8 +448,9 @@ class PlayerController: UIViewController {
   }
   
   override var prefersStatusBarHidden: Bool {
-    let bottomInset = view.safeAreaInsets.bottom
-    return bottomInset == 0
+    let window = UIApplication.shared.keyWindow
+    let bottomPadding = window?.safeAreaInsets.bottom
+    return bottomPadding == 0
   }
   
   override func viewDidLoad() {
@@ -446,8 +459,6 @@ class PlayerController: UIViewController {
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
     currentOrientation = OrientationUtility.currentOrientatin
-    setupChatTableView(portraitTableView)
-    setupChatTableView(landscapeTableView)
     try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
     
     isChatEnabled = false
@@ -508,10 +519,7 @@ class PlayerController: UIViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    setNeedsStatusBarAppearanceUpdate()
     adjustVideoControlsButtons()
-    //TODO: Debug it
-    //    landscapeTableView.superview?.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -521,10 +529,9 @@ class PlayerController: UIViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self)
-    //    landscapeTableView.superview?.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
+    landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
-    player.stop()
     if let vod = videoContent as? Vod {
       let seconds = player.currentTime
       vod.isNew = false
@@ -536,7 +543,6 @@ class PlayerController: UIViewController {
   deinit {
     pollManager?.removeFirObserver()
     Statistic.send(state: .end(span: Int(activeSpendTime)), for: videoContent)
-    print("PLAYER DEINITED")
   }
   
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -599,11 +605,13 @@ class PlayerController: UIViewController {
       guard let `self` = self else {return}
       if isLikelyToKeepUp {
         self.videoContainerView.removeActivityIndicator()
+        self.playButton.isHidden = false
         if !self.videoControlsView.isHidden {
           self.updatePlayButtonImage()
         }
       } else if self.player.isPlayerPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
         self.videoContainerView.showActivityIndicator()
+        self.playButton.isHidden = true
       }
       self.activeSpendTime += 0.2
       
@@ -739,6 +747,7 @@ class PlayerController: UIViewController {
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    player.stop()
     dismiss(animated: true, completion: nil)
   }
   
@@ -1063,10 +1072,6 @@ class PlayerController: UIViewController {
     case landscapeTableView:
       cellNib = UINib.init(nibName: "LandscapeMessageCell", bundle: Bundle(for: type(of: self)))
       reuseIdentifire = "landscapeCell"
-      if let superViewBounds = sender.superview?.bounds {
-        chatGradientLayer.frame = superViewBounds
-      }
-      sender.superview?.layer.mask = chatGradientLayer
     default:
       return
     }
