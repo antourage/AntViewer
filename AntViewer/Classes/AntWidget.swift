@@ -201,6 +201,28 @@ public class AntWidget: UIView {
     }
   }
   
+  @objc
+  public static func getListController() -> UIViewController {
+    AppAuth.shared.auth()
+    Statistic.sync()
+      
+    let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: AntWidget.self))
+    listController.dataSource = DataSource()
+    let navController = NavigationController(rootViewController: listController)
+    navController.modalPresentationStyle = .fullScreen
+    return navController
+  }
+  
+  @objc
+  public static func getListController(withDismissCallback callback: @escaping (NSDictionary) -> Void) -> UIViewController {
+    let navController = AntWidget.getListController() as! NavigationController
+    let listController = navController.viewControllers.first as! StreamListController
+    listController.onViewerDismiss = callback
+    return navController
+  }
+  
+
+  
   private func updateColours() {
     antButton.backgroundColor = isLightMode ? .white : UIColor.color("a_backgroundDarkGrey")
     tongueView.backgroundColor = isLightMode ? .white : UIColor.color("a_dark")

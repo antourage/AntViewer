@@ -66,6 +66,8 @@ class StreamListController: UICollectionViewController {
     }
   }
   private let refreshControl = UIRefreshControl()
+  
+  var onViewerDismiss: ((NSDictionary) -> Void)?
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -189,6 +191,7 @@ class StreamListController: UICollectionViewController {
   
   @objc
   private func closeButtonPressed(_ sender: UIButton) {
+    onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
     dismiss(animated: true, completion: { [weak self] in
       self?.dataSource.videos = []

@@ -75,6 +75,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
   
   func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
     print("\(response.notification.request.content.userInfo)")
+    if let vc = UIApplication.shared.delegate?.window??.rootViewController {
+
+      let antListController = AntWidget.getListController { (dict) in
+        print("list controller dismissed")
+      }
+      vc.present(antListController, animated: true, completion: nil)
+    }
   }
   
 }
