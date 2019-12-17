@@ -480,11 +480,6 @@
                                 <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="CLJ-4Y-mmc">
                                     <rect key="frame" x="68" y="327" width="670" height="31"/>
                                     <color key="tintColor" name="a_pink"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="trackHeight">
-                                            <real key="value" value="4"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
                                     <connections>
                                         <action selector="onSliderValChangedWithSlider:event:" destination="-1" eventType="valueChanged" id="NKq-uc-o14"/>
                                     </connections>
@@ -792,11 +787,6 @@
                     <color key="tintColor" name="a_pink"/>
                     <color key="minimumTrackTintColor" name="a_pink"/>
                     <color key="maximumTrackTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="color" keyPath="minTrackColor">
-                            <color key="value" name="a_pink"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
                 </slider>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="o26-cm-drr">
                     <rect key="frame" x="0.0" y="335.66666666666674" width="375" height="395.33333333333326"/>
@@ -959,19 +949,19 @@
                     <exclude reference="FJc-3f-swx"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="SOF-aF-P0E"/>
-                    <exclude reference="fZf-Rf-yH2"/>
+                    <exclude reference="4Nv-gJ-7Te"/>
+                    <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="NGl-W3-9ZB"/>
                     <exclude reference="Zof-hi-OiQ"/>
                     <exclude reference="ebD-fg-S9C"/>
                     <exclude reference="hDO-e0-jeW"/>
                     <exclude reference="zva-3g-aGJ"/>
-                    <exclude reference="4Nv-gJ-7Te"/>
-                    <exclude reference="S6Y-lF-KiG"/>
-                    <exclude reference="uph-AO-afC"/>
-                    <exclude reference="yhT-41-IPO"/>
                     <exclude reference="MhO-Ik-UE5"/>
                     <exclude reference="t6u-oH-s4c"/>
+                    <exclude reference="SOF-aF-P0E"/>
+                    <exclude reference="fZf-Rf-yH2"/>
+                    <exclude reference="uph-AO-afC"/>
+                    <exclude reference="yhT-41-IPO"/>
                     <exclude reference="ehL-hp-s5P"/>
                     <exclude reference="hc7-Vw-qgR"/>
                     <exclude reference="fDd-QS-XBE"/>
@@ -993,24 +983,24 @@
                     <include reference="FJc-3f-swx"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="SOF-aF-P0E"/>
-                    <include reference="fZf-Rf-yH2"/>
+                    <include reference="4Nv-gJ-7Te"/>
+                    <include reference="S6Y-lF-KiG"/>
+                    <exclude reference="S6f-9L-rnb"/>
                     <include reference="NGl-W3-9ZB"/>
                     <include reference="Zof-hi-OiQ"/>
                     <include reference="ebD-fg-S9C"/>
                     <include reference="hDO-e0-jeW"/>
                     <exclude reference="tf8-v9-FfC"/>
                     <include reference="zva-3g-aGJ"/>
-                    <include reference="4Nv-gJ-7Te"/>
-                    <include reference="S6Y-lF-KiG"/>
-                    <exclude reference="S6f-9L-rnb"/>
-                    <include reference="uph-AO-afC"/>
-                    <include reference="yhT-41-IPO"/>
                     <exclude reference="2fN-uq-9UC"/>
                     <include reference="MhO-Ik-UE5"/>
                     <exclude reference="hhr-Ab-UfO"/>
                     <exclude reference="qv8-1H-cX9"/>
                     <include reference="t6u-oH-s4c"/>
+                    <include reference="SOF-aF-P0E"/>
+                    <include reference="fZf-Rf-yH2"/>
+                    <include reference="uph-AO-afC"/>
+                    <include reference="yhT-41-IPO"/>
                     <include reference="ehL-hp-s5P"/>
                     <include reference="hc7-Vw-qgR"/>
                     <include reference="fDd-QS-XBE"/>
