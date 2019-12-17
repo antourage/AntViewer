@@ -1160,7 +1160,9 @@ extension PlayerController: UITextViewDelegate {
   func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
     
     if User.current?.displayName.isEmpty == true {
-      editProfileButtonPressed(nil)
+      if editProfileContainerView.isHidden, !editProfileControllerIsLoading {
+        showEditProfileView()
+      }
       return false
     }
     return true
