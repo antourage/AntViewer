@@ -50,7 +50,6 @@ class PlayerController: UIViewController {
     didSet {
       chatGradientLayer.frame = landscapeTableViewContainer.bounds
       landscapeTableViewContainer.layer.mask = chatGradientLayer
-       landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     }
   }
   @IBOutlet weak var landscapeTableView: UITableView! {
@@ -520,7 +519,7 @@ class PlayerController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     adjustVideoControlsButtons()
-    
+    landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     UIApplication.shared.isIdleTimerDisabled = true
@@ -1161,7 +1160,9 @@ extension PlayerController: UITextViewDelegate {
   func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
     
     if User.current?.displayName.isEmpty == true {
-      editProfileButtonPressed(nil)
+      if editProfileContainerView.isHidden, !editProfileControllerIsLoading {
+        showEditProfileView()
+      }
       return false
     }
     return true
