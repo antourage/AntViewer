@@ -300,7 +300,9 @@ class PlayerController: UIViewController {
   fileprivate var shouldShowBigPollMessage = true {
     didSet {
       let shouldHideBigPoll = !shouldShowBigPollMessage || isKeyboardShown
-      self.newPollView.isHidden = shouldHideBigPoll
+      if !(self.newPollView.isHidden && shouldHideBigPoll) {
+        self.newPollView.isHidden = shouldHideBigPoll
+      }
       self.newPollView.alpha = shouldHideBigPoll ? 0 : 1
       self.collapsedPollButton.alpha = shouldHideBigPoll ? 1 : 0
       self.collapsedPollButton.isHidden = !shouldHideBigPoll
