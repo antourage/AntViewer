@@ -456,6 +456,8 @@ class PlayerController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    previousButton.isExclusiveTouch = true
+    nextButton.isExclusiveTouch = true
     chatFieldLeading = landscapeStreamInfoStackView.frame.origin.x
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
@@ -1053,8 +1055,6 @@ class PlayerController: UIViewController {
       let navController = navigationController as? PlayerNavigationController else {
         return
     }
-    nextButton.isEnabled = false
-    previousButton.isEnabled = false
     let nextContent = dataSource.videos[currentIndex + index]
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = nextContent
