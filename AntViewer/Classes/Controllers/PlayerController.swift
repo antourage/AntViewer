@@ -935,8 +935,8 @@ class PlayerController: UIViewController {
   }
   
   func shouldEnableMessageTextFields(_ enable: Bool) {
-    self.portraitTextView.isUserInteractionEnabled = enable && isChatEnabled
-    self.landscapeTextView.isUserInteractionEnabled = enable && isChatEnabled
+    self.portraitTextView.isEditable = enable && isChatEnabled
+    self.landscapeTextView.isEditable = enable && isChatEnabled
     self.portraitSendButton.isEnabled = enable && isChatEnabled
     self.landscapeSendButton.isEnabled = enable && isChatEnabled
   }
