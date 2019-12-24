@@ -305,6 +305,31 @@ extension StreamListController {
     present(playerVC, animated: true, completion: nil)
   }
   
+  override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    let vodsSection = dataSource.streams.count == 0 ? 0 : 1
+    guard indexPath.section == vodsSection else { return }
+    if indexPath.row == dataSource.videos.count - 1 && !isLoading, dataSource.videos.count % 15 == 0 {
+      let index = dataSource.videos.count
+      self.isFetchingNextItems = true
+      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
+        guard let `self` = self else { return }
+        switch result {
+        case .success :
+          let count = self.dataSource.videos.count
+          let vodsSection = self.dataSource.streams.count == 0 ? 0 : 1
+          let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
+          self.collectionView.insertItems(at: indexPaths)
+          
+          break
+        case .failure:
+          //TODO: handle error
+          print("Error fetching vods")
+          break
+        }
+        self.isFetchingNextItems = false
+      }
+    }
+  }
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -330,31 +355,5 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
     let numberOfSections = collectionView.numberOfSections
     return CGSize(width: collectionView.bounds.width, height: section == (numberOfSections - 1) ? 30 : 1)
   }
-  
-  override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    let vodsSection = dataSource.streams.count == 0 ? 0 : 1
-    guard indexPath.section == vodsSection else { return }
-    if indexPath.row == dataSource.videos.count - 1 && !isLoading, dataSource.videos.count % 15 == 0 {
-      let index = dataSource.videos.count
-      self.isFetchingNextItems = true
-      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
-        guard let `self` = self else { return }
-        switch result {
-        case .success :
-          let count = self.dataSource.videos.count
-          let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
-          self.collectionView.insertItems(at: indexPaths)
-          
-          break
-        case .failure:
-          //TODO: handle error
-          print("Error fetching vods")
-          break
-        }
-        self.isFetchingNextItems = false
-      }
-    }
-  }
-  
 }
 
