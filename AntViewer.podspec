@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   isDebug = false
 
   s.name             = 'AntViewer'
-  s.version          = '0.0.15'
+  s.version          = '0.0.14'
   s.summary          = 'AntViewer provides to users possibility to watch streams and use chat and polls'
 
 # This description is used to generate tags and improve search results.
