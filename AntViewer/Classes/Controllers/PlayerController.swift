@@ -486,7 +486,7 @@ class PlayerController: UIViewController {
           return
         }
         if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
-          self.viewersCountLabel.text = "\(stream.viewersCount) Viewers"
+          self.viewersCountLabel.text = "\(stream.viewersCount)"
         }
         
       }
