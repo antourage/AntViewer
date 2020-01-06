@@ -90,7 +90,6 @@ class Player: NSObject {
     print(url)
     super.init()
     setupPeriodicTimeObserver()
-    player.addObserver(self, forKeyPath: #keyPath(AVPlayer.status), options: [.new], context: nil)
     asset.loadValuesAsynchronously(forKeys: keys) { [weak self] in
       if let asset = self?.asset, asset.isPlayable {
         self?.playerItem = AVPlayerItem(asset: asset)
@@ -129,15 +128,6 @@ class Player: NSObject {
       
       return
     }
-    if keyPath == #keyPath(AVPlayer.status) {
-      if player.status == .failed {
-        guard let error = player.currentItem?.error else { return }
-        print("AVPLAYER Error: \(String(describing: error.localizedDescription)), error: \(String(describing: error))")
-        let playerError = PlayerError(kind: .faildStatus, description: error.localizedDescription)
-        pause(withError: playerError)
-      }
-      return
-    }
     super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
   }
   
@@ -167,7 +157,6 @@ class Player: NSObject {
       player.removeTimeObserver(playerTimeObserver)
     }
     playerItem?.removeObserver(self, forKeyPath: #keyPath(AVPlayerItem.status))
-    player.removeObserver(self, forKeyPath: #keyPath(AVPlayer.status))
     NotificationCenter.default.removeObserver(self)
   }
   
