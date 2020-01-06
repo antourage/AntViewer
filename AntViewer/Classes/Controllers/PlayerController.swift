@@ -583,7 +583,8 @@ class PlayerController: UIViewController {
   }
   
   private func handleVODsChat(forTime time: Int) {
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time 
+    let messagesAfterStream = isVideoEnd ? 600 : 0
+    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream
     guard let vodMessages = self.vodMessages else { return }
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
     let dif = filteredArr.count - messagesDataSource.count
