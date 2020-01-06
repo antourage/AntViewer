@@ -8,6 +8,17 @@
 import Foundation
 import AVKit
 
+struct PlayerError: Error {
+  enum ErrorKind {
+    case noInternerConnection
+    case invalidLink
+    case faildStatus
+  }
+  
+  let kind: ErrorKind
+  let description: String
+}
+
 class Player: NSObject {
   
   private let keys: [String] = ["playable", "duration", "tracks"]
@@ -16,13 +27,16 @@ class Player: NSObject {
   private var isPlayerReadyToPlay = false
   private var seekTo: Double?
   private var observerHandler: ((CMTime, Bool) -> Void)?
+  private var perfMeasurements: PerfMeasurements?
   
   var isPlayerPaused = false
+  var isError = false
   var playerReadyToPlay: (() -> Void)?
+  var onErrorApear: ((PlayerError) -> Void)?
   
   var onVideoEnd: (() -> Void)? {
     didSet {
-        NotificationCenter.default.addObserver(self, selector: #selector(onVideoEndHandler), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+      NotificationCenter.default.addObserver(self, selector: #selector(onVideoEndHandler), name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
     }
   }
   
@@ -58,6 +72,15 @@ class Player: NSObject {
       }
       
       player.replaceCurrentItem(with: playerItem)
+      perfMeasurements = PerfMeasurements(playerItem: playerItem!)
+      let notificationCenter = NotificationCenter.default
+      notificationCenter.addObserver(self,
+                                     selector: #selector(handleTimebaseRateChanged(_:)),
+                                     name: Notification.Name(rawValue: kCMTimebaseNotification_EffectiveRateChanged as String), object: playerItem?.timebase)
+      notificationCenter.addObserver(self,
+                                     selector: #selector(handlePlaybackStalled(_:)), name: .AVPlayerItemPlaybackStalled, object: playerItem)
+      notificationCenter.addObserver(self, selector: #selector(newErrorLogEntry(_:)), name: .AVPlayerItemNewErrorLogEntry, object: player.currentItem)
+      notificationCenter.addObserver(self, selector: #selector(failedToPlayToEndTime(_:)), name: .AVPlayerItemFailedToPlayToEndTime, object: player.currentItem)
     }
   }
   
@@ -68,10 +91,14 @@ class Player: NSObject {
     super.init()
     setupPeriodicTimeObserver()
     asset.loadValuesAsynchronously(forKeys: keys) { [weak self] in
-      if let asset = self?.asset {//, asset.isPlayable {
-            self?.playerItem = AVPlayerItem(asset: asset)
-          }
-        }
+      if let asset = self?.asset, asset.isPlayable {
+        self?.playerItem = AVPlayerItem(asset: asset)
+      } else {
+        let error = PlayerError(kind: .invalidLink, description: "Can't load content")
+        self?.isError = true
+        self?.onErrorApear?(error)
+      }
+    }
   }
   
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -82,7 +109,7 @@ class Player: NSObject {
       if let newStatusAsNumber = change?[NSKeyValueChangeKey.newKey] as? NSNumber {
         newStatus = AVPlayerItem.Status(rawValue: newStatusAsNumber.intValue)!
       } else {
-          newStatus = .unknown
+        newStatus = .unknown
       }
       if newStatus == .readyToPlay {
         if isPlayerReadyToPlay == false {
@@ -94,7 +121,12 @@ class Player: NSObject {
         }
       } else if newStatus == .failed {
         //player.replaceCurrentItem(with: playerItem)
-        print("AVPLAYER Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
+        print("AVPLAYER ITEM Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
+        if let error = self.player.currentItem?.error {
+          let playerError = PlayerError(kind: .faildStatus, description: error.noInternetConnection ? "No internet connection" : error.localizedDescription)
+           pause(withError: playerError)
+        }
+ 
       }
       
       return
@@ -107,13 +139,23 @@ class Player: NSObject {
     isPlayerPaused = false
   }
   
-  func pause() {
+  func pause(withError: PlayerError? = nil) {
     player.pause()
     isPlayerPaused = true
+    if let error = withError {
+      isError = true
+      onErrorApear?(error)
+    }
+  }
+  
+  func reconnect() {
+    isError = false
+    play()
   }
   
   func stop() {
     pause()
+    perfMeasurements?.playbackEnded()
     if let playerTimeObserver = playerTimeObserver {
       player.removeTimeObserver(playerTimeObserver)
     }
@@ -122,11 +164,11 @@ class Player: NSObject {
   }
   
   func seek(to: CMTime, completionHandler: @escaping (Bool) -> Void) {
-      player.seek(to: to, completionHandler: completionHandler)
+    player.seek(to: to, completionHandler: completionHandler)
   }
   
   func seek(to: CMTime) {
-      player.seek(to: to)
+    player.seek(to: to)
   }
   
   func addPeriodicTimeObserver(handler: @escaping (CMTime, Bool) -> Void) {
@@ -152,6 +194,47 @@ class Player: NSObject {
   private func onVideoEndHandler() {
     isPlayerPaused = true
     onVideoEnd?()
+  }
+  
+  @objc
+  func handleTimebaseRateChanged(_ notification: Notification) {
+    if CMTimebaseGetTypeID() == CFGetTypeID(notification.object as CFTypeRef) {
+      let timebase = notification.object as! CMTimebase
+      let rate: Double = CMTimebaseGetRate(timebase)
+      perfMeasurements?.rateChanged(rate: rate)
+    }
+  }
+  
+  @objc
+  func handlePlaybackStalled(_ notification: Notification) {
+    perfMeasurements?.playbackStalled()
+  }
+  
+  // Getting error from Notification payload
+  @objc
+  func newErrorLogEntry(_ notification: Notification) {
+    guard !isError else {
+      return
+    }
+    guard let object = notification.object, let playerItem = object as? AVPlayerItem else {
+      return
+    }
+    guard let errorLog: AVPlayerItemErrorLog = playerItem.errorLog() else {
+      return
+    }
+    print("Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
+    if errorLog.events.last?.errorStatusCode == -1009 {
+      let playerError = PlayerError(kind: .noInternerConnection, description: "No internet connection")
+      pause(withError: playerError)
+    }
+    
+  }
+  
+  @objc
+  func failedToPlayToEndTime(_ notification: Notification) {
+    if let error = notification.userInfo!["AVPlayerItemFailedToPlayToEndTimeErrorKey"] as? Error {
+      print("Error failedToPlayToEndTime: \(error.localizedDescription), error: \(error)")
+    }
   }
   
 }

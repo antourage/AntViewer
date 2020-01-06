@@ -113,7 +113,7 @@ class EditProfileViewController: UIViewController {
      currentDisplayName = User.current?.displayName ?? ""
      displayNameTextField.becomeFirstResponder()
      if let imageURL = User.current?.imageUrl {
-       userImage.load(url: URL(string: imageURL), placeholder: nil)
+      userImage.load(url: URL(string: imageURL), placeholder: UIImage.image("v1"))
      }
 
     delegate?.editProfileLoaded()

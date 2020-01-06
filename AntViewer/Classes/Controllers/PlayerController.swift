@@ -167,9 +167,9 @@ class PlayerController: UIViewController {
     didSet {
       switch videoContent {
       case let vod as Vod:
-        viewersCountLabel.text = "\(vod.viewsCount) viewes"
+        viewersCountLabel.text = "\(vod.viewsCount)"
       case let stream as AntViewerExt.Stream:
-        viewersCountLabel.text = "\(stream.viewersCount) Viewers"
+        viewersCountLabel.text = "\(stream.viewersCount)"
       default:
         break
       }
@@ -282,7 +282,7 @@ class PlayerController: UIViewController {
       }
       pollNameLabels.forEach {$0.text = poll.pollQuestion}
       self.shouldShowBigPollMessage = true
-       
+      
       poll.onUpdate = { [weak self] in
         guard let _ = self?.activePoll else { return }
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : self?.activePoll ?? 0])
@@ -315,7 +315,7 @@ class PlayerController: UIViewController {
         self.pollAnswersDebouncer.call { [weak self] in
           self?.isShouldShowPollAnswers = true
           if let count = self?.activePoll?.answersCount.reduce(0, +), count != 0 {
-          self?.landscapeCollapsedPollLabel.text = "\(count)"
+            self?.landscapeCollapsedPollLabel.text = "\(count)"
           }
         }
       }
@@ -383,6 +383,8 @@ class PlayerController: UIViewController {
   
   var videoContent: VideoContent!
   fileprivate var isVideoEnd = false
+  fileprivate var swiftMessage: SwiftMessage?
+  fileprivate var isPlayerError = false
   
   fileprivate var messagesDataSource = [Message]()
   fileprivate var pollController: PollController?
@@ -456,6 +458,7 @@ class PlayerController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    swiftMessage = SwiftMessage(presentingController: self)
     previousButton.isExclusiveTouch = true
     nextButton.isExclusiveTouch = true
     chatFieldLeading = landscapeStreamInfoStackView.frame.origin.x
@@ -483,7 +486,7 @@ class PlayerController: UIViewController {
           return
         }
         if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
-          self.viewersCountLabel.text = "\(stream.viewersCount) Viewers"
+          self.viewersCountLabel.text = "\(stream.viewersCount)"
         }
         
       }
@@ -580,7 +583,8 @@ class PlayerController: UIViewController {
   }
   
   private func handleVODsChat(forTime time: Int) {
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time //+ 10
+    let messagesAfterStream = isVideoEnd ? 600 : 0
+    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream
     guard let vodMessages = self.vodMessages else { return }
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
     let dif = filteredArr.count - messagesDataSource.count
@@ -637,20 +641,27 @@ class PlayerController: UIViewController {
     
     videoContainerView.player = player.player
     
-      player.onVideoEnd = { [weak self] in
-        self?.playButton.setImage(UIImage.image("play"), for: .normal)
-        if self?.videoContent is Vod {
-          self?.isVideoEnd = true
-          self?.isPlayerControlsHidden = false
-        } else {
-          self?.videoContainerView.image = UIImage.image("thanks_for_watching")
-          self?.videoContainerView.layer.sublayers?.first?.isHidden = true
-          self?.liveLabelWidth.constant = 0
-          self?.playButton.isHidden = true
-          self?.view.layoutIfNeeded()
-        }
-
+    player.onErrorApear = { [weak self] error in
+      self?.playButton.setImage(UIImage.image("play"), for: .normal)
+      self?.isPlayerControlsHidden = false
+      self?.swiftMessage?.showBanner(title: error.description)
+      self?.isPlayerError = true
+    }
+    
+    player.onVideoEnd = { [weak self] in
+      self?.playButton.setImage(UIImage.image("play"), for: .normal)
+      if self?.videoContent is Vod {
+        self?.isVideoEnd = true
+        self?.isPlayerControlsHidden = false
+      } else {
+        self?.videoContainerView.image = UIImage.image("thanks_for_watching")
+        self?.videoContainerView.layer.sublayers?.first?.isHidden = true
+        self?.liveLabelWidth.constant = 0
+        self?.playButton.isHidden = true
+        self?.view.layoutIfNeeded()
       }
+      
+    }
     videoContainerView.showActivityIndicator()
   }
   
@@ -890,11 +901,16 @@ class PlayerController: UIViewController {
     }
     
     if player.isPlayerPaused {
-      player.play()
-         controlsDebouncer.call { [weak self] in
-           self?.isPlayerControlsHidden = true
-         }
-     
+      if isPlayerError {
+        player.reconnect()
+      } else {
+        player.play()
+      }
+      
+      controlsDebouncer.call { [weak self] in
+        self?.isPlayerControlsHidden = true
+      }
+      
     } else {
       player.pause()
       controlsDebouncer.call {}

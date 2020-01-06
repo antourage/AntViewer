@@ -13,6 +13,7 @@ private let reuseIdentifier = "NewStreamCell"
 
 class StreamListController: UICollectionViewController {
   
+  fileprivate var swiftMessage: SwiftMessage?
   fileprivate var cellWidth: CGFloat!
   fileprivate var cellHeight: CGFloat!
   fileprivate var isLoading = false {
@@ -53,6 +54,7 @@ class StreamListController: UICollectionViewController {
       reloadCollectionViewDataSource()
     }
   }
+  
   private var isFetchingNextItems = false
   private var footerView: FooterView? {
     didSet {
@@ -71,6 +73,7 @@ class StreamListController: UICollectionViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
     setupNavigationBar()
     setupCollectionView()
     collectionView.isUserInteractionEnabled = isReadyToUpdate
@@ -89,6 +92,7 @@ class StreamListController: UICollectionViewController {
         self.reloadCollectionViewDataSource()
       case .failure(let error):
         print(error)
+        self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
       }
     }
     
@@ -158,7 +162,13 @@ class StreamListController: UICollectionViewController {
   private func didPullToRefresh(_ sender: Any) {
     dataSource.updateVods { [weak self] (result) in
       self?.refreshControl.endRefreshing()
-      self?.collectionView.reloadData()
+      switch result {
+      case .success:
+         self?.collectionView.reloadData()
+      case .failure(let error):
+        self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+      }
+     
     }
   }
   
@@ -205,7 +215,7 @@ class StreamListController: UICollectionViewController {
     cell.liveLabel.isHidden = item is Vod
     if let item = item as? Vod {
       cell.startTimeLabel.text = item.date.addingTimeInterval(TimeInterval(item.duration.duration())).timeAgo()
-      cell.viewersCountLabel.text = "\(item.viewsCount) views"
+      cell.viewersCountLabel.text = "\(item.viewsCount)"
       cell.videoDuration = item.duration
       cell.isContentNew = item.isNew
       cell.watchedTime = item.isNew ? 0 : item.stopTime.duration()
@@ -213,7 +223,7 @@ class StreamListController: UICollectionViewController {
       cell.isContentNew = false
       cell.watchedTime = 0
       cell.streamDurationView.isHidden = true
-      cell.viewersCountLabel.text = "\(item.viewersCount) Viewers"
+      cell.viewersCountLabel.text = "\(item.viewersCount)"
     }
     
     cell.imagePlaceholder.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("camera"))
@@ -305,6 +315,28 @@ extension StreamListController {
     present(playerVC, animated: true, completion: nil)
   }
   
+  override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    let vodsSection = dataSource.streams.count == 0 ? 0 : 1
+    guard indexPath.section == vodsSection else { return }
+    if indexPath.row == dataSource.videos.count - 1 && !isLoading, dataSource.videos.count % 15 == 0 {
+      let index = dataSource.videos.count
+      self.isFetchingNextItems = true
+      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
+        guard let `self` = self else { return }
+        switch result {
+        case .success :
+          let count = self.dataSource.videos.count
+          let vodsSection = self.dataSource.streams.count == 0 ? 0 : 1
+          let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
+          self.collectionView.insertItems(at: indexPaths)
+        case .failure(let error):
+          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+          print("Error fetching vods")
+        }
+        self.isFetchingNextItems = false
+      }
+    }
+  }
 }
 
 // MARK: UICollectionViewDelegateFlowLayout
@@ -330,31 +362,5 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
     let numberOfSections = collectionView.numberOfSections
     return CGSize(width: collectionView.bounds.width, height: section == (numberOfSections - 1) ? 30 : 1)
   }
-  
-  override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    let vodsSection = dataSource.streams.count == 0 ? 0 : 1
-    guard indexPath.section == vodsSection else { return }
-    if indexPath.row == dataSource.videos.count - 1 && !isLoading, dataSource.videos.count % 15 == 0 {
-      let index = dataSource.videos.count
-      self.isFetchingNextItems = true
-      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
-        guard let `self` = self else { return }
-        switch result {
-        case .success :
-          let count = self.dataSource.videos.count
-          let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
-          self.collectionView.insertItems(at: indexPaths)
-          
-          break
-        case .failure:
-          //TODO: handle error
-          print("Error fetching vods")
-          break
-        }
-        self.isFetchingNextItems = false
-      }
-    }
-  }
-  
 }
 

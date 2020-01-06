@@ -8,6 +8,7 @@
 
 import Foundation
 import Firebase
+import AntViewerExt
 
 public class Poll {
   
@@ -44,7 +45,7 @@ public class Poll {
     self.pollAnswers = pollAnswers
     self.percentForEachAnswer = pollAnswers.map {_ in 0}
     self.answersCount = pollAnswers.map {_ in 0}
-    if AppAuth.shared.userID == nil {
+    if User.current?.id == nil {
       self.answeredByUser = true
     }
     answersListener = ref?.collection("answeredUsers").addSnapshotListener(answersHandler())
@@ -81,8 +82,8 @@ public class Poll {
         return
       }
       
-      if let fbID = AppAuth.shared.userID {
-        self?.answeredByUser = documents.contains(where: {$0.documentID == fbID})
+      if let id = User.current?.id {
+        self?.answeredByUser = documents.contains(where: {$0.documentID == "\(id)"})
       } else {
         //MARK: Turn off ability to answer
         self?.answeredByUser = true
@@ -101,8 +102,8 @@ public class Poll {
   
   
   public func saveAnswerWith(index: Int) {
-    if let id = AppAuth.shared.userID {
-      ref?.collection("answeredUsers").document(id).setData(["chosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
+    if let id = User.current?.id {
+      ref?.collection("answeredUsers").document("\(id)").setData(["chosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
     }
   }
   
