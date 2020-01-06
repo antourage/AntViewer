@@ -122,8 +122,11 @@ class Player: NSObject {
       } else if newStatus == .failed {
         //player.replaceCurrentItem(with: playerItem)
         print("AVPLAYER ITEM Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
-        let error = PlayerError(kind: .faildStatus, description: self.player.currentItem?.error?.localizedDescription ?? "Faild player item status")
-        pause(withError: error)
+        if let error = self.player.currentItem?.error {
+          let playerError = PlayerError(kind: .faildStatus, description: error.noInternetConnection ? "No internet connection" : error.localizedDescription)
+           pause(withError: playerError)
+        }
+ 
       }
       
       return

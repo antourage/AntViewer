@@ -329,12 +329,9 @@ extension StreamListController {
           let vodsSection = self.dataSource.streams.count == 0 ? 0 : 1
           let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
           self.collectionView.insertItems(at: indexPaths)
-          
-          break
-        case .failure:
-          //TODO: handle error
+        case .failure(let error):
+          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
           print("Error fetching vods")
-          break
         }
         self.isFetchingNextItems = false
       }
