@@ -167,9 +167,9 @@ class PlayerController: UIViewController {
     didSet {
       switch videoContent {
       case let vod as Vod:
-        viewersCountLabel.text = "\(vod.viewsCount) viewes"
+        viewersCountLabel.text = "\(vod.viewsCount)"
       case let stream as AntViewerExt.Stream:
-        viewersCountLabel.text = "\(stream.viewersCount) Viewers"
+        viewersCountLabel.text = "\(stream.viewersCount)"
       default:
         break
       }
