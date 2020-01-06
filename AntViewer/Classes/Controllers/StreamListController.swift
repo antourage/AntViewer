@@ -13,6 +13,7 @@ private let reuseIdentifier = "NewStreamCell"
 
 class StreamListController: UICollectionViewController {
   
+  fileprivate var swiftMessage: SwiftMessage?
   fileprivate var cellWidth: CGFloat!
   fileprivate var cellHeight: CGFloat!
   fileprivate var isLoading = false {
@@ -53,6 +54,7 @@ class StreamListController: UICollectionViewController {
       reloadCollectionViewDataSource()
     }
   }
+  
   private var isFetchingNextItems = false
   private var footerView: FooterView? {
     didSet {
@@ -71,6 +73,7 @@ class StreamListController: UICollectionViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
     setupNavigationBar()
     setupCollectionView()
     collectionView.isUserInteractionEnabled = isReadyToUpdate
@@ -89,6 +92,7 @@ class StreamListController: UICollectionViewController {
         self.reloadCollectionViewDataSource()
       case .failure(let error):
         print(error)
+        self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
       }
     }
     
@@ -158,7 +162,13 @@ class StreamListController: UICollectionViewController {
   private func didPullToRefresh(_ sender: Any) {
     dataSource.updateVods { [weak self] (result) in
       self?.refreshControl.endRefreshing()
-      self?.collectionView.reloadData()
+      switch result {
+      case .success:
+         self?.collectionView.reloadData()
+      case .failure(let error):
+        self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+      }
+     
     }
   }
   

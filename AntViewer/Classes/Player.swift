@@ -230,9 +230,9 @@ class Player: NSObject {
     guard let errorLog: AVPlayerItemErrorLog = playerItem.errorLog() else {
       return
     }
-    print("Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment)"}))")
+    print("Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
     if errorLog.events.last?.errorStatusCode == -1009 {
-      let playerError = PlayerError(kind: .noInternerConnection, description: "The internet connection appears to be offline")
+      let playerError = PlayerError(kind: .noInternerConnection, description: "No internet connection")
       pause(withError: playerError)
     }
     
