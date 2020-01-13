@@ -95,6 +95,7 @@ class PlayerController: UIViewController {
   }
   
   var dataSource: DataSource!
+  fileprivate var streamTimer: Timer?
   override var preferredScreenEdgesDeferringSystemGestures: UIRectEdge {
     return OrientationUtility.isLandscape ? .top : .bottom
   }
@@ -470,7 +471,7 @@ class PlayerController: UIViewController {
     isChatEnabled = false
     
     Statistic.send(state: .start, for: videoContent)
-    
+    dataSource.pauseUpdatingDataSource()
     if videoContent is Vod {
       landscapeMessageContainerHeight.priority = UILayoutPriority(rawValue: 999)
       landscapeSendButton.superview?.isHidden = true
@@ -479,17 +480,21 @@ class PlayerController: UIViewController {
       pollManager?.observePolls(completion: { [weak self] (poll) in
         self?.activePoll = poll
       })
-      var streamToken: NSObjectProtocol?
-      streamToken = NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
+      streamTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { [weak self] (myTimer) in
         guard let `self` = self else {
-          NotificationCenter.default.removeObserver(streamToken!)
+          myTimer.invalidate()
           return
         }
-        if let stream = self.dataSource.streams.first(where: {$0.id == self.videoContent.id}) {
-          self.viewersCountLabel.text = "\(stream.viewersCount)"
+        self.dataSource.getStreamWith(id: self.videoContent.id) { (result) in
+          switch result {
+          case .success(let stream):
+            self.viewersCountLabel.text = "\(stream.viewersCount)"
+          case .failure(let error):
+            print(error.localizedDescription)
+          }
         }
-        
-      }
+      })
+      
     }
     self.chat = Chat(streamID: videoContent.streamId)
     
@@ -544,6 +549,8 @@ class PlayerController: UIViewController {
       vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString
       vod.stoped(at: vod.stopTime)
     }
+    dataSource.startUpdatingDataSource()
+    streamTimer?.invalidate()
   }
   
   deinit {

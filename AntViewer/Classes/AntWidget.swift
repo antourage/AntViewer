@@ -66,7 +66,7 @@ public class AntWidget: UIView {
     }
   }
   
-  private var dataSource: DataSource? 
+  private static var dataSource: DataSource?
   
   private var shownIds: [Int] {
     set {
@@ -166,8 +166,12 @@ public class AntWidget: UIView {
  
     Statistic.sync()
     updateColours()
-    self.dataSource = DataSource()
+    if AntWidget.dataSource == nil {
+      AntWidget.dataSource = DataSource()
+    }
   }
+  
+  public static var AntSenderId = "1090288296965"
   
   public static func authWith(apiKey: String, refUserId: String?, nickname: String?, completionHandler: @escaping (Result<Void, Error>) -> Void) {
     AntViewerManager.shared.authWith(apiKey: apiKey, refUserId: refUserId, nickname: nickname, completionHandler: completionHandler)
@@ -207,7 +211,11 @@ public class AntWidget: UIView {
     Statistic.sync()
       
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: AntWidget.self))
-    listController.dataSource = DataSource()
+    if AntWidget.dataSource == nil {
+      AntWidget.dataSource = DataSource()
+    }
+    listController.dataSource = AntWidget.dataSource
+    
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
     return navController
@@ -256,16 +264,17 @@ public class AntWidget: UIView {
   @IBAction private func didTapButton(_ sender: Any?) {
     guard let vc = findViewController() else {return}
     onViewerAppear?([:])
+    AntWidget.dataSource?.shouldCheckVods = false
     
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: type(of: self)))
-    listController.dataSource = dataSource
+    listController.dataSource = AntWidget.dataSource
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
     
     if let stream = shownStream, !(sender is UIButton) {
       let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
       playerVC.videoContent = stream
-      playerVC.dataSource = dataSource
+      playerVC.dataSource = AntWidget.dataSource
       playerVC.modalPresentationStyle = .fullScreen
       navController.view.isHidden = true
       vc.present(navController, animated: false, completion: nil)
@@ -283,9 +292,9 @@ public class AntWidget: UIView {
   func handleNotification(_ notification: NSNotification) {
     
     guard self.window != nil,
-      let streams = dataSource?.streams,
+      let streams = AntWidget.dataSource?.streams,
     shownStream == nil else {
-      updateAntButton(forLive: dataSource?.streams.isEmpty == false)
+      updateAntButton(forLive: AntWidget.dataSource?.streams.isEmpty == false)
       return
     }
     
@@ -293,7 +302,7 @@ public class AntWidget: UIView {
     
     for streamId in ids {
       if !shownIds.contains(streamId) {
-        shownStream = dataSource?.streams.first(where: {$0.id == streamId})
+        shownStream = AntWidget.dataSource?.streams.first(where: {$0.id == streamId})
         shownIds.append(streamId)
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
           self?.shownStream = nil
@@ -311,7 +320,7 @@ public class AntWidget: UIView {
       antButton.addBadge(shape: .rect, text: "Live")
       return
     }
-    guard let newVodsCount = dataSource?.newVodsCount else {return}
+    guard let newVodsCount = AntWidget.dataSource?.newVodsCount else {return}
     if newVodsCount > 0 {
       antButton.addBadge(shape: .circle, text: " ")
     } else {

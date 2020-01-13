@@ -22,7 +22,7 @@ public class Chat {
   
   public init(streamID: Int) {
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
-    self.ref = Firestore.firestore(app: app).collection("antourage/\(Environment.currentEnvironment.rawValue)/streams").document("\(streamID)")
+    self.ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams").document("\(streamID)")
     messagesListener = ref?.collection("messages").order(by: "timestamp").addSnapshotListener(messagesHandler())
     stateListener = ref?.addSnapshotListener(stateHandler())
   }

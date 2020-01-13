@@ -73,6 +73,14 @@ class StreamListController: UICollectionViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
+      switch result {
+      case .success():
+        self?.initialVodsUpdate()
+      case .failure(let error):
+        print(error)
+      }
+    }
     swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
     setupNavigationBar()
     setupCollectionView()
@@ -84,17 +92,7 @@ class StreamListController: UICollectionViewController {
       self.isReadyToUpdate = true
     }
     
-    dataSource.updateVods { [weak self] (result) in
-      guard let `self` = self else { return }
-      self.isVideosLoaded = true
-      switch result {
-      case .success:
-        self.reloadCollectionViewDataSource()
-      case .failure(let error):
-        print(error)
-        self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
-      }
-    }
+    initialVodsUpdate()
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
       self?.isStreamsLoaded = true
@@ -115,6 +113,20 @@ class StreamListController: UICollectionViewController {
   
   deinit {
     print("StreamListController deinited.")
+  }
+  
+  func initialVodsUpdate() {
+    dataSource.updateVods { [weak self] (result) in
+      guard let `self` = self else { return }
+      self.isVideosLoaded = true
+      switch result {
+      case .success:
+        self.reloadCollectionViewDataSource()
+      case .failure(let error):
+        print(error)
+        self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+      }
+    }
   }
   
   private func reloadCollectionViewDataSource() {
@@ -203,6 +215,7 @@ class StreamListController: UICollectionViewController {
   private func closeButtonPressed(_ sender: UIButton) {
     onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
+    dataSource.shouldCheckVods = true
     dismiss(animated: true, completion: { [weak self] in
       self?.dataSource.videos = []
     })

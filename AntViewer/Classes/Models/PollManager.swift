@@ -22,7 +22,7 @@ public class PollManager {
   
   public func observePolls(completion: @escaping((Poll?) -> ())) {
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
-    let ref = Firestore.firestore(app: app).collection("antourage/\(Environment.currentEnvironment.rawValue)/streams/\(streamId)/polls")
+    let ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams/\(streamId)/polls")
     
     pollListener = ref.whereField("isActive", isEqualTo: true).addSnapshotListener( { (querySnapshot, error) in
       guard let document = querySnapshot?.documents.first else {
