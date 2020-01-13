@@ -68,12 +68,14 @@ class StreamListController: UICollectionViewController {
     }
   }
   private let refreshControl = UIRefreshControl()
+  private var isHiddenAuthCompleted = false
   
   var onViewerDismiss: ((NSDictionary) -> Void)?
 
   override func viewDidLoad() {
     super.viewDidLoad()
     AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
+      self?.isHiddenAuthCompleted = true
       switch result {
       case .success():
         self?.initialVodsUpdate()
@@ -124,7 +126,9 @@ class StreamListController: UICollectionViewController {
         self.reloadCollectionViewDataSource()
       case .failure(let error):
         print(error)
-        self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+        if error.noInternetConnection || self.isHiddenAuthCompleted {
+          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+        }
       }
     }
   }
