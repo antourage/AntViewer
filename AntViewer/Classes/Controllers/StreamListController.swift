@@ -318,7 +318,10 @@ extension StreamListController {
 // MARK: UICollectionViewDelegate
 extension StreamListController {
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//    guard !isDataSourceEmpty && !isLoading else { return }
+    guard URLSessionNetworkDispatcher.instance.isReachable else {
+      self.swiftMessage?.showBanner(title: "No internet connection" )
+      return
+    }
     let item = getItemForIndexPath(indexPath)
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = item

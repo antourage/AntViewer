@@ -69,6 +69,7 @@ class SwiftMessage {
   
   func showBanner(title: String, titleSize: CGFloat = 17, subtitleSize: CGFloat = 15, subtitle: String? = nil, duration: Double = 3, style: Theme = .error) {
     guard let vc = presenter else { return }
+    forceHide()
     let bannerView = MessageView(withBanerHeight: 100, width: vc.view.bounds.width)
        bannerView.titleLabel?.textAlignment = .center
        bannerView.titleLabel?.numberOfLines = 0

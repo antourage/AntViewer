@@ -651,6 +651,8 @@ class PlayerController: UIViewController {
     player.onErrorApear = { [weak self] error in
       self?.playButton.setImage(UIImage.image("play"), for: .normal)
       self?.isPlayerControlsHidden = false
+      self?.videoContainerView.removeActivityIndicator()
+      self?.isControlsEnabled = true
       self?.swiftMessage?.showBanner(title: error.description)
       self?.isPlayerError = true
     }
