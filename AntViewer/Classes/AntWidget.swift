@@ -264,7 +264,7 @@ public class AntWidget: UIView {
   @IBAction private func didTapButton(_ sender: Any?) {
     guard let vc = findViewController() else {return}
     onViewerAppear?([:])
-    AntWidget.dataSource?.shouldCheckVods = false
+    AntWidget.dataSource?.pauseUpdatingVods()
     
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: type(of: self)))
     listController.dataSource = AntWidget.dataSource

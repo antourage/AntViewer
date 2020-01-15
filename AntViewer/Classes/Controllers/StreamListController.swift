@@ -219,7 +219,7 @@ class StreamListController: UICollectionViewController {
   private func closeButtonPressed(_ sender: UIButton) {
     onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
-    dataSource.shouldCheckVods = true
+    dataSource.startUpdatingVods()
     dismiss(animated: true, completion: { [weak self] in
       self?.dataSource.videos = []
     })

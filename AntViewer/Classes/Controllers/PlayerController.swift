@@ -471,7 +471,7 @@ class PlayerController: UIViewController {
     isChatEnabled = false
     
     Statistic.send(state: .start, for: videoContent)
-    dataSource.pauseUpdatingDataSource()
+    dataSource.pauseUpdatingStreams()
     if videoContent is Vod {
       landscapeMessageContainerHeight.priority = UILayoutPriority(rawValue: 999)
       landscapeSendButton.superview?.isHidden = true
@@ -549,7 +549,7 @@ class PlayerController: UIViewController {
       vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString
       vod.stoped(at: vod.stopTime)
     }
-    dataSource.startUpdatingDataSource()
+    dataSource.startUpdatingStreams()
     streamTimer?.invalidate()
   }
   
