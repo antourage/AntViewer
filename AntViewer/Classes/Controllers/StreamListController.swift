@@ -219,14 +219,13 @@ class StreamListController: UICollectionViewController {
   private func closeButtonPressed(_ sender: UIButton) {
     onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
-    dataSource.startUpdatingVods()
     dismiss(animated: true, completion: { [weak self] in
       self?.dataSource.videos = []
     })
   }
   
   fileprivate func configureCell(_ cell: NewStreamCell, forIndexPath indexPath: IndexPath) -> NewStreamCell {
-    let item = getItemForIndexPath(indexPath)
+    let item = getItemWith(indexPath: indexPath)
     cell.streamNameLabel.text = item.title
     cell.startTimeLabel.text = item.date.timeAgo()
     cell.liveLabel.isHidden = item is Vod
@@ -248,7 +247,7 @@ class StreamListController: UICollectionViewController {
     return cell
   }
   
-  fileprivate func getItemForIndexPath(_ indexPath: IndexPath) -> VideoContent {
+  fileprivate func getItemWith(indexPath: IndexPath) -> VideoContent {
     if dataSource.streams.isEmpty || dataSource.videos.isEmpty {
       return dataSource.streams.isEmpty ? dataSource.videos[indexPath.row] : dataSource.streams.reversed()[indexPath.row]
     } else {
@@ -322,7 +321,7 @@ extension StreamListController {
       self.swiftMessage?.showBanner(title: "No internet connection" )
       return
     }
-    let item = getItemForIndexPath(indexPath)
+    let item = getItemWith(indexPath: indexPath)
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = item
     playerVC.dataSource = dataSource

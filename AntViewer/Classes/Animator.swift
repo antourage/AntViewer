@@ -78,7 +78,7 @@ class Animator {
     switch type {
     case .pulse:
       let animation = CAKeyframeAnimation(keyPath: "transform.scale")
-      animation.values = [1, 1.26, 1, 1.1, 1, 1]
+      animation.values = [1, 1.25, 1, 1.1, 1, 1]
       animation.keyTimes = [0, 0.16, 0.29, 0.4, 0.5, 1]
       return animation
     case .spin:

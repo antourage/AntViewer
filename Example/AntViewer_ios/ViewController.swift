@@ -11,7 +11,7 @@ import AntViewer
 
 class ViewController: UIViewController {
   
-  var widget: AntWidgetN! {
+  var widget: AntWidget! {
     didSet {
       view.addSubview(widget.view)
     }
@@ -23,7 +23,7 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    widget = AntWidgetN()
+    widget = AntWidget()
   }
   
 }

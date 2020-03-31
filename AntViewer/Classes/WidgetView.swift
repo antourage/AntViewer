@@ -9,15 +9,31 @@ import AVKit
 import UIKit
 
 protocol WidgetViewDelegate: class {
-
+  func widgetViewWillAppear(_ widgetView: WidgetView)
+  func widgetViewWillDisappear(_ widgetView: WidgetView)
+  func widgetViewDidPressButton(_ widgetView: WidgetView)
 }
 
 class WidgetView: UIView {
-
   private lazy var circleAnimator = Animator(view: circleView, type: .pulse)
   private var playerView: AVPlayerView?
-  private var logoView: UIImageView?
-  private var playIconView: UIImageView?
+  private lazy var logoView: UIImageView = {
+    let logoView = UIImageView(image: UIImage.image("Logo"))
+    logoView.contentMode = .scaleAspectFill
+    addSubview(logoView)
+    return logoView
+  }()
+  private lazy var playIconView: UIImageView = {
+    let playIcon = UIImageView()
+    let images = Array(0...99).compactMap {
+      UIImage.image("PlayIcon_\(String(format: "%03d", $0))")
+    }
+    playIcon.animationImages = images
+    playIcon.contentMode = .scaleAspectFill
+    playIcon.animationDuration = 4
+    addSubview(playIcon)
+    return playIcon
+  }()
   private lazy var circleView: UIImageView = {
     let imageView = UIImageView(image: UIImage.image("Circle"))
     imageView.contentMode = .scaleToFill
@@ -35,30 +51,31 @@ class WidgetView: UIView {
   override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     super.touchesEnded(touches, with: event)
     self.isUserInteractionEnabled = false
-    //delegate
+    delegate?.widgetViewDidPressButton(self)
   }
 
   override func willMove(toWindow newWindow: UIWindow?) {
     super.willMove(toWindow: newWindow)
-    //delegate
     if newWindow == nil {
-      // UIView disappear
+      delegate?.widgetViewWillDisappear(self)
     } else {
-      // UIView appear
+      delegate?.widgetViewWillAppear(self)
     }
   }
 
-  func prepare(for state: WidgetState) {
+  func prepare(for state: WidgetState, completion: @escaping () -> Void) {
     if case .live = state {
-      return showPlayerView()
-    }
-    if circleAnimator.isActive {
+      showPlayerView()
+      completion()
+    } else if circleAnimator.isActive {
       circleAnimator.completion = { [weak self] in
         self?.handle(state: state)
+        completion()
       }
       circleAnimator.stop()
     } else {
       handle(state: state)
+      completion()
     }
   }
 
@@ -70,16 +87,36 @@ class WidgetView: UIView {
     case .vod:
       prepareVOD()
     case .resting:
-      //REMOVE BUDGE
+      removeBadge()
       break
     default:
       break
     }
   }
 
-  private func prepareLive(with player: AVPlayer) {
+  private func showBadge(for state: WidgetState) {
+    var text = "NEW"
+    var color = UIColor.color("a_poll3Blue")
+    if case .live = state {
+      text = "LIVE"
+      color = UIColor.color("a_pink")
+    }
+    var badgeAppearance = BadgeAppearance()
+    badgeAppearance.backgroundColor = color ?? .white
+    badgeAppearance.font = UIFont.systemFont(ofSize: 7, weight: .bold)
+    let circleWidth = bounds.width * 0.79
+    badgeAppearance.distanceFromCenterX = circleWidth * 0.44
+    badgeAppearance.distanceFromCenterY = -circleWidth * 0.34
+    badgeAppearance.allowShadow = true
+    self.badge(text: text, appearance: badgeAppearance)
+  }
 
-    //TODO: REPLACE LIVE BUDGE FADE
+  private func removeBadge() {
+    self.badge(text: nil)
+  }
+
+  private func prepareLive(with player: AVPlayer) {
+    showBadge(for: .live)
     circleAnimator.swapType(to: .pulse)
     circleAnimator.animate(duration: 1.52, repeatCount: .infinity)
     let playerView = AVPlayerView()
@@ -92,11 +129,10 @@ class WidgetView: UIView {
     circleAnimator.completion = { [weak self] in
       self?.circleAnimator.swapType(to: .spin)
       self?.circleAnimator.animate(duration: 8, repeatCount: .infinity)
-      self?.logoView?.removeFromSuperview()
-      self?.logoView = nil
       if let playerView = self?.playerView {
         self?.addSubview(playerView)
       }
+      self?.logoView.isHidden = true
       self?.showPlayIcon()
       self?.updateUI()
     }
@@ -104,43 +140,31 @@ class WidgetView: UIView {
   }
 
   private func prepareVOD() {
-    //TODO: REPLACE NEW BUDGE FADE
+    showBadge(for: .vod)
     circleAnimator.swapType(to: .pulse)
     circleAnimator.completion = { [weak self] in
       self?.circleAnimator.swapType(to: .spin)
       self?.circleAnimator.animate(duration: 8, repeatCount: .infinity)
     }
-    circleAnimator.animate(duration: 1.52, repeatCount: 1)
+    circleAnimator.animate(duration: 1.52, repeatCount: 2)
   }
 
   private func showLogo() {
-    removePlayIcon()
+    hidePlayIcon()
     playerView?.removeFromSuperview()
     playerView = nil
-    let logoView = UIImageView(image: UIImage.image("Logo"))
-    logoView.contentMode = .scaleAspectFill
-    self.logoView = logoView
-    addSubview(logoView)
-    updateUI()
+    logoView.isHidden = false
   }
 
   private func showPlayIcon() {
-    guard playIconView == nil else { return }
-    let playIcon = UIImageView()
-    let images = Array(0...99).compactMap {
-      UIImage.image("PlayIcon_\(String(format: "%03d", $0))")
-    }
-    playIcon.animationImages = images
-    playIcon.contentMode = .scaleAspectFill
-    playIcon.animationDuration = 4
-    self.playIconView = playIcon
-    addSubview(playIcon)
-    playIcon.startAnimating()
+    guard playIconView.isHidden else { return }
+    playIconView.isHidden = false
+    playIconView.startAnimating()
   }
 
-  private func removePlayIcon() {
-    playIconView?.removeFromSuperview()
-    playIconView = nil
+  private func hidePlayIcon() {
+    playIconView.stopAnimating()
+    playIconView.isHidden = true
   }
 
   private func updateUI() {
@@ -148,15 +172,15 @@ class WidgetView: UIView {
     let width = bounds.width
     let rect = CGRect(x: 0, y: 0, width: width * 0.69, height: width * 0.69)
     let viewToUpdate = playerView ?? logoView
-    viewToUpdate?.frame = rect
-    playIconView?.frame = rect
+    viewToUpdate.frame = rect
+    playIconView.frame = rect
     let circleRect = CGRect(x: 0, y: 0, width: width * 0.79, height: width * 0.79)
     circleView.frame = circleRect
-    viewToUpdate?.layer.cornerRadius = (width * 0.69)/2
-    viewToUpdate?.layer.masksToBounds = true
+    viewToUpdate.layer.cornerRadius = (width * 0.69)/2
+    viewToUpdate.layer.masksToBounds = true
     let center = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
-    viewToUpdate?.center = center
-    playIconView?.center = center
+    viewToUpdate.center = center
+    playIconView.center = center
     circleView.center = center
   }
 }
