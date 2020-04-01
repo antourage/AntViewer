@@ -8,7 +8,7 @@
 import Foundation
 import AVKit
 
-struct PlayerError: Error {
+struct NPlayerError: Error {
   enum ErrorKind {
     case noInternerConnection
     case invalidLink
@@ -32,7 +32,7 @@ class Player: NSObject {
   var isPlayerPaused = false
   var isError = false
   var playerReadyToPlay: (() -> Void)?
-  var onErrorApear: ((PlayerError) -> Void)?
+  var onErrorApear: ((NPlayerError) -> Void)?
   
   var onVideoEnd: (() -> Void)? {
     didSet {
@@ -94,7 +94,7 @@ class Player: NSObject {
       if let asset = self?.asset, asset.isPlayable {
         self?.playerItem = AVPlayerItem(asset: asset)
       } else {
-        let error = PlayerError(kind: .invalidLink, description: "Can't load content")
+        let error = NPlayerError(kind: .invalidLink, description: "Can't load content")
         self?.isError = true
         self?.onErrorApear?(error)
       }
@@ -123,7 +123,7 @@ class Player: NSObject {
         //player.replaceCurrentItem(with: playerItem)
         print("AVPLAYER ITEM Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
         if let error = self.player.currentItem?.error {
-          let playerError = PlayerError(kind: .faildStatus, description: error.noInternetConnection ? "No internet connection" : error.localizedDescription)
+          let playerError = NPlayerError(kind: .faildStatus, description: error.noInternetConnection ? "No internet connection" : error.localizedDescription)
            pause(withError: playerError)
         }
  
@@ -139,7 +139,7 @@ class Player: NSObject {
     isPlayerPaused = false
   }
   
-  func pause(withError: PlayerError? = nil) {
+  func pause(withError: NPlayerError? = nil) {
     player.pause()
     isPlayerPaused = true
     if let error = withError {
@@ -224,7 +224,7 @@ class Player: NSObject {
     }
     print("Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
     if errorLog.events.last?.errorStatusCode == -1009 {
-      let playerError = PlayerError(kind: .noInternerConnection, description: "No internet connection")
+      let playerError = NPlayerError(kind: .noInternerConnection, description: "No internet connection")
       pause(withError: playerError)
     }
     

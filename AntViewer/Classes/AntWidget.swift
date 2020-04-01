@@ -13,26 +13,41 @@ enum WidgetState {
   case vod
   case live
   case loading(player: AVPlayer)
+
+  var description: String {
+    switch self {
+    case .resting:
+      return "resting"
+    case .vod:
+      return "vod"
+    case .live:
+      return "live"
+    case .loading:
+      return "loading"
+    }
+  }
 }
 
-//TODO: make me a singleton
 public class AntWidget {
-
+  public static let shared = AntWidget()
   private static var dataSource: DataSource?
   private var animationProcessing = false
   private var currentState = WidgetState.resting {
     didSet {
-      let value = currentState
-      animationProcessing = true
-      widgetView.prepare(for: value, completion: {
-        self.animationProcessing = false
-        if case .live = value { return }
+      if case .loading = currentState {
+        animationProcessing = true
+      }
+      widgetView.prepare(for: currentState, completion: { state in
         self.currentContent = self.preparedContent
-        self.preparedContent = nil
+        if case .loading = state {
+          self.animationProcessing = false
+          self.preparedContent = nil
+        }
       })
     }
   }
-  private var player: AVPlayer?
+
+  private var player: ModernAVPlayer?
   private lazy var widgetView: WidgetView = {
     let screenSize = UIScreen.main.bounds.size
     let width: CGFloat = 74
@@ -55,7 +70,7 @@ public class AntWidget {
   @objc
   public var onViewerDisappear: ((NSDictionary) -> Void)?
 
-  public init() {
+  private init() {
     NotificationCenter.default.addObserver(self, selector: #selector(handleStreamUpdate(_:)), name: NSNotification.Name(rawValue: "StreamsUpdated"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerDisappear(_:)), name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
 
@@ -64,7 +79,7 @@ public class AntWidget {
     if AntWidget.dataSource == nil {
       AntWidget.dataSource = DataSource()
     }
-    widgetView.prepare(for: .resting, completion: {})
+    widgetView.prepare(for: .resting, completion: nil)
   }
 
   deinit {
@@ -132,16 +147,35 @@ public class AntWidget {
     return navController
   }
 
+  private func set(state: WidgetState) {
+    switch currentState {
+    case .resting:
+      if case .resting = state { return }
+    case .vod:
+      if case .vod = state { return }
+    case .loading:
+      if case .loading = state { return }
+      if case .live = state { break }
+      self.player?.stop()
+      self.player = nil
+    case .live:
+      if case .live = state { return }
+      if case .loading = state { break }
+      self.player?.stop()
+      self.player = nil
+    }
+    currentState = state
+  }
+
   private func showLive(with content: AntViewerExt.Stream) {
     guard let url = URL(string: content.url) else { return }
-    let player = AVPlayer(url: url)
+    let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: true))
+    let player = ModernAVPlayer()
+    player.delegate = self
+    player.load(media: media, autostart: true)
     self.player = player
-    player.isMuted = true
-    currentState = .loading(player: player)
-    player.play()
-    DispatchQueue.main.asyncAfter(deadline: .now() + 4) { [weak self] in
-      self?.currentState = .live
-    }
+    player.player.isMuted = true
+    set(state: .loading(player: player.player))
   }
 
   private func didTapButton() {
@@ -169,10 +203,10 @@ public class AntWidget {
 
   @objc
   func handleStreamUpdate(_ notification: NSNotification) {
-    guard visible, let dataSource = AntWidget.dataSource else {
+    let error = notification.userInfo?["error"]
+    guard visible, let dataSource = AntWidget.dataSource, error == nil else {
       return
     }
-    if case .loading = currentState { return }
     if let stream = dataSource.streams.last {
       if currentContent?.id != stream.id, animationProcessing == false {
         preparedContent = stream
@@ -182,12 +216,10 @@ public class AntWidget {
     }
     preparedContent = nil
     if dataSource.newVodsCount > 0 {
-      if case .vod = currentState { return }
-      currentState = .vod
+      set(state: .vod)
       return
     }
-    if case .resting = currentState { return }
-    currentState = .resting
+    set(state: .resting)
   }
 
   @objc
@@ -206,7 +238,7 @@ extension AntWidget: WidgetViewDelegate {
   func widgetViewWillDisappear(_ widgetView: WidgetView) {
     visible = false
     AntWidget.dataSource?.pauseUpdatingVods()
-    currentState = .resting
+    set(state: .resting)
   }
 
   func widgetViewDidPressButton(_ widgetView: WidgetView) {
@@ -214,4 +246,22 @@ extension AntWidget: WidgetViewDelegate {
     didTapButton()
   }
 
+}
+
+extension AntWidget: ModernAVPlayerDelegate {
+  public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
+    switch state {
+    case .failed:
+      if let count = AntWidget.dataSource?.newVodsCount, count > 0 {
+        set(state: .vod)
+      } else {
+        set(state: .resting)
+      }
+    default:
+      return
+    }
+  }
+  public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
+    set(state: .live)
+  }
 }

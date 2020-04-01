@@ -23,7 +23,7 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    widget = AntWidget()
+    widget = AntWidget.shared
   }
   
 }
