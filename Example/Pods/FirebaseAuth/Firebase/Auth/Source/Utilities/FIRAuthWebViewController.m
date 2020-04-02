@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <TargetConditionals.h>
+#if TARGET_OS_IOS
+
 #import "FIRAuthWebViewController.h"
 
 #import "FIRAuthWebView.h"
@@ -80,26 +83,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)webView:(WKWebView *)webView
     decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction
-    decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
+                    decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
   [_delegate webViewController:self canHandleURL:navigationAction.request.URL];
   decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 - (void)webView:(WKWebView *)webView
-didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
+    didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
   _webView.spinner.hidden = NO;
   [_webView.spinner startAnimating];
 }
 
 - (void)webView:(WKWebView *)webView
-didFinishNavigation:(null_unspecified WKNavigation *)navigation {
+    didFinishNavigation:(null_unspecified WKNavigation *)navigation {
   _webView.spinner.hidden = YES;
   [_webView.spinner stopAnimating];
 }
 
 - (void)webView:(WKWebView *)webView
-didFailNavigation:(null_unspecified WKNavigation *)navigation
-      withError:(NSError *)error {
+    didFailNavigation:(null_unspecified WKNavigation *)navigation
+            withError:(NSError *)error {
   if ([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled) {
     // It's okay for the page to be redirected before it is completely loaded.  See b/32028062 .
     return;
@@ -112,3 +115,5 @@ didFailNavigation:(null_unspecified WKNavigation *)navigation
 @end
 
 NS_ASSUME_NONNULL_END
+
+#endif

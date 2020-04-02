@@ -38,10 +38,11 @@ public class AntWidget {
         animationProcessing = true
       }
       widgetView.prepare(for: currentState, completion: { state in
+        print(state.description)
         self.currentContent = self.preparedContent
+        self.preparedContent = nil
         if case .loading = state {
           self.animationProcessing = false
-          self.preparedContent = nil
         }
       })
     }
@@ -60,8 +61,8 @@ public class AntWidget {
     return view
   }()
 
-  private var currentContent: AntViewerExt.Stream?
-  private var preparedContent: AntViewerExt.Stream?
+  private var currentContent: VideoContent?
+  private var preparedContent: VideoContent?
   private var visible = false
 
   public var view: UIView { widgetView }
@@ -215,7 +216,8 @@ public class AntWidget {
       return
     }
     preparedContent = nil
-    if dataSource.newVodsCount > 0 {
+    if let vod = dataSource.newVod {
+      preparedContent = vod
       set(state: .vod)
       return
     }
@@ -230,6 +232,7 @@ public class AntWidget {
 
 extension AntWidget: WidgetViewDelegate {
   func widgetViewWillAppear(_ widgetView: WidgetView) {
+    currentContent = nil
     visible = true
     widgetView.isUserInteractionEnabled = true
     AntWidget.dataSource?.startUpdatingVods()
@@ -252,7 +255,8 @@ extension AntWidget: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
     switch state {
     case .failed:
-      if let count = AntWidget.dataSource?.newVodsCount, count > 0 {
+      if let vod = AntWidget.dataSource?.newVod {
+        preparedContent = vod
         set(state: .vod)
       } else {
         set(state: .resting)
