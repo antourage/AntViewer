@@ -10,24 +10,12 @@ import UIKit
 extension UIView {
 
   /*
-   * Assign badge with only text.
-   */
-
-  /// - parameter text: The badge value, use nil to remove exsiting badge.
-  @objc public func badge(text badgeText: String?) {
-    badge(text: badgeText, appearance: BadgeAppearance())
-  }
-
-  /// - parameter text: The badge value, use nil to remove exsiting badge.
-  /// - parameter appearance: The appearance of the badge.
-  public func badge(text badgeText: String?, appearance: BadgeAppearance) {
-    badge(text: badgeText, badgeEdgeInsets: nil, appearance: appearance)
-  }
-
-  /*
    * Assign badge with text,insets, and appearance.
    */
-  public func badge(text badgeText: String?, badgeEdgeInsets: UIEdgeInsets?, appearance: BadgeAppearance) {
+  public func badge(
+    text badgeText: String?,
+    badgeEdgeInsets: UIEdgeInsets? = nil,
+    appearance: BadgeAppearance = BadgeAppearance()) {
 
     //Create badge label
     var badgeLabel: BadgeLabel!
@@ -73,12 +61,12 @@ extension UIView {
       doesBadgeExist = true
     }
 
-    let oldWidth: CGFloat?
-    if doesBadgeExist {
-      oldWidth = badgeLabel.frame.width
-    }else{
-      oldWidth = nil
-    }
+    //    let oldWidth: CGFloat?
+    //    if doesBadgeExist {
+    //      oldWidth = badgeLabel.frame.width
+    //    }else{
+    //      oldWidth = nil
+    //    }
 
     //Set the text on the badge label
     badgeLabel.text = badgeText
@@ -151,8 +139,9 @@ extension UIView {
       badgeLabel.layer.shadowColor = UIColor.black.cgColor
     }
 
-    if appearance.animate {
+    func showBadge() {
       badgeLabel.transform = CGAffineTransform(scaleX: 0, y: 0)
+      badgeLabel.alpha = 1
       UIView.animate(withDuration: appearance.duration,
                      delay: 0,
                      usingSpringWithDamping: 0.5,
@@ -162,6 +151,16 @@ extension UIView {
                       badgeLabel.transform = .identity
       },
                      completion: nil)
+    }
+
+    if appearance.animate {
+      if doesBadgeExist {
+        badgeLabel.fadeOut { value in
+          showBadge()
+        }
+      } else {
+        showBadge()
+      }
     }
   }
 
@@ -217,7 +216,7 @@ public struct BadgeAppearance {
   public var backgroundColor: UIColor = .red
   public var textColor: UIColor = .white
   public var animate: Bool = true
-  public var duration: TimeInterval = 0.2
+  public var duration: TimeInterval = 0.3
   public var distanceFromCenterY: CGFloat = 0
   public var distanceFromCenterX: CGFloat = 0
 
