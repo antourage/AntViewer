@@ -51,7 +51,7 @@ public class AntWidget {
   private var player: ModernAVPlayer?
   private lazy var widgetView: WidgetView = {
     let screenSize = UIScreen.main.bounds.size
-    let width: CGFloat = 74
+    let width: CGFloat = screenSize.width * 0.225
     let x = (screenSize.width - width)/2
     let y = screenSize.height - width - 80
     let rect = CGRect(x: x, y: y, width: width, height: width)

@@ -123,7 +123,7 @@ class Player: NSObject {
         //player.replaceCurrentItem(with: playerItem)
         print("AVPLAYER ITEM Error: \(String(describing: self.player.currentItem?.error?.localizedDescription)), error: \(String(describing: self.player.currentItem?.error))")
         if let error = self.player.currentItem?.error {
-          let playerError = NPlayerError(kind: .faildStatus, description: error.noInternetConnection ? "No internet connection" : error.localizedDescription)
+          let playerError = NPlayerError(kind: .faildStatus, description: error.noInternetConnection ? "No internet connection available" : error.localizedDescription)
            pause(withError: playerError)
         }
  
@@ -224,7 +224,7 @@ class Player: NSObject {
     }
     print("Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
     if errorLog.events.last?.errorStatusCode == -1009 {
-      let playerError = NPlayerError(kind: .noInternerConnection, description: "No internet connection")
+      let playerError = NPlayerError(kind: .noInternerConnection, description: "No internet connection available")
       pause(withError: playerError)
     }
     

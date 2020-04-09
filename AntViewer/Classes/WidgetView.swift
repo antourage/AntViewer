@@ -126,6 +126,7 @@ class WidgetView: UIView {
     circleAnimator.animate(repeatCount: .infinity)
     let playerView = AVPlayerView()
     playerView.alpha = 0
+    playerView.backgroundColor = .black
     playerView.layer.masksToBounds = true
     playerView.playerLayer.videoGravity = .resizeAspectFill
     playerView.player = player
@@ -164,9 +165,10 @@ class WidgetView: UIView {
 
   private func showLogo() {
     hidePlayIcon()
+    let playerView = self.playerView
+    self.playerView = nil
     playerView?.fadeOut(completion: { value in
-      self.playerView?.removeFromSuperview()
-      self.playerView = nil
+      playerView?.removeFromSuperview()
     })
   }
 
@@ -187,7 +189,7 @@ class WidgetView: UIView {
     let circleRect = CGRect(x: 0, y: 0, width: width * 0.79, height: width * 0.79)
     playerView?.frame = rect
     logoView.frame = rect
-    playIconView.frame = rect
+    playIconView.frame = bounds
     circleView.frame = circleRect
     playerView?.layer.cornerRadius = (width * 0.69)/2
     logoView.layer.cornerRadius = (width * 0.69)/2

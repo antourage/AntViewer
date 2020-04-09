@@ -68,19 +68,8 @@ extension UIView {
     //      oldWidth = nil
     //    }
 
-    //Set the text on the badge label
-    badgeLabel.text = badgeText
-
-    //Set font size
-    badgeLabel.font = appearance.font
-
-    badgeLabel.sizeToFit()
-
     //set the allignment
     badgeLabel.textAlignment = appearance.textAlignment
-
-    //set background color
-    badgeLabel.layer.backgroundColor = appearance.backgroundColor.cgColor
 
     //set text color
     badgeLabel.textColor = appearance.textColor
@@ -141,6 +130,14 @@ extension UIView {
 
     func showBadge() {
       badgeLabel.transform = CGAffineTransform(scaleX: 0, y: 0)
+      //Set the text on the badge label
+      badgeLabel.text = badgeText
+
+      //Set font size
+      badgeLabel.font = appearance.font
+
+      //set background color
+      badgeLabel.layer.backgroundColor = appearance.backgroundColor.cgColor
       badgeLabel.alpha = 1
       UIView.animate(withDuration: appearance.duration,
                      delay: 0,

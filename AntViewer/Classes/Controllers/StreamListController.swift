@@ -127,7 +127,7 @@ class StreamListController: UICollectionViewController {
       case .failure(let error):
         print(error)
         if error.noInternetConnection || self.isHiddenAuthCompleted {
-          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
         }
       }
     }
@@ -182,7 +182,7 @@ class StreamListController: UICollectionViewController {
       case .success:
          self?.collectionView.reloadData()
       case .failure(let error):
-        self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+        self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
       }
      
     }
@@ -318,7 +318,7 @@ extension StreamListController {
 extension StreamListController {
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     guard URLSessionNetworkDispatcher.instance.isReachable else {
-      self.swiftMessage?.showBanner(title: "No internet connection" )
+      self.swiftMessage?.showBanner(title: "No internet connection available" )
       return
     }
     let item = getItemWith(indexPath: indexPath)
@@ -349,7 +349,7 @@ extension StreamListController {
           let indexPaths = (index..<count).map {IndexPath(row: $0, section: vodsSection)}
           self.collectionView.insertItems(at: indexPaths)
         case .failure(let error):
-          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection" : error.localizedDescription )
+          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
           print("Error fetching vods")
         }
         self.isFetchingNextItems = false
