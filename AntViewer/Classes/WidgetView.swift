@@ -125,6 +125,7 @@ class WidgetView: UIView {
     circleAnimator.swapType(to: .pulse)
     circleAnimator.animate(repeatCount: .infinity)
     let playerView = AVPlayerView()
+    playerView.alpha = 0
     playerView.layer.masksToBounds = true
     playerView.playerLayer.videoGravity = .resizeAspectFill
     playerView.player = player
@@ -143,6 +144,7 @@ class WidgetView: UIView {
       self?.circleAnimator.animate(repeatCount: .infinity)
       if let playerView = self?.playerView {
         self?.addSubview(playerView)
+        playerView.fadeIn()
       }
       self?.showPlayIcon()
       self?.updateUI()
@@ -162,8 +164,10 @@ class WidgetView: UIView {
 
   private func showLogo() {
     hidePlayIcon()
-    playerView?.removeFromSuperview()
-    playerView = nil
+    playerView?.fadeOut(completion: { value in
+      self.playerView?.removeFromSuperview()
+      self.playerView = nil
+    })
   }
 
   private func showPlayIcon() {
