@@ -126,7 +126,7 @@ class WidgetView: UIView {
     circleAnimator.animate(repeatCount: .infinity)
     let playerView = AVPlayerView()
     playerView.layer.masksToBounds = true
-    playerView.playerLayer.videoGravity = .resize
+    playerView.playerLayer.videoGravity = .resizeAspectFill
     playerView.player = player
     self.playerView = playerView
     if shouldShowPlayer {

@@ -743,25 +743,26 @@ class PlayerController: UIViewController {
   
   private func updateContentInsetForTableView(_ table: UITableView) {
     let numRows = tableView(table, numberOfRowsInSection: 0)
-    var contentInsetTop = table.bounds.size.height
-    guard table.contentSize.height <= contentInsetTop else {
+    var contentInsetHeight = table.bounds.size.height
+    guard table.contentSize.height <= contentInsetHeight else {
       table.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
       return
     }
     for i in 0..<numRows {
       let rowRect = table.rectForRow(at: IndexPath(item: i, section: 0))
-      contentInsetTop -= rowRect.size.height
-      if contentInsetTop <= 0 {
-        contentInsetTop = 0
+      contentInsetHeight -= rowRect.size.height
+      if contentInsetHeight <= 0 {
+        contentInsetHeight = 0
       }
     }
-    UIView.animate(withDuration: 0.3,
-                   delay: 0,
-                   options: [.curveEaseOut, .beginFromCurrentState],
-                   animations: {
-                    table.contentInset = UIEdgeInsets(top: contentInsetTop, left: 0, bottom: 0, right: 0)
-    }, completion: nil)
-    
+    UIView.animate(
+      withDuration: 0.3,
+      delay: 0,
+      options: [.curveEaseOut, .beginFromCurrentState],
+      animations: {
+        table.contentInset = UIEdgeInsets(top: contentInsetHeight, left: 0, bottom: 0, right: 0)
+    },
+      completion: nil)
   }
   
   @IBAction func fullScreenButtonPressed(_ sender: UIButton) {
