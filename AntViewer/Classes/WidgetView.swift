@@ -106,7 +106,9 @@ class WidgetView: UIView {
       text = "LIVE"
       color = UIColor.color("a_pink")
     }
+    let width = bounds.width * 0.385
     var badgeAppearance = BadgeAppearance()
+    badgeAppearance.size = CGSize(width: width, height: width * 0.464)
     badgeAppearance.backgroundColor = color ?? .white
     badgeAppearance.font = UIFont.systemFont(ofSize: 7, weight: .bold)
     let circleWidth = bounds.width * 0.79

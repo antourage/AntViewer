@@ -153,7 +153,11 @@ public class AntWidget {
     case .resting:
       if case .resting = state { return }
     case .vod:
-      if case .vod = state { return }
+      if case .vod = state {
+        currentContent = preparedContent
+        preparedContent = nil
+        return
+      }
     case .loading:
       if case .loading = state { return }
       if case .live = state { break }
@@ -206,6 +210,7 @@ public class AntWidget {
   func handleStreamUpdate(_ notification: NSNotification) {
     let error = notification.userInfo?["error"]
     guard visible, let dataSource = AntWidget.dataSource, error == nil else {
+      set(state: .resting)
       return
     }
     if let stream = dataSource.streams.last {
@@ -255,12 +260,7 @@ extension AntWidget: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
     switch state {
     case .failed:
-      if let vod = AntWidget.dataSource?.newVod {
-        preparedContent = vod
-        set(state: .vod)
-      } else {
         set(state: .resting)
-      }
     default:
       return
     }
