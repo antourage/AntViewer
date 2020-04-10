@@ -213,7 +213,7 @@ public struct BadgeAppearance {
   public var backgroundColor: UIColor = .red
   public var textColor: UIColor = .white
   public var animate: Bool = true
-  public var duration: TimeInterval = 0.3
+  public var duration: TimeInterval = 0.5
   public var distanceFromCenterY: CGFloat = 0
   public var distanceFromCenterX: CGFloat = 0
 
