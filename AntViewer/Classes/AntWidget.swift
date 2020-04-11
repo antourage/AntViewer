@@ -32,6 +32,7 @@ public class AntWidget {
   public static let shared = AntWidget()
   private static var dataSource: DataSource?
   private var animationProcessing = false
+  private var isBackground = false
   private var currentState = WidgetState.resting {
     didSet {
       if case .loading = currentState {
@@ -74,6 +75,8 @@ public class AntWidget {
   private init() {
     NotificationCenter.default.addObserver(self, selector: #selector(handleStreamUpdate(_:)), name: NSNotification.Name(rawValue: "StreamsUpdated"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerDisappear(_:)), name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
 
     AppAuth.shared.auth()
     Statistic.sync()
@@ -209,7 +212,10 @@ public class AntWidget {
   @objc
   func handleStreamUpdate(_ notification: NSNotification) {
     let error = notification.userInfo?["error"]
-    guard visible, let dataSource = AntWidget.dataSource, error == nil else {
+    guard visible,
+      !isBackground,
+      error == nil,
+      let dataSource = AntWidget.dataSource else {
       set(state: .resting)
       return
     }
@@ -232,6 +238,17 @@ public class AntWidget {
   @objc
   func handleViewerDisappear(_ notification: NSNotification) {
     onViewerDisappear?([:])
+  }
+
+  @objc
+  func handleWillResignActive(_ notification: NSNotification) {
+    isBackground = true
+    set(state: .resting)
+  }
+
+  @objc
+  func handleDidBecomeActive(_ notification: NSNotification) {
+    isBackground = false
   }
 }
 

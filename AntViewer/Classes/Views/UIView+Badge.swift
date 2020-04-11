@@ -51,43 +51,35 @@ extension UIView {
 
     //Badge label is nil (There was no previous badge)
     if (badgeLabel == nil) {
-
-      //init badge label variable
       badgeLabel = BadgeLabel()
-
-      //assign tag to badge label
       badgeLabel.tag = 1
     } else {
       doesBadgeExist = true
     }
 
-    //    let oldWidth: CGFloat?
-    //    if doesBadgeExist {
-    //      oldWidth = badgeLabel.frame.width
-    //    }else{
-    //      oldWidth = nil
-    //    }
-
-    //set the allignment
     badgeLabel.textAlignment = appearance.textAlignment
-
-    //set text color
     badgeLabel.textColor = appearance.textColor
 
-    //get current badge size
-    //    let badgeSize = badgeLabel.frame.size
-
-    //calculate width and height with minimum height and width of 20
-    let height = 13 //max(18, Double(badgeSize.height) + 5.0)
-    let width = 28 //max(height, Double(badgeSize.width) + 10.0)
-
-    badgeLabel.frame.size = CGSize(width: width, height: height)
-
-    //add to subview
     if doesBadgeExist {
-      //remove view to delete constraints
       badgeLabel.removeFromSuperview()
     }
+
+    if let size = appearance.size {
+      badgeLabel.frame.size = size
+    } else {
+      let previousText = badgeLabel.text
+      badgeLabel.text = badgeText
+      badgeLabel.sizeToFit()
+      badgeLabel.text = previousText
+      let badgeSize = badgeLabel.frame.size
+      let height = max(18, Double(badgeSize.height) + 5.0)
+      let width = max(height, Double(badgeSize.width) + 10.0)
+      badgeLabel.frame.size = CGSize(width: width, height: height)
+    }
+    let width = badgeLabel.frame.size.width
+    let height = badgeLabel.frame.size.height
+
+    //add to subview
     badgeLabel.layer.zPosition = 9999
     self.addSubview(badgeLabel)
 
@@ -130,13 +122,8 @@ extension UIView {
 
     func showBadge() {
       badgeLabel.transform = CGAffineTransform(scaleX: 0, y: 0)
-      //Set the text on the badge label
       badgeLabel.text = badgeText
-
-      //Set font size
       badgeLabel.font = appearance.font
-
-      //set background color
       badgeLabel.layer.backgroundColor = appearance.backgroundColor.cgColor
       badgeLabel.alpha = 1
       UIView.animate(withDuration: appearance.duration,
@@ -216,6 +203,7 @@ public struct BadgeAppearance {
   public var duration: TimeInterval = 0.5
   public var distanceFromCenterY: CGFloat = 0
   public var distanceFromCenterX: CGFloat = 0
+  public var size: CGSize?
 
   public init() {}
 
