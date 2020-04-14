@@ -110,7 +110,7 @@ class WidgetView: UIView {
     var badgeAppearance = BadgeAppearance()
     badgeAppearance.size = CGSize(width: width, height: width * 0.464)
     badgeAppearance.backgroundColor = color ?? .white
-    badgeAppearance.font = UIFont.systemFont(ofSize: 7, weight: .bold)
+    badgeAppearance.font = UIFont.systemFont(ofSize: 8, weight: .bold)
     let circleWidth = bounds.width * 0.79
     badgeAppearance.distanceFromCenterX = circleWidth * 0.44
     badgeAppearance.distanceFromCenterY = -circleWidth * 0.34
