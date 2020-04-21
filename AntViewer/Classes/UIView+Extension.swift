@@ -118,14 +118,3 @@ public extension UIImage {
   }
 }
 
-public extension UIColor {
-  static func color(_ name: String) -> UIColor? {
-    let podBundle = Bundle(for: AntWidget.self)
-    if let url = podBundle.url(forResource: "AntWidget", withExtension: "bundle") {
-      let bundle = Bundle(url: url)
-      return UIColor(named: name, in: bundle, compatibleWith: nil)
-    }
-    return nil
-  }
-}
-
