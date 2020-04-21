@@ -9,11 +9,13 @@ import UIKit
 
 class Animator {
   enum AnimationType: String {
-    case spin, pulse, pulseFade
+    case spin, fastSpin, pulse, pulseFade
     var duration: CFTimeInterval {
       switch self {
       case .spin:
         return 8
+      case .fastSpin:
+        return 0.7
       case .pulse:
         return 1.52
       case .pulseFade:
@@ -86,7 +88,7 @@ class Animator {
       animation.values = [1, 1.25, 1, 1.1, 1, 1]
       animation.keyTimes = [0, 0.16, 0.29, 0.4, 0.5, 1]
       return animation
-    case .spin:
+    case .spin, .fastSpin:
       let animation = CABasicAnimation(keyPath: "transform.rotation")
       animation.fromValue = 0.0
       animation.toValue = CGFloat(.pi * 2.0)

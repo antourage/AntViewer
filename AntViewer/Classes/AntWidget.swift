@@ -175,7 +175,7 @@ public class AntWidget {
     currentState = state
   }
 
-  private func showLive(with content: AntViewerExt.Stream) {
+  private func showLive(with content: Live) {
     guard let url = URL(string: content.url) else { return }
     let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: true))
     let player = ModernAVPlayer()

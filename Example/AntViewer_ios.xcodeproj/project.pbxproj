@@ -191,7 +191,7 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				FE26898CCEB34BF9B8A523A9 /* [CP] Copy Pods Resources */,
-				8CBA7F28D9D5A3F782761994 /* [CP] Embed Pods Frameworks */,
+				45889B4AD37F53AAD02E68AF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -211,7 +211,7 @@
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
 				EA1ACBF16E43F09E8E68701A /* [CP] Copy Pods Resources */,
-				A1C6A78FF7CE356FCCAD8AFC /* [CP] Embed Pods Frameworks */,
+				EC40B3A90D46C0BE6ADAADA6 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -293,7 +293,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		8CBA7F28D9D5A3F782761994 /* [CP] Embed Pods Frameworks */ = {
+		45889B4AD37F53AAD02E68AF /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -309,24 +309,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		A1C6A78FF7CE356FCCAD8AFC /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A48BDE3E0A609C1F2993303A /* [CP] Check Pods Manifest.lock */ = {
@@ -367,13 +349,11 @@
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollStatisticCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
@@ -388,19 +368,35 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EmptyDataSourceView.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EmptyView.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FooterView.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HeaderView.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/LandscapeMessageCell.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/NewStreamCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PollCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PollStatisticCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PortraitMessageCell.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamViewCell.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntWidget.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EC40B3A90D46C0BE6ADAADA6 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EFA1707AC84B00E415294502 /* [CP] Check Pods Manifest.lock */ = {
@@ -441,13 +437,11 @@
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PollStatisticCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
@@ -462,13 +456,11 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EmptyDataSourceView.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EmptyView.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/FooterView.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HeaderView.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/LandscapeMessageCell.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/NewStreamCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PollCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PollStatisticCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PortraitMessageCell.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamViewCell.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntWidget.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);

@@ -31,7 +31,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var landscapePollBannerLeading: NSLayoutConstraint!
   @IBOutlet weak var liveLabelWidth: NSLayoutConstraint! {
     didSet {
-      liveLabelWidth.constant = videoContent is Vod ? 0 : 36
+      liveLabelWidth.constant = videoContent is VOD ? 0 : 36
     }
   }
   
@@ -84,7 +84,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var landscapeStreamInfoStackView: UIStackView!
   @IBOutlet weak var durationView: UIView! {
     didSet {
-      durationView.isHidden = !(videoContent is Vod)
+      durationView.isHidden = !(videoContent is VOD)
     }
   }
   
@@ -104,12 +104,12 @@ class PlayerController: UIViewController {
   @IBOutlet weak var portraitBottomContainerViewHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var portraitEditProfileButton: UIButton! {
     didSet {
-      portraitEditProfileButton.isHidden = videoContent is Vod
+      portraitEditProfileButton.isHidden = videoContent is VOD
     }
   }
   @IBOutlet weak var landscapeEditProfileButton: UIButton!{
     didSet {
-      landscapeEditProfileButton.isHidden = videoContent is Vod
+      landscapeEditProfileButton.isHidden = videoContent is VOD
     }
   }
   
@@ -118,7 +118,7 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var durationLabel: UILabel! {
     didSet {
-      if let video = videoContent as? Vod {
+      if let video = videoContent as? VOD {
         durationLabel.text = video.duration
       }
     }
@@ -166,14 +166,7 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var viewersCountLabel: UILabel! {
     didSet {
-      switch videoContent {
-      case let vod as Vod:
-        viewersCountLabel.text = "\(vod.viewsCount)"
-      case let stream as AntViewerExt.Stream:
-        viewersCountLabel.text = "\(stream.viewersCount)"
-      default:
-        break
-      }
+      viewersCountLabel.text = "\(videoContent.viewsCount)"
     }
   }
   
@@ -191,19 +184,19 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var landscapeCreatorNameLabel: UILabel! {
     didSet {
-      landscapeCreatorNameLabel.text = videoContent.creatorName
+      landscapeCreatorNameLabel.text = videoContent.creatorNickname
     }
   }
   
   @IBOutlet weak var creatorNameLabel: UILabel! {
     didSet {
-      creatorNameLabel.text = videoContent.creatorName.isEmpty ? videoContent.creatorNickname : videoContent.creatorName
+      creatorNameLabel.text = videoContent.creatorNickname
     }
   }
   
   @IBOutlet weak var portraitSeekSlider: CustomSlide! {
     didSet {
-      if let video = videoContent as? Vod {
+      if let video = videoContent as? VOD {
         portraitSeekSlider.isHidden = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
@@ -215,7 +208,7 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var landscapeSeekSlider: UISlider! {
     didSet {
-      if let video = videoContent as? Vod {
+      if let video = videoContent as? VOD {
         landscapeSeekSlider.isHidden = false
         landscapeSeekSlider.maximumValue = Float(video.duration.duration())
         landscapeSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
@@ -226,14 +219,14 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var seekLabel: UILabel! {
     didSet {
-      seekLabel.isHidden = !(videoContent is Vod)
+      seekLabel.isHidden = !(videoContent is VOD)
     }
   }
   
   fileprivate var currentOrientation: UIInterfaceOrientation! {
     didSet {
       if currentOrientation != oldValue {
-        if videoContent is Vod {
+        if videoContent is VOD {
           seekTo = nil
         }
         adjustHeightForTextView(landscapeTextView)
@@ -359,13 +352,13 @@ class PlayerController: UIViewController {
   private var chat: Chat? {
     didSet {
       chat?.onAdd = { [weak self] message in
-        self?.videoContent is Vod ? self?.vodMessages?.append(message) : self?.insertMessage(message)
+        self?.videoContent is VOD ? self?.vodMessages?.append(message) : self?.insertMessage(message)
       }
       chat?.onRemove = { [weak self] message in
         self?.removeMessage(message)
       }
       chat?.onStateChange = { [weak self] isActive in
-        if !(self?.videoContent is Vod) {
+        if !(self?.videoContent is VOD) {
           self?.isChatEnabled = isActive
         } else {
           self?.isChatEnabled = false
@@ -472,7 +465,7 @@ class PlayerController: UIViewController {
     
     Statistic.send(state: .start, for: videoContent)
     dataSource.pauseUpdatingStreams()
-    if videoContent is Vod {
+    if videoContent is VOD {
       landscapeMessageContainerHeight.priority = UILayoutPriority(rawValue: 999)
       landscapeSendButton.superview?.isHidden = true
     } else {
@@ -488,7 +481,7 @@ class PlayerController: UIViewController {
         self.dataSource.getStreamWith(id: self.videoContent.id) { (result) in
           switch result {
           case .success(let stream):
-            self.viewersCountLabel.text = "\(stream.viewersCount)"
+            self.viewersCountLabel.text = "\(stream.viewsCount)"
           case .failure(let error):
             print(error.localizedDescription)
           }
@@ -509,7 +502,7 @@ class PlayerController: UIViewController {
       
     }
     
-    if videoContent is Vod {
+    if videoContent is VOD {
       portraitBottomContainerViewHeightConstraint.constant = 0
     }
     
@@ -543,7 +536,7 @@ class PlayerController: UIViewController {
     landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
-    if let vod = videoContent as? Vod {
+    if let vod = videoContent as? VOD {
       let seconds = player.currentTime
       vod.isNew = false
       vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString
@@ -610,7 +603,7 @@ class PlayerController: UIViewController {
   private func startPlayer(){
     
     var seekTo: Double?
-    if let vod = videoContent as? Vod {
+    if let vod = videoContent as? VOD {
       seekTo = Double(vod.stopTime.duration())
     }
     player = Player(url: URL(string:videoContent.url)!, seekTo: seekTo)
@@ -629,7 +622,7 @@ class PlayerController: UIViewController {
       }
       self.activeSpendTime += 0.2
       
-      if self.videoContent is Vod {
+      if self.videoContent is VOD {
         self.handleVODsChat(forTime: Int(time.seconds))
         self.seekLabel.text = Int(time.seconds).durationString
         if self.seekTo == nil, self.player.player.rate == 1 {
@@ -659,7 +652,7 @@ class PlayerController: UIViewController {
     
     player.onVideoEnd = { [weak self] in
       self?.playButton.setImage(UIImage.image("play"), for: .normal)
-      if self?.videoContent is Vod {
+      if self?.videoContent is VOD {
         self?.isVideoEnd = true
         self?.isPlayerControlsHidden = false
       } else {
@@ -719,7 +712,7 @@ class PlayerController: UIViewController {
   }
   
   private func adjustVideoControlsButtons() {
-    guard videoContent is Vod else {
+    guard videoContent is VOD else {
       nextButton.isHidden = true
       previousButton.isHidden = true
       return
@@ -783,7 +776,7 @@ class PlayerController: UIViewController {
   }
   
   func handleSeekByTapping(_ sender: UITapGestureRecognizer) {
-    guard let vod = self.videoContent as? Vod else { return }
+    guard let vod = self.videoContent as? VOD else { return }
     self.controlsAppearingDebouncer.call {}
     self.videoControlsView.isHidden = true
     self.portraitSeekSlider.tintColor = .clear
