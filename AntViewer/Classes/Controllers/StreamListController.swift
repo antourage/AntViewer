@@ -108,24 +108,25 @@ class StreamListController: UICollectionViewController {
   }
   
   private func setupNavigationBar() {
+    //    navigationController?.navigationBar.frame =
     navigationController?.navigationBar.barTintColor = collectionView.backgroundColor
     navigationController?.navigationBar.updateBackgroundColor()
+    navigationController?.navigationBar.shadowImage = UIColor.white.withAlphaComponent(0.2).as1ptImage()
+
     let closeButton = UIButton(type: .custom)
-    closeButton.tintColor = .white
-    closeButton.setImage(UIImage.image("cross"), for: .normal)
-    
+    closeButton.setImage(UIImage.image("Close"), for: .normal)
     closeButton.addTarget(self, action: #selector(closeButtonPressed(_:)), for: .touchUpInside)
     closeButton.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
-    
     navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: closeButton)]
+
+    let attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15, weight: .medium), NSAttributedString.Key.foregroundColor : UIColor.white]
+    navigationController?.navigationBar.titleTextAttributes = attributes
+    navigationItem.title = "INSIDE THE GAME"
     
     let changeHost = UIButton(type: .custom)
-    changeHost.tintColor = .white
-    changeHost.titleLabel?.font = changeHost.titleLabel?.font.withSize(10)
-    changeHost.setTitle("", for: .normal)
+    changeHost.setImage(UIImage.image("HolderLogoSmall"), for: .normal)
     changeHost.addTarget(self, action: #selector(changeHost(_:event:)), for: .touchDownRepeat)
     changeHost.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
-    
     navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: changeHost)]
   }
   
@@ -158,12 +159,12 @@ class StreamListController: UICollectionViewController {
       return
     }
     presentChangeHostAlert()
-    if let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String {
-      sender.setTitle(version, for: .normal)
-      DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak sender] in
-        sender?.setTitle(nil, for: .normal)
-      }
-    }
+//    if let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String {
+//      sender.setTitle(version, for: .normal)
+//      DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak sender] in
+//        sender?.setTitle(nil, for: .normal)
+//      }
+//    }
     
   }
   
