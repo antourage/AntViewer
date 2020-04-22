@@ -16,6 +16,7 @@ public class Poll {
   private var answersListener: ListenerRegistration?
   public var key: String
   public var answeredByUser = false
+  public var userAnswer: Int?
   public let pollQuestion: String
   public var pollAnswers: [String]
   public var answersCount: [Int] {
@@ -83,7 +84,11 @@ public class Poll {
       }
       
       if let id = User.current?.id {
-        self?.answeredByUser = documents.contains(where: {$0.documentID == "\(id)"})
+        let userDocument = documents.first(where: { $0.documentID == "\(id)" })
+        self?.answeredByUser = userDocument != nil//documents.contains(where: {$0.documentID == "\(id)"})
+        if self?.answeredByUser == true {
+          self?.userAnswer = userDocument?.data()["chosenAnswer"] as? Int
+        }
       } else {
         //MARK: Turn off ability to answer
         self?.answeredByUser = true

@@ -46,8 +46,6 @@ class PollController: UIViewController {
     tableView.dataSource = self
     tableView.delegate = self
     isPollStatistic = poll?.answeredByUser == true
-    tableView.rowHeight = UITableView.automaticDimension
-    tableView.estimatedRowHeight = 48
   }
   
   @objc
@@ -80,8 +78,15 @@ extension PollController: UITableViewDelegate, UITableViewDataSource {
     cell.isStatistic = isPollStatistic
     cell.titleLabel.text = poll?.pollAnswers[indexPath.row]
     cell.percentage = poll?.percentForEachAnswer[indexPath.row] ?? 0
-    cell.setNeedsDisplay()
+    cell.isUserChoise = false
+    if let answer = poll?.userAnswer {
+      cell.isUserChoise = answer == indexPath.row
+    }
     return cell
+  }
+
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 56
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
