@@ -8,9 +8,10 @@
 import UIKit
 
 class PollTableViewCell: UITableViewCell {
-  @IBOutlet weak var cardView: UIView!
+  @IBOutlet private weak var cardView: UIView!
   @IBOutlet weak var titleLabel: UILabel!
-  @IBOutlet weak var percentageLabel: UILabel!
+  @IBOutlet private weak var percentageLabel: UILabel!
+  @IBOutlet private var titleLabelTrailing: NSLayoutConstraint!
 
   lazy var progressView: UIView = {
     let progressView = UIView()
@@ -27,7 +28,9 @@ class PollTableViewCell: UITableViewCell {
   var isStatistic = false {
     didSet {
       percentageLabel.isHidden = !isStatistic
-      titleLabel.textAlignment = isStatistic ? .left : .center
+      titleLabelTrailing.isActive = !isStatistic
+//      titleLabel.textAlignment = isStatistic ? .left : .center
+      cardView.layoutSubviews()
     }
   }
 
