@@ -193,13 +193,15 @@ class PlayerController: UIViewController {
     }
   }
 
-  //MARK: new poll banner staff
+  //MARK: - new poll banner staff
   @IBOutlet weak var pollBannerAspectRatio: NSLayoutConstraint!
-  @IBOutlet weak var pollBannerLandscapeWidth: NSLayoutConstraint!
   @IBOutlet weak var pollBannerPortraitLeading: NSLayoutConstraint!
   @IBOutlet weak var pollTitleLabel: UILabel!
   @IBOutlet weak var pollBannerView: UIView!
+  @IBOutlet weak var pollBannerIcon: UIImageView!
   var isShouldShowExpandedBanner = true
+  var pollAnswersFromLastView = 0
+  var isShouldShowPollBadge = false
   
   fileprivate var currentOrientation: UIInterfaceOrientation! {
     didSet {
@@ -244,74 +246,40 @@ class PlayerController: UIViewController {
       guard let poll = activePoll else {
         pollAnswersDebouncer.call {}
         self.isShouldShowPollAnswers = false
-//        collapsedPollButton.alpha = 0
-//        UIView.transition(with: collapsedPollButton, duration: 0.3, options: .transitionFlipFromTop, animations: {
-          self.pollControllerCloseButtonPressed()
-          self.pollBannerView.isHidden = true
-//          self.newPollView.isHidden = true
-//          self.newPollView.alpha = 0
-//          self.collapsedPollButton.isHidden = true
-//          self.landscapePollView.isHidden = true
-//          self.landscapeCollapsedPollView.isHidden = true
-//        }, completion: nil)
+        self.pollControllerCloseButtonPressed()
+        self.pollBannerView.isHidden = true
+        self.pollBannerIcon.hideBadge()
         self.updateContentInsetForTableView(self.portraitTableView)
         return
       }
-//      pollNameLabels.forEach {$0.text = poll.pollQuestion}
-//      self.shouldShowBigPollMessage = true
-      pollBannerView.isHidden = false
-      pollTitleLabel.text = poll.pollQuestion
-      expandPollBanner()
-      
+
       poll.onUpdate = { [weak self] in
-        guard let _ = self?.activePoll else { return }
-        NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : self?.activePoll ?? 0])
-        if self?.activePoll?.answeredByUser == true || self?.isShouldShowPollAnswers == true {
-//          self?.shouldShowBigPollMessage = false
-          let count = self?.activePoll?.answersCount.reduce(0, +) ?? 0
-          //TODO: update badge
-//          self?.landscapeCollapsedPollLabel.text = "\(count)"
-        } else {
-//          self?.landscapeCollapsedPollLabel.text = "New poll!"
+        guard let `self` = self,
+          let _ = self.activePoll else { return }
+
+        if self.pollBannerView.isHidden {
+          if OrientationUtility.isPortrait {
+            poll.answeredByUser ? self.collapsePollBanner(false) : self.expandPollBanner()
+          } else {
+            self.collapsePollBanner()
+          }
+          self.pollBannerView.isHidden = false
+          self.pollTitleLabel.text = poll.pollQuestion
+        }
+
+        NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : self.activePoll ?? 0])
+        if self.activePoll?.answeredByUser == true, self.pollContainerView.isHidden, self.isShouldShowPollBadge {
+          let count = self.activePoll?.answersCount.reduce(0, +) ?? 0
+          let dif = count - self.pollAnswersFromLastView - 1
+          if dif > 0 {
+            self.pollBannerIcon.addBadge(title: String(format: "%d", dif), belowView: self.pollContainerView)
+          }
         }
       }
     }
   }
-  
-//  fileprivate var shouldShowBigPollMessage = true {
-//    didSet {
-////      let shouldHideBigPoll = !shouldShowBigPollMessage || isKeyboardShown
-////      if !(self.newPollView.isHidden && shouldHideBigPoll) {
-////        self.newPollView.isHidden = shouldHideBigPoll
-////      }
-////      self.newPollView.alpha = shouldHideBigPoll ? 0 : 1
-////      self.collapsedPollButton.alpha = shouldHideBigPoll ? 1 : 0
-////      self.collapsedPollButton.isHidden = !shouldHideBigPoll
-////      self.landscapePollView.isHidden = !self.shouldShowBigPollMessage || !self.pollContainerView.isHidden
-////      self.landscapeCollapsedPollView.isHidden = self.shouldShowBigPollMessage || !self.pollContainerView.isHidden || isKeyboardShown
-//      self.view.layoutIfNeeded()
-//      self.updateContentInsetForTableView(self.portraitTableView)
-//
-//      if !shouldShowBigPollMessage, oldValue {
-//        self.pollAnswersDebouncer.call { [weak self] in
-//          self?.isShouldShowPollAnswers = true
-//          if let count = self?.activePoll?.answersCount.reduce(0, +), count != 0 {
-//            //TODO: update badge
-////            self?.landscapeCollapsedPollLabel.text = "\(count)"
-//          }
-//        }
-//      }
-//
-//    }
-//  }
-  
-  fileprivate var isKeyboardShown = false {
-    didSet {
-      guard activePoll != nil else {return}
-//      let oldValue = self.shouldShowBigPollMessage
-//      self.shouldShowBigPollMessage = oldValue
-    }
-  }
+
+  fileprivate var isKeyboardShown = false
   
   private var chatGradientLayer: CAGradientLayer = {
     let gradient = CAGradientLayer()
@@ -499,20 +467,14 @@ class PlayerController: UIViewController {
     adjustHeightForTextView(landscapeTextView)
   }
 
-  func collapsePollBanner() {
+  func collapsePollBanner(_ animated: Bool = true) {
     isShouldShowExpandedBanner = false
     pollBannerPortraitLeading.isActive = false
-    pollBannerLandscapeWidth.isActive = false
     pollBannerAspectRatio.isActive = true
-    UIView.animate(withDuration: 0.3, animations: {
+    UIView.animate(withDuration: animated ? 0.3 : 0, animations: {
       self.view.layoutIfNeeded()
     }) { (success) in
       self.pollBannerView.subviews.first { $0.isKind(of: UIImageView.self) }?.isUserInteractionEnabled = true
-//      var i = 0
-//      Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (timer) in
-//        self.pollBannerView.addBadge(title: " \(i) ")
-//        i += 1
-//      }
     }
   }
 
@@ -521,13 +483,11 @@ class PlayerController: UIViewController {
     pollBannerAspectRatio.isActive = false
     if OrientationUtility.currentOrientatin.isPortrait {
       pollBannerPortraitLeading.isActive = true
-    } else {
-       pollBannerLandscapeWidth.isActive = true
     }
     UIView.animate(withDuration: 0.3, animations: {
       self.view.layoutIfNeeded()
     }) { (success) in
-      self.pollBannerView.subviews.first { $0.isKind(of: UIImageView.self) }?.isUserInteractionEnabled = false
+      self.pollBannerIcon.subviews.first { $0.isKind(of: UIImageView.self) }?.isUserInteractionEnabled = false
     }
     DispatchQueue.main.asyncAfter(deadline: .now()+5) {
       self.collapsePollBanner()
@@ -1081,8 +1041,9 @@ class PlayerController: UIViewController {
     infoPortraitView.isHidden = true
     portraitTableView.isHidden = true
     portraitBottomContainerView.isHidden = true
-//    let oldValue = shouldShowBigPollMessage
-//    shouldShowBigPollMessage = oldValue
+    pollBannerIcon.hideBadge()
+    collapsePollBanner(false)
+    isShouldShowPollBadge = true
   }
 
   
@@ -1158,10 +1119,7 @@ extension PlayerController {
         landscapeMessageWidth.priority = UILayoutPriority(rawValue: isHidden ? 999 : 100)
         landscapeMessageTrailing.priority = UILayoutPriority(rawValue: isHidden ? 100 : 999)
       }
-      
-      
       adjustViewsFor(keyboardFrame: keyboardSize, with: animationDuration, animationCurve: animationCurve)
-      
     }
   }
   
@@ -1256,6 +1214,7 @@ extension PlayerController: PollControllerDelegate {
     infoPortraitView.isHidden = false
     portraitTableView.isHidden = false
     portraitBottomContainerView.isHidden = false
+    pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
   }
 }
 
