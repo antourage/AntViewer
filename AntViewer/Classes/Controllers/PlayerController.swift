@@ -200,6 +200,10 @@ class PlayerController: UIViewController {
   @IBOutlet weak var pollTitleLabel: UILabel!
   @IBOutlet weak var pollBannerView: UIView!
   var isShouldShowExpandedBanner = true
+
+  //MARK: edit profile staff
+  @IBOutlet weak var editProfileContainerPortretBottom: NSLayoutConstraint!
+  @IBOutlet weak var editProfileContainerLandscapeBottom: NSLayoutConstraint!
   
   fileprivate var currentOrientation: UIInterfaceOrientation! {
     didSet {
@@ -1143,7 +1147,8 @@ extension PlayerController {
       print(keyboardSize)
       if keyboardSize.width == view.frame.width {
         if isHidden {
-          if editProfileControllerIsLoading { return }
+//          if editProfileControllerIsLoading { return }
+//          editProfileContainerBottom.constant = keyboardSize.height
           landscapeMessageHeight.constant = 30
           landscapeMessageBottomSpace.constant = 4
           portraitMessageBottomSpace.constant = 0
@@ -1158,8 +1163,8 @@ extension PlayerController {
         landscapeMessageWidth.priority = UILayoutPriority(rawValue: isHidden ? 999 : 100)
         landscapeMessageTrailing.priority = UILayoutPriority(rawValue: isHidden ? 100 : 999)
       }
-      
-      
+      editProfileContainerPortretBottom.constant = keyboardSize.height
+      editProfileContainerLandscapeBottom.constant = keyboardSize.height
       adjustViewsFor(keyboardFrame: keyboardSize, with: animationDuration, animationCurve: animationCurve)
       
     }
