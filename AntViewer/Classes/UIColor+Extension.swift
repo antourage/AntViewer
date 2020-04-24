@@ -32,4 +32,8 @@ public extension UIColor {
   static var designerGreen: UIColor {
     return UIColor.color("a_green") ?? .green
   }
+  
+  static var designerBlue: UIColor {
+    return UIColor.color("a_button_blue") ?? .blue
+  }
 }

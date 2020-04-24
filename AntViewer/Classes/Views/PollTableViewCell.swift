@@ -29,8 +29,7 @@ class PollTableViewCell: UITableViewCell {
     didSet {
       percentageLabel.isHidden = !isStatistic
       titleLabelTrailing.isActive = !isStatistic
-//      titleLabel.textAlignment = isStatistic ? .left : .center
-      cardView.layoutSubviews()
+      animateChanges()
     }
   }
 
@@ -54,7 +53,13 @@ class PollTableViewCell: UITableViewCell {
       progressViewWidthConstrant = nil
       progressViewWidthConstrant = progressView.widthAnchor.constraint(equalTo: cardView.widthAnchor, multiplier: CGFloat(percentage)/100)
       progressViewWidthConstrant?.isActive = true
-      cardView.layoutSubviews()
+      animateChanges()
+    }
+  }
+
+  private func animateChanges() {
+    UIView.animate(withDuration: 0.3) {
+      self.cardView.layoutSubviews()
     }
   }
 
