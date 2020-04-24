@@ -6547,7 +6547,7 @@
 		F0D7665CDCBD9701859C5C3E3EA6C1CD /* user.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = user.cc; path = Firestore/core/src/firebase/firestore/auth/user.cc; sourceTree = "<group>"; };
 		F0EB8008DA9A793850AA4E630D6013C4 /* resolve_address_custom.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = resolve_address_custom.cc; path = src/core/lib/iomgr/resolve_address_custom.cc; sourceTree = "<group>"; };
 		F0F5722020AE500D77AD8DD2E8B19823 /* FIRGoogleAuthCredential.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = FIRGoogleAuthCredential.m; path = Firebase/Auth/Source/AuthProvider/Google/FIRGoogleAuthCredential.m; sourceTree = "<group>"; };
-		F120BBC0244F1DD900BA6019 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		F120BBC0244F1DD900BA6019 /* UIColor+Extension.swift */ = {isa = PBXFileReference; explicitFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		F120BBC2244F1E5A00BA6019 /* PollTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PollTableViewCell.swift; sourceTree = "<group>"; };
 		F120BBC3244F1E5A00BA6019 /* PollTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PollTableViewCell.xib; sourceTree = "<group>"; };
 		F12B9F1FA02464B408606B06DA118BB8 /* mpscq.cc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.cpp.cpp; name = mpscq.cc; path = src/core/lib/gpr/mpscq.cc; sourceTree = "<group>"; };
