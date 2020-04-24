@@ -28,4 +28,8 @@ public extension UIColor {
   static var cellGray: UIColor {
     return UIColor.color("a_cell_subtitle") ?? .gray
   }
+
+  static var designerGreen: UIColor {
+    return UIColor.color("a_green") ?? .green
+  }
 }

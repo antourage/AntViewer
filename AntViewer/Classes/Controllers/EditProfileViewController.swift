@@ -33,7 +33,7 @@ class EditProfileViewController: UIViewController {
 
   var isConfirmButtonEnable = false {
       didSet {
-        confirmButton.backgroundColor = isConfirmButtonEnable ? confirmButtonEnabledColor : confirmButtonDisabledColor
+        confirmButton.backgroundColor = isConfirmButtonEnable ? .designerGreen : confirmButtonDisabledColor
         confirmButton.isEnabled = isConfirmButtonEnable
       }
     }
@@ -43,7 +43,6 @@ class EditProfileViewController: UIViewController {
         displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Type your display name" : currentDisplayName
       }
     }
-  private let confirmButtonEnabledColor = UIColor(red: 5/255, green: 168/255, blue: 84/255, alpha: 1)
   private let confirmButtonDisabledColor = UIColor(red: 204/255, green: 238/255, blue: 221/255, alpha: 1)
 
   private let maxCharactersCount = 50
@@ -57,8 +56,9 @@ class EditProfileViewController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    confirmButton.layer.cornerRadius = confirmButton.bounds.height/2
-    displayNameTextField.layer.cornerRadius = displayNameTextField.bounds.height/2
+    let textFieldHeight: CGFloat = OrientationUtility.isPortrait ? 48 : 36
+    confirmButton.layer.cornerRadius = textFieldHeight/2
+    displayNameTextField.layer.cornerRadius = textFieldHeight/2
   }
 
   deinit {
@@ -98,9 +98,10 @@ class EditProfileViewController: UIViewController {
   }
 
   func sutupUI() {
-     currentDisplayName = User.current?.displayName ?? ""
-     displayNameTextField.becomeFirstResponder()
-     delegate?.editProfileLoaded()
+   currentDisplayName = User.current?.displayName ?? ""
+   displayNameTextField.becomeFirstResponder()
+   delegate?.editProfileLoaded()
+   isConfirmButtonEnable = false
   }
 }
 

@@ -202,7 +202,7 @@ class PlayerController: UIViewController {
   var isShouldShowExpandedBanner = true
 
   //MARK: edit profile staff
-  @IBOutlet weak var editProfileContainerPortretBottom: NSLayoutConstraint!
+  @IBOutlet weak var editProfileContainerPortraitBottom: NSLayoutConstraint!
   @IBOutlet weak var editProfileContainerLandscapeBottom: NSLayoutConstraint!
   
   fileprivate var currentOrientation: UIInterfaceOrientation! {
@@ -1042,7 +1042,6 @@ class PlayerController: UIViewController {
     default:
       break
     }
-    
     view.layoutIfNeeded()
   }
   
@@ -1147,8 +1146,7 @@ extension PlayerController {
       print(keyboardSize)
       if keyboardSize.width == view.frame.width {
         if isHidden {
-//          if editProfileControllerIsLoading { return }
-//          editProfileContainerBottom.constant = keyboardSize.height
+          if editProfileControllerIsLoading { return }
           landscapeMessageHeight.constant = 30
           landscapeMessageBottomSpace.constant = 4
           portraitMessageBottomSpace.constant = 0
@@ -1157,18 +1155,22 @@ extension PlayerController {
           let isLeftInset = view.safeAreaInsets.left > 0
           chatFieldLeading = OrientationUtility.currentOrientatin == .landscapeRight && isLeftInset ? 30 : 0
           landscapeMessageBottomSpace.constant = keyboardSize.height - bottomPadding
+          editProfileContainerLandscapeBottom.constant = keyboardSize.height
         } else {
           portraitMessageBottomSpace.constant = keyboardSize.height - bottomPadding
+          editProfileContainerPortraitBottom.constant = keyboardSize.height
         }
         landscapeMessageWidth.priority = UILayoutPriority(rawValue: isHidden ? 999 : 100)
         landscapeMessageTrailing.priority = UILayoutPriority(rawValue: isHidden ? 100 : 999)
       }
-      editProfileContainerPortretBottom.constant = keyboardSize.height
-      editProfileContainerLandscapeBottom.constant = keyboardSize.height
+
+
       adjustViewsFor(keyboardFrame: keyboardSize, with: animationDuration, animationCurve: animationCurve)
       
     }
   }
+
+
   
   func adjustViewsFor(keyboardFrame: CGRect, with animationDuration: TimeInterval, animationCurve: UIView.AnimationOptions) {
     adjustHeightForTextView(landscapeTextView)
@@ -1244,7 +1246,6 @@ extension PlayerController: UITableViewDataSource {
         cell.avatarImageView.load(url: URL(string: message.avatarUrl ?? ""), placeholder: UIImage(named: "avaPic"))
       }
     }
-    
     return cell
   }
 }
