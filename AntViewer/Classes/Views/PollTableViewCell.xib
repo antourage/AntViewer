@@ -19,7 +19,7 @@
                     <view clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7bF-ik-tl0">
                         <rect key="frame" x="40" y="8" width="240" height="58"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" insetsLayoutMarginsFromSafeArea="NO" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rSQ-8M-8fd">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" verticalCompressionResistancePriority="950" insetsLayoutMarginsFromSafeArea="NO" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rSQ-8M-8fd">
                                 <rect key="frame" x="20" y="8" width="33" height="42"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                 <color key="textColor" name="darkTitle"/>
@@ -34,14 +34,16 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="rSQ-8M-8fd" secondAttribute="bottom" constant="8" id="0Ge-bu-BGa"/>
-                            <constraint firstItem="rSQ-8M-8fd" firstAttribute="top" secondItem="7bF-ik-tl0" secondAttribute="top" constant="8" id="8DS-WE-3QY"/>
+                            <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="rSQ-8M-8fd" secondAttribute="bottom" constant="2" id="0Ge-bu-BGa"/>
+                            <constraint firstItem="rSQ-8M-8fd" firstAttribute="top" relation="greaterThanOrEqual" secondItem="7bF-ik-tl0" secondAttribute="top" constant="2" id="8DS-WE-3QY"/>
                             <constraint firstAttribute="trailing" secondItem="xCz-px-ceu" secondAttribute="trailing" constant="11" id="Kvg-Ni-8gS"/>
                             <constraint firstItem="xCz-px-ceu" firstAttribute="top" secondItem="7bF-ik-tl0" secondAttribute="top" constant="8" id="MfJ-wz-3o7"/>
+                            <constraint firstAttribute="bottom" secondItem="rSQ-8M-8fd" secondAttribute="bottom" priority="900" constant="8" id="MvJ-qO-HTf"/>
                             <constraint firstAttribute="trailing" secondItem="rSQ-8M-8fd" secondAttribute="trailing" constant="20" id="N9n-RM-XIW"/>
                             <constraint firstItem="xCz-px-ceu" firstAttribute="centerY" secondItem="7bF-ik-tl0" secondAttribute="centerY" id="QIw-2h-zqP"/>
                             <constraint firstItem="xCz-px-ceu" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="rSQ-8M-8fd" secondAttribute="trailing" priority="950" constant="10" id="QhX-Km-YHg"/>
                             <constraint firstAttribute="bottom" secondItem="xCz-px-ceu" secondAttribute="bottom" constant="8" id="Ume-wo-UFy"/>
+                            <constraint firstItem="rSQ-8M-8fd" firstAttribute="top" secondItem="7bF-ik-tl0" secondAttribute="top" priority="900" constant="8" id="YK3-u4-OGu"/>
                             <constraint firstItem="rSQ-8M-8fd" firstAttribute="centerY" secondItem="7bF-ik-tl0" secondAttribute="centerY" id="Z94-HR-8AU"/>
                             <constraint firstItem="rSQ-8M-8fd" firstAttribute="leading" secondItem="7bF-ik-tl0" secondAttribute="leading" constant="20" id="n7D-RU-yOa"/>
                         </constraints>

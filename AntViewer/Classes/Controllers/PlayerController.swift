@@ -202,6 +202,7 @@ class PlayerController: UIViewController {
   var isShouldShowExpandedBanner = true
   var pollAnswersFromLastView = 0
   var isShouldShowPollBadge = false
+  var isFirstTimeBanerShown = true
   
   fileprivate var currentOrientation: UIInterfaceOrientation! {
     didSet {
@@ -228,8 +229,8 @@ class PlayerController: UIViewController {
           }
           
         }
-        if !isShouldShowExpandedBanner {
-          collapsePollBanner()
+        if isShouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.answeredByUser == false {
+          expandPollBanner(false)
         }
         updateContentInsetForTableView(currentTableView)
         view.layoutIfNeeded()
@@ -239,13 +240,15 @@ class PlayerController: UIViewController {
 
   fileprivate var pollManager: PollManager?
   fileprivate var isShouldShowPollAnswers = false
-  fileprivate var pollAnswersDebouncer = Debouncer(delay: 15)
+  fileprivate var pollABannerDebouncer = Debouncer(delay: 6)
   fileprivate var activePoll:  Poll? {
     didSet {
       NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : activePoll ?? 0])
       guard let poll = activePoll else {
-        pollAnswersDebouncer.call {}
+        pollABannerDebouncer.call {}
         self.isShouldShowPollAnswers = false
+        self.isShouldShowExpandedBanner = true
+        self.isFirstTimeBanerShown = true
         self.pollControllerCloseButtonPressed()
         self.pollBannerView.isHidden = true
         self.pollBannerIcon.hideBadge()
@@ -468,7 +471,6 @@ class PlayerController: UIViewController {
   }
 
   func collapsePollBanner(_ animated: Bool = true) {
-    isShouldShowExpandedBanner = false
     pollBannerPortraitLeading.isActive = false
     pollBannerAspectRatio.isActive = true
     UIView.animate(withDuration: animated ? 0.3 : 0, animations: {
@@ -478,8 +480,7 @@ class PlayerController: UIViewController {
     }
   }
 
-  func expandPollBanner() {
-    isShouldShowExpandedBanner = true
+  func expandPollBanner(_ enableAutoHide: Bool = true) {
     pollBannerAspectRatio.isActive = false
     if OrientationUtility.currentOrientatin.isPortrait {
       pollBannerPortraitLeading.isActive = true
@@ -489,8 +490,11 @@ class PlayerController: UIViewController {
     }) { (success) in
       self.pollBannerIcon.subviews.first { $0.isKind(of: UIImageView.self) }?.isUserInteractionEnabled = false
     }
-    DispatchQueue.main.asyncAfter(deadline: .now()+5) {
-      self.collapsePollBanner()
+    guard isFirstTimeBanerShown else { return }
+    isFirstTimeBanerShown = false
+    pollABannerDebouncer.call { [weak self] in
+      self?.isShouldShowExpandedBanner = false
+      self?.collapsePollBanner()
     }
   }
 
@@ -1044,6 +1048,7 @@ class PlayerController: UIViewController {
     pollBannerIcon.hideBadge()
     collapsePollBanner(false)
     isShouldShowPollBadge = true
+    isShouldShowExpandedBanner = false
   }
 
   
