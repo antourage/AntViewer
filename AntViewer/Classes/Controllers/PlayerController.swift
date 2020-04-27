@@ -19,7 +19,7 @@ class PlayerController: UIViewController {
   
   @IBOutlet weak var landscapeStreamInfoLeading: NSLayoutConstraint!
   @IBOutlet weak var portraitMessageBottomSpace: NSLayoutConstraint!
-  @IBOutlet weak var portraitMessageHeight: NSLayoutConstraint!
+  @IBOutlet weak var messageHeight: NSLayoutConstraint!
   @IBOutlet weak var landscapeMessageBottomSpace: NSLayoutConstraint! //4
   @IBOutlet weak var landscapeMessageHeight: NSLayoutConstraint! //40
   @IBOutlet weak var landscapeMessageContainerHeight: NSLayoutConstraint!
@@ -32,8 +32,24 @@ class PlayerController: UIViewController {
       liveLabelWidth.constant = videoContent is VOD ? 0 : 36
     }
   }
-  
-  @IBOutlet weak var portraitTextView: IQTextView!
+
+  //MARK: - chat field staff
+  @IBOutlet weak var chatTextView: IQTextView! {
+    didSet {
+      chatTextView.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
+    }
+  }
+  @IBOutlet weak var chatTextViewHolderView: UIView! {
+    didSet {
+      chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
+
+    }
+  }
+  @IBOutlet weak var chatTextViewHolderViewLeading: NSLayoutConstraint!
+  @IBOutlet weak var chatTextViewHolderToStackLeading: NSLayoutConstraint!
+  @IBOutlet var chatTextViewTrailing: NSLayoutConstraint!
+  //MARK:  -
+
   @IBOutlet weak var landscapeTextView: IQTextView!
   @IBOutlet weak var portraitTableView: UITableView! {
     didSet {
@@ -54,7 +70,7 @@ class PlayerController: UIViewController {
       setupChatTableView(landscapeTableView)
     }
   }
-  @IBOutlet weak var portraitSendButton: UIButton!
+  @IBOutlet weak var sendButton: UIButton!
   @IBOutlet weak var landscapeSendButton: UIButton!
   @IBOutlet weak var videoContainerView: AVPlayerView! {
     didSet {
@@ -96,13 +112,19 @@ class PlayerController: UIViewController {
     return OrientationUtility.isLandscape ? .top : .bottom
   }
   
-  @IBOutlet weak var portraitBottomContainerView: UIView!
-  @IBOutlet weak var portraitBottomContainerViewHeightConstraint: NSLayoutConstraint!
-  @IBOutlet weak var portraitEditProfileButton: UIButton! {
+  @IBOutlet weak var bottomContainerView: UIView!
+  @IBOutlet weak var bottomContainerViewHeightConstraint: NSLayoutConstraint!
+  @IBOutlet weak var editProfileButton: UIButton! {
     didSet {
-      portraitEditProfileButton.isHidden = videoContent is VOD
+      editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
     }
   }
+  @IBOutlet weak var shareButton: UIButton! {
+     didSet {
+       shareButton.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
+     }
+   }
+  
   @IBOutlet weak var landscapeEditProfileButton: UIButton!{
     didSet {
       landscapeEditProfileButton.isHidden = videoContent is VOD
@@ -200,6 +222,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var pollBannerView: UIView!
   @IBOutlet weak var pollBannerIcon: UIImageView!
   var isShouldShowExpandedBanner = true
+  //MARK: -
 
   //MARK: edit profile staff
   @IBOutlet weak var editProfileContainerPortraitBottom: NSLayoutConstraint!
@@ -207,6 +230,7 @@ class PlayerController: UIViewController {
   var pollAnswersFromLastView = 0
   var isShouldShowPollBadge = false
   var isFirstTimeBanerShown = true
+  //MARK: -
 
   fileprivate var currentOrientation: UIInterfaceOrientation! {
     didSet {
@@ -297,16 +321,16 @@ class PlayerController: UIViewController {
   
   private var isChatEnabled = false {
     didSet {
-      portraitEditProfileButton.isHidden = !isChatEnabled
-      portraitSendButton.isEnabled = isChatEnabled
-      portraitTextView.isEditable = isChatEnabled
-      portraitTextView.placeholder = isChatEnabled ? "Say something" : "Chat not available"
+      editProfileButton.isHidden = !isChatEnabled
+      sendButton.isEnabled = isChatEnabled
+      chatTextView.isEditable = isChatEnabled
+      chatTextView.placeholder = isChatEnabled ? "Say something" : "Chat not available"
       landscapeSendButton.isEnabled = isChatEnabled
       landscapeTextView.isEditable = isChatEnabled
       landscapeTextView.placeholder = isChatEnabled ? "Say something" : "Chat not available"
       landscapeTextView.superview?.isHidden = !isChatEnabled
       if !isChatEnabled {
-        portraitTextView.text = ""
+        chatTextView.text = ""
         landscapeTextView.text = ""
       }
     }
@@ -466,11 +490,11 @@ class PlayerController: UIViewController {
     }
     
     if videoContent is VOD {
-      portraitBottomContainerViewHeightConstraint.constant = 0
+      bottomContainerViewHeightConstraint.constant = 0
     }
     
     startPlayer()
-    adjustHeightForTextView(portraitTextView)
+    adjustHeightForTextView(chatTextView)
     adjustHeightForTextView(landscapeTextView)
   }
 
@@ -499,6 +523,24 @@ class PlayerController: UIViewController {
     pollABannerDebouncer.call { [weak self] in
       self?.isShouldShowExpandedBanner = false
       self?.collapsePollBanner()
+    }
+  }
+
+  func collapseChatTextView() {
+    chatTextViewHolderViewLeading.isActive = false
+    chatTextViewHolderToStackLeading.isActive = true
+    chatTextViewTrailing.isActive = true
+    UIView.animate(withDuration: 0.3) {
+      self.view.layoutIfNeeded()
+    }
+  }
+
+  func expandChatTextView() {
+    chatTextViewHolderToStackLeading.isActive = false
+    chatTextViewHolderViewLeading.isActive = true
+    chatTextViewTrailing.isActive = false
+    UIView.animate(withDuration: 0.3) {
+      self.view.layoutIfNeeded()
     }
   }
 
@@ -544,7 +586,7 @@ class PlayerController: UIViewController {
   
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
-    portraitTextView.resignFirstResponder()
+    chatTextView.resignFirstResponder()
     landscapeTextView.resignFirstResponder()
     if size.width > size.height {
       self.landscapeTableView.reloadData()
@@ -820,7 +862,7 @@ class PlayerController: UIViewController {
     let onPlayButton = playButton.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden
     guard isControlsEnabled else { return }
     if isKeyboardShown {
-      portraitTextView.endEditing(true)
+      chatTextView.endEditing(true)
       landscapeTextView.endEditing(true)
       return
     }
@@ -852,7 +894,7 @@ class PlayerController: UIViewController {
   @objc
   func handleHideKeyboardGesture(_ sender: UITapGestureRecognizer) {
     if isKeyboardShown {
-      portraitTextView.endEditing(true)
+      chatTextView.endEditing(true)
       landscapeTextView.endEditing(true)
     }
   }
@@ -921,20 +963,20 @@ class PlayerController: UIViewController {
     guard let user = User.current else {
       return
     }
-    let textView = sender == portraitSendButton ? portraitTextView : landscapeTextView
+    let textView = sender == sendButton ? chatTextView : landscapeTextView
     
     guard let text = textView?.text, text.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 else {
       textView?.text.removeAll()
       return
     }
-    guard let _ = videoContent as? AntViewerExt.Stream else {return}
+    guard let _ = videoContent as? AntViewerExt.Live else {return}
     sender.isEnabled = false
     let message = Message(userID: "\(user.id)", nickname: user.displayName, text: text, avatarUrl: User.current?.imageUrl)
     textView?.text = ""
     self.chat?.send(message: message) { (error) in
       if error == nil {
         self.adjustHeightForTextView(self.landscapeTextView)
-        self.adjustHeightForTextView(self.portraitTextView)
+        self.adjustHeightForTextView(self.chatTextView)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
           let lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
           if lastIndexPath.row >= 0 {
@@ -947,9 +989,9 @@ class PlayerController: UIViewController {
   }
   
   func shouldEnableMessageTextFields(_ enable: Bool) {
-    self.portraitTextView.isEditable = enable && isChatEnabled
+    self.chatTextView.isEditable = enable && isChatEnabled
     self.landscapeTextView.isEditable = enable && isChatEnabled
-    self.portraitSendButton.isEnabled = enable && isChatEnabled
+    self.sendButton.isEnabled = enable && isChatEnabled
     self.landscapeSendButton.isEnabled = enable && isChatEnabled
   }
   
@@ -977,17 +1019,13 @@ class PlayerController: UIViewController {
     editProfileController.view.rightAnchor.constraint(equalTo: editProfileContainerView.rightAnchor).isActive = true
     editProfileController.view.bottomAnchor.constraint(equalTo: editProfileContainerView.bottomAnchor).isActive = true
     
-    portraitEditProfileButton.tintColor = .white
-    landscapeEditProfileButton.tintColor = .white
     
     editProfileContainerView.isHidden = false
   }
   
   func dismissEditProfileView() {
     shouldEnableMessageTextFields(true)
-    portraitEditProfileButton.tintColor = .darkGray
-    landscapeEditProfileButton.tintColor = .darkGray
-    
+
     editProfileContainerView.isHidden = true
     let editProfile = children.first(where: { $0 is EditProfileViewController})
     editProfile?.willMove(toParent: nil)
@@ -999,8 +1037,8 @@ class PlayerController: UIViewController {
     let fixedWidth = textView.frame.size.width
     let newSize = textView.sizeThatFits(CGSize(width: fixedWidth, height: CGFloat.greatestFiniteMagnitude))
     switch textView {
-    case portraitTextView:
-      portraitMessageHeight.constant = newSize.height
+    case chatTextView:
+      messageHeight.constant = newSize.height > 26 ? newSize.height : 26
     case landscapeTextView:
       landscapeMessageHeight.constant = newSize.height
     default:
@@ -1047,7 +1085,7 @@ class PlayerController: UIViewController {
     pollContainerView.isHidden = false
     infoPortraitView.isHidden = true
     portraitTableView.isHidden = true
-    portraitBottomContainerView.isHidden = true
+    bottomContainerView.isHidden = true
     pollBannerIcon.hideBadge()
     collapsePollBanner(false)
     isShouldShowPollBadge = true
@@ -1137,7 +1175,7 @@ extension PlayerController {
   
   func adjustViewsFor(keyboardFrame: CGRect, with animationDuration: TimeInterval, animationCurve: UIView.AnimationOptions) {
     adjustHeightForTextView(landscapeTextView)
-    adjustHeightForTextView(portraitTextView)
+    adjustHeightForTextView(chatTextView)
     UIView.animate(withDuration: animationDuration, delay: 0, options: [.beginFromCurrentState, animationCurve], animations: {
       self.view.layoutIfNeeded()
       let lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
@@ -1168,7 +1206,11 @@ extension PlayerController: UITextViewDelegate {
     }
     return textView.text.count + text.count - range.length <= maxTextLength
   }
-  
+
+  func textViewDidEndEditing(_ textView: UITextView) {
+    collapseChatTextView()
+  }
+
   func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
     
     if User.current?.displayName.isEmpty == true {
@@ -1177,6 +1219,7 @@ extension PlayerController: UITextViewDelegate {
       }
       return false
     }
+    expandChatTextView()
     return true
   }
   
@@ -1224,7 +1267,7 @@ extension PlayerController: PollControllerDelegate {
     pollContainerView.isHidden = true
     infoPortraitView.isHidden = false
     portraitTableView.isHidden = false
-    portraitBottomContainerView.isHidden = false
+    bottomContainerView.isHidden = false
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
   }
 }
@@ -1241,4 +1284,3 @@ extension PlayerController: EditProfileControllerDelegate {
     dismissEditProfileView()
   }
 }
-
