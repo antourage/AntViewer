@@ -188,7 +188,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 @import AVFoundation;
 @import Foundation;
-@import ObjectiveC;
 @import UIKit;
 #endif
 
@@ -210,12 +209,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 
 
-SWIFT_CLASS("_TtC12AntViewerExt9Debouncer")
-@interface Debouncer : NSObject
-- (void)execute;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
 
 
 

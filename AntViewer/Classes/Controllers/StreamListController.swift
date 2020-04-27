@@ -12,8 +12,83 @@ import AntViewerExt
 private let reuseIdentifier = "StreamCell"
 
 class StreamListController: UICollectionViewController {
-  
+
+  fileprivate lazy var newLivesButton: UIButton = {
+    let button = UIButton()
+    button.layer.cornerRadius = 10
+    button.clipsToBounds = true
+    button.backgroundColor = UIColor.color("a_button_blue")
+    button.setImage(UIImage.image("ArrowSmallTop"), for: .normal)
+    button.setTitle("NEW LIVE", for: .normal)
+    button.titleLabel?.font = UIFont.systemFont(ofSize: 9, weight: .bold)
+    button.setTitleColor(.white, for: .normal)
+    button.semanticContentAttribute = .forceRightToLeft
+    view.addSubview(button)
+    button.addTarget(self, action: #selector(scrollToTop), for: .touchUpInside)
+    button.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
+      button.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
+      button.heightAnchor.constraint(equalToConstant: 21),
+      button.widthAnchor.constraint(equalToConstant: 80)
+    ])
+    return button
+  }()
+
   fileprivate var swiftMessage: SwiftMessage?
+
+  fileprivate var activeCell: StreamCell? {
+    didSet {
+      oldValue?.contentImageView.player = nil
+      oldValue?.timeImageView.stopAnimating()
+      player.stop()
+      playerDebouncer.call {}
+      guard let item = activeItem else { return }
+      playerDebouncer.call { [weak self] in
+        self?.activeCell?.replayView.isHidden = true
+        self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
+        self?.activeCell?.contentImageView.player = self?.player.player
+        self?.activeCell?.timeImageView.startAnimating()
+        let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
+        var position: Double?
+        if let item = item as? VOD {
+          position = Double(self?.stopTimes[item.streamId] ?? item.stopTime.duration())
+        }
+        self?.player.load(media: media, autostart: true, position: position)
+      }
+    }
+  }
+  
+  private var footerView: FooterView? {
+    didSet {
+      footerView?.jumpAction = { [weak self] in
+        self?.scrollToTop()
+      }
+      footerView?.showButton = reachedListsEnd
+      if fetchingNextItems {
+        footerView?.startAnimating()
+      } else {
+        footerView?.stopAnimating()
+      }
+    }
+  }
+
+  fileprivate var activeItem: VideoContent? {
+    guard let cell = activeCell,
+    let index = collectionView.indexPath(for: cell) else {
+      return nil
+    }
+    return getItemWith(indexPath: index)
+  }
+
+  fileprivate lazy var player: ModernAVPlayer = {
+    let player = ModernAVPlayer()
+    player.player.isMuted = true
+    player.delegate = self
+    return player
+  }()
+
+  fileprivate let playerDebouncer = Debouncer(delay: 1.2)
   fileprivate var isLoading = false {
     didSet {
       collectionView.isUserInteractionEnabled = !isLoading
@@ -25,33 +100,21 @@ class StreamListController: UICollectionViewController {
   }
 
   var dataSource: DataSource!
-  
-  private var isFetchingNextItems = false
-  private var footerView: FooterView? {
-    didSet {
-      footerView?.jumpAction = { [weak self] in
-        self?.scrollToTop()
-      }
-      footerView?.showButton = reachedListsEnd
-      if isFetchingNextItems {
-        footerView?.startAnimating()
-      } else {
-        footerView?.stopAnimating()
-      }
-    }
-  }
-
+  private var fetchingNextItems = false
   fileprivate var reachedListsEnd = false
-
   private let refreshControl = UIRefreshControl()
-  private var isHiddenAuthCompleted = false
+  private var hiddenAuthCompleted = false
+  fileprivate var shouldResetActiveCell = true
   
   var onViewerDismiss: ((NSDictionary) -> Void)?
+
+  // MARK: Temp solution
+  fileprivate var stopTimes = [Int : Int]()
 
   override func viewDidLoad() {
     super.viewDidLoad()
     AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
-      self?.isHiddenAuthCompleted = true
+      self?.hiddenAuthCompleted = true
       switch result {
       case .success():
         self?.initialVodsUpdate()
@@ -63,11 +126,12 @@ class StreamListController: UICollectionViewController {
     setupNavigationBar()
     setupCollectionView()
     isLoading = true
-    
     initialVodsUpdate()
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-      self?.reloadCollectionViewDataSource()
+      let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
+      let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
+      self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
     }
     
     refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
@@ -78,36 +142,106 @@ class StreamListController: UICollectionViewController {
 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
     collectionView.reloadData()
   }
 
-  func scrollToTop() {
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    activeCell = getTopVisibleCell()
+  }
+
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+    NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+    activeCell = nil
+  }
+
+  @objc
+  fileprivate func scrollToTop() {
     collectionView.setContentOffset(.zero, animated: true)
   }
   
-  func initialVodsUpdate() {
+  private func initialVodsUpdate() {
     dataSource.updateVods { [weak self] (result) in
       guard let `self` = self else { return }
       switch result {
       case .success:
-        self.reloadCollectionViewDataSource()
+        if !self.isDataSourceEmpty {
+          self.isLoading = false
+        }
+        self.collectionView.reloadData()
       case .failure(let error):
         print(error)
-        if error.noInternetConnection || self.isHiddenAuthCompleted {
+        if error.noInternetConnection || self.hiddenAuthCompleted {
           self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
         }
       }
     }
   }
+
+  @objc
+  private func handleWillResignActive(_ notification: NSNotification) {
+    activeCell = nil
+  }
+
+  @objc
+  private func handleDidBecomeActive(_ notification: NSNotification) {
+    activeCell = getTopVisibleCell()
+  }
   
-  private func reloadCollectionViewDataSource() {
-    if !isDataSourceEmpty {
-      isLoading = false
+  private func reloadCollectionViewDataSource(addedCount: Int, deletedIndexes: [Int]) {
+    guard var visibleIndexPath = getTopVisibleRow(),
+      var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
+        collectionView.reloadData()
+        return
     }
-    collectionView.reloadData()
+    var shouldScroll = true
+    let streamsCount = dataSource.streams.count
+    if visibleIndexPath.section == 0 {
+      let itemsCount = collectionView.numberOfItems(inSection: 0)
+      if streamsCount == 0 {
+        shouldScroll = dataSource.videos.count > 0
+        differenceBetweenRowAndNavBar = 0
+        visibleIndexPath = IndexPath(item: 0, section: 1)
+      } else {
+        let difference = streamsCount - itemsCount
+        let newItem = max(visibleIndexPath.item + difference, 0)
+        visibleIndexPath.item = newItem
+      }
+    }
+
+    UIView.performWithoutAnimation {
+      let deletedPaths = deletedIndexes.map { IndexPath(item: $0, section: 0) }
+      var addedPaths = [IndexPath]()
+      for index in 0 ..< addedCount {
+        addedPaths.append(IndexPath(item: index, section: 0))
+      }
+      collectionView.performBatchUpdates({
+        collectionView.deleteItems(at: deletedPaths)
+        collectionView.insertItems(at: addedPaths)
+      }, completion: nil)
+
+      if addedCount > 0, newLivesButton.isHidden {
+        let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
+        newLivesButton.isHidden = !shouldShow
+      } else if streamsCount == 0 {
+        newLivesButton.isHidden = true
+      }
+      if shouldScroll {
+        shouldResetActiveCell = false
+        collectionView.scrollToItem(at: visibleIndexPath, at: .top, animated: false)
+        collectionView.contentOffset.y = collectionView.contentOffset.y - differenceBetweenRowAndNavBar
+        shouldResetActiveCell = true
+      }
+    }
+
   }
   
   private func setupNavigationBar() {
+    // TODO: change height if needed
     //    navigationController?.navigationBar.frame =
     navigationController?.navigationBar.barTintColor = collectionView.backgroundColor
     navigationController?.navigationBar.updateBackgroundColor()
@@ -140,7 +274,6 @@ class StreamListController: UICollectionViewController {
       case .failure(let error):
         self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
       }
-
     }
   }
   
@@ -158,13 +291,8 @@ class StreamListController: UICollectionViewController {
     guard let touches = event.allTouches?.first, touches.tapCount == 3 else {
       return
     }
-    presentChangeHostAlert()
-//    if let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String {
-//      sender.setTitle(version, for: .normal)
-//      DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak sender] in
-//        sender?.setTitle(nil, for: .normal)
-//      }
-//    }
+    let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String
+    presentChangeHostAlert(with: version)
     
   }
   
@@ -192,18 +320,18 @@ class StreamListController: UICollectionViewController {
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
     if let item = item as? VOD {
       cell.isNew = item.isNew
-      cell.watchedTime = item.isNew ? 0 : item.stopTime.duration()
       cell.duration = item.duration.duration()
-      //TODO: if active cell ended
+      //Temp solution
+      cell.watchedTime = item.isNew ? 0 : stopTimes[item.streamId] ?? item.stopTime.duration()
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
       cell.isLive = true
-      cell.watchedTime = 0
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
+      cell.watchedTime = 0
       cell.replayView.isHidden = true
       cell.joinAction = { itemCell in
-        //TOD: open player with field
+        //TOD: open player with active field
       }
     }
     return cell
@@ -217,25 +345,73 @@ class StreamListController: UICollectionViewController {
     }
   }
 
-     func getTopVisibleRow () -> IndexPath? {
-         //We need this to accounts for the translucency below the nav bar
-         let navBar = navigationController?.navigationBar
-         let whereIsNavBarInTableView = collectionView.convert(navBar!.bounds, from: navBar)
-         let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height + 1)
-         let accurateIndexPath = collectionView.indexPathForItem(at: pointWhereNavBarEnds)
-         return accurateIndexPath
-     }
+  fileprivate func getTopVisibleRow () -> IndexPath? {
+    let navBar = navigationController?.navigationBar
+    let whereIsNavBarInTableView = collectionView.convert(navBar!.bounds, from: navBar)
+    let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height + 1)
+    let accurateIndexPath = collectionView.indexPathForItem(at: pointWhereNavBarEnds)
+    return accurateIndexPath
+  }
 
-     func heightDifferenceBetweenTopRowAndNavBar() -> CGFloat? {
-      let rectForTopRow = collectionView.layoutAttributesForItem(at: getTopVisibleRow()!)!.frame
-         let navBar = navigationController?.navigationBar
-         let whereIsNavBarInTableView = collectionView.convert(navBar!.bounds, from: navBar)
-         let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height)
-         let differenceBetweenTopRowAndNavBar = rectForTopRow.origin.y - pointWhereNavBarEnds.y
-         return differenceBetweenTopRowAndNavBar
-     }
+  fileprivate func heightDifferenceBetweenTopRowAndNavBar() -> CGFloat? {
+    let rectForTopRow = collectionView.layoutAttributesForItem(at: getTopVisibleRow()!)!.frame
+    let navBar = navigationController?.navigationBar
+    let whereIsNavBarInTableView = collectionView.convert(navBar!.bounds, from: navBar)
+    let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height)
+    let differenceBetweenTopRowAndNavBar = rectForTopRow.origin.y - pointWhereNavBarEnds.y
+    return differenceBetweenTopRowAndNavBar
+  }
+
+  fileprivate func getTopVisibleCell() -> StreamCell? {
+    let cell = collectionView.visibleCells.last(where: {
+      let cellRect = $0.frame
+      var listRect = self.collectionView.bounds
+      listRect.origin.y -= cellRect.height * 0.25
+      listRect.size.height += cellRect.height * 0.4
+      return listRect.contains(cellRect)
+    })
+    return cell as? StreamCell
+  }
+
 }
 
+
+// MARK: UIScrollViewDelegate
+extension StreamListController {
+  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    resetActiveCell()
+  }
+
+  override func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+    setActiveCell()
+  }
+  override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    setActiveCell()
+  }
+
+  override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    setActiveCell()
+  }
+
+  override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if !decelerate {
+      setActiveCell()
+    }
+  }
+
+  private func setActiveCell() {
+    if let cell = getTopVisibleCell(), activeCell != cell {
+      activeCell = cell
+    }
+  }
+
+  private func resetActiveCell() {
+    if getTopVisibleCell() != activeCell, shouldResetActiveCell {
+      activeCell = nil
+    }
+  }
+
+}
 
 // MARK: UICollectionViewDataSource
 extension StreamListController {
@@ -245,11 +421,6 @@ extension StreamListController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    //TODO: skeleton
-    if false {
-      return 1
-    }
-    
     if !isDataSourceEmpty {
       collectionView.backgroundView = nil
     }
@@ -262,14 +433,12 @@ extension StreamListController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-
     if case UICollectionView.elementKindSectionFooter = kind {
       let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AntFooterView", for: indexPath) as! FooterView
       self.footerView = footer
       return footer
     }
     return UICollectionReusableView()
-
   }
   
 }
@@ -285,6 +454,7 @@ extension StreamListController {
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = item
     playerVC.dataSource = dataSource
+    // TODO: set temp stop time from list
     if item is VOD {
       let navController = PlayerNavigationController(rootViewController: playerVC)
       navController.modalPresentationStyle = .fullScreen
@@ -295,13 +465,16 @@ extension StreamListController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+    if indexPath.section == 0, indexPath.item == 0 {
+      newLivesButton.isHidden = true
+    }
     guard indexPath.section == 1, indexPath.row == dataSource.videos.count - 1, !isLoading else {
       self.footerView?.isHidden = true
       return
     }
     if dataSource.videos.count % 15 == 0 {
       let index = dataSource.videos.count
-      self.isFetchingNextItems = true
+      self.fetchingNextItems = true
       self.footerView?.isHidden = false
       dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
         guard let `self` = self else { return }
@@ -314,7 +487,7 @@ extension StreamListController {
           self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
           print("Error fetching vods")
         }
-        self.isFetchingNextItems = false
+        self.fetchingNextItems = false
         self.footerView?.isHidden = true
       }
     } else {
@@ -346,13 +519,41 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
     let size = CGSize(width: collectionView.bounds.width, height: section == 1 ? 50 : 0)
-    if reachedListsEnd {
+    if reachedListsEnd, collectionView.contentSize.height > view.bounds.height {
       return size
     }
-    guard !isFetchingNextItems, !self.isLoading else {
+    guard !fetchingNextItems, !self.isLoading else {
       return .zero
     }
     return size
   }
+}
+
+extension StreamListController: ModernAVPlayerDelegate {
+  public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
+    switch state {
+    case .failed:
+        activeCell = nil
+    default:
+      return
+    }
+  }
+
+  public func modernAVPlayer(_ player: ModernAVPlayer, didItemPlayToEndTime endTime: Double) {
+    activeCell?.replayView.isHidden = false
+    activeCell?.timeImageView.stopAnimating()
+  }
+
+  public func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
+    if let item = activeItem as? VOD {
+      activeCell?.duration = item.duration.duration()
+      activeCell?.watchedTime = Int(currentTime)
+      stopTimes[item.streamId] = Int(currentTime)
+    } else if let item = activeItem as? Live {
+      let duration = Date().timeIntervalSince(item.date)
+      activeCell?.duration = Int(duration)
+    }
+  }
+
 }
 
