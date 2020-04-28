@@ -46,7 +46,7 @@ public struct ModernAVPlayerConfiguration: PlayerConfiguration {
     //swiftlint:disable:next force_unwrapping
     public let reachabilityNetworkTestingURL = URL(string: "https://www.google.com")!
     public let reachabilityNetworkTestingTickTime: TimeInterval = 3
-    public let reachabilityNetworkTestingIteration: UInt = 5
+    public let reachabilityNetworkTestingIteration: UInt = 3
 
     public var useDefaultRemoteCommand = true
     
