@@ -20,7 +20,7 @@ class EditProfileViewController: UIViewController {
   @IBOutlet weak var displayNameTextField: UITextField! {
     didSet {
       displayNameTextField.delegate = self
-      displayNameTextField.attributedPlaceholder = NSAttributedString(string: "Type your display name", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
+      displayNameTextField.attributedPlaceholder = NSAttributedString(string: "Start typing", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
       displayNameTextField.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
       let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: displayNameTextField.bounds.height)))
       displayNameTextField.leftView = view
@@ -34,16 +34,18 @@ class EditProfileViewController: UIViewController {
   var isConfirmButtonEnable = false {
       didSet {
         confirmButton.backgroundColor = isConfirmButtonEnable ? .designerGreen : confirmButtonDisabledColor
+        confirmButton.setTitleColor( isConfirmButtonEnable ? .white : confirmButtonTitleDisabled , for: .normal)
         confirmButton.isEnabled = isConfirmButtonEnable
       }
     }
     
   public var currentDisplayName: String = "" {
       didSet {
-        displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Type your display name" : currentDisplayName
+        displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Start typing" : currentDisplayName
       }
     }
-  private let confirmButtonDisabledColor = UIColor(red: 200/255, green: 235/255, blue: 217/255, alpha: 1)
+  private let confirmButtonDisabledColor = UIColor(red: 48/255, green: 48/255, blue: 48/255, alpha: 1)
+  private let confirmButtonTitleDisabled = UIColor(red: 25/255, green: 25/255, blue: 25/255, alpha: 1)
 
   private let maxCharactersCount = 50
   
