@@ -54,7 +54,7 @@ class PlayerController: UIViewController {
                        UIColor.gradientDark.withAlphaComponent(0.5).cgColor,
                        UIColor.gradientDark.withAlphaComponent(0.6).cgColor
                       ]
-    gradient.locations = [0, 0.77, 0.78, 1]
+    gradient.locations = [0, 0.33, 0.44, 1]
     return gradient
   }()
   //MARK:  -
@@ -253,15 +253,15 @@ class PlayerController: UIViewController {
             landscapeStreamInfoLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ? 18 : 30 + 10
             view.layoutIfNeeded()
           }
-          bottomContainerView.isHidden = !videoControlsView.isHidden
-          landscapeTableViewContainer.isHidden = !videoControlsView.isHidden
+          bottomContainerView.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
+          landscapeTableViewContainer.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
           //MARK: ask about this
 //          landscapePollViewLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ?
 //            view.safeAreaInsets.left/*landscapeStreamInfoStackView.frame.origin.x*/ : 0
 //          landscapePollBannerLeading.constant = landscapeStreamInfoStackView.frame.origin.x
           if !isBottomContainerHidedByUser {
             bottomContainerLandscapeTop.isActive = !isChatEnabled
-            isChatEnabled ? view.layer.addSublayer(bottomContainerGradientLayer) :
+            isChatEnabled ? bottomContainerView.layer.insertSublayer(bottomContainerGradientLayer, at: 0) :
                             bottomContainerGradientLayer.removeFromSuperlayer()
           } else {
             bottomContainerLandscapeTop.isActive = true
@@ -269,7 +269,6 @@ class PlayerController: UIViewController {
             bottomContainerGradientLayer.removeFromSuperlayer()
           }
           view.layoutIfNeeded()
-          bottomContainerGradientLayer.frame = view.bounds
           currentTableView.frame.origin = CGPoint(x: !isBottomContainerHidedByUser ? 0 : -self.currentTableView.frame.width, y: 0)
         } else {
           bottomContainerLeading.constant = .zero
@@ -286,7 +285,12 @@ class PlayerController: UIViewController {
       }
     }
   }
-
+  lazy var formatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .none
+    formatter.timeStyle = .short
+    return formatter
+  }()
   fileprivate var pollManager: PollManager?
   fileprivate var isShouldShowPollAnswers = false
   fileprivate var pollABannerDebouncer = Debouncer(delay: 6)
@@ -490,6 +494,8 @@ class PlayerController: UIViewController {
         }
       })
       
+    } else {
+      bottomContainerView.isHidden = true
     }
     self.chat = Chat(streamID: videoContent.streamId)
     
@@ -617,6 +623,13 @@ class PlayerController: UIViewController {
       }
     } else {
       self.portraitTableView.reloadData()
+    }
+  }
+
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    if OrientationUtility.isLandscape {
+      updateBottomContainerGradientFrame()
     }
   }
   
@@ -758,7 +771,14 @@ class PlayerController: UIViewController {
       UIView.setAnimationsEnabled(true)
     }
   }
-  
+
+  private func updateBottomContainerGradientFrame() {
+    let topExtra: CGFloat = 35
+    let origin = CGPoint(x: bottomContainerView.bounds.origin.x, y: -topExtra)
+    let size = CGSize(width: bottomContainerView.bounds.width, height: bottomContainerView.bounds.height+topExtra+view.safeAreaInsets.bottom)
+    bottomContainerGradientLayer.frame = CGRect(origin: origin, size: size)
+  }
+
   private func adjustVideoControlsButtons() {
     guard videoContent is VOD else {
       nextButton.isHidden = true
@@ -925,17 +945,18 @@ class PlayerController: UIViewController {
         self.bottomContainerView.isHidden = !isHidden
       }
       self.controlsDebouncer.call { [weak self] in
+        guard let `self` = self else { return }
         //MARK: hide player controls
         if OrientationUtility.isLandscape {
-          self?.landscapeTableViewContainer.isHidden = false
-          self?.bottomContainerView.isHidden = false
+          self.landscapeTableViewContainer.isHidden = !self.pollContainerView.isHidden
+          self.bottomContainerView.isHidden = !self.pollContainerView.isHidden
         }
-        if self?.player.isPlayerPaused == false {
-          if OrientationUtility.isLandscape && self?.seekTo != nil {
+        if self.player.isPlayerPaused == false {
+          if OrientationUtility.isLandscape && self.seekTo != nil {
             return
           }
-          self?.updateSeekThumbAppearance(isHidden: true)
-          self?.videoControlsView.isHidden = true
+          self.updateSeekThumbAppearance(isHidden: true)
+          self.videoControlsView.isHidden = true
         }
       }
     }
@@ -984,6 +1005,7 @@ class PlayerController: UIViewController {
     }
     guard let text = chatTextView.text, text.trimmingCharacters(in: .whitespacesAndNewlines).count != 0 else {
       chatTextView.text.removeAll()
+      self.adjustHeightForTextView(self.chatTextView)
       return
     }
     guard let _ = videoContent as? AntViewerExt.Live else {return}
@@ -1062,7 +1084,7 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleSwipeGesture(_ sender: UISwipeGestureRecognizer) {
-    guard editProfileContainerView.isHidden else { return }
+    guard editProfileContainerView.isHidden, videoControlsView.isHidden else { return }
     let halfOfViewWidth = view.bounds.width / 2
     guard OrientationUtility.isLandscape, sender.location(in: view).x <= halfOfViewWidth else {return}
     
@@ -1078,8 +1100,10 @@ class PlayerController: UIViewController {
     default:
       return
     }
-    isBottomContainerHidedByUser = !isRightDirection
-    bottomContainerLandscapeTop.isActive = !isRightDirection
+    if videoContent is Live {
+      isBottomContainerHidedByUser = !isRightDirection
+      bottomContainerLandscapeTop.isActive = !isRightDirection
+    }
     view.endEditing(false)
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()
@@ -1131,16 +1155,16 @@ class PlayerController: UIViewController {
     var cellNib: UINib!
     var reuseIdentifire: String!
     
-    switch sender {
-    case portraitTableView:
+//    switch sender {
+//    case portraitTableView:
       cellNib = UINib.init(nibName: "PortraitMessageCell", bundle: Bundle(for: type(of: self)))
       reuseIdentifire = "portraitCell"
-    case landscapeTableView:
-      cellNib = UINib.init(nibName: "LandscapeMessageCell", bundle: Bundle(for: type(of: self)))
-      reuseIdentifire = "landscapeCell"
-    default:
-      return
-    }
+//    case landscapeTableView:
+//      cellNib = UINib.init(nibName: "LandscapeMessageCell", bundle: Bundle(for: type(of: self)))
+//      reuseIdentifire = "landscapeCell"
+//    default:
+//      return
+//    }
     
     sender.register(cellNib, forCellReuseIdentifier: reuseIdentifire)
     sender.estimatedRowHeight = 50
@@ -1169,22 +1193,17 @@ extension PlayerController {
       if keyboardSize.width == view.frame.width {
         if isHidden {
           if editProfileControllerIsLoading { return }
-//          landscapeMessageHeight.constant = 30
-//          landscapeMessageBottomSpace.constant = 4
           portraitMessageBottomSpace.constant = 0
           chatFieldLeading = chatFieldLeading >= 0 ? landscapeStreamInfoStackView.frame.origin.x : chatFieldLeading
         } else if OrientationUtility.isLandscape {
           let isLeftInset = view.safeAreaInsets.left > 0
           chatFieldLeading = OrientationUtility.currentOrientatin == .landscapeRight && isLeftInset ? 30 : 0
-//          landscapeMessageBottomSpace.constant = keyboardSize.height - bottomPadding
           editProfileContainerLandscapeBottom.constant = keyboardSize.height
           portraitMessageBottomSpace.constant = keyboardSize.height - bottomPadding
         } else {
           portraitMessageBottomSpace.constant = keyboardSize.height - bottomPadding
           editProfileContainerPortraitBottom.constant = keyboardSize.height
         }
-//        landscapeMessageWidth.priority = UILayoutPriority(rawValue: isHidden ? 999 : 100)
-//        landscapeMessageTrailing.priority = UILayoutPriority(rawValue: isHidden ? 100 : 999)
       }
       adjustViewsFor(keyboardFrame: keyboardSize, with: animationDuration, animationCurve: animationCurve)
     }
@@ -1193,7 +1212,6 @@ extension PlayerController {
 
   
   func adjustViewsFor(keyboardFrame: CGRect, with animationDuration: TimeInterval, animationCurve: UIView.AnimationOptions) {
-//    adjustHeightForTextView(landscapeTextView)
     adjustHeightForTextView(chatTextView)
     UIView.animate(withDuration: animationDuration, delay: 0, options: [.beginFromCurrentState, animationCurve], animations: {
       self.view.layoutIfNeeded()
@@ -1256,21 +1274,14 @@ extension PlayerController: UITableViewDataSource {
   }
   
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let identifier = tableView == portraitTableView ? "portraitCell" : "landscapeCell"
-    let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: "portraitCell", for: indexPath) as! PortraitMessageCell
     
-    if let cell = cell as? MessageSupportable {
-      let message = messagesDataSource[indexPath.row]
-      let isCurrentUser = Int(message.userID) == User.current?.id
-      cell.messageLabel.text = message.text
-      if isCurrentUser {
-        cell.nameLabel.text = User.current?.displayName ?? message.nickname
-        cell.avatarImageView.load(url: URL(string: User.current?.imageUrl ?? ""), placeholder: UIImage(named: "avaPic"))
-      } else {
-        cell.nameLabel.text = message.nickname
-        cell.avatarImageView.load(url: URL(string: message.avatarUrl ?? ""), placeholder: UIImage(named: "avaPic"))
-      }
-    }
+    let message = messagesDataSource[indexPath.row]
+    let isCurrentUser = Int(message.userID) == User.current?.id
+    cell.messageLabel.text = message.text
+    let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
+    let date = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
+    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, formatter.string(from: date))
     return cell
   }
 }

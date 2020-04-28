@@ -9,15 +9,13 @@
 import UIKit
 
 protocol MessageSupportable {
-  var avatarImageView: CacheImageView! { get set }
-  var nameLabel: UILabel! { get set }
-  var messageLabel: UILabel! { get set }
+//  var nameLabel: UILabel! { get set }
+//  var messageLabel: UILabel! { get set }
 }
 
 class PortraitMessageCell: UITableViewCell, MessageSupportable {
   
-  @IBOutlet weak var avatarImageView: CacheImageView!
-  @IBOutlet weak var nameLabel: UILabel!
   @IBOutlet weak var messageLabel: UILabel!
+  @IBOutlet weak var messageInfoLabel: UILabel!
   
 }
