@@ -250,7 +250,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6M9-O3-0f4">
-                                    <rect key="frame" x="91.666666666666671" y="87.333333333333343" width="47.000000000000014" height="36"/>
+                                    <rect key="frame" x="91.666666666666686" y="87.333333333333343" width="47.000000000000014" height="36"/>
                                     <state key="normal" image="skip_previous"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="skip_previous"/>
@@ -724,8 +724,8 @@
                 <constraint firstAttribute="right" secondItem="CfQ-pS-qRe" secondAttribute="right" id="2fN-uq-9UC"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="3eR-AK-cch"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="0.23" id="4Nv-gJ-7Te"/>
-                <constraint firstItem="Lff-C4-vvV" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="5Am-sb-uIP"/>
-                <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="aEk-7a-LBQ" secondAttribute="bottom" id="5cL-Hy-45t"/>
+
+                <constraint firstItem="Lff-C4-vvV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="5Am-sb-uIP"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="6eL-p8-DNX"/>
                 <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="yiB-1m-rRo" secondAttribute="bottom" priority="950" constant="20" id="6ee-UV-Q6I"/>
                 <constraint firstItem="O7y-qk-2G8" firstAttribute="centerY" secondItem="N5N-dm-mUJ" secondAttribute="top" id="9Ef-d9-GEf"/>
@@ -754,8 +754,8 @@
                 <constraint firstItem="o26-cm-drr" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="hc7-Vw-qgR"/>
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="width" secondItem="fnl-2z-Ty3" secondAttribute="width" multiplier="0.5" priority="900" id="hhr-Ab-UfO"/>
                 <constraint firstAttribute="bottom" secondItem="Lff-C4-vvV" secondAttribute="bottom" id="hqg-GW-Byu"/>
-                <constraint firstItem="6KR-R7-XLO" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ild-vh-Dmh"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Lff-C4-vvV" secondAttribute="trailing" id="jVi-Si-LBh"/>
+                <constraint firstItem="6KR-R7-XLO" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="ild-vh-Dmh"/>
+                <constraint firstAttribute="trailing" secondItem="Lff-C4-vvV" secondAttribute="trailing" id="jVi-Si-LBh"/>
                 <constraint firstAttribute="bottom" secondItem="Lff-C4-vvV" secondAttribute="bottom" id="kpW-EJ-0hl"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="nz4-9q-wnC"/>
                 <constraint firstAttribute="trailing" secondItem="FJc-3f-swx" secondAttribute="trailing" id="q7X-hg-2Hm"/>
