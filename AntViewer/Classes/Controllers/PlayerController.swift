@@ -253,6 +253,8 @@ class PlayerController: UIViewController {
             landscapeStreamInfoLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ? 18 : 30 + 10
             view.layoutIfNeeded()
           }
+          bottomContainerView.isHidden = !videoControlsView.isHidden
+          landscapeTableViewContainer.isHidden = !videoControlsView.isHidden
           //MARK: ask about this
 //          landscapePollViewLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ?
 //            view.safeAreaInsets.left/*landscapeStreamInfoStackView.frame.origin.x*/ : 0
@@ -273,6 +275,8 @@ class PlayerController: UIViewController {
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
           bottomContainerPortraitTop.isActive = !isChatEnabled
+          bottomContainerView.isHidden = false
+          bottomContainerGradientLayer.removeFromSuperlayer()
         }
         if isShouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.answeredByUser == false {
           expandPollBanner(false)
@@ -874,7 +878,8 @@ class PlayerController: UIViewController {
       return
     }
     
-    guard !onPlayButton else { return }
+    guard !onPlayButton, !(!pollContainerView.isHidden&&OrientationUtility.isLandscape) else { return }
+
     //MARK: seek by typing
     self.updatePlayButtonImage()
     if self.isSeekByTappingMode {
@@ -911,12 +916,20 @@ class PlayerController: UIViewController {
     }
     controlsAppearingDebouncer.call { [weak self] in
       guard let `self` = self else { return }
+      //MARK: show player controls
       self.startLabel.text = self.videoContent.date.timeAgo()
       self.videoControlsView.isHidden = isHidden
       self.updateSeekThumbAppearance(isHidden: isHidden)
-      
+      if OrientationUtility.isLandscape {
+        self.landscapeTableViewContainer.isHidden = !isHidden
+        self.bottomContainerView.isHidden = !isHidden
+      }
       self.controlsDebouncer.call { [weak self] in
-        
+        //MARK: hide player controls
+        if OrientationUtility.isLandscape {
+          self?.landscapeTableViewContainer.isHidden = false
+          self?.bottomContainerView.isHidden = false
+        }
         if self?.player.isPlayerPaused == false {
           if OrientationUtility.isLandscape && self?.seekTo != nil {
             return
@@ -1093,6 +1106,8 @@ class PlayerController: UIViewController {
     collapsePollBanner(false)
     isShouldShowPollBadge = true
     isShouldShowExpandedBanner = false
+    bottomContainerView.isHidden = true
+    landscapeTableViewContainer.isHidden = true
   }
 
   
@@ -1273,6 +1288,8 @@ extension PlayerController: PollControllerDelegate {
     portraitTableView.isHidden = false
     bottomContainerView.isHidden = false
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
+    bottomContainerView.isHidden = false
+    landscapeTableViewContainer.isHidden = false
   }
 }
 

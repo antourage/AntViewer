@@ -250,7 +250,7 @@
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6M9-O3-0f4">
-                                    <rect key="frame" x="91.666666666666686" y="87.333333333333343" width="47.000000000000014" height="36"/>
+                                    <rect key="frame" x="91.666666666666671" y="87.333333333333343" width="47.000000000000014" height="36"/>
                                     <state key="normal" image="skip_previous"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="skip_previous"/>
@@ -457,13 +457,13 @@
                                     <rect key="frame" x="58" y="0.0" width="297" height="54.666666666666664"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Naked players on the field bla bla bla bla bla" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="z3C-rz-EgN">
-                                            <rect key="frame" x="0.0" y="0.0" width="297" height="31.666666666666668"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="297" height="40"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Paul labile Pogba" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="1Mf-4J-uwh">
-                                            <rect key="frame" x="0.0" y="31.666666666666686" width="297" height="23"/>
+                                            <rect key="frame" x="0.0" y="40" width="297" height="14.666666666666664"/>
                                             <fontDescription key="fontDescription" type="system" weight="light" pointSize="13"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
@@ -724,12 +724,12 @@
                 <constraint firstAttribute="right" secondItem="CfQ-pS-qRe" secondAttribute="right" id="2fN-uq-9UC"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="3eR-AK-cch"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="0.23" id="4Nv-gJ-7Te"/>
-
                 <constraint firstItem="Lff-C4-vvV" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="5Am-sb-uIP"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="6eL-p8-DNX"/>
                 <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="yiB-1m-rRo" secondAttribute="bottom" priority="950" constant="20" id="6ee-UV-Q6I"/>
                 <constraint firstItem="O7y-qk-2G8" firstAttribute="centerY" secondItem="N5N-dm-mUJ" secondAttribute="top" id="9Ef-d9-GEf"/>
                 <constraint firstItem="FJc-3f-swx" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Bpa-XM-g56"/>
+                <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="aEk-7a-LBQ" secondAttribute="bottom" id="Fcs-eH-UPc"/>
                 <constraint firstItem="yiB-1m-rRo" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="12" id="LCo-MZ-PL2"/>
                 <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="MVp-GP-sPw"/>
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="MhO-Ik-UE5"/>
@@ -792,8 +792,8 @@
                     <exclude reference="NGl-W3-9ZB"/>
                     <exclude reference="Zof-hi-OiQ"/>
                     <exclude reference="hDO-e0-jeW"/>
-                    <exclude reference="5cL-Hy-45t"/>
                     <exclude reference="6ee-UV-Q6I"/>
+                    <exclude reference="Fcs-eH-UPc"/>
                     <exclude reference="MVp-GP-sPw"/>
                     <exclude reference="aoO-Zn-1i2"/>
                     <exclude reference="fDd-QS-XBE"/>
@@ -806,16 +806,16 @@
             <variation key="heightClass=compact-widthClass=compact">
                 <mask key="constraints">
                     <include reference="kpW-EJ-0hl"/>
-                    <include reference="5cL-Hy-45t"/>
                     <include reference="6ee-UV-Q6I"/>
+                    <include reference="Fcs-eH-UPc"/>
                     <include reference="aoO-Zn-1i2"/>
                 </mask>
             </variation>
             <variation key="heightClass=compact-widthClass=regular">
                 <mask key="constraints">
                     <include reference="kpW-EJ-0hl"/>
-                    <include reference="5cL-Hy-45t"/>
                     <include reference="6ee-UV-Q6I"/>
+                    <include reference="Fcs-eH-UPc"/>
                     <include reference="aoO-Zn-1i2"/>
                 </mask>
             </variation>
