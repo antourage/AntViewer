@@ -43,7 +43,7 @@ class EditProfileViewController: UIViewController {
         displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Type your display name" : currentDisplayName
       }
     }
-  private let confirmButtonDisabledColor = UIColor(red: 204/255, green: 238/255, blue: 221/255, alpha: 1)
+  private let confirmButtonDisabledColor = UIColor(red: 200/255, green: 235/255, blue: 217/255, alpha: 1)
 
   private let maxCharactersCount = 50
   
