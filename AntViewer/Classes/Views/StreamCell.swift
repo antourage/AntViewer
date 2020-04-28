@@ -18,7 +18,14 @@ public class StreamCell: UICollectionViewCell {
   @IBOutlet private var watchedTimeLineViewWidthConstraint: NSLayoutConstraint!
   @IBOutlet private var circleImageView: UIImageView!
   @IBOutlet private var timeLabel: UILabel!
-  @IBOutlet private var timeImageView: UIImageView!
+  @IBOutlet var timeImageView: UIImageView! {
+    didSet {
+      let images = Array(0...24).compactMap {
+        UIImage.image(String(format: "Autoplay%02d", $0))
+      }
+      timeImageView.animationImages = images
+    }
+  }
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var subtitleLabel: UILabel!
   @IBOutlet var viewersCountLabel: UILabel!
