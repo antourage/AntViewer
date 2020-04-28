@@ -162,11 +162,14 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gnR-cl-NgX">
                                 <rect key="frame" x="333" y="345.5" width="61" height="22.5"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-Xp-pMe">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Autoplay00" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-Xp-pMe">
                                         <rect key="frame" x="6" y="1" width="20.5" height="20.5"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="OH0-Xp-pMe" secondAttribute="height" multiplier="1:1" id="g66-ZV-rrS"/>
                                         </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="Autoplay00"/>
+                                        </userDefinedRuntimeAttributes>
                                     </imageView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5:15" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xNS-mf-tIv">
                                         <rect key="frame" x="30.5" y="4.5" width="24.5" height="13.5"/>
@@ -337,6 +340,7 @@
     </objects>
     <resources>
         <image name="ArrowSmallRight" width="12" height="12"/>
+        <image name="Autoplay00" width="16" height="16"/>
         <image name="BroadcasterColorWheel" width="40" height="40"/>
         <image name="Chat" width="24" height="24"/>
         <image name="PlaceholderVideo" width="144" height="144"/>
