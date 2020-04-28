@@ -36,4 +36,8 @@ public extension UIColor {
   static var designerBlue: UIColor {
     return UIColor.color("a_button_blue") ?? .blue
   }
+
+  static var gradientDark: UIColor {
+    return UIColor.color("gradientDark") ?? .black
+  }
 }
