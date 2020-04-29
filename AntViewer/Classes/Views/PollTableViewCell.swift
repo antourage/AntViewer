@@ -7,10 +7,10 @@
 
 import UIKit
 
-class PollTableViewCell: UITableViewCell {
-  @IBOutlet private weak var cardView: UIView!
-  @IBOutlet weak var titleLabel: UILabel!
-  @IBOutlet private weak var percentageLabel: UILabel!
+public class PollTableViewCell: UITableViewCell {
+  @IBOutlet private var cardView: UIView!
+  @IBOutlet public var titleLabel: UILabel!
+  @IBOutlet private var percentageLabel: UILabel!
   @IBOutlet private var titleLabelTrailing: NSLayoutConstraint!
 
   lazy var progressView: UIView = {
@@ -25,7 +25,7 @@ class PollTableViewCell: UITableViewCell {
 
   private var progressViewWidthConstrant: NSLayoutConstraint?
 
-  var isStatistic = false {
+  public var isStatistic = false {
     didSet {
       percentageLabel.isHidden = !isStatistic
       titleLabelTrailing.isActive = !isStatistic
@@ -33,7 +33,7 @@ class PollTableViewCell: UITableViewCell {
     }
   }
 
-  var isUserChoise = false {
+  public var isUserChoise = false {
     didSet {
       guard isStatistic else { return }
       let color = isUserChoise ?
@@ -45,7 +45,7 @@ class PollTableViewCell: UITableViewCell {
     }
   }
 
-  var percentage: Int = 0 {
+  public var percentage: Int = 0 {
     didSet {
       guard isStatistic else { return }
       percentageLabel.text = String(format: "%d%%", percentage)
@@ -63,7 +63,7 @@ class PollTableViewCell: UITableViewCell {
     }
   }
 
-  override func awakeFromNib() {
+  public override func awakeFromNib() {
     super.awakeFromNib()
     cardView.layer.borderColor = UIColor.pink.cgColor
   }
