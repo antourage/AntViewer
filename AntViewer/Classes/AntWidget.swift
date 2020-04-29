@@ -243,12 +243,14 @@ public class AntWidget {
   @objc
   func handleWillResignActive(_ notification: NSNotification) {
     isBackground = true
+    AntWidget.dataSource?.pauseUpdatingVods()
     set(state: .resting)
   }
 
   @objc
   func handleDidBecomeActive(_ notification: NSNotification) {
     isBackground = false
+    AntWidget.dataSource?.startUpdatingVods()
   }
 }
 
