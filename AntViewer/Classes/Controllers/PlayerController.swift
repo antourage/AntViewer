@@ -194,19 +194,19 @@ class PlayerController: UIViewController {
   }
 
   //MARK: - new poll banner staff
-  @IBOutlet weak var pollBannerAspectRatio: NSLayoutConstraint!
-  @IBOutlet weak var pollBannerPortraitLeading: NSLayoutConstraint!
-  @IBOutlet weak var pollTitleLabel: UILabel!
-  @IBOutlet weak var pollBannerView: UIView!
-  @IBOutlet weak var pollBannerIcon: UIImageView!
-  var isShouldShowExpandedBanner = true
+  @IBOutlet private var pollBannerAspectRatio: NSLayoutConstraint!
+  @IBOutlet private var pollBannerPortraitLeading: NSLayoutConstraint!
+  @IBOutlet private var pollTitleLabel: UILabel!
+  @IBOutlet private var pollBannerView: UIView!
+  @IBOutlet private var pollBannerIcon: UIImageView!
+  var shouldShowExpandedBanner = true
 
   //MARK: edit profile staff
-  @IBOutlet weak var editProfileContainerPortraitBottom: NSLayoutConstraint!
-  @IBOutlet weak var editProfileContainerLandscapeBottom: NSLayoutConstraint!
-  var pollAnswersFromLastView = 0
-  var isShouldShowPollBadge = false
-  var isFirstTimeBanerShown = true
+  @IBOutlet private var editProfileContainerPortraitBottom: NSLayoutConstraint!
+  @IBOutlet private var editProfileContainerLandscapeBottom: NSLayoutConstraint!
+  private var pollAnswersFromLastView = 0
+  private var shouldShowPollBadge = false
+  private var isFirstTimeBanerShown = true
 
   fileprivate var currentOrientation: UIInterfaceOrientation! {
     didSet {
@@ -222,10 +222,6 @@ class PlayerController: UIViewController {
             view.layoutIfNeeded()
             landscapeMessageTrailing.constant = OrientationUtility.currentOrientatin == .landscapeLeft ? 30 : 0
           }
-          //MARK: ask about this
-//          landscapePollViewLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ?
-//            view.safeAreaInsets.left/*landscapeStreamInfoStackView.frame.origin.x*/ : 0
-//          landscapePollBannerLeading.constant = landscapeStreamInfoStackView.frame.origin.x
           landscapeMessageLeading.constant = chatFieldLeading
           currentTableView.frame.origin = CGPoint(x: chatFieldLeading >= 0 ? 0 : -self.currentTableView.frame.width, y: 0)
           if landscapeChatLeading.constant > 0 {
@@ -233,8 +229,8 @@ class PlayerController: UIViewController {
           }
           
         }
-        if isShouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.answeredByUser == false {
-          expandPollBanner(false)
+        if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
+          expandPollBanner(enableAutoHide: false)
         }
         updateContentInsetForTableView(currentTableView)
         view.layoutIfNeeded()
@@ -244,14 +240,14 @@ class PlayerController: UIViewController {
 
   fileprivate var pollManager: PollManager?
   fileprivate var isShouldShowPollAnswers = false
-  fileprivate var pollABannerDebouncer = Debouncer(delay: 6)
+  fileprivate var pollBannerDebouncer = Debouncer(delay: 6)
   fileprivate var activePoll:  Poll? {
     didSet {
       NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : activePoll ?? 0])
       guard let poll = activePoll else {
-        pollABannerDebouncer.call {}
+        pollBannerDebouncer.call {}
         self.isShouldShowPollAnswers = false
-        self.isShouldShowExpandedBanner = true
+        self.shouldShowExpandedBanner = true
         self.isFirstTimeBanerShown = true
         self.pollControllerCloseButtonPressed()
         self.pollBannerView.isHidden = true
@@ -261,12 +257,10 @@ class PlayerController: UIViewController {
       }
 
       poll.onUpdate = { [weak self] in
-        guard let `self` = self,
-          let _ = self.activePoll else { return }
-
+        guard let `self` = self, self.activePoll != nil else { return }
         if self.pollBannerView.isHidden {
           if OrientationUtility.isPortrait {
-            poll.answeredByUser ? self.collapsePollBanner(false) : self.expandPollBanner()
+            poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
           } else {
             self.collapsePollBanner()
           }
@@ -275,7 +269,7 @@ class PlayerController: UIViewController {
         }
 
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : self.activePoll ?? 0])
-        if self.activePoll?.answeredByUser == true, self.pollContainerView.isHidden, self.isShouldShowPollBadge {
+        if self.activePoll?.userAnswer != nil, self.pollContainerView.isHidden, self.shouldShowPollBadge {
           let count = self.activePoll?.answersCount.reduce(0, +) ?? 0
           let dif = count - self.pollAnswersFromLastView - 1
           if dif > 0 {
@@ -474,7 +468,7 @@ class PlayerController: UIViewController {
     adjustHeightForTextView(landscapeTextView)
   }
 
-  func collapsePollBanner(_ animated: Bool = true) {
+  func collapsePollBanner(animated: Bool = true) {
     pollBannerPortraitLeading.isActive = false
     pollBannerAspectRatio.isActive = true
     UIView.animate(withDuration: animated ? 0.3 : 0, animations: {
@@ -484,7 +478,7 @@ class PlayerController: UIViewController {
     }
   }
 
-  func expandPollBanner(_ enableAutoHide: Bool = true) {
+  func expandPollBanner(enableAutoHide: Bool = true) {
     pollBannerAspectRatio.isActive = false
     if OrientationUtility.currentOrientatin.isPortrait {
       pollBannerPortraitLeading.isActive = true
@@ -496,8 +490,8 @@ class PlayerController: UIViewController {
     }
     guard isFirstTimeBanerShown else { return }
     isFirstTimeBanerShown = false
-    pollABannerDebouncer.call { [weak self] in
-      self?.isShouldShowExpandedBanner = false
+    pollBannerDebouncer.call { [weak self] in
+      self?.shouldShowExpandedBanner = false
       self?.collapsePollBanner()
     }
   }
@@ -1049,9 +1043,9 @@ class PlayerController: UIViewController {
     portraitTableView.isHidden = true
     portraitBottomContainerView.isHidden = true
     pollBannerIcon.hideBadge()
-    collapsePollBanner(false)
-    isShouldShowPollBadge = true
-    isShouldShowExpandedBanner = false
+    collapsePollBanner(animated: false)
+    shouldShowPollBadge = true
+    shouldShowExpandedBanner = false
   }
 
   

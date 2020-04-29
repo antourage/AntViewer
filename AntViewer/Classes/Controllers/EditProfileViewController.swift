@@ -17,7 +17,7 @@ class EditProfileViewController: UIViewController {
   
   weak var delegate: EditProfileControllerDelegate?
   
-  @IBOutlet weak var displayNameTextField: UITextField! {
+  @IBOutlet var displayNameTextField: UITextField! {
     didSet {
       displayNameTextField.delegate = self
       displayNameTextField.attributedPlaceholder = NSAttributedString(string: "Start typing", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
@@ -29,7 +29,7 @@ class EditProfileViewController: UIViewController {
       displayNameTextField.rightViewMode = .always
     }
   }
-  @IBOutlet weak var confirmButton: UIButton!
+  @IBOutlet var confirmButton: UIButton!
 
   var isConfirmButtonEnable = false {
       didSet {
@@ -39,7 +39,7 @@ class EditProfileViewController: UIViewController {
       }
     }
     
-  public var currentDisplayName: String = "" {
+  var currentDisplayName: String = "" {
       didSet {
         displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Start typing" : currentDisplayName
       }
@@ -83,8 +83,7 @@ class EditProfileViewController: UIViewController {
   }
 
   @IBAction func confirmButtonPressed(_ sender: UIButton) {
-     let text = displayNameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true ? nil : displayNameTextField.text
-       if let text = text {
+       if let text = displayNameTextField.text, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
         AntViewerManager.shared.change(displayName: text) { [weak self] (result) in
           guard let `self` = self else { return }
           switch result {
