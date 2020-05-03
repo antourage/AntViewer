@@ -45,7 +45,7 @@ class PollController: UIViewController {
     tableView.register(pollCellNib, forCellReuseIdentifier: "pollCell")
     tableView.dataSource = self
     tableView.delegate = self
-    isPollStatistic = poll?.answeredByUser == true
+    isPollStatistic = poll?.userAnswer != nil
   }
   
   @objc
@@ -55,7 +55,7 @@ class PollController: UIViewController {
       return
     }
     poll = newPoll
-    isPollStatistic = poll?.answeredByUser == true
+    isPollStatistic = poll?.userAnswer != nil
   }
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
@@ -91,7 +91,7 @@ extension PollController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard !isPollStatistic else {return}
-    poll?.answeredByUser = true
+    poll?.userAnswer = indexPath.row
     isPollStatistic = true
     poll?.saveAnswerWith(index: indexPath.row)
   }

@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Messaging.messaging().delegate = self
     
     
-    AntWidget.authWith(apiKey: "put_your_api_key_here", refUserId: "userID", nickname: nil) { result in
+    AntWidget.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil) { result in
       switch result {
       case .success:
         //MARK: Connect PN to Antourage Firebase app
