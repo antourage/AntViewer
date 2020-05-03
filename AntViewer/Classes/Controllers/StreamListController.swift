@@ -48,7 +48,6 @@ class StreamListController: UICollectionViewController {
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
-        self?.activeCell?.timeImageView.startAnimating()
         let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
         var position: Double?
         if let item = item as? VOD {
@@ -195,6 +194,7 @@ class StreamListController: UICollectionViewController {
   private func reloadCollectionViewDataSource(addedCount: Int, deletedIndexes: [Int]) {
     guard var visibleIndexPath = getTopVisibleRow(),
       var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
+        reachedListsEnd = false
         collectionView.reloadData()
         return
     }
@@ -270,6 +270,7 @@ class StreamListController: UICollectionViewController {
       self?.refreshControl.endRefreshing()
       switch result {
       case .success:
+        self?.reachedListsEnd = false
         self?.collectionView.reloadData()
       case .failure(let error):
         self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
@@ -469,26 +470,29 @@ extension StreamListController {
       newLivesButton.isHidden = true
     }
     guard indexPath.section == 1, indexPath.row == dataSource.videos.count - 1, !isLoading else {
-      self.footerView?.isHidden = true
       return
     }
     if dataSource.videos.count % 15 == 0 {
       let index = dataSource.videos.count
       self.fetchingNextItems = true
       self.footerView?.isHidden = false
+      self.collectionView.invalidateIntrinsicContentSize()
       dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
         guard let `self` = self else { return }
+        self.footerView?.isHidden = true
+        self.fetchingNextItems = false
+        self.collectionView.invalidateIntrinsicContentSize()
         switch result {
         case .success :
           let count = self.dataSource.videos.count
           let indexPaths = (index..<count).map {IndexPath(row: $0, section: 1)}
           self.collectionView.insertItems(at: indexPaths)
+
         case .failure(let error):
           self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
           print("Error fetching vods")
         }
-        self.fetchingNextItems = false
-        self.footerView?.isHidden = true
+
       }
     } else {
       reachedListsEnd = true
@@ -553,6 +557,10 @@ extension StreamListController: ModernAVPlayerDelegate {
       let duration = Date().timeIntervalSince(item.date)
       activeCell?.duration = Int(duration)
     }
+  }
+
+  public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
+    activeCell?.timeImageView.startAnimating()
   }
 
 }
