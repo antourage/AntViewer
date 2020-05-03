@@ -15928,33 +15928,6 @@
 			};
 			name = Release;
 		};
-		576F315D60A7C7B924C6A7078823BB1A /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2E13C63E6939A2AFC29783105172BBCA /* AntViewer.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				GCC_PREFIX_HEADER = "Target Support Files/AntViewer/AntViewer-prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
-				MODULEMAP_FILE = Headers/Public/AntViewer/AntViewer.modulemap;
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PRIVATE_HEADERS_FOLDER_PATH = "";
-				PRODUCT_MODULE_NAME = AntViewer;
-				PRODUCT_NAME = AntViewer;
-				PUBLIC_HEADERS_FOLDER_PATH = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.1;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 		59785C6C87186FBB04F9AAE88F8A6D6D /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 21D155BFAC87DEA25F7FD4AEDC10554D /* GTMSessionFetcher.xcconfig */;
@@ -16365,6 +16338,33 @@
 			};
 			name = Release;
 		};
+		95AA45042F08991BBDF2E8B31F648C2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2E13C63E6939A2AFC29783105172BBCA /* AntViewer.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				GCC_PREFIX_HEADER = "Target Support Files/AntViewer/AntViewer-prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				MODULEMAP_FILE = Headers/Public/AntViewer/AntViewer.modulemap;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
+				PRODUCT_MODULE_NAME = AntViewer;
+				PRODUCT_NAME = AntViewer;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		9844C35FF92AF01E976855B6293C330E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B1A27EC213028295302BAFA184EC97B5 /* FirebaseCoreDiagnosticsInterop.xcconfig */;
@@ -16519,7 +16519,7 @@
 			};
 			name = Debug;
 		};
-		ACDA8A0EE8D0FDC101560BB46E0BD9DE /* Release */ = {
+		A931B240BE8FCFC4595DE1A9ED581AC4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2E13C63E6939A2AFC29783105172BBCA /* AntViewer.xcconfig */;
 			buildSettings = {
@@ -16541,7 +16541,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.1;
+				SWIFT_VERSION = 5.2;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -17204,8 +17204,8 @@
 		5C88C07549E5CCF59CBC12CD9EA465A4 /* Build configuration list for PBXNativeTarget "AntViewer" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				576F315D60A7C7B924C6A7078823BB1A /* Debug */,
-				ACDA8A0EE8D0FDC101560BB46E0BD9DE /* Release */,
+				95AA45042F08991BBDF2E8B31F648C2B /* Debug */,
+				A931B240BE8FCFC4595DE1A9ED581AC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
