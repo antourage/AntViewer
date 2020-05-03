@@ -101,7 +101,12 @@ class StreamListController: UICollectionViewController {
   var dataSource: DataSource!
   private var fetchingNextItems = false
   fileprivate var reachedListsEnd = false
-  private let refreshControl = UIRefreshControl()
+  private lazy var refreshControl: AntRefreshControl = {
+    let antRefreshControl = AntRefreshControl(frame: self.view.bounds)
+    antRefreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+    return antRefreshControl
+  }()
+
   private var hiddenAuthCompleted = false
   fileprivate var shouldResetActiveCell = true
   
@@ -132,8 +137,7 @@ class StreamListController: UICollectionViewController {
       let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
     }
-    
-    refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
     
@@ -266,14 +270,16 @@ class StreamListController: UICollectionViewController {
   
   @objc
   private func didPullToRefresh(_ sender: Any) {
-    dataSource.updateVods { [weak self] (result) in
-      self?.refreshControl.endRefreshing()
-      switch result {
-      case .success:
-        self?.reachedListsEnd = false
-        self?.collectionView.reloadData()
-      case .failure(let error):
-        self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+      self?.dataSource.updateVods { (result) in
+        self?.refreshControl.endRefreshing()
+        switch result {
+        case .success:
+          self?.reachedListsEnd = false
+          self?.collectionView.reloadData()
+        case .failure(let error):
+          self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
+        }
       }
     }
   }
@@ -380,6 +386,7 @@ class StreamListController: UICollectionViewController {
 // MARK: UIScrollViewDelegate
 extension StreamListController {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    refreshControl.scrollViewDidScroll(scrollView)
     resetActiveCell()
   }
 
