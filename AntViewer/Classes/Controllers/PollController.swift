@@ -13,28 +13,15 @@ protocol PollControllerDelegate: class {
   func pollControllerCloseButtonPressed()
 }
 
-let colors = ["a_poll1LightOrange", "a_poll2Terracotta", "a_poll3Blue", "a_poll4Green"]
-
 class PollController: UIViewController {
   
-  @IBOutlet weak var heightBottomView: NSLayoutConstraint!
-  
   @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var bottomView: UIView!
   @IBOutlet weak var questionLabel: UILabel!
-  @IBOutlet weak var totalAnswersLabel: UILabel! {
-    didSet {
-      let count = poll?.answersCount.reduce(0, +) ?? 0
-      totalAnswersLabel.text = "\(count)"
-    }
-  }
   
   weak var delegate: PollControllerDelegate?
   
   private var isPollStatistic: Bool! {
     didSet {
-      heightBottomView.constant = isPollStatistic ? 61 : 0
-      bottomView.isHidden = !isPollStatistic
       tableView.reloadData()
     }
   }
@@ -53,17 +40,13 @@ class PollController: UIViewController {
   }
 
   private func setupUI() {
-    let nibStatistic = UINib(nibName: "PollStatisticCell", bundle: Bundle(for: type(of: self)))
-    let nib = UINib(nibName: "PollCell", bundle: Bundle(for: type(of: self)))
+    let pollCellNib = UINib(nibName: String(describing: PollTableViewCell.self), bundle: Bundle(for: type(of: self)))
     questionLabel.text = poll?.pollQuestion
-    tableView.register(nibStatistic, forCellReuseIdentifier: "pollStatisticCell")
-    tableView.register(nib, forCellReuseIdentifier: "pollCell")
+    tableView.register(pollCellNib, forCellReuseIdentifier: "pollCell")
     tableView.dataSource = self
     tableView.delegate = self
-    isPollStatistic = poll?.answeredByUser == true
-    tableView.rowHeight = UITableView.automaticDimension
-    tableView.estimatedRowHeight = 70
-}
+    isPollStatistic = poll?.userAnswer != nil
+  }
   
   @objc
   private func handlePollUpdate(_ sender: NSNotification) {
@@ -72,9 +55,7 @@ class PollController: UIViewController {
       return
     }
     poll = newPoll
-    let count = poll?.answersCount.reduce(0, +) ?? 0
-    totalAnswersLabel.text = "\(count)"
-    isPollStatistic = poll?.answeredByUser == true
+    isPollStatistic = poll?.userAnswer != nil
   }
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
@@ -84,7 +65,6 @@ class PollController: UIViewController {
   deinit {
     NotificationCenter.default.removeObserver(self)
   }
-  
 }
 
 extension PollController: UITableViewDelegate, UITableViewDataSource {
@@ -94,27 +74,24 @@ extension PollController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if isPollStatistic {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "pollStatisticCell", for: indexPath) as! PollStatisticCell
-      cell.pollChoiceLabel.text = poll?.pollAnswers[indexPath.row]
-      cell.progresView.backgroundColor = UIColor.color(colors[indexPath.row])
-      let progress = tableView.bounds.width * CGFloat(poll?.percentForEachAnswer[indexPath.row] ?? 0) / 100
-      cell.progressLabel.text = "\(poll?.percentForEachAnswer[indexPath.row] ?? 0) %"
-      cell.progress.constant = progress
-
-      return cell
+    let cell = tableView.dequeueReusableCell(withIdentifier: "pollCell", for: indexPath) as! PollTableViewCell
+    cell.isStatistic = isPollStatistic
+    cell.titleLabel.text = poll?.pollAnswers[indexPath.row]
+    cell.percentage = poll?.percentForEachAnswer[indexPath.row] ?? 0
+    cell.isUserChoise = false
+    if let answer = poll?.userAnswer {
+      cell.isUserChoise = answer == indexPath.row
     }
-    
-    let cell = tableView.dequeueReusableCell(withIdentifier: "pollCell", for: indexPath) as! PollCell
-    cell.pollChoiceLabel.text = poll?.pollAnswers[indexPath.row]
-    cell.backgroundCellView.backgroundColor = UIColor.color(colors[indexPath.row])
-    
     return cell
+  }
+
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 56
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard !isPollStatistic else {return}
-    poll?.answeredByUser = true
+    poll?.userAnswer = indexPath.row
     isPollStatistic = true
     poll?.saveAnswerWith(index: indexPath.row)
   }

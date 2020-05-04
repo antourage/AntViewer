@@ -15,7 +15,7 @@ public class Poll {
   private var ref: DocumentReference?
   private var answersListener: ListenerRegistration?
   public var key: String
-  public var answeredByUser = false
+  public var userAnswer: Int?
   public let pollQuestion: String
   public var pollAnswers: [String]
   public var answersCount: [Int] {
@@ -45,8 +45,8 @@ public class Poll {
     self.pollAnswers = pollAnswers
     self.percentForEachAnswer = pollAnswers.map {_ in 0}
     self.answersCount = pollAnswers.map {_ in 0}
-    if User.current?.id == nil {
-      self.answeredByUser = true
+    if String(User.current?.id ?? 0) == snapshot.documentID {
+      self.userAnswer = value["chosenAnswer"] as? Int
     }
     answersListener = ref?.collection("answeredUsers").addSnapshotListener(answersHandler())
     
@@ -83,10 +83,8 @@ public class Poll {
       }
       
       if let id = User.current?.id {
-        self?.answeredByUser = documents.contains(where: {$0.documentID == "\(id)"})
-      } else {
-        //MARK: Turn off ability to answer
-        self?.answeredByUser = true
+        let userDocument = documents.first(where: { $0.documentID == "\(id)" })
+        self?.userAnswer = userDocument?.data()["chosenAnswer"] as? Int
       }
       
       let answers = documents.compactMap {$0.data()["chosenAnswer"] as? Int}
