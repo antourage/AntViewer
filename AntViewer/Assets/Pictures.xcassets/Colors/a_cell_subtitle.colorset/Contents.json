@@ -12,12 +12,9 @@
           "red" : "0x9B",
           "alpha" : "1.000",
           "blue" : "0xA9",
-<<<<<<< HEAD
-          "green" : "0xA3"
-=======
           "green" : "0xA3",
           "red" : "0x9B"
->>>>>>> redesign
+
         }
       }
     }
