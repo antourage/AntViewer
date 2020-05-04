@@ -36,15 +36,19 @@ class StreamListController: UICollectionViewController {
   }()
 
   fileprivate var swiftMessage: SwiftMessage?
+  private lazy var bottomMessage = BottomMessage(presentingController: self)
 
   fileprivate var activeCell: StreamCell? {
     didSet {
       oldValue?.contentImageView.player = nil
+      oldValue?.timeImageView.isHidden = true
       oldValue?.timeImageView.stopAnimating()
       player.stop()
       playerDebouncer.call {}
       guard let item = activeItem else { return }
       playerDebouncer.call { [weak self] in
+        let generator = UISelectionFeedbackGenerator()
+        generator.selectionChanged()
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
@@ -74,8 +78,8 @@ class StreamListController: UICollectionViewController {
 
   fileprivate var activeItem: VideoContent? {
     guard let cell = activeCell,
-    let index = collectionView.indexPath(for: cell) else {
-      return nil
+      let index = collectionView.indexPath(for: cell) else {
+        return nil
     }
     return getItemWith(indexPath: index)
   }
@@ -97,11 +101,19 @@ class StreamListController: UICollectionViewController {
   fileprivate var isDataSourceEmpty: Bool {
     return dataSource.videos.isEmpty && dataSource.streams.isEmpty
   }
+  fileprivate var isReachable: Bool {
+    URLSessionNetworkDispatcher.instance.isReachable
+  }
 
   var dataSource: DataSource!
   private var fetchingNextItems = false
   fileprivate var reachedListsEnd = false
-  private let refreshControl = UIRefreshControl()
+  private lazy var refreshControl: AntRefreshControl = {
+    let antRefreshControl = AntRefreshControl(frame: self.view.bounds)
+    antRefreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+    return antRefreshControl
+  }()
+
   private var hiddenAuthCompleted = false
   fileprivate var shouldResetActiveCell = true
   
@@ -126,14 +138,24 @@ class StreamListController: UICollectionViewController {
     setupCollectionView()
     isLoading = true
     initialVodsUpdate()
+
+    bottomMessage.onMessageAppear = { [weak self] height in
+      UIView.animate(withDuration: 0.3) {
+        self?.collectionView.frame.size.height -= height
+      }
+    }
+    bottomMessage.onMessageDisappear = { [weak self] height in
+      UIView.animate(withDuration: 0.3) {
+        self?.collectionView.frame.size.height += height
+      }
+    }
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
       let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
       let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
     }
-    
-    refreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
     
@@ -149,12 +171,39 @@ class StreamListController: UICollectionViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     activeCell = getTopVisibleCell()
+    startObservingReachability()
   }
+
+  func startObservingReachability() {
+    if !isReachable {
+      let color = UIColor.color("a_bottomMessageGray")
+      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+    }
+    NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
+  }
+
+  func stopObservingReachability() {
+    NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: nil)
+    bottomMessage.hideMessage()
+  }
+
+  @objc
+  private func handleReachability(_ notification: Notification) {
+    if isReachable {
+      let color = UIColor.color("a_bottomMessageGreen")
+      bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
+    } else {
+      let color = UIColor.color("a_bottomMessageGray")
+      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+    }
+  }
+
 
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
+    stopObservingReachability()
     activeCell = nil
   }
 
@@ -266,14 +315,16 @@ class StreamListController: UICollectionViewController {
   
   @objc
   private func didPullToRefresh(_ sender: Any) {
-    dataSource.updateVods { [weak self] (result) in
-      self?.refreshControl.endRefreshing()
-      switch result {
-      case .success:
-        self?.reachedListsEnd = false
-        self?.collectionView.reloadData()
-      case .failure(let error):
-        self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+      self?.dataSource.updateVods { (result) in
+        self?.refreshControl.endRefreshing()
+        switch result {
+        case .success:
+          self?.reachedListsEnd = false
+          self?.collectionView.reloadData()
+        case .failure(let error):
+          self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
+        }
       }
     }
   }
@@ -316,6 +367,7 @@ class StreamListController: UICollectionViewController {
     cell.shareButton.isHidden = true
     cell.buttonsStackView.isHidden = !item.isChatOn && !item.isPollOn
     cell.message = item.latestMessage
+    cell.timeImageView.isHidden = true
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
@@ -347,8 +399,8 @@ class StreamListController: UICollectionViewController {
   }
 
   fileprivate func getTopVisibleRow () -> IndexPath? {
-    let navBar = navigationController?.navigationBar
-    let whereIsNavBarInTableView = collectionView.convert(navBar!.bounds, from: navBar)
+    guard let navBar = navigationController?.navigationBar else { return nil }
+    let whereIsNavBarInTableView = collectionView.convert(navBar.bounds, from: navBar)
     let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height + 1)
     let accurateIndexPath = collectionView.indexPathForItem(at: pointWhereNavBarEnds)
     return accurateIndexPath
@@ -380,6 +432,7 @@ class StreamListController: UICollectionViewController {
 // MARK: UIScrollViewDelegate
 extension StreamListController {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    refreshControl.scrollViewDidScroll(scrollView)
     resetActiveCell()
   }
 
@@ -447,7 +500,7 @@ extension StreamListController {
 // MARK: UICollectionViewDelegate
 extension StreamListController {
   override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    guard URLSessionNetworkDispatcher.instance.isReachable else {
+    guard isReachable else {
       self.swiftMessage?.showBanner(title: "No internet connection available" )
       return
     }
@@ -537,7 +590,7 @@ extension StreamListController: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
     switch state {
     case .failed:
-        activeCell = nil
+      activeCell = nil
     default:
       return
     }
@@ -545,6 +598,7 @@ extension StreamListController: ModernAVPlayerDelegate {
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemPlayToEndTime endTime: Double) {
     activeCell?.replayView.isHidden = false
+    activeCell?.timeImageView.isHidden = true
     activeCell?.timeImageView.stopAnimating()
   }
 
@@ -560,6 +614,7 @@ extension StreamListController: ModernAVPlayerDelegate {
   }
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
+    activeCell?.timeImageView.isHidden = false
     activeCell?.timeImageView.startAnimating()
   }
 

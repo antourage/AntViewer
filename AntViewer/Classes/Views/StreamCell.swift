@@ -73,23 +73,14 @@ public class StreamCell: UICollectionViewCell {
 
   var duration = 0 {
     didSet {
-      if watchedTime > 0 {
-        let watched = watchedTime.durationString
-        timeLabel.text = "\(watched) / \(duration.durationString)"
-      } else {
-        timeLabel.text = "\(duration.durationString)"
-      }
+      updateTime()
     }
   }
 
   var watchedTime = 0
     {
       didSet {
-        watchedTimeLinePaddingView.isHidden = watchedTime <= 0
-        guard watchedTime > 0, duration > 0 else {
-          return
-        }
-        watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
+        updateTime()
       }
     }
 
@@ -109,6 +100,20 @@ public class StreamCell: UICollectionViewCell {
     userImageView.frame.size = CGSize(width: width, height: width)
     userImageView.layer.cornerRadius = width / 2
     userImageView.center = circleImageView.center
+  }
+
+  private func updateTime() {
+    if watchedTime > 0 {
+      let remains = duration - watchedTime
+      timeLabel.text = "\(remains.durationString)"
+    } else {
+      timeLabel.text = "\(duration.durationString)"
+    }
+    watchedTimeLinePaddingView.isHidden = watchedTime <= 0
+    guard watchedTime > 0, duration > 0 else {
+      return
+    }
+    watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
   }
 
   @IBAction private func shareButtonPressed(_ sender: UIButton) {
