@@ -798,6 +798,9 @@ class PlayerController: UIViewController {
   private func removeMessage(_ message: Message) {
     if let index = messagesDataSource.firstIndex(where: {$0.key == message.key}) {
       self.messagesDataSource.remove(at: index)
+      if alreadyWatchedMessage > messagesDataSource.count {
+        alreadyWatchedMessage = messagesDataSource.count
+      }
       let indexPath = IndexPath(row: index, section: 0)
       UIView.setAnimationsEnabled(false)
       currentTableView.beginUpdates()
