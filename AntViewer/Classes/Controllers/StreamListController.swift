@@ -41,7 +41,6 @@ class StreamListController: UICollectionViewController {
   fileprivate var activeCell: StreamCell? {
     didSet {
       oldValue?.contentImageView.player = nil
-      oldValue?.timeImageView.isHidden = true
       oldValue?.timeImageView.stopAnimating()
       player.stop()
       playerDebouncer.call {}
@@ -367,7 +366,6 @@ class StreamListController: UICollectionViewController {
     cell.shareButton.isHidden = true
     cell.buttonsStackView.isHidden = !item.isChatOn && !item.isPollOn
     cell.message = item.latestMessage
-    cell.timeImageView.isHidden = true
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
@@ -598,7 +596,6 @@ extension StreamListController: ModernAVPlayerDelegate {
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemPlayToEndTime endTime: Double) {
     activeCell?.replayView.isHidden = false
-    activeCell?.timeImageView.isHidden = true
     activeCell?.timeImageView.stopAnimating()
   }
 
@@ -614,7 +611,6 @@ extension StreamListController: ModernAVPlayerDelegate {
   }
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
-    activeCell?.timeImageView.isHidden = false
     activeCell?.timeImageView.startAnimating()
   }
 
