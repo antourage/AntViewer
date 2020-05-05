@@ -367,7 +367,7 @@ class StreamListController: UICollectionViewController {
   fileprivate func configureCell(_ cell: StreamCell, forIndexPath indexPath: IndexPath) -> StreamCell {
     let item = getItemWith(indexPath: indexPath)
     cell.titleLabel.text = item.title
-    cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
+    cell.subtitleLabel.text = "\(item.creatorName) • \(item.date.timeAgo())"
     cell.joinButton.isHidden = item is VOD || !item.isChatOn
     cell.chatView.isHidden = !item.isChatOn
     cell.pollView.isHidden = !item.isPollOn
