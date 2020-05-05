@@ -127,10 +127,6 @@ extension UIView {
       badgeLabel.layer.backgroundColor = appearance.backgroundColor.cgColor
       badgeLabel.alpha = 1
       UIView.animate(withDuration: appearance.duration,
-                     delay: 0,
-                     usingSpringWithDamping: 0.5,
-                     initialSpringVelocity: 0.5,
-                     options: [],
                      animations: {
                       badgeLabel.transform = .identity
       },
@@ -200,7 +196,7 @@ public struct BadgeAppearance {
   public var backgroundColor: UIColor = .red
   public var textColor: UIColor = .white
   public var animate: Bool = true
-  public var duration: TimeInterval = 0.5
+  public var duration: TimeInterval = 0.3
   public var distanceFromCenterY: CGFloat = 0
   public var distanceFromCenterX: CGFloat = 0
   public var size: CGSize?

@@ -169,7 +169,9 @@ class StreamListController: UICollectionViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    activeCell = getTopVisibleCell()
+    if activeCell == nil {
+      activeCell = getTopVisibleCell()
+    }
     startObservingReachability()
   }
 
@@ -191,6 +193,9 @@ class StreamListController: UICollectionViewController {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
       bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
+      if collectionView.numberOfItems(inSection: 1) == 0 {
+        initialVodsUpdate()
+      }
     } else {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
@@ -220,10 +225,13 @@ class StreamListController: UICollectionViewController {
           self.isLoading = false
         }
         self.collectionView.reloadData()
+        if self.activeCell == nil {
+          self.activeCell = self.getTopVisibleCell()
+        }
       case .failure(let error):
         print(error)
-        if error.noInternetConnection || self.hiddenAuthCompleted {
-          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
+        if !error.noInternetConnection && self.hiddenAuthCompleted {
+          self.swiftMessage?.showBanner(title: error.localizedDescription )
         }
       }
     }
@@ -289,8 +297,6 @@ class StreamListController: UICollectionViewController {
   }
   
   private func setupNavigationBar() {
-    // TODO: change height if needed
-    //    navigationController?.navigationBar.frame =
     navigationController?.navigationBar.barTintColor = collectionView.backgroundColor
     navigationController?.navigationBar.updateBackgroundColor()
     navigationController?.navigationBar.shadowImage = UIColor.white.withAlphaComponent(0.2).as1ptImage()
@@ -322,7 +328,9 @@ class StreamListController: UICollectionViewController {
           self?.reachedListsEnd = false
           self?.collectionView.reloadData()
         case .failure(let error):
-          self?.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
+          if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
+            self?.swiftMessage?.showBanner(title: error.localizedDescription )
+          }
         }
       }
     }
@@ -595,23 +603,30 @@ extension StreamListController: ModernAVPlayerDelegate {
   }
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemPlayToEndTime endTime: Double) {
-    activeCell?.replayView.isHidden = false
-    activeCell?.timeImageView.stopAnimating()
+    DispatchQueue.main.async { [weak self] in
+      self?.activeCell?.replayView.isHidden = false
+      self?.activeCell?.timeImageView.stopAnimating()
+    }
+
   }
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
-    if let item = activeItem as? VOD {
-      activeCell?.duration = item.duration.duration()
-      activeCell?.watchedTime = Int(currentTime)
-      stopTimes[item.streamId] = Int(currentTime)
-    } else if let item = activeItem as? Live {
-      let duration = Date().timeIntervalSince(item.date)
-      activeCell?.duration = Int(duration)
+    DispatchQueue.main.async { [weak self] in
+      if let item = self?.activeItem as? VOD {
+        self?.activeCell?.duration = item.duration.duration()
+        self?.activeCell?.watchedTime = Int(currentTime)
+        self?.stopTimes[item.streamId] = Int(currentTime)
+      } else if let item = self?.activeItem as? Live {
+        let duration = Date().timeIntervalSince(item.date)
+        self?.activeCell?.duration = Int(duration)
+      }
     }
   }
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
-    activeCell?.timeImageView.startAnimating()
+    DispatchQueue.main.async { [weak self] in
+      self?.activeCell?.timeImageView.startAnimating()
+    }
   }
 
 }
