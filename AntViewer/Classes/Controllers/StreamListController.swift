@@ -244,6 +244,7 @@ class StreamListController: UICollectionViewController {
 
   @objc
   fileprivate func scrollToTop() {
+    newLivesButton.isHidden = true
     collectionView.setContentOffset(.zero, animated: true)
   }
   
