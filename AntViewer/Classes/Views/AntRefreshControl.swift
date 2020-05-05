@@ -66,7 +66,7 @@ class AntRefreshControl: UIRefreshControl {
     backgroundContainerView.isHidden = false
   }
 
-  func finishAnimation() {
+  private func finishAnimation() {
     startImageView.isHidden = false
     startTopConstraint?.constant = 0
     refreshContainerView.layoutIfNeeded()

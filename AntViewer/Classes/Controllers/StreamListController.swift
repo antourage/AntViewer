@@ -19,7 +19,7 @@ class StreamListController: UICollectionViewController {
     button.clipsToBounds = true
     button.backgroundColor = UIColor.color("a_button_blue")
     button.setImage(UIImage.image("ArrowSmallTop"), for: .normal)
-    button.setTitle("NEW LIVE", for: .normal)
+    button.setTitle("NEW", for: .normal)
     button.titleLabel?.font = UIFont.systemFont(ofSize: 9, weight: .bold)
     button.setTitleColor(.white, for: .normal)
     button.semanticContentAttribute = .forceRightToLeft
@@ -209,6 +209,9 @@ class StreamListController: UICollectionViewController {
     NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
     stopObservingReachability()
     activeCell = nil
+    if collectionView.contentOffset.y < 0 {
+      collectionView.contentOffset = .zero
+    }
   }
 
   @objc
@@ -239,11 +242,17 @@ class StreamListController: UICollectionViewController {
 
   @objc
   private func handleWillResignActive(_ notification: NSNotification) {
+    if collectionView.contentOffset.y < 0 {
+      collectionView.contentOffset = .zero
+    }
     activeCell = nil
   }
 
   @objc
   private func handleDidBecomeActive(_ notification: NSNotification) {
+    if collectionView.contentOffset.y < 0 {
+       collectionView.contentOffset = .zero
+     }
     activeCell = getTopVisibleCell()
   }
   
