@@ -244,7 +244,6 @@ class StreamListController: UICollectionViewController {
 
   @objc
   fileprivate func scrollToTop() {
-    newLivesButton.isHidden = true
     collectionView.setContentOffset(.zero, animated: true)
   }
   
@@ -478,6 +477,9 @@ extension StreamListController {
   override func scrollViewDidScroll(_ scrollView: UIScrollView) {
     refreshControl.scrollViewDidScroll(scrollView)
     resetActiveCell()
+    if newLivesButton.isHidden == false, scrollView.contentOffset.y < 250 {
+      newLivesButton.isHidden = true
+    }
   }
 
   override func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
@@ -563,9 +565,6 @@ extension StreamListController {
   }
   
   override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-    if indexPath.section == 0, indexPath.item == 0 {
-      newLivesButton.isHidden = true
-    }
     guard indexPath.section == 1, indexPath.row == dataSource.videos.count - 1, !isLoading else {
       return
     }
