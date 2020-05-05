@@ -66,12 +66,7 @@ class StreamListController: UICollectionViewController {
       footerView?.jumpAction = { [weak self] in
         self?.scrollToTop()
       }
-      footerView?.showButton = reachedListsEnd
-      if fetchingNextItems {
-        footerView?.startAnimating()
-      } else {
-        footerView?.stopAnimating()
-      }
+      updateFooter()
     }
   }
 
@@ -105,8 +100,18 @@ class StreamListController: UICollectionViewController {
   }
 
   var dataSource: DataSource!
-  private var fetchingNextItems = false
-  fileprivate var reachedListsEnd = false
+
+  private var fetchingNextItems = false {
+    didSet {
+      updateFooter()
+    }
+  }
+  fileprivate var reachedListsEnd = false {
+    didSet {
+      updateFooter()
+    }
+  }
+
   private lazy var refreshControl: AntRefreshControl = {
     let antRefreshControl = AntRefreshControl(frame: self.view.bounds)
     antRefreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
@@ -212,6 +217,29 @@ class StreamListController: UICollectionViewController {
     if collectionView.contentOffset.y < 0 {
       collectionView.contentOffset = .zero
     }
+  }
+
+  func updateFooter() {
+    guard fetchingNextItems || reachedListsEnd else {
+      footerView?.isHidden = true
+      footerView?.stopAnimating()
+      return
+    }
+
+    if fetchingNextItems {
+      let isEnoughContent = collectionView.contentSize.height > collectionView.bounds.height
+      if isEnoughContent {
+        footerView?.startAnimating()
+        footerView?.showButton = false
+      }
+      footerView?.isHidden = !isEnoughContent
+    } else {
+      footerView?.stopAnimating()
+      let isEnoughContent = collectionView.contentSize.height > 2 * collectionView.bounds.height
+      footerView?.showButton = isEnoughContent
+      footerView?.isHidden = !isEnoughContent
+    }
+
   }
 
   @objc
@@ -543,11 +571,9 @@ extension StreamListController {
     if dataSource.videos.count % 15 == 0 {
       let index = dataSource.videos.count
       self.fetchingNextItems = true
-      self.footerView?.isHidden = false
       self.collectionView.invalidateIntrinsicContentSize()
       dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
         guard let `self` = self else { return }
-        self.footerView?.isHidden = true
         self.fetchingNextItems = false
         self.collectionView.invalidateIntrinsicContentSize()
         switch result {
@@ -564,7 +590,6 @@ extension StreamListController {
       }
     } else {
       reachedListsEnd = true
-      self.footerView?.isHidden = false
     }
   }
 }
