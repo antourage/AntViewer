@@ -59,6 +59,7 @@
                 <outlet property="shareButton" destination="paQ-Po-fED" id="SXi-zo-1eF"/>
                 <outlet property="startLabel" destination="knS-6i-PS2" id="mZZ-Ch-6J8"/>
                 <outlet property="subtitleLabel" destination="o1u-w2-xag" id="UDP-4d-oEJ"/>
+                <outlet property="thanksForWatchingLabel" destination="cLA-Rd-OPc" id="SOv-ZU-FU5"/>
                 <outlet property="titleLabel" destination="f07-lm-kKs" id="D5k-dW-4TF"/>
                 <outlet property="videoContainerView" destination="6SG-AQ-Vmv" id="NaM-Qk-RIi"/>
                 <outlet property="videoControlsView" destination="Y8L-11-K5X" id="77M-7d-QKU"/>
@@ -165,6 +166,16 @@
                                 </mask>
                             </variation>
                         </view>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLA-Rd-OPc">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="211"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.67000000000000004" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="highlightedColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <variation key="heightClass=regular-widthClass=compact">
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                            </variation>
+                        </label>
                         <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Y8L-11-K5X" userLabel="VideoControlsView">
                             <rect key="frame" x="0.0" y="0.0" width="375" height="211"/>
                             <subviews>
@@ -505,6 +516,7 @@
                     <constraints>
                         <constraint firstItem="aEk-7a-LBQ" firstAttribute="top" secondItem="IoW-Ne-fB8" secondAttribute="top" constant="55" id="4id-hX-6RM"/>
                         <constraint firstAttribute="trailing" secondItem="Y8L-11-K5X" secondAttribute="trailing" id="8QY-lk-Wzg"/>
+                        <constraint firstItem="cLA-Rd-OPc" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="top" id="GrB-WJ-pa2"/>
                         <constraint firstItem="jVY-fl-H6n" firstAttribute="top" secondItem="vk0-JI-SRF" secondAttribute="bottom" constant="14" id="LtT-dh-TzT"/>
                         <constraint firstItem="jVY-fl-H6n" firstAttribute="leading" secondItem="IoW-Ne-fB8" secondAttribute="leading" constant="12" id="MQA-RN-Wnt"/>
                         <constraint firstItem="jVY-fl-H6n" firstAttribute="centerY" secondItem="Vu1-v4-hRr" secondAttribute="centerY" id="NiX-fB-yOM"/>
@@ -512,7 +524,10 @@
                         <constraint firstItem="aEk-7a-LBQ" firstAttribute="leading" secondItem="IoW-Ne-fB8" secondAttribute="leading" constant="10" id="XOC-6d-vvP"/>
                         <constraint firstItem="Y8L-11-K5X" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="top" id="Zs2-ka-6Pa"/>
                         <constraint firstItem="Y8L-11-K5X" firstAttribute="leading" secondItem="6SG-AQ-Vmv" secondAttribute="leading" id="Zuu-OS-PFa"/>
+                        <constraint firstAttribute="trailing" secondItem="cLA-Rd-OPc" secondAttribute="trailing" id="aII-yg-1OG"/>
+                        <constraint firstAttribute="bottom" secondItem="cLA-Rd-OPc" secondAttribute="bottom" id="f1P-Ll-OVs"/>
                         <constraint firstItem="vk0-JI-SRF" firstAttribute="leading" secondItem="jVY-fl-H6n" secondAttribute="leading" id="l1p-fJ-mwo"/>
+                        <constraint firstItem="cLA-Rd-OPc" firstAttribute="leading" secondItem="6SG-AQ-Vmv" secondAttribute="leading" id="rjS-Fg-22u"/>
                         <constraint firstAttribute="width" secondItem="6SG-AQ-Vmv" secondAttribute="height" multiplier="16:9" priority="850" id="sdE-i2-C6Y"/>
                         <constraint firstItem="aEk-7a-LBQ" firstAttribute="width" secondItem="IoW-Ne-fB8" secondAttribute="width" multiplier="0.4" id="tN6-AF-4cM"/>
                         <constraint firstItem="Vu1-v4-hRr" firstAttribute="leading" secondItem="jVY-fl-H6n" secondAttribute="trailing" constant="6" id="vZz-Lw-QY6"/>
@@ -883,6 +898,7 @@
                     <exclude reference="4Nv-gJ-7Te"/>
                     <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="r4d-s0-iKt"/>
+                    <exclude reference="gSk-0Y-f5l"/>
                     <exclude reference="hqg-GW-Byu"/>
                     <exclude reference="kpW-EJ-0hl"/>
                     <exclude reference="6aV-p3-JqU"/>
@@ -909,6 +925,7 @@
             <variation key="heightClass=compact-widthClass=compact">
                 <mask key="constraints">
                     <include reference="r4d-s0-iKt"/>
+                    <include reference="gSk-0Y-f5l"/>
                     <include reference="kpW-EJ-0hl"/>
                     <include reference="6aV-p3-JqU"/>
                     <include reference="q0H-jp-Vrz"/>
@@ -920,6 +937,7 @@
             <variation key="heightClass=compact-widthClass=regular">
                 <mask key="constraints">
                     <include reference="r4d-s0-iKt"/>
+                    <include reference="gSk-0Y-f5l"/>
                     <include reference="kpW-EJ-0hl"/>
                     <include reference="6aV-p3-JqU"/>
                     <include reference="q0H-jp-Vrz"/>

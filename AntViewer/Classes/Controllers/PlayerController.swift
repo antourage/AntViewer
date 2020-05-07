@@ -102,6 +102,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var previousButton: UIButton!
   @IBOutlet var cancelButton: UIButton!
   @IBOutlet var fullScreenButtons: [UIButton]!
+  @IBOutlet var thanksForWatchingLabel: UILabel!
   private var isAutoplayMode = false
   private lazy var backgroundShape = CAShapeLayer()
   private lazy var progressShape = CAShapeLayer()
@@ -833,7 +834,8 @@ class PlayerController: UIViewController {
         self?.isPlayerControlsHidden = false
         self?.startAutoplayNexItem()
       } else {
-        self?.videoContainerView.image = UIImage.image("thanks_for_watching")
+        //TODO: set thanks image
+        self?.setThanksImage()
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
         self?.liveLabelWidth.constant = 0
         self?.playButton.isHidden = true
@@ -842,6 +844,33 @@ class PlayerController: UIViewController {
       
     }
     videoContainerView.showActivityIndicator()
+  }
+
+  private func setThanksImage() {
+    let text = "thanks for watching"
+    if let imageUrl = URL(string: videoContent.thumbnailUrl) {
+      let _ =  ImageService.getImage(withURL: imageUrl) { [weak self] thumbnail in
+        guard let `self` = self, let thumbnail = thumbnail else { return }
+        let scale = UIScreen.main.scale
+        let labelFrame = CGRect(origin: .zero, size: CGSize(width: thumbnail.size.width*3, height: thumbnail.size.height*3))
+        UIGraphicsBeginImageContextWithOptions(labelFrame.size, false, scale)
+        thumbnail.draw(in: labelFrame)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(UIColor.black.withAlphaComponent(0.65).cgColor)
+        context.fill(labelFrame)
+        let label = UILabel(frame: labelFrame)
+        label.text = text.uppercased()
+        label.font = UIFont.systemFont(ofSize: labelFrame.size.height*0.08, weight: .bold)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.draw(labelFrame)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        self.videoContainerView.image = newImage
+        self.videoContainerView.isUserInteractionEnabled = false
+      }
+    }
   }
 
   private func startAutoplayNexItem() {
