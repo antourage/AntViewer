@@ -189,11 +189,7 @@ class PlayerController: UIViewController {
     }
   }
   
-  @IBOutlet weak var seekLabel: UILabel! {
-    didSet {
-      seekLabel.isHidden = !(videoContent is VOD)
-    }
-  }
+  @IBOutlet weak var seekLabel: UILabel! 
 
   //MARK: - new poll banner staff
   @IBOutlet private var pollBannerAspectRatio: NSLayoutConstraint!
@@ -801,11 +797,14 @@ class PlayerController: UIViewController {
       
       if let vod = self.videoContent as? VOD {
         self.handleVODsChat(forTime: Int(time.seconds))
+
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString, vod.duration)
         if self.seekTo == nil, self.player.player.rate == 1 {
           self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
           self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)
         }
+      } else {
+        self.seekLabel.text = String(format: "%@", Int(time.seconds).durationString)
       }
     }
     
