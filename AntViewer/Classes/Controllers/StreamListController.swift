@@ -585,9 +585,12 @@ extension StreamListController: UICollectionViewDelegate {
           let indexPaths = (index..<count).map {IndexPath(row: $0, section: 1)}
           self.collectionView.insertItems(at: indexPaths)
 
-        case .failure(let error):
-          self.swiftMessage?.showBanner(title: error.noInternetConnection ? "No internet connection available" : error.localizedDescription )
-          print("Error fetching vods")
+        case .failure:
+          if self.isReachable {
+            let color = UIColor.color("a_bottomMessageGray")
+            self.bottomMessage.showMessage(title: "SOMETHING IS NOT RIGHT. WE ARE WORKING TO GET THIS FIXED.", backgroundColor: color ?? .gray)
+            print("Error fetching vods")
+          }
         }
 
       }
