@@ -31,6 +31,8 @@ class StreamListController: UIViewController {
     button.titleLabel?.font = UIFont.systemFont(ofSize: 9, weight: .bold)
     button.setTitleColor(.white, for: .normal)
     button.semanticContentAttribute = .forceRightToLeft
+    button.contentHorizontalAlignment = .center
+    button.contentEdgeInsets.left = 3
     view.addSubview(button)
     button.addTarget(self, action: #selector(scrollToTop), for: .touchUpInside)
     button.translatesAutoresizingMaskIntoConstraints = false
@@ -38,7 +40,7 @@ class StreamListController: UIViewController {
       button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
       button.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 24),
       button.heightAnchor.constraint(equalToConstant: 21),
-      button.widthAnchor.constraint(equalToConstant: 80)
+      button.widthAnchor.constraint(equalToConstant: button.intrinsicContentSize.width+10)
     ])
     return button
   }()
@@ -404,6 +406,7 @@ class StreamListController: UIViewController {
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
     if let item = item as? VOD {
+      cell.isLive = false
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
       //Temp solution
@@ -414,7 +417,6 @@ class StreamListController: UIViewController {
       cell.isLive = true
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
-      cell.watchedTime = nil
       cell.replayView.isHidden = true
       cell.joinAction = { itemCell in
         //TOD: open player with active field
