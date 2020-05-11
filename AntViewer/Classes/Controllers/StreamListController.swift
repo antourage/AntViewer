@@ -11,7 +11,15 @@ import AntViewerExt
 
 private let reuseIdentifier = "StreamCell"
 
-class StreamListController: UICollectionViewController {
+class StreamListController: UIViewController {
+
+  @IBOutlet private var headerView: UIView!
+  @IBOutlet private var collectionView: UICollectionView!
+  @IBOutlet private var logoImageView: UIImageView!
+  @IBOutlet private var collectionViewBottom: NSLayoutConstraint!
+  @IBOutlet private var headerTop: NSLayoutConstraint!
+
+
 
   fileprivate lazy var newLivesButton: UIButton = {
     let button = UIButton()
@@ -126,6 +134,8 @@ class StreamListController: UICollectionViewController {
   // MARK: Temp solution
   fileprivate var stopTimes = [Int : Int]()
 
+  private var topInset: CGFloat = .zero
+
   override func viewDidLoad() {
     super.viewDidLoad()
     AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
@@ -138,19 +148,21 @@ class StreamListController: UICollectionViewController {
       }
     }
     swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
-    setupNavigationBar()
+//    setupNavigationBar()
     setupCollectionView()
     isLoading = true
     initialVodsUpdate()
 
     bottomMessage.onMessageAppear = { [weak self] height in
+      self?.collectionViewBottom.constant += height
       UIView.animate(withDuration: 0.3) {
-        self?.collectionView.frame.size.height -= height
+        self?.view.layoutIfNeeded()
       }
     }
     bottomMessage.onMessageDisappear = { [weak self] height in
+      self?.collectionViewBottom.constant -= height
       UIView.animate(withDuration: 0.3) {
-        self?.collectionView.frame.size.height += height
+        self?.view.layoutIfNeeded()
       }
     }
     
@@ -162,7 +174,7 @@ class StreamListController: UICollectionViewController {
 
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
-    
+    topInset = view.safeAreaInsets.top
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -178,6 +190,7 @@ class StreamListController: UICollectionViewController {
       activeCell = getTopVisibleCell()
     }
     startObservingReachability()
+    topInset = headerView.frame.origin.y
   }
 
   func startObservingReachability() {
@@ -333,28 +346,6 @@ class StreamListController: UICollectionViewController {
 
   }
   
-  private func setupNavigationBar() {
-    navigationController?.navigationBar.barTintColor = collectionView.backgroundColor
-    navigationController?.navigationBar.updateBackgroundColor()
-    navigationController?.navigationBar.shadowImage = UIColor.white.withAlphaComponent(0.2).as1ptImage()
-
-    let closeButton = UIButton(type: .custom)
-    closeButton.setImage(UIImage.image("Close"), for: .normal)
-    closeButton.addTarget(self, action: #selector(closeButtonPressed(_:)), for: .touchUpInside)
-    closeButton.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
-    navigationItem.rightBarButtonItems = [UIBarButtonItem(customView: closeButton)]
-
-    let attributes = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15, weight: .medium), NSAttributedString.Key.foregroundColor : UIColor.white]
-    navigationController?.navigationBar.titleTextAttributes = attributes
-    navigationItem.title = "INSIDE THE GAME"
-    
-    let changeHost = UIButton(type: .custom)
-    changeHost.setImage(UIImage.image("HolderLogoSmall"), for: .normal)
-    changeHost.addTarget(self, action: #selector(changeHost(_:event:)), for: .touchDownRepeat)
-    changeHost.frame = CGRect(x: 0, y: 0, width: 36, height: 36)
-    navigationItem.leftBarButtonItems = [UIBarButtonItem(customView: changeHost)]
-  }
-  
   @objc
   private func didPullToRefresh(_ sender: Any) {
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -382,17 +373,14 @@ class StreamListController: UICollectionViewController {
     collectionView.reloadData()
   }
   
-  @objc
-  private func changeHost(_ sender: UIButton, event: UIEvent) {
-    guard let touches = event.allTouches?.first, touches.tapCount == 3 else {
-      return
-    }
+  @IBAction
+  private func changeHost(_ sender: UITapGestureRecognizer) {
     let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String
     presentChangeHostAlert(with: version)
     
   }
   
-  @objc
+  @IBAction
   private func closeButtonPressed(_ sender: UIButton) {
     onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
@@ -474,7 +462,7 @@ class StreamListController: UICollectionViewController {
 
 // MARK: UIScrollViewDelegate
 extension StreamListController {
-  override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
     refreshControl.scrollViewDidScroll(scrollView)
     resetActiveCell()
     if newLivesButton.isHidden == false, scrollView.contentOffset.y < 250 {
@@ -482,18 +470,18 @@ extension StreamListController {
     }
   }
 
-  override func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
+  func scrollViewDidScrollToTop(_ scrollView: UIScrollView) {
     setActiveCell()
   }
-  override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-    setActiveCell()
-  }
-
-  override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+  func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
     setActiveCell()
   }
 
-  override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    setActiveCell()
+  }
+
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if !decelerate {
       setActiveCell()
     }
@@ -514,25 +502,25 @@ extension StreamListController {
 }
 
 // MARK: UICollectionViewDataSource
-extension StreamListController {
+extension StreamListController: UICollectionViewDataSource {
   
-  override func numberOfSections(in collectionView: UICollectionView) -> Int {
+  func numberOfSections(in collectionView: UICollectionView) -> Int {
     return 2
   }
   
-  override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+  func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
     if !isDataSourceEmpty {
       collectionView.backgroundView = nil
     }
     return section == 0 ? dataSource.streams.count : dataSource.videos.count
   }
   
-  override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+  func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! StreamCell
     return configureCell(cell, forIndexPath: indexPath)
   }
   
-  override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+  func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
     if case UICollectionView.elementKindSectionFooter = kind {
       let footer = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "AntFooterView", for: indexPath) as! FooterView
       self.footerView = footer
@@ -544,27 +532,44 @@ extension StreamListController {
 }
 
 // MARK: UICollectionViewDelegate
-extension StreamListController {
-  override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+extension StreamListController: UICollectionViewDelegate {
+   func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     guard isReachable else {
       self.swiftMessage?.showBanner(title: "No internet connection available" )
       return
     }
+
     let item = getItemWith(indexPath: indexPath)
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = item
     playerVC.dataSource = dataSource
     // TODO: set temp stop time from list
+
+    //temp solution
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { [weak self] in
+      guard let `self` = self, OrientationUtility.isLandscape else { return }
+      collectionView.contentOffset = CGPoint(x: self.topInset, y: collectionView.contentOffset.y)
+      collectionView.collectionViewLayout.invalidateLayout()
+      self.headerTop.constant = self.topInset
+      self.view.layoutIfNeeded()
+    }
+
     if item is VOD {
       let navController = PlayerNavigationController(rootViewController: playerVC)
       navController.modalPresentationStyle = .fullScreen
-      return present(navController, animated: true, completion: nil)
+      return present(navController, animated: true, completion: { [weak self] in
+        self?.headerTop.constant = .zero
+        self?.view.layoutIfNeeded()
+      })
     }
     playerVC.modalPresentationStyle = .fullScreen
-    present(playerVC, animated: true, completion: nil)
+    present(playerVC, animated: true, completion: { [weak self] in
+      self?.headerTop.constant = .zero
+       self?.view.layoutIfNeeded()
+    })
   }
   
-  override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+   func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
     guard indexPath.section == 1, indexPath.row == dataSource.videos.count - 1, !isLoading else {
       return
     }
