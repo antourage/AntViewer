@@ -118,6 +118,20 @@ class StreamListController: UICollectionViewController {
     return antRefreshControl
   }()
 
+  fileprivate lazy var skeletonView: SkeletonView? = {
+    let view = SkeletonView(frame: collectionView.bounds)
+    view.completion = { [weak self] in
+      self?.collectionView.backgroundView = nil
+      self?.skeletonView = nil
+      self?.isLoading = false
+    }
+    view.onTimeout = { [weak self] in
+      self?.bottomMessage.showMessage(title: "Something is not right")
+      self?.isLoading = false
+    }
+    return view
+  }()
+
   private var hiddenAuthCompleted = false
   fileprivate var shouldResetActiveCell = true
   
@@ -137,6 +151,12 @@ class StreamListController: UICollectionViewController {
         print(error)
       }
     }
+    if dataSource.streams.isEmpty {
+      collectionView.backgroundView = skeletonView
+      skeletonView?.layoutIfNeeded()
+      skeletonView?.startLoading()
+    }
+
     swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
     setupNavigationBar()
     setupCollectionView()
@@ -158,11 +178,11 @@ class StreamListController: UICollectionViewController {
       let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
       let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
+      self?.skeletonView?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
     }
 
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
-    
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -185,6 +205,7 @@ class StreamListController: UICollectionViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
+    skeletonView?.didChangeReachability(isReachable)
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
   }
 
@@ -205,6 +226,7 @@ class StreamListController: UICollectionViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
+    skeletonView?.didChangeReachability(isReachable)
   }
 
 
@@ -252,9 +274,10 @@ class StreamListController: UICollectionViewController {
       guard let `self` = self else { return }
       switch result {
       case .success:
-        if !self.isDataSourceEmpty {
-          self.isLoading = false
-        }
+        self.skeletonView?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
+//        if !self.isDataSourceEmpty {
+//          self.isLoading = false
+//        }
         self.collectionView.reloadData()
         if self.activeCell == nil {
           self.activeCell = self.getTopVisibleCell()
@@ -262,7 +285,8 @@ class StreamListController: UICollectionViewController {
       case .failure(let error):
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
-          self.swiftMessage?.showBanner(title: error.localizedDescription )
+          self.bottomMessage.showMessage(title: "Something is not right")
+          self.skeletonView?.setError()
         }
       }
     }
