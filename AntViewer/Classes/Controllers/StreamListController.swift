@@ -535,10 +535,7 @@ extension StreamListController: UICollectionViewDataSource {
 // MARK: UICollectionViewDelegate
 extension StreamListController: UICollectionViewDelegate {
    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-    guard isReachable else {
-      self.swiftMessage?.showBanner(title: "No internet connection available" )
-      return
-    }
+    guard isReachable else { return }
 
     let item = getItemWith(indexPath: indexPath)
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
