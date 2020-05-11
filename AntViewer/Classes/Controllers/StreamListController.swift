@@ -36,7 +36,7 @@ class StreamListController: UIViewController {
     button.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
       button.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
-      button.topAnchor.constraint(equalTo: view.topAnchor, constant: 24),
+      button.topAnchor.constraint(equalTo: headerView.bottomAnchor, constant: 24),
       button.heightAnchor.constraint(equalToConstant: 21),
       button.widthAnchor.constraint(equalToConstant: 80)
     ])
@@ -440,8 +440,7 @@ class StreamListController: UIViewController {
 
   fileprivate func heightDifferenceBetweenTopRowAndNavBar() -> CGFloat? {
     let rectForTopRow = collectionView.layoutAttributesForItem(at: getTopVisibleRow()!)!.frame
-    let navBar = navigationController?.navigationBar
-    let whereIsNavBarInTableView = collectionView.convert(navBar!.bounds, from: navBar)
+    let whereIsNavBarInTableView = collectionView.convert(headerView.bounds, from: headerView)
     let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height)
     let differenceBetweenTopRowAndNavBar = rectForTopRow.origin.y - pointWhereNavBarEnds.y
     return differenceBetweenTopRowAndNavBar
