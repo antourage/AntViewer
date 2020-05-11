@@ -162,32 +162,37 @@
                                 </subviews>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gnR-cl-NgX">
-                                <rect key="frame" x="334" y="346.5" width="61" height="22.5"/>
+                                <rect key="frame" x="358.5" y="346.5" width="36.5" height="22.5"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Autoplay00" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-Xp-pMe">
-                                        <rect key="frame" x="6" y="1" width="20.5" height="20.5"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="OH0-Xp-pMe" secondAttribute="height" multiplier="1:1" id="g66-ZV-rrS"/>
-                                        </constraints>
-                                        <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="Autoplay00"/>
-                                        </userDefinedRuntimeAttributes>
-                                    </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5:15" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xNS-mf-tIv">
-                                        <rect key="frame" x="30.5" y="4.5" width="24.5" height="13.5"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
+                                    <stackView opaque="NO" contentMode="scaleToFill" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="kFd-ib-5rC">
+                                        <rect key="frame" x="6" y="1" width="24.5" height="20.5"/>
+                                        <subviews>
+                                            <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Autoplay00" translatesAutoresizingMaskIntoConstraints="NO" id="OH0-Xp-pMe">
+                                                <rect key="frame" x="0.0" y="0.0" width="20.5" height="20.5"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" secondItem="OH0-Xp-pMe" secondAttribute="height" multiplier="1:1" id="g66-ZV-rrS"/>
+                                                </constraints>
+                                                <userDefinedRuntimeAttributes>
+                                                    <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="Autoplay00"/>
+                                                </userDefinedRuntimeAttributes>
+                                            </imageView>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="5:15" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xNS-mf-tIv">
+                                                <rect key="frame" x="0.0" y="0.0" width="24.5" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="11"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                        </subviews>
+                                    </stackView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.40143407534246578" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="xNS-mf-tIv" firstAttribute="leading" secondItem="OH0-Xp-pMe" secondAttribute="trailing" constant="4" id="1K2-a6-3BN"/>
-                                    <constraint firstAttribute="trailing" secondItem="xNS-mf-tIv" secondAttribute="trailing" constant="6" id="K6s-Ue-eWC"/>
-                                    <constraint firstItem="xNS-mf-tIv" firstAttribute="centerY" secondItem="gnR-cl-NgX" secondAttribute="centerY" id="XMV-Yj-jz3"/>
-                                    <constraint firstItem="OH0-Xp-pMe" firstAttribute="top" secondItem="gnR-cl-NgX" secondAttribute="top" constant="1" id="hIW-1R-lLm"/>
-                                    <constraint firstAttribute="bottom" secondItem="OH0-Xp-pMe" secondAttribute="bottom" constant="1" id="jVn-aO-foh"/>
-                                    <constraint firstItem="OH0-Xp-pMe" firstAttribute="leading" secondItem="gnR-cl-NgX" secondAttribute="leading" constant="6" id="nDN-kD-Up8"/>
+                                    <constraint firstAttribute="bottom" secondItem="kFd-ib-5rC" secondAttribute="bottom" constant="1" id="2gs-G3-jHX"/>
+                                    <constraint firstAttribute="trailing" secondItem="kFd-ib-5rC" secondAttribute="trailing" constant="6" id="3Bg-em-iXG"/>
+                                    <constraint firstItem="kFd-ib-5rC" firstAttribute="top" secondItem="gnR-cl-NgX" secondAttribute="top" constant="1" id="A9O-WC-89A"/>
+                                    <constraint firstItem="kFd-ib-5rC" firstAttribute="leading" secondItem="gnR-cl-NgX" secondAttribute="leading" constant="6" id="eLV-i3-I93"/>
+                                    <constraint firstItem="kFd-ib-5rC" firstAttribute="centerY" secondItem="gnR-cl-NgX" secondAttribute="centerY" id="kU4-zf-bLc"/>
+                                    <constraint firstItem="kFd-ib-5rC" firstAttribute="centerX" secondItem="gnR-cl-NgX" secondAttribute="centerX" id="yfB-kX-Ngt"/>
                                 </constraints>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">

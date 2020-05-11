@@ -49,6 +49,7 @@ class StreamListController: UIViewController {
   fileprivate var activeCell: StreamCell? {
     didSet {
       oldValue?.contentImageView.player = nil
+      oldValue?.timeImageView.isHidden = true
       oldValue?.timeImageView.stopAnimating()
       player.stop()
       playerDebouncer.call {}
@@ -644,6 +645,7 @@ extension StreamListController: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemPlayToEndTime endTime: Double) {
     DispatchQueue.main.async { [weak self] in
       self?.activeCell?.replayView.isHidden = false
+      self?.activeCell?.timeImageView.isHidden = true
       self?.activeCell?.timeImageView.stopAnimating()
     }
 
@@ -664,6 +666,7 @@ extension StreamListController: ModernAVPlayerDelegate {
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
     DispatchQueue.main.async { [weak self] in
+      self?.activeCell?.timeImageView.isHidden = false
       self?.activeCell?.timeImageView.startAnimating()
     }
   }
