@@ -592,7 +592,6 @@ extension StreamListController: UICollectionViewDelegate {
             print("Error fetching vods")
           }
         }
-
       }
     } else {
       reachedListsEnd = true

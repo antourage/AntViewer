@@ -36,6 +36,7 @@ public class StreamCell: UICollectionViewCell {
   @IBOutlet var shareButton: UIButton!
   @IBOutlet var buttonsStackView: UIStackView!
   @IBOutlet var joinButton: UIButton!
+  @IBOutlet private var timeLabelWidth: NSLayoutConstraint!
 
   var message: (text: String, name: String, date: Date)? {
     didSet {
@@ -102,6 +103,14 @@ public class StreamCell: UICollectionViewCell {
     userImageView.center = circleImageView.center
   }
 
+  private func configureTimeLabelWidth() {
+    let label = UILabel()
+    label.font = timeLabel.font
+    label.text = timeLabel.text?.replacingOccurrences( of:"[0-9]", with: "8", options: .regularExpression)
+    timeLabelWidth.constant = label.intrinsicContentSize.width
+    layoutIfNeeded()
+  }
+
   private func updateTime() {
     if watchedTime > 0 {
       let remains = duration - watchedTime
@@ -109,6 +118,7 @@ public class StreamCell: UICollectionViewCell {
     } else {
       timeLabel.text = "\(duration.durationString(true))"
     }
+    configureTimeLabelWidth()
     watchedTimeLinePaddingView.isHidden = watchedTime <= 0
     guard watchedTime > 0, duration > 0 else {
       return
