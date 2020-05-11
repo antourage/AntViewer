@@ -407,13 +407,14 @@ class StreamListController: UIViewController {
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
       //Temp solution
-      cell.watchedTime = item.isNew ? 0 : stopTimes[item.streamId] ?? item.stopTime.duration()
+      let duration = item.stopTime.duration() == 0 ? nil : item.stopTime.duration()
+      cell.watchedTime = item.isNew ? nil : stopTimes[item.streamId] ?? duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
       cell.isLive = true
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
-      cell.watchedTime = 0
+      cell.watchedTime = nil
       cell.replayView.isHidden = true
       cell.joinAction = { itemCell in
         //TOD: open player with active field
@@ -664,8 +665,9 @@ extension StreamListController: ModernAVPlayerDelegate {
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
     DispatchQueue.main.async { [weak self] in
-      self?.activeCell?.timeImageView.isHidden = false
-      self?.activeCell?.timeImageView.startAnimating()
+      guard let `self` = self else { return }
+      self.activeCell?.timeImageView.isHidden = false
+      self.activeCell?.timeImageView.startAnimating()
     }
   }
 

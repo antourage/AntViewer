@@ -78,7 +78,7 @@ public class StreamCell: UICollectionViewCell {
     }
   }
 
-  var watchedTime = 0
+  var watchedTime: Int? 
     {
       didSet {
         updateTime()
@@ -112,6 +112,10 @@ public class StreamCell: UICollectionViewCell {
   }
 
   private func updateTime() {
+    guard let watchedTime = watchedTime else {
+      watchedTimeLinePaddingView.isHidden = true
+      return
+    }
     if watchedTime > 0 {
       let remains = duration - watchedTime
       timeLabel.text = "\(remains.durationString(true))"
@@ -119,10 +123,7 @@ public class StreamCell: UICollectionViewCell {
       timeLabel.text = "\(duration.durationString(true))"
     }
     configureTimeLabelWidth()
-    watchedTimeLinePaddingView.isHidden = watchedTime <= 0
-    guard watchedTime > 0, duration > 0 else {
-      return
-    }
+    watchedTimeLinePaddingView.isHidden = false//watchedTime <= 0
     watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
   }
 
