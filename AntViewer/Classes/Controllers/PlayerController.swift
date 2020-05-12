@@ -490,7 +490,7 @@ class PlayerController: UIViewController {
     dataSource.pauseUpdatingStreams()
     if videoContent is Live {
 
-      pollManager = PollManager(streamId: videoContent.streamId)
+      pollManager = PollManager(streamId: videoContent.id)
       pollManager?.observePolls(completion: { [weak self] (poll) in
         self?.activePoll = poll
       })
@@ -510,7 +510,7 @@ class PlayerController: UIViewController {
       })
       
     }
-    self.chat = Chat(streamID: videoContent.streamId)
+    self.chat = Chat(streamID: videoContent.id)
 
     var token: NSObjectProtocol?
     token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
