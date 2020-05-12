@@ -387,7 +387,13 @@ class StreamListController: UIViewController {
   private func closeButtonPressed(_ sender: UIButton) {
     onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
-    dismiss(animated: true, completion: { [weak self] in
+    let transition = CATransition()
+    transition.duration = 0.3
+    transition.type = CATransitionType.push
+    transition.subtype = CATransitionSubtype.fromLeft
+    transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+    view.window?.layer.add(transition, forKey: kCATransition)
+    dismiss(animated: false, completion: { [weak self] in
       self?.dataSource.videos = []
     })
   }
