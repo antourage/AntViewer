@@ -36,6 +36,7 @@ public class StreamCell: UICollectionViewCell {
   @IBOutlet var shareButton: UIButton!
   @IBOutlet var buttonsStackView: UIStackView!
   @IBOutlet var joinButton: UIButton!
+  @IBOutlet private var timeLabelWidth: NSLayoutConstraint!
 
   var message: (text: String, name: String, date: Date)? {
     didSet {
@@ -60,7 +61,7 @@ public class StreamCell: UICollectionViewCell {
     }
   }
 
-  var isLive = true {
+  var isLive = false {
     didSet {
       liveLabel.isHidden = !isLive
       watchedTimeLinePaddingView.isHidden = isLive
@@ -77,7 +78,7 @@ public class StreamCell: UICollectionViewCell {
     }
   }
 
-  var watchedTime = 0
+  var watchedTime: Int?
     {
       didSet {
         updateTime()
@@ -87,6 +88,11 @@ public class StreamCell: UICollectionViewCell {
   lazy var userImageView: CacheImageView = {
     let imageView = CacheImageView()
     circleImageView.addSubview(imageView)
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    imageView.centerXAnchor.constraint(equalToSystemSpacingAfter: circleImageView.centerXAnchor, multiplier: 1).isActive = true
+    imageView.centerYAnchor.constraint(equalToSystemSpacingBelow: circleImageView.centerYAnchor, multiplier: 1).isActive = true
+    imageView.widthAnchor.constraint(equalTo: circleImageView.widthAnchor, multiplier: 0.8).isActive = true
+    imageView.heightAnchor.constraint(equalTo: circleImageView.heightAnchor, multiplier: 0.8).isActive = true
     imageView.layer.masksToBounds = true
     return imageView
   }()
@@ -96,23 +102,32 @@ public class StreamCell: UICollectionViewCell {
 
   public override func layoutSubviews() {
     super.layoutSubviews()
-    let width = circleImageView.bounds.width * 0.8
-    userImageView.frame.size = CGSize(width: width, height: width)
-    userImageView.layer.cornerRadius = width / 2
-    userImageView.center = circleImageView.center
+    userImageView.layer.cornerRadius = userImageView.bounds.height/2
+  }
+
+  private func configureTimeLabelWidth() {
+    let label = UILabel()
+    label.font = timeLabel.font
+    label.text = timeLabel.text?.replacingOccurrences( of:"[0-9]", with: "8", options: .regularExpression)
+    timeLabelWidth.constant = label.intrinsicContentSize.width
+    layoutIfNeeded()
   }
 
   private func updateTime() {
-    if watchedTime > 0 {
-      let remains = duration - watchedTime
-      timeLabel.text = "\(remains.durationString)"
-    } else {
-      timeLabel.text = "\(duration.durationString)"
-    }
-    watchedTimeLinePaddingView.isHidden = watchedTime <= 0
-    guard watchedTime > 0, duration > 0 else {
+    guard let watchedTime = watchedTime else {
+      timeLabel.text = "\(duration.durationString(true))"
+      configureTimeLabelWidth()
+      watchedTimeLinePaddingView.isHidden = true
       return
     }
+    if watchedTime > 0 {
+      let remains = duration - watchedTime
+      timeLabel.text = "\(remains.durationString(true))"
+    } else {
+      timeLabel.text = "\(duration.durationString(true))"
+    }
+    configureTimeLabelWidth()
+    watchedTimeLinePaddingView.isHidden = isLive//watchedTime <= 0
     watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
   }
 

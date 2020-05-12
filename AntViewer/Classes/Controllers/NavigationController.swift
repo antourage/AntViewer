@@ -17,10 +17,12 @@ class NavigationController: UINavigationController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
+    setNavigationBarHidden(true, animated: false)
   }
   
   override var preferredStatusBarStyle : UIStatusBarStyle {
     return .lightContent
   }
+
 
 }

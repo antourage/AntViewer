@@ -187,6 +187,14 @@ public class AntWidget {
   }
 
   private func didTapButton() {
+    func configureTransitionAnimation(inView view: UIView = self.view) {
+      let transition = CATransition()
+      transition.duration = 0.3
+      transition.type = CATransitionType.push
+      transition.subtype = CATransitionSubtype.fromRight
+      transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+      view.window?.layer.add(transition, forKey: kCATransition)
+    }
     guard let vc = view.findViewController() else {return}
     onViewerAppear?([:])
 
@@ -200,13 +208,17 @@ public class AntWidget {
       playerVC.dataSource = AntWidget.dataSource
       playerVC.modalPresentationStyle = .fullScreen
       navController.view.isHidden = true
-      vc.present(navController, animated: false, completion: nil)
-      navController.present(playerVC, animated: true, completion: {
-        navController.view.isHidden = false
+      vc.present(navController, animated: false, completion: {
+        configureTransitionAnimation(inView: navController.view)
+        navController.present(playerVC, animated: false, completion: {
+          navController.view.isHidden = false
+        })
       })
+
       return
     }
-    vc.present(navController, animated: true, completion: nil)
+    configureTransitionAnimation()
+    vc.present(navController, animated: false, completion: nil)
   }
 
   @objc
