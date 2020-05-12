@@ -88,6 +88,11 @@ public class StreamCell: UICollectionViewCell {
   lazy var userImageView: CacheImageView = {
     let imageView = CacheImageView()
     circleImageView.addSubview(imageView)
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    imageView.centerXAnchor.constraint(equalToSystemSpacingAfter: circleImageView.centerXAnchor, multiplier: 1).isActive = true
+    imageView.centerYAnchor.constraint(equalToSystemSpacingBelow: circleImageView.centerYAnchor, multiplier: 1).isActive = true
+    imageView.widthAnchor.constraint(equalTo: circleImageView.widthAnchor, multiplier: 0.8).isActive = true
+    imageView.heightAnchor.constraint(equalTo: circleImageView.heightAnchor, multiplier: 0.8).isActive = true
     imageView.layer.masksToBounds = true
     return imageView
   }()
@@ -97,10 +102,7 @@ public class StreamCell: UICollectionViewCell {
 
   public override func layoutSubviews() {
     super.layoutSubviews()
-    let width = circleImageView.bounds.width * 0.8
-    userImageView.frame.size = CGSize(width: width, height: width)
-    userImageView.layer.cornerRadius = width / 2
-    userImageView.center = circleImageView.center
+    userImageView.layer.cornerRadius = userImageView.bounds.height/2
   }
 
   private func configureTimeLabelWidth() {
