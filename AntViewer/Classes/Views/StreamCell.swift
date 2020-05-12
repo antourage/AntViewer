@@ -115,16 +115,16 @@ public class StreamCell: UICollectionViewCell {
 
   private func updateTime() {
     guard let watchedTime = watchedTime else {
-      timeLabel.text = "\(duration.durationString(true))"
+      timeLabel.text = "\(duration.durationString(short: true))"
       configureTimeLabelWidth()
       watchedTimeLinePaddingView.isHidden = true
       return
     }
     if watchedTime > 0 {
       let remains = duration - watchedTime
-      timeLabel.text = "\(remains.durationString(true))"
+      timeLabel.text = "\(remains.durationString(short: true))"
     } else {
-      timeLabel.text = "\(duration.durationString(true))"
+      timeLabel.text = "\(duration.durationString(short: true))"
     }
     configureTimeLabelWidth()
     watchedTimeLinePaddingView.isHidden = isLive//watchedTime <= 0

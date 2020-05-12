@@ -190,8 +190,8 @@ public class AntWidget {
     func configureTransitionAnimation(inView view: UIView = self.view) {
       let transition = CATransition()
       transition.duration = 0.3
-      transition.type = CATransitionType.push
-      transition.subtype = CATransitionSubtype.fromRight
+      transition.type = .push
+      transition.subtype = .fromRight
       transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
       view.window?.layer.add(transition, forKey: kCATransition)
     }
