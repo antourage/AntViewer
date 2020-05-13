@@ -269,8 +269,10 @@ class StreamListController: UIViewController {
           self.isLoading = false
         }
         self.collectionView.reloadData()
-        if self.activeCell == nil {
-          self.activeCell = self.getTopVisibleCell()
+        self.collectionView.performBatchUpdates(nil) { (result) in
+          if self.activeCell == nil {
+            self.activeCell = self.getTopVisibleCell()
+          }
         }
       case .failure(let error):
         print(error)
