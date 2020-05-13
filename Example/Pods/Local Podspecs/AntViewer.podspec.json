@@ -1,6 +1,6 @@
 {
   "name": "AntViewer",
-  "version": "1.1.20",
+  "version": "1.1.21",
   "summary": "AntViewer provides to users possibility to watch streams and use chat and polls",
   "description": "AntViewer provides to users possibility to watch streams and use chat and polls.",
   "homepage": "https://github.com/antourage",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/antourage/AntViewer.git",
-    "tag": "1.1.20"
+    "tag": "1.1.21"
   },
   "platforms": {
     "ios": "11.3"

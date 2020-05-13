@@ -45,7 +45,6 @@ class StreamListController: UIViewController {
     return button
   }()
 
-  fileprivate var swiftMessage: SwiftMessage?
   private lazy var bottomMessage = BottomMessage(presentingController: self)
 
   fileprivate var activeCell: StreamCell? {
@@ -150,8 +149,6 @@ class StreamListController: UIViewController {
         print(error)
       }
     }
-    swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
-//    setupNavigationBar()
     setupCollectionView()
     isLoading = true
     initialVodsUpdate()
@@ -278,7 +275,7 @@ class StreamListController: UIViewController {
       case .failure(let error):
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
-          self.swiftMessage?.showBanner(title: error.localizedDescription )
+          self.showErrorMessage()
         }
       }
     }
@@ -360,7 +357,7 @@ class StreamListController: UIViewController {
           self?.collectionView.reloadData()
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
-            self?.swiftMessage?.showBanner(title: error.localizedDescription )
+            self?.showErrorMessage()
           }
         }
       }
@@ -464,6 +461,16 @@ class StreamListController: UIViewController {
       return listRect.contains(cellRect)
     })
     return cell as? StreamCell
+  }
+
+  private func showErrorMessage(autohide: Bool = true) {
+    let color = UIColor.color("a_bottomMessageGray") ?? .gray
+    let text = "Something is not right. We are working to get this fixed".uppercased()
+    if autohide {
+      bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
+      return
+    }
+    bottomMessage.showMessage(title: text, backgroundColor: color)
   }
 
 }
@@ -595,8 +602,7 @@ extension StreamListController: UICollectionViewDelegate {
 
         case .failure:
           if self.isReachable {
-            let color = UIColor.color("a_bottomMessageGray")
-            self.bottomMessage.showMessage(title: "SOMETHING IS NOT RIGHT. WE ARE WORKING TO GET THIS FIXED.",duration: 5, backgroundColor: color ?? .gray)
+            self.showErrorMessage()
             print("Error fetching vods")
           }
         }
