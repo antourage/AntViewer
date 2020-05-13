@@ -119,7 +119,7 @@ class PlayerController: UIViewController {
   
   var activeSpendTime: Double = 0 {
     didSet {
-      Statistic.save(state: .end(span: Int(activeSpendTime)), for: videoContent)
+      Statistic.save(action: .close(span: Int(activeSpendTime)), for: videoContent)
     }
   }
   
@@ -486,11 +486,11 @@ class PlayerController: UIViewController {
     
     isChatEnabled = false
     
-    Statistic.send(state: .start, for: videoContent)
+    Statistic.send(action: .open, for: videoContent)
     dataSource.pauseUpdatingStreams()
     if videoContent is Live {
 
-      pollManager = PollManager(streamId: videoContent.streamId)
+      pollManager = PollManager(streamId: videoContent.id)
       pollManager?.observePolls(completion: { [weak self] (poll) in
         self?.activePoll = poll
       })
@@ -499,10 +499,10 @@ class PlayerController: UIViewController {
           myTimer.invalidate()
           return
         }
-        self.dataSource.getStreamWith(id: self.videoContent.id) { (result) in
+        self.dataSource.getViewers(for: self.videoContent.id) { (result) in
           switch result {
-          case .success(let stream):
-            self.viewersCountLabel.text = "\(stream.viewsCount)"
+          case .success(let count):
+            self.viewersCountLabel.text = "\(count)"
           case .failure(let error):
             print(error.localizedDescription)
           }
@@ -510,7 +510,7 @@ class PlayerController: UIViewController {
       })
       
     }
-    self.chat = Chat(streamID: videoContent.streamId)
+    self.chat = Chat(streamID: videoContent.id)
 
     var token: NSObjectProtocol?
     token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
@@ -631,8 +631,7 @@ class PlayerController: UIViewController {
     if let vod = videoContent as? VOD {
       let seconds = player.currentTime
       vod.isNew = false
-      vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString
-      vod.stoped(at: vod.stopTime)
+      vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString()
     }
     dataSource.startUpdatingStreams()
     streamTimer?.invalidate()
@@ -640,7 +639,7 @@ class PlayerController: UIViewController {
   
   deinit {
     pollManager?.removeFirObserver()
-    Statistic.send(state: .end(span: Int(activeSpendTime)), for: videoContent)
+    Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -721,7 +720,7 @@ class PlayerController: UIViewController {
       
       if self.videoContent is VOD {
         self.handleVODsChat(forTime: Int(time.seconds))
-        self.seekLabel.text = Int(time.seconds).durationString
+        self.seekLabel.text = Int(time.seconds).durationString()
         if self.seekTo == nil, self.player.player.rate == 1 {
           self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
           self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)

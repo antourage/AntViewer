@@ -65,7 +65,7 @@ class StreamListController: UIViewController {
         let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
         var position: Double?
         if let item = item as? VOD {
-          position = Double(self?.stopTimes[item.streamId] ?? item.stopTime.duration())
+          position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
         }
         self?.player.load(media: media, autostart: true, position: position)
       }
@@ -414,8 +414,8 @@ class StreamListController: UIViewController {
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
     let transition = CATransition()
     transition.duration = 0.3
-    transition.type = CATransitionType.push
-    transition.subtype = CATransitionSubtype.fromLeft
+    transition.type = .push
+    transition.subtype = .fromLeft
     transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
     view.window?.layer.add(transition, forKey: kCATransition)
     dismiss(animated: false, completion: { [weak self] in
@@ -426,7 +426,7 @@ class StreamListController: UIViewController {
   fileprivate func configureCell(_ cell: StreamCell, forIndexPath indexPath: IndexPath) -> StreamCell {
     let item = getItemWith(indexPath: indexPath)
     cell.titleLabel.text = item.title
-    cell.subtitleLabel.text = "\(item.creatorName) • \(item.date.timeAgo())"
+    cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
     cell.joinButton.isHidden = item is VOD || !item.isChatOn
     cell.chatView.isHidden = !item.isChatOn
     cell.pollView.isHidden = !item.isPollOn
@@ -442,7 +442,7 @@ class StreamListController: UIViewController {
       cell.duration = item.duration.duration()
       //Temp solution
       let duration = item.stopTime.duration() == 0 ? nil : item.stopTime.duration()
-      cell.watchedTime = item.isNew ? nil : stopTimes[item.streamId] ?? duration
+      cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
       cell.isLive = true
@@ -625,7 +625,7 @@ extension StreamListController: UICollectionViewDelegate {
         case .failure:
           if self.isReachable {
             let color = UIColor.color("a_bottomMessageGray")
-            self.bottomMessage.showMessage(title: "SOMETHING IS NOT RIGHT. WE ARE WORKING TO GET THIS FIXED.", backgroundColor: color ?? .gray)
+            self.bottomMessage.showMessage(title: "SOMETHING IS NOT RIGHT. WE ARE WORKING TO GET THIS FIXED.",duration: 5, backgroundColor: color ?? .gray)
             print("Error fetching vods")
           }
         }
@@ -692,7 +692,7 @@ extension StreamListController: ModernAVPlayerDelegate {
       if let item = self?.activeItem as? VOD {
         self?.activeCell?.duration = item.duration.duration()
         self?.activeCell?.watchedTime = Int(currentTime)
-        self?.stopTimes[item.streamId] = Int(currentTime)
+        self?.stopTimes[item.id] = Int(currentTime)
       } else if let item = self?.activeItem as? Live {
         let duration = Date().timeIntervalSince(item.date)
         self?.activeCell?.duration = Int(duration)
