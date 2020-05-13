@@ -11,6 +11,7 @@
                 <outlet property="contentView" destination="iN0-l3-epB" id="vFR-hy-B0u"/>
                 <outlet property="emptyDataSourceView" destination="Xc7-92-UQH" id="K8o-tl-wab"/>
                 <outlet property="iconImageView" destination="u2N-py-BQQ" id="7Ug-Gt-p9x"/>
+                <outlet property="topConstraint" destination="EgA-HD-ayk" id="u9e-UL-Ufv"/>
                 <outletCollection property="viewsToUpdateCornerRadius" destination="cuY-ti-3rA" collectionClass="NSMutableArray" id="Phh-vd-FaP"/>
                 <outletCollection property="viewsToUpdateCornerRadius" destination="5K2-S7-fMd" collectionClass="NSMutableArray" id="D87-p3-BlQ"/>
                 <outletCollection property="viewsToUpdateCornerRadius" destination="k0g-5i-23a" collectionClass="NSMutableArray" id="eCL-he-c8V"/>

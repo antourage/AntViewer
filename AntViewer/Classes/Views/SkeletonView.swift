@@ -15,6 +15,7 @@ class SkeletonView: UIView {
   @IBOutlet private var iconImageView: UIImageView!
   @IBOutlet private var emptyDataSourceView: UIView!
   private let loadingDebouncer = Debouncer(delay: 30)
+  @IBOutlet var topConstraint: NSLayoutConstraint!
 
   private lazy var animator: Animator =  {
    let animator = Animator(view: iconImageView, type: .spin)
