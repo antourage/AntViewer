@@ -2,148 +2,68 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmptyDataSourceView" customModule="AntViewer">
             <connections>
-                <outlet property="contentView" destination="iN0-l3-epB" id="OrU-AZ-kne"/>
-                <outlet property="titleLabel" destination="jaF-xB-da4" id="YAx-Gp-9ce"/>
-                <outletCollection property="fakeCellsArray" destination="doZ-Z8-mut" collectionClass="NSMutableArray" id="AZx-oB-Dj8"/>
-                <outletCollection property="fakeCellsArray" destination="ScU-ep-ZVF" collectionClass="NSMutableArray" id="7bo-hi-O0q"/>
-                <outletCollection property="fakeCellsArray" destination="37R-QU-BQx" collectionClass="NSMutableArray" id="OA9-b3-jWX"/>
-                <outletCollection property="fakeCellsArray" destination="njq-o7-szo" collectionClass="NSMutableArray" id="1AW-ZY-zwo"/>
+                <outlet property="contentView" destination="yC1-bw-n7D" id="EDz-se-clV"/>
+                <outlet property="logoImageView" destination="fFX-mX-K6N" id="tqi-b5-QSb"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="499" height="1077"/>
-            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+        <view contentMode="scaleToFill" id="yC1-bw-n7D">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Latest videos" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="20" translatesAutoresizingMaskIntoConstraints="NO" id="jaF-xB-da4">
-                    <rect key="frame" x="39.5" y="10" width="420" height="31.5"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="26"/>
-                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="isS-r8-VZi">
-                    <rect key="frame" x="0.0" y="51.5" width="499" height="1"/>
-                    <color key="backgroundColor" white="1" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qEV-cT-BPa">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="23" translatesAutoresizingMaskIntoConstraints="NO" id="WTA-2v-KKP">
+                            <rect key="frame" x="20" y="242" width="280" height="84"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="HolderLogoLarge" translatesAutoresizingMaskIntoConstraints="NO" id="fFX-mX-K6N">
+                                    <rect key="frame" x="117.5" y="0.0" width="45" height="45"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" secondItem="fFX-mX-K6N" secondAttribute="height" multiplier="1:1" id="AXB-Ay-fBP"/>
+                                    </constraints>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="HolderLogoLarge"/>
+                                    </userDefinedRuntimeAttributes>
+                                </imageView>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LIVE INTERACTIVE VIDEOS COMING SOON" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4MG-lB-hi0">
+                                    <rect key="frame" x="9" y="68" width="262" height="16"/>
+                                    <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="13"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <constraints>
+                                <constraint firstItem="fFX-mX-K6N" firstAttribute="width" secondItem="WTA-2v-KKP" secondAttribute="width" multiplier="0.16" id="4pT-d2-qie"/>
+                            </constraints>
+                        </stackView>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="1" id="2Ma-nc-psn"/>
+                        <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="WTA-2v-KKP" secondAttribute="trailing" constant="20" id="2WT-vN-E9d"/>
+                        <constraint firstItem="WTA-2v-KKP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qEV-cT-BPa" secondAttribute="leading" constant="20" id="DC7-Mc-Bfk"/>
+                        <constraint firstItem="WTA-2v-KKP" firstAttribute="centerX" secondItem="qEV-cT-BPa" secondAttribute="centerX" id="w9H-WA-IzP"/>
+                        <constraint firstItem="WTA-2v-KKP" firstAttribute="centerY" secondItem="qEV-cT-BPa" secondAttribute="centerY" id="ysL-bz-6Oc"/>
                     </constraints>
                 </view>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Zez-ue-X1C">
-                    <rect key="frame" x="37.5" y="80.5" width="424" height="1040"/>
-                    <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="doZ-Z8-mut">
-                            <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="OGd-4r-MaS" customClass="CacheImageView" customModule="AntViewer">
-                                    <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
-                                    <color key="tintColor" name="a_backgroundDarkGrey"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="camera"/>
-                                    </userDefinedRuntimeAttributes>
-                                </imageView>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="0.070000000000000007" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <constraints>
-                                <constraint firstAttribute="width" secondItem="doZ-Z8-mut" secondAttribute="height" multiplier="100:56" id="IqT-9L-yxr"/>
-                                <constraint firstAttribute="trailing" secondItem="OGd-4r-MaS" secondAttribute="trailing" id="LNn-7l-I19"/>
-                                <constraint firstItem="OGd-4r-MaS" firstAttribute="top" secondItem="doZ-Z8-mut" secondAttribute="top" id="hcH-Rr-EOq"/>
-                                <constraint firstItem="OGd-4r-MaS" firstAttribute="leading" secondItem="doZ-Z8-mut" secondAttribute="leading" id="udK-vp-xXi"/>
-                                <constraint firstAttribute="bottom" secondItem="OGd-4r-MaS" secondAttribute="bottom" id="vpZ-3d-n3V"/>
-                            </constraints>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ScU-ep-ZVF">
-                            <rect key="frame" x="0.0" y="267.5" width="424" height="237.5"/>
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="99e-HD-Dsm" customClass="CacheImageView" customModule="AntViewer">
-                                    <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
-                                    <color key="tintColor" name="a_backgroundDarkGrey"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="camera"/>
-                                    </userDefinedRuntimeAttributes>
-                                </imageView>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="0.14000000000000001" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <constraints>
-                                <constraint firstItem="99e-HD-Dsm" firstAttribute="top" secondItem="ScU-ep-ZVF" secondAttribute="top" id="dEn-yn-TNU"/>
-                                <constraint firstItem="99e-HD-Dsm" firstAttribute="leading" secondItem="ScU-ep-ZVF" secondAttribute="leading" id="fAU-kQ-FwS"/>
-                                <constraint firstAttribute="bottom" secondItem="99e-HD-Dsm" secondAttribute="bottom" id="jJl-cR-aWB"/>
-                                <constraint firstAttribute="trailing" secondItem="99e-HD-Dsm" secondAttribute="trailing" id="xzk-eV-1Lp"/>
-                            </constraints>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="37R-QU-BQx">
-                            <rect key="frame" x="0.0" y="535" width="424" height="237.5"/>
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="rLd-DR-Ga0" customClass="CacheImageView" customModule="AntViewer">
-                                    <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
-                                    <color key="tintColor" name="a_backgroundDarkGrey"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="camera"/>
-                                    </userDefinedRuntimeAttributes>
-                                </imageView>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="0.20999999999999999" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <constraints>
-                                <constraint firstAttribute="bottom" secondItem="rLd-DR-Ga0" secondAttribute="bottom" id="57P-AM-L6J"/>
-                                <constraint firstItem="rLd-DR-Ga0" firstAttribute="leading" secondItem="37R-QU-BQx" secondAttribute="leading" id="6yA-ax-C8f"/>
-                                <constraint firstItem="rLd-DR-Ga0" firstAttribute="top" secondItem="37R-QU-BQx" secondAttribute="top" id="OED-Up-Pll"/>
-                                <constraint firstAttribute="trailing" secondItem="rLd-DR-Ga0" secondAttribute="trailing" id="hga-W7-kdZ"/>
-                            </constraints>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="njq-o7-szo">
-                            <rect key="frame" x="0.0" y="802.5" width="424" height="237.5"/>
-                            <subviews>
-                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="camera" translatesAutoresizingMaskIntoConstraints="NO" id="kn2-y7-RzN" customClass="CacheImageView" customModule="AntViewer">
-                                    <rect key="frame" x="0.0" y="0.0" width="424" height="237.5"/>
-                                    <color key="tintColor" name="a_backgroundDarkGrey"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="camera"/>
-                                    </userDefinedRuntimeAttributes>
-                                </imageView>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="0.28000000000000003" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <constraints>
-                                <constraint firstItem="kn2-y7-RzN" firstAttribute="top" secondItem="njq-o7-szo" secondAttribute="top" id="9dR-34-GgK"/>
-                                <constraint firstItem="kn2-y7-RzN" firstAttribute="leading" secondItem="njq-o7-szo" secondAttribute="leading" id="LtS-d8-fFW"/>
-                                <constraint firstAttribute="trailing" secondItem="kn2-y7-RzN" secondAttribute="trailing" id="UdH-Sn-0cw"/>
-                                <constraint firstAttribute="bottom" secondItem="kn2-y7-RzN" secondAttribute="bottom" id="i1c-FB-oN1"/>
-                            </constraints>
-                        </view>
-                    </subviews>
-                    <constraints>
-                        <constraint firstItem="37R-QU-BQx" firstAttribute="width" secondItem="37R-QU-BQx" secondAttribute="height" multiplier="100:56" id="A1U-jg-3MG"/>
-                        <constraint firstItem="ScU-ep-ZVF" firstAttribute="width" secondItem="ScU-ep-ZVF" secondAttribute="height" multiplier="100:56" id="OHQ-pQ-UBL"/>
-                        <constraint firstItem="njq-o7-szo" firstAttribute="width" secondItem="njq-o7-szo" secondAttribute="height" multiplier="100:56" id="s7t-FB-Cdu"/>
-                    </constraints>
-                </stackView>
             </subviews>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="doZ-Z8-mut" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.85" id="Fd0-c8-RDN"/>
-                <constraint firstItem="ScU-ep-ZVF" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.85" id="Gys-0L-1Jc"/>
-                <constraint firstItem="jaF-xB-da4" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="Im1-c9-brE"/>
-                <constraint firstItem="jaF-xB-da4" firstAttribute="leading" secondItem="Zez-ue-X1C" secondAttribute="leading" constant="2" id="MP3-RX-pOp"/>
-                <constraint firstItem="isS-r8-VZi" firstAttribute="top" secondItem="jaF-xB-da4" secondAttribute="bottom" constant="10" id="MQq-rV-ytD"/>
-                <constraint firstItem="jaF-xB-da4" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="10" id="dgw-Je-qJh"/>
-                <constraint firstItem="37R-QU-BQx" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" multiplier="0.85" id="es2-C7-neW"/>
-                <constraint firstAttribute="trailing" secondItem="isS-r8-VZi" secondAttribute="trailing" id="ian-j3-mZD"/>
-                <constraint firstItem="isS-r8-VZi" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="kPg-Vt-gyy"/>
-                <constraint firstItem="Zez-ue-X1C" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="p54-Lt-lmk"/>
-                <constraint firstItem="Zez-ue-X1C" firstAttribute="top" secondItem="isS-r8-VZi" secondAttribute="bottom" constant="28" id="wAq-Cx-WMG"/>
+                <constraint firstAttribute="trailing" secondItem="qEV-cT-BPa" secondAttribute="trailing" id="8WM-MS-Tsf"/>
+                <constraint firstAttribute="bottom" secondItem="qEV-cT-BPa" secondAttribute="bottom" id="PWE-qd-r3N"/>
+                <constraint firstItem="qEV-cT-BPa" firstAttribute="leading" secondItem="yC1-bw-n7D" secondAttribute="leading" id="X8N-76-W6j"/>
+                <constraint firstItem="qEV-cT-BPa" firstAttribute="top" secondItem="yC1-bw-n7D" secondAttribute="top" id="bjJ-Xx-gN1"/>
             </constraints>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="254.34782608695653" y="102.79017857142857"/>
+            <point key="canvasLocation" x="-639" y="89"/>
         </view>
     </objects>
     <resources>
-        <image name="camera" width="411" height="227"/>
-        <namedColor name="a_backgroundDarkGrey">
-            <color red="0.13333333333333333" green="0.13333333333333333" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
+        <image name="HolderLogoLarge" width="56" height="56"/>
     </resources>
 </document>

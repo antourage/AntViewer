@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "SkeletonError.png",
+      "filename" : "SkeletonNoConnection.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "SkeletonError@2x.png",
+      "filename" : "SkeletonNoConnection@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "SkeletonError@3x.png",
+      "filename" : "SkeletonNoConnection@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

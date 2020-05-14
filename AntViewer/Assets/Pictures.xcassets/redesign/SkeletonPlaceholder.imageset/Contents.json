@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "SkeletonError.png",
+      "filename" : "SkeletonPlaceholder.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "SkeletonError@2x.png",
+      "filename" : "SkeletonPlaceholder@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "SkeletonError@3x.png",
+      "filename" : "SkeletonPlaceholder@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

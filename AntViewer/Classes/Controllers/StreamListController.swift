@@ -99,7 +99,7 @@ class StreamListController: UIViewController {
   fileprivate let playerDebouncer = Debouncer(delay: 1.2)
   fileprivate var isLoading = false {
     didSet {
-      collectionView.isUserInteractionEnabled = !isLoading
+//      collectionView.isUserInteractionEnabled = !isLoading
     }
   }
   
@@ -129,18 +129,10 @@ class StreamListController: UIViewController {
     return antRefreshControl
   }()
 
-  fileprivate lazy var skeletonView: SkeletonView? = {
-    let view = SkeletonView(frame: collectionView.bounds)
-    view.completion = { [weak self] in
-      self?.collectionView.backgroundView = nil
-      self?.skeletonView = nil
-      self?.isLoading = false
-    }
-    view.onTimeout = { [weak self] in
-      self?.bottomMessage.showMessage(title: "Something is not right")
-      self?.isLoading = false
-    }
-    return view
+  lazy var skeleton: Skeleton? = {
+    let skeleton = Skeleton()
+    skeleton.delegate = self
+    return skeleton
   }()
 
   private var hiddenAuthCompleted = false
@@ -165,10 +157,9 @@ class StreamListController: UIViewController {
       }
     }
     if dataSource.streams.isEmpty {
-      collectionView.backgroundView = skeletonView
-      skeletonView?.layoutIfNeeded()
-      skeletonView?.startLoading()
+      skeleton?.collectionView = collectionView
     }
+
 
     swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
 //    setupNavigationBar()
@@ -193,7 +184,7 @@ class StreamListController: UIViewController {
       let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
       let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
-      self?.skeletonView?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+      self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
     }
 
     collectionView.alwaysBounceVertical = true
@@ -222,7 +213,7 @@ class StreamListController: UIViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
-    skeletonView?.didChangeReachability(isReachable)
+    skeleton?.didChangeReachability(isReachable)
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
   }
 
@@ -243,7 +234,7 @@ class StreamListController: UIViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
-    skeletonView?.didChangeReachability(isReachable)
+    skeleton?.didChangeReachability(isReachable)
   }
 
 
@@ -291,10 +282,7 @@ class StreamListController: UIViewController {
       guard let `self` = self else { return }
       switch result {
       case .success:
-        self.skeletonView?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
-//        if !self.isDataSourceEmpty {
-//          self.isLoading = false
-//        }
+        self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
         if self.activeCell == nil {
           self.activeCell = self.getTopVisibleCell()
@@ -303,7 +291,7 @@ class StreamListController: UIViewController {
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
           self.bottomMessage.showMessage(title: "Something is not right")
-          self.skeletonView?.setError()
+          self.skeleton?.setError()
         }
       }
     }
@@ -329,7 +317,9 @@ class StreamListController: UIViewController {
     guard var visibleIndexPath = getTopVisibleRow(),
       var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
         reachedListsEnd = false
-        collectionView.reloadData()
+        if skeleton == nil {
+          collectionView.reloadData()
+        }
         return
     }
     var shouldScroll = true
@@ -376,15 +366,18 @@ class StreamListController: UIViewController {
   
   @objc
   private func didPullToRefresh(_ sender: Any) {
+    skeleton?.startLoading()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
       self?.dataSource.updateVods { (result) in
         self?.refreshControl.endRefreshing()
         switch result {
         case .success:
           self?.reachedListsEnd = false
+          self?.skeleton?.loaded(videoContent: VOD.self, isEmpty: self?.isDataSourceEmpty == true)
           self?.collectionView.reloadData()
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
+            self?.skeleton?.setError()
             self?.swiftMessage?.showBanner(title: error.localizedDescription )
           }
         }
@@ -498,10 +491,10 @@ class StreamListController: UIViewController {
 extension StreamListController {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     refreshControl.scrollViewDidScroll(scrollView)
-    if skeletonView?.isHidden == false {
-      collectionView.backgroundView?.frame.origin.y = refreshControl.bounds.height
-      collectionView.setNeedsDisplay()
-    }
+//    if skeletonView?.isHidden == false {
+//      collectionView.backgroundView?.frame.origin.y = refreshControl.bounds.height
+//      collectionView.setNeedsDisplay()
+//    }
     resetActiveCell()
     if newLivesButton.isHidden == false, scrollView.contentOffset.y < 250 {
       newLivesButton.isHidden = true
@@ -710,3 +703,17 @@ extension StreamListController: ModernAVPlayerDelegate {
 
 }
 
+extension StreamListController: SkeletonDelegate {
+  func skeletonWillHide(_ skeleton: Skeleton) {
+    collectionView.delegate = self
+    collectionView.dataSource = self
+    collectionView.isUserInteractionEnabled = true
+    collectionView.reloadData()
+    skeleton.delegate = nil
+    self.skeleton = nil
+  }
+
+  func skeletonOnTimeout(_ skeleton: Skeleton) {
+    //TODO: set error
+  }
+}
