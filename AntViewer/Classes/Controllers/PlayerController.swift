@@ -17,7 +17,6 @@ class PlayerController: UIViewController {
   
   private var player: Player!
   
-  @IBOutlet weak var landscapeStreamInfoLeading: NSLayoutConstraint!
   @IBOutlet weak var portraitMessageBottomSpace: NSLayoutConstraint!
   @IBOutlet var landscapeMessageBottomSpace: NSLayoutConstraint!
   @IBOutlet weak var messageHeight: NSLayoutConstraint!
@@ -95,22 +94,23 @@ class PlayerController: UIViewController {
       videoContainerView.load(url: URL(string: videoContent.thumbnailUrl), placeholder: nil)
     }
   }
-  
+
+  //MARK: - video controls
   @IBOutlet weak var videoControlsView: UIView!
   @IBOutlet weak var playButton: UIButton!
   @IBOutlet weak var nextButton: UIButton!
   @IBOutlet weak var previousButton: UIButton!
-  
+  @IBOutlet var cancelButton: UIButton!
+  @IBOutlet var fullScreenButtons: [UIButton]!
+  @IBOutlet var thanksForWatchingLabel: UILabel!
+  private var isAutoplayMode = false
+  private lazy var backgroundShape = CAShapeLayer()
+  private lazy var progressShape = CAShapeLayer()
+  lazy var autoplayDebouncer = Debouncer(delay: 4.5)
+  //MARK: -
   
   
   @IBOutlet weak var pollContainerView: UIView!
-  @IBOutlet weak var infoPortraitView: UIView! {
-    didSet {
-      let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleHideKeyboardGesture(_:)))
-      infoPortraitView.addGestureRecognizer(tapGesture)
-    }
-  }
-  @IBOutlet weak var landscapeStreamInfoStackView: UIStackView!
   @IBOutlet weak var durationView: UIView! {
     didSet {
       durationView.isHidden = !(videoContent is VOD)
@@ -150,13 +150,7 @@ class PlayerController: UIViewController {
       }
     }
   }
-  
-  @IBOutlet weak var broadcasterProfileImage: CacheImageView! {
-    didSet {
-      broadcasterProfileImage.load(url: URL(string: videoContent.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
-    }
-  }
-  
+
   @IBOutlet weak var landscapeBroadcasterProfileImage: CacheImageView! {
     didSet {
       landscapeBroadcasterProfileImage.load(url: URL(string: videoContent.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
@@ -170,38 +164,16 @@ class PlayerController: UIViewController {
       viewersCountLabel.text = "\(videoContent.viewsCount)"
     }
   }
-  
-  @IBOutlet weak var portraitStreamNameLabel: UILabel! {
-    didSet {
-      portraitStreamNameLabel.text = videoContent.title
-    }
-  }
-  
-  @IBOutlet weak var landscapeStreamNameLabel: UILabel! {
-    didSet {
-      landscapeStreamNameLabel.text = videoContent.title
-    }
-  }
-  
-  @IBOutlet weak var landscapeCreatorNameLabel: UILabel! {
-    didSet {
-      landscapeCreatorNameLabel.text = videoContent.creatorNickname
-    }
-  }
-  
-  @IBOutlet weak var creatorNameLabel: UILabel! {
-    didSet {
-      creatorNameLabel.text = videoContent.creatorNickname
-    }
-  }
-  
+
+  @IBOutlet var viewersCountView: UIView!
+
   @IBOutlet weak var portraitSeekSlider: CustomSlide! {
     didSet {
       if let video = videoContent as? VOD {
         portraitSeekSlider.isHidden = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
-        portraitSeekSlider.tintColor = .clear
+        portraitSeekSlider.tintColor = UIColor.color("a_pink")//.clear
         portraitSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
       }
     }
@@ -210,7 +182,6 @@ class PlayerController: UIViewController {
   @IBOutlet weak var landscapeSeekSlider: UISlider! {
     didSet {
       if let video = videoContent as? VOD {
-        landscapeSeekSlider.isHidden = false
         landscapeSeekSlider.maximumValue = Float(video.duration.duration())
         landscapeSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
         landscapeSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
@@ -218,11 +189,7 @@ class PlayerController: UIViewController {
     }
   }
   
-  @IBOutlet weak var seekLabel: UILabel! {
-    didSet {
-      seekLabel.isHidden = !(videoContent is VOD)
-    }
-  }
+  @IBOutlet weak var seekLabel: UILabel! 
 
   //MARK: - new poll banner staff
   @IBOutlet private var pollBannerAspectRatio: NSLayoutConstraint!
@@ -231,8 +198,9 @@ class PlayerController: UIViewController {
   @IBOutlet private var pollBannerView: UIView!
   @IBOutlet private var pollBannerIcon: UIImageView!
   var shouldShowExpandedBanner = true
+  //MARK: -
 
-  //MARK: -edit profile staff
+  //MARK: - edit profile staff
   @IBOutlet private var editProfileContainerPortraitBottom: NSLayoutConstraint!
   @IBOutlet private var editProfileContainerLandscapeBottom: NSLayoutConstraint!
   private var pollAnswersFromLastView = 0
@@ -240,7 +208,7 @@ class PlayerController: UIViewController {
   private var isFirstTimeBanerShown = true
   //MARK: -
 
-  //MARK: -chat tip staff
+  //MARK: - chat tip staff
   @IBOutlet private var chatTipView: UIView!
   @IBOutlet private var chatTipLabel: UILabel!
   @IBOutlet private var chatTipIcon: UIImageView!
@@ -250,6 +218,57 @@ class PlayerController: UIViewController {
     }
   }
   var shouldUpdateIndexPath = true
+  //MARK: -
+
+  //MARK: - player header staff
+  @IBOutlet private var circleImageView: UIImageView! {
+    didSet {
+      userImageView.load(url: URL(string: videoContent.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
+    }
+  }
+  @IBOutlet private var titleLabel: UILabel! {
+    didSet {
+      titleLabel.text = videoContent.title
+    }
+  }
+  @IBOutlet private var subtitleLabel: UILabel! {
+    didSet{
+      subtitleLabel.text = String(format: "%@ • %@", videoContent.creatorNickname, videoContent.date.timeAgo())
+      updateContentTimeAgo()
+    }
+  }
+  @IBOutlet var landscapeCircleImageView: UIImageView! {
+    didSet {
+      landscapeUserImageView.load(url: URL(string: videoContent.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
+    }
+  }
+  @IBOutlet var landscapeTitleLabel: UILabel! {
+    didSet {
+      landscapeTitleLabel.text = videoContent.title
+    }
+  }
+  @IBOutlet var landscapeSubtitleLabel: UILabel! {
+    didSet{
+      landscapeSubtitleLabel.text = String(format: "%@ • %@", videoContent.creatorNickname, videoContent.date.timeAgo())
+    }
+  }
+  @IBOutlet var liveToLandscapeInfoTop: NSLayoutConstraint!
+  @IBOutlet var headerHeightConstraint: NSLayoutConstraint!
+  
+  lazy var userImageView: CacheImageView = {
+    let imageView = CacheImageView()
+    circleImageView.addSubview(imageView)
+    fixImageView(imageView, in: circleImageView)
+    return imageView
+  }()
+
+  lazy var landscapeUserImageView: CacheImageView = {
+    let imageView = CacheImageView()
+    landscapeCircleImageView.addSubview(imageView)
+    fixImageView(imageView, in: landscapeCircleImageView)
+    return imageView
+  }()
+  var timeAgoWorkItem: DispatchWorkItem?
   //MARK: -
 
   fileprivate var currentOrientation: UIInterfaceOrientation! {
@@ -270,7 +289,6 @@ class PlayerController: UIViewController {
             }
             bottomContainerTrailing.constant = trailing
             bottomContainerLeading.constant = leading
-            landscapeStreamInfoLeading.constant = OrientationUtility.currentOrientatin == .landscapeLeft ? 18 : 30 + 10
           }
           bottomContainerView.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
           landscapeTableViewContainer.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
@@ -284,14 +302,24 @@ class PlayerController: UIViewController {
             bottomContainerGradientLayer.removeFromSuperlayer()
           }
           currentTableView.frame.origin = CGPoint(x: !isBottomContainerHidedByUser ? 0 : -self.currentTableView.frame.width, y: 0)
+          liveToLandscapeInfoTop.isActive = !videoControlsView.isHidden
+          if videoContent is Live {
+            landscapeSeekSlider.removeFromSuperview()
+          }
         } else {
           liveLabel.isHidden = false
+          viewersCountView.isHidden = false
           shouldUpdateIndexPath = true
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
           bottomContainerView.isHidden = false
           bottomContainerGradientLayer.removeFromSuperlayer()
           alreadyWatchedMessage += 0
+        }
+        updatePollBannerVisibility()
+        if isAutoplayMode {
+          print("PlayButton: \(playButton.bounds)")
+          adjustCircleLayersPath()
         }
         if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
           expandPollBanner(enableAutoHide: false)
@@ -301,6 +329,19 @@ class PlayerController: UIViewController {
       }
     }
   }
+
+  private func updatePollBannerVisibility() {
+    if OrientationUtility.isLandscape {
+      if !videoControlsView.isHidden {
+        pollBannerView.isHidden = true
+      } else {
+        pollBannerView.isHidden = activePoll == nil
+      }
+    } else {
+      pollBannerView.isHidden = activePoll == nil
+    }
+  }
+
   lazy var formatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .none
@@ -320,7 +361,7 @@ class PlayerController: UIViewController {
         self.isFirstTimeBanerShown = true
         self.pollControllerCloseButtonPressed()
         self.collapsePollBanner()
-        self.pollBannerView.isHidden = true
+        updatePollBannerVisibility()
         self.pollBannerIcon.hideBadge()
         self.updateContentInsetForTableView(self.portraitTableView)
         return
@@ -479,7 +520,6 @@ class PlayerController: UIViewController {
     swiftMessage = SwiftMessage(presentingController: self)
     previousButton.isExclusiveTouch = true
     nextButton.isExclusiveTouch = true
-    chatFieldLeading = landscapeStreamInfoStackView.frame.origin.x
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
     currentOrientation = OrientationUtility.currentOrientatin
@@ -600,12 +640,43 @@ class PlayerController: UIViewController {
     }
   }
 
+  func updateContentTimeAgo() {
+    guard videoContent.date <= Date() else {
+      timeAgoWorkItem?.cancel()
+      timeAgoWorkItem = nil
+      return
+    }
+    let components = Calendar.current.dateComponents([.hour], from: videoContent.date, to: Date())
+    timeAgoWorkItem?.cancel()
+    timeAgoWorkItem = nil
+    timeAgoWorkItem = DispatchWorkItem { [weak self] in
+      guard let `self` = self else { return }
+      let text = String(format: "%@ • %@", self.videoContent.creatorNickname, self.videoContent.date.timeAgo())
+      self.subtitleLabel.text = text
+      self.landscapeSubtitleLabel.text = text
+      self.updateContentTimeAgo()
+    }
+    if let hours = components.hour,
+      let workItem = timeAgoWorkItem {
+      let delay: Double = hours > 0 ? 3600 : 60
+      DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+    }
+  }
+
+  private func fixImageView(_ imageView: CacheImageView, in parentView: UIView) {
+    imageView.translatesAutoresizingMaskIntoConstraints = false
+    imageView.centerXAnchor.constraint(equalToSystemSpacingAfter: parentView.centerXAnchor, multiplier: 1).isActive = true
+    imageView.centerYAnchor.constraint(equalTo: parentView.centerYAnchor).isActive = true
+    imageView.widthAnchor.constraint(equalTo: parentView.widthAnchor, multiplier: 0.8).isActive = true
+    imageView.heightAnchor.constraint(equalTo: parentView.heightAnchor, multiplier: 0.8).isActive = true
+    imageView.layer.masksToBounds = true
+  }
+
   @objc
   func handleTouches(sender: UITapGestureRecognizer) {
     let point = sender.location(in: view)
     let isTouchOnTableView = portraitTableView.frame.contains(point)
-    let isTouchOnInfoView = infoPortraitView.frame.contains(point)
-    if isTouchOnTableView || isTouchOnInfoView {
+    if isTouchOnTableView {
       view.endEditing(true)
     }
   }
@@ -635,6 +706,7 @@ class PlayerController: UIViewController {
   }
   
   deinit {
+    print("Player DEINITED")
     pollManager?.removeFirObserver()
     Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
   }
@@ -664,6 +736,9 @@ class PlayerController: UIViewController {
     if OrientationUtility.isLandscape {
       updateBottomContainerGradientFrame()
     }
+    userImageView.layer.cornerRadius = userImageView.bounds.width/2
+    landscapeUserImageView.layer.cornerRadius = landscapeUserImageView.bounds.width/2
+    updateContentInsetForTableView(currentTableView)
   }
   
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
@@ -675,7 +750,8 @@ class PlayerController: UIViewController {
     }
     super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
   }
-  
+
+
   private func handleVODsChat(forTime time: Int) {
     let messagesAfterStream = isVideoEnd ? 600 : 0
     let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream
@@ -715,13 +791,15 @@ class PlayerController: UIViewController {
       }
       self.activeSpendTime += 0.2
       
-      if self.videoContent is VOD {
+      if let vod = self.videoContent as? VOD {
         self.handleVODsChat(forTime: Int(time.seconds))
-        self.seekLabel.text = Int(time.seconds).durationString()
+        self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration)
         if self.seekTo == nil, self.player.player.rate == 1 {
           self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
           self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)
         }
+      } else {
+        self.seekLabel.text = String(format: "%@", Int(time.seconds).durationString())
       }
     }
     
@@ -735,7 +813,7 @@ class PlayerController: UIViewController {
     videoContainerView.player = player.player
     
     player.onErrorApear = { [weak self] error in
-      self?.playButton.setImage(UIImage.image("play"), for: .normal)
+      self?.playButton.setImage(UIImage.image("Play"), for: .normal)
       self?.isPlayerControlsHidden = false
       self?.videoContainerView.removeActivityIndicator()
       self?.isControlsEnabled = true
@@ -744,12 +822,14 @@ class PlayerController: UIViewController {
     }
     
     player.onVideoEnd = { [weak self] in
-      self?.playButton.setImage(UIImage.image("play"), for: .normal)
+      self?.playButton.setImage(UIImage.image("Play"), for: .normal)
       if self?.videoContent is VOD {
         self?.isVideoEnd = true
         self?.isPlayerControlsHidden = false
+        self?.startAutoplayNexItem()
       } else {
-        self?.videoContainerView.image = UIImage.image("thanks_for_watching")
+        //TODO: set thanks image
+        self?.setThanksImage()
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
         self?.liveLabelWidth.constant = 0
         self?.playButton.isHidden = true
@@ -759,13 +839,108 @@ class PlayerController: UIViewController {
     }
     videoContainerView.showActivityIndicator()
   }
-  
+
+  private func setThanksImage() {
+    let text = "thanks for watching"
+    if let imageUrl = URL(string: videoContent.thumbnailUrl) {
+      let _ =  ImageService.getImage(withURL: imageUrl) { [weak self] thumbnail in
+        guard let `self` = self, let thumbnail = thumbnail else { return }
+        let scale = UIScreen.main.scale
+        let labelFrame = CGRect(origin: .zero, size: CGSize(width: thumbnail.size.width*3, height: thumbnail.size.height*3))
+        UIGraphicsBeginImageContextWithOptions(labelFrame.size, false, scale)
+        thumbnail.draw(in: labelFrame)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(UIColor.black.withAlphaComponent(0.65).cgColor)
+        context.fill(labelFrame)
+        let label = UILabel(frame: labelFrame)
+        label.text = text.uppercased()
+        label.font = UIFont.systemFont(ofSize: labelFrame.size.height*0.08, weight: .bold)
+        label.textAlignment = .center
+        label.textColor = .white
+        label.draw(labelFrame)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        self.videoContainerView.image = newImage
+        self.videoContainerView.isUserInteractionEnabled = false
+      }
+    }
+  }
+
+  private func startAutoplayNexItem() {
+    if nextButton.isHidden {
+      playButton.setImage(UIImage.image("PlayAgain"), for: .normal)
+      return
+    }
+
+    isSeekByTappingMode = false
+
+    playButton.setImage(UIImage.image("PlayNext"), for: .normal)
+    previousButton.isHidden = true
+    nextButton.isHidden = true
+    isAutoplayMode = true
+    cancelButton.isHidden = false
+
+    playButton.layer.addSublayer(backgroundShape)
+    playButton.layer.addSublayer(progressShape)
+    adjustCircleLayersPath()
+    let strokeWidth: CGFloat = 4.0
+    backgroundShape.strokeColor = UIColor.white.withAlphaComponent(0.2).cgColor
+    backgroundShape.lineWidth = strokeWidth
+    backgroundShape.fillColor = UIColor.clear.cgColor
+
+    progressShape.strokeColor = UIColor.white.withAlphaComponent(0.67).cgColor
+    progressShape.lineWidth = backgroundShape.lineWidth
+    progressShape.fillColor = UIColor.clear.cgColor
+    progressShape.lineCap = .round
+    progressShape.strokeEnd = 0
+
+    progressShape.removeAnimation(forKey: "fillAnimation")
+    let basicAnimation = CABasicAnimation(keyPath: "strokeEnd")
+    basicAnimation.toValue = 1
+    basicAnimation.duration = 5
+    basicAnimation.fillMode = .forwards
+    basicAnimation.isRemovedOnCompletion = false
+    progressShape.add(basicAnimation, forKey: "fillAnimation")
+
+    autoplayDebouncer.call { [weak self] in
+      guard let `self` = self else { return }
+      self.goToButtonPressed(self.nextButton)
+    }
+  }
+
+  private func adjustCircleLayersPath() {
+    // temp solution (doesn't work in viewDidLayoutSubviews)
+    let side = OrientationUtility.isLandscape ? 84 : 56
+    let size = CGSize(width: side, height: side)
+    let frame = CGRect(origin: .zero, size: size)
+    backgroundShape.frame = frame
+    progressShape.frame = frame
+    backgroundShape.path = UIBezierPath(ovalIn: playButton.bounds).cgPath
+    progressShape.path = UIBezierPath(arcCenter: CGPoint(x: playButton.bounds.width/2, y: playButton.bounds.height/2), radius: playButton.bounds.width/2, startAngle: -CGFloat.pi/2, endAngle: 1.5 * CGFloat.pi, clockwise: true).cgPath
+  }
+
+
+  @IBAction func cancelButtonTapped(_ sender: UIButton) {
+    autoplayDebouncer.call {}
+    isAutoplayMode = false
+    previousButton.isHidden = false
+    nextButton.isHidden = false
+    adjustVideoControlsButtons()
+    updatePlayButtonImage()
+    backgroundShape.removeFromSuperlayer()
+    progressShape.removeFromSuperlayer()
+    cancelButton.isHidden = true
+  }
+
   @objc
   private func onSliderValChanged(slider: UISlider, event: UIEvent) {
     if let touchEvent = event.allTouches?.first {
       switch touchEvent.phase {
       case .began:
         seekTo = Int(slider.value)
+        isVideoEnd = false
+        cancelButtonTapped(cancelButton)
       case .moved:
         seekTo = Int(slider.value)
       default:
@@ -895,7 +1070,8 @@ class PlayerController: UIViewController {
     guard let vod = self.videoContent as? VOD else { return }
     self.controlsAppearingDebouncer.call {}
     self.videoControlsView.isHidden = true
-    self.portraitSeekSlider.tintColor = .clear
+    self.liveToLandscapeInfoTop.isActive = false
+    self.view.layoutIfNeeded()
     let isLeftSide = sender.location(in: self.videoContainerView).x < self.videoContainerView.bounds.width / 2
     let activeSlider = OrientationUtility.currentOrientatin == .portrait ? self.portraitSeekSlider : self.landscapeSeekSlider
     self.seekTo = Int(activeSlider?.value ?? 0)
@@ -937,16 +1113,16 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
-
-    
-    let onPlayButton = playButton.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden
+    guard !isAutoplayMode else { return }
+    let buttons: [UIButton] = [cancelButton, playButton] + fullScreenButtons
+    let onButtons = buttons.map { $0.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
     guard isControlsEnabled else { return }
     if isKeyboardShown {
       chatTextView.endEditing(true)
       return
     }
     
-    guard !onPlayButton, !(!pollContainerView.isHidden&&OrientationUtility.isLandscape) else { return }
+    guard !onButtons, !(!pollContainerView.isHidden&&OrientationUtility.isLandscape) else { return }
 
     //MARK: seek by typing
     self.updatePlayButtonImage()
@@ -960,6 +1136,7 @@ class PlayerController: UIViewController {
         if Date().timeIntervalSince(self.timeOfLastTap!) > 0.3 {
           self.timeOfLastTap = nil
           self.seekToByTapping = nil
+          self.isSeekByTappingMode = false
         }
         else {
           self.isSeekByTappingMode = true
@@ -984,17 +1161,19 @@ class PlayerController: UIViewController {
     }
     controlsAppearingDebouncer.call { [weak self] in
       guard let `self` = self else { return }
-      //MARK: show player controls
       self.startLabel.text = self.videoContent.date.timeAgo()
       self.videoControlsView.isHidden = isHidden
       self.updateSeekThumbAppearance(isHidden: isHidden)
       if OrientationUtility.isLandscape {
+        self.liveToLandscapeInfoTop.isActive = !isHidden
         self.landscapeTableViewContainer.isHidden = !isHidden
         self.bottomContainerView.isHidden = !isHidden
+        self.updatePollBannerVisibility()
+        self.view.layoutIfNeeded()
       }
       self.controlsDebouncer.call { [weak self] in
         guard let `self` = self else { return }
-        //MARK: hide player controls
+        //MARK: auto hide player controls
         if self.player.isPlayerPaused == false {
           if OrientationUtility.isLandscape && self.seekTo != nil {
             return
@@ -1002,9 +1181,12 @@ class PlayerController: UIViewController {
           if OrientationUtility.isLandscape {
             self.landscapeTableViewContainer.isHidden = !self.pollContainerView.isHidden
             self.bottomContainerView.isHidden = !self.pollContainerView.isHidden
+            self.liveToLandscapeInfoTop.isActive = false
+            self.view.layoutIfNeeded()
           }
           self.updateSeekThumbAppearance(isHidden: true)
           self.videoControlsView.isHidden = true
+          self.updatePollBannerVisibility()
         }
       }
     }
@@ -1012,14 +1194,16 @@ class PlayerController: UIViewController {
   
   func updateSeekThumbAppearance(isHidden: Bool) {
     let thumbTintColor = isHidden ? .clear : UIColor.color("a_pink")
-    self.portraitSeekSlider.tintColor = thumbTintColor
-    self.portraitSeekSlider.isUserInteractionEnabled = !isHidden
-    self.landscapeSeekSlider.tintColor = thumbTintColor
-    self.landscapeSeekSlider.isUserInteractionEnabled = !isHidden
+    self.landscapeSeekSlider?.tintColor = thumbTintColor
+    self.landscapeSeekSlider?.isUserInteractionEnabled = !isHidden
   }
   
   @IBAction func playButtonPressed(_ sender: UIButton) {
     if self.isVideoEnd {
+      if isAutoplayMode {
+        goToButtonPressed(nextButton)
+        return
+      }
       self.isVideoEnd = false
       self.player.seek(to: .zero)
     }
@@ -1043,7 +1227,9 @@ class PlayerController: UIViewController {
   }
   
   func updatePlayButtonImage() {
-    let image = (player.isPlayerPaused == false) ? UIImage.image("pause") : UIImage.image("play")
+    guard !isAutoplayMode else { return }
+    let image = (player.isPlayerPaused == false) ? UIImage.image("Pause") :
+      isVideoEnd ? UIImage.image("PlayAgain") : UIImage.image("Play")
     self.playButton.setImage(image, for: .normal)
   }
   
@@ -1090,6 +1276,7 @@ class PlayerController: UIViewController {
   var editProfileControllerIsLoading = false
   
   func showEditProfileView() {
+    guard pollContainerView.isHidden else { return }
     editProfileControllerIsLoading = true
     shouldEnableMessageTextFields(false)
     let editProfileController = EditProfileViewController(nibName: "EditProfileViewController", bundle: Bundle(for: type(of: self)))
@@ -1098,10 +1285,12 @@ class PlayerController: UIViewController {
     editProfileContainerView.addSubview(editProfileController.view)
     editProfileController.didMove(toParent: self)
     editProfileController.view.translatesAutoresizingMaskIntoConstraints = false
-    editProfileController.view.topAnchor.constraint(equalTo: editProfileContainerView.topAnchor).isActive = true
-    editProfileController.view.leftAnchor.constraint(equalTo: editProfileContainerView.leftAnchor).isActive = true
-    editProfileController.view.rightAnchor.constraint(equalTo: editProfileContainerView.rightAnchor).isActive = true
-    editProfileController.view.bottomAnchor.constraint(equalTo: editProfileContainerView.bottomAnchor).isActive = true
+    UIView.performWithoutAnimation {
+      editProfileController.view.topAnchor.constraint(equalTo: self.editProfileContainerView.topAnchor).isActive = true
+      editProfileController.view.leftAnchor.constraint(equalTo: self.editProfileContainerView.leftAnchor).isActive = true
+      editProfileController.view.rightAnchor.constraint(equalTo: self.editProfileContainerView.rightAnchor).isActive = true
+      editProfileController.view.bottomAnchor.constraint(equalTo: self.editProfileContainerView.bottomAnchor).isActive = true
+    }
     
     
     editProfileContainerView.isHidden = false
@@ -1133,8 +1322,6 @@ class PlayerController: UIViewController {
     switch sender.direction {
     case .right:
       isRightDirection = true
-      let isLeftInset = view.safeAreaInsets.left > 0
-      chatFieldLeading = isKeyboardShown ? OrientationUtility.currentOrientatin == .landscapeRight && isLeftInset ? 30 : 0 : landscapeStreamInfoStackView.frame.origin.x
     case .left:
       chatFieldLeading = -currentTableView.frame.width
       
@@ -1153,7 +1340,9 @@ class PlayerController: UIViewController {
   }
 
   @IBAction func openPollBannerPressed(_ sender: Any) {
+    guard editProfileContainerView.isHidden else { return }
     dismissEditProfileView()
+    shouldEnableMessageTextFields(false)
     view.endEditing(true)
     pollController = PollController()
     pollController?.poll = activePoll
@@ -1164,7 +1353,6 @@ class PlayerController: UIViewController {
     pollController.didMove(toParent: self)
     pollController.delegate = self
     pollContainerView.isHidden = false
-    infoPortraitView.isHidden = true
     portraitTableView.isHidden = true
     bottomContainerView.isHidden = true
     pollBannerIcon.hideBadge()
@@ -1222,15 +1410,18 @@ extension PlayerController {
           if editProfileControllerIsLoading { return }
           portraitMessageBottomSpace.constant = 0
           landscapeMessageBottomSpace.constant = 0
-          chatFieldLeading = chatFieldLeading >= 0 ? landscapeStreamInfoStackView.frame.origin.x : chatFieldLeading
           liveLabel.isHidden = false
+          viewersCountView.isHidden = false
+          headerHeightConstraint.isActive = false
         } else if OrientationUtility.isLandscape {
           let isLeftInset = view.safeAreaInsets.left > 0
           chatFieldLeading = OrientationUtility.currentOrientatin == .landscapeRight && isLeftInset ? 30 : 0
           editProfileContainerLandscapeBottom.constant = keyboardSize.height
           landscapeMessageBottomSpace.constant = keyboardSize.height - bottomPadding
           liveLabel.isHidden = true
+          viewersCountView.isHidden = true
         } else {
+          headerHeightConstraint.isActive = true
           portraitMessageBottomSpace.constant = keyboardSize.height - bottomPadding
           editProfileContainerPortraitBottom.constant = keyboardSize.height
         }
@@ -1332,12 +1523,12 @@ extension PlayerController: PollControllerDelegate {
     pollController?.removeFromParent()
     pollController = nil
     pollContainerView.isHidden = true
-    infoPortraitView.isHidden = false
     portraitTableView.isHidden = false
     bottomContainerView.isHidden = false
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
     bottomContainerView.isHidden = false
     landscapeTableViewContainer.isHidden = false
+    shouldEnableMessageTextFields(true)
   }
 }
 

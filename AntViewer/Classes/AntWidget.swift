@@ -209,9 +209,14 @@ public class AntWidget {
       playerVC.dataSource = AntWidget.dataSource
       playerVC.modalPresentationStyle = .fullScreen
       navController.view.isHidden = true
+      var playerNavController: PlayerNavigationController!
+      if currentContent is VOD {
+        playerNavController = PlayerNavigationController(rootViewController: playerVC)
+      }
+      let controllerToPresent: UIViewController = currentContent is VOD ? playerNavController : playerVC
       vc.present(navController, animated: false, completion: {
         configureTransitionAnimation(inView: navController.view)
-        navController.present(playerVC, animated: false, completion: {
+        navController.present(controllerToPresent, animated: false, completion: {
           navController.view.isHidden = false
         })
       })

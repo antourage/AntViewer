@@ -355,7 +355,7 @@
         <image name="BroadcasterColorWheel" width="40" height="40"/>
         <image name="Chat" width="24" height="24"/>
         <image name="PlaceholderVideo" width="144" height="144"/>
-        <image name="PlayAgain" width="56" height="56"/>
+        <image name="PlayAgain" width="84" height="84"/>
         <image name="Polls" width="24" height="24"/>
         <image name="Share" width="24" height="24"/>
         <image name="Views" width="16" height="16"/>

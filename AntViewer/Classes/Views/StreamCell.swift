@@ -134,7 +134,17 @@ public class StreamCell: UICollectionViewCell {
       timeLabel.text = "\(duration.durationString(short: true))"
     }
     configureTimeLabelWidth()
-    watchedTimeLinePaddingView.isHidden = isLive//watchedTime <= 0
+    if isLive {
+      watchedTimeLinePaddingView.isHidden = true
+    } else {
+      if watchedTimeLinePaddingView.isHidden {
+        watchedTimeLinePaddingView.alpha = 0
+        watchedTimeLinePaddingView.isHidden = false
+        UIView.animate(withDuration: 0.2) {
+          self.watchedTimeLinePaddingView.alpha = 1
+        }
+      }
+    }
     watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
   }
 

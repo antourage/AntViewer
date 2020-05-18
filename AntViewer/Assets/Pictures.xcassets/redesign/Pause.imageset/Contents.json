@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "PlayerPlay(Large).png",
+      "filename" : "PlayerPause(Large).png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "PlayerPlay(Large)@2x.png",
+      "filename" : "PlayerPause(Large)@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "PlayerPlay(Large)@3x.png",
+      "filename" : "PlayerPause(Large)@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

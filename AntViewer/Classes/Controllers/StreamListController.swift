@@ -56,8 +56,6 @@ class StreamListController: UIViewController {
       playerDebouncer.call {}
       guard let item = activeItem else { return }
       playerDebouncer.call { [weak self] in
-//        let generator = UISelectionFeedbackGenerator()
-//        generator.selectionChanged()
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
@@ -66,7 +64,7 @@ class StreamListController: UIViewController {
         if let item = item as? VOD {
           position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
         }
-        self?.player.load(media: media, autostart: true, position: position)
+        self?.player.load(media: media, autostart: false, position: position)
       }
     }
   }
@@ -677,6 +675,15 @@ extension StreamListController: ModernAVPlayerDelegate {
     switch state {
     case .failed:
       activeCell = nil
+    case .loaded:
+      UIView.animate(withDuration: 0.5, animations: {
+        self.activeCell?.contentImageView.alpha = 0
+      }) { (_) in
+        UIView.animate(withDuration: 0.15) {
+          self.activeCell?.contentImageView.alpha = 1
+          self.player.play()
+        }
+      }
     default:
       return
     }
@@ -707,7 +714,9 @@ extension StreamListController: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
     DispatchQueue.main.async { [weak self] in
       guard let `self` = self else { return }
-      self.activeCell?.timeImageView.isHidden = false
+      UIView.animate(withDuration: 0.1) {
+        self.activeCell?.timeImageView.isHidden = false
+      }
       self.activeCell?.timeImageView.startAnimating()
     }
   }

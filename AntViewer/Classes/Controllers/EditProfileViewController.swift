@@ -85,15 +85,14 @@ class EditProfileViewController: UIViewController {
   @IBAction func confirmButtonPressed(_ sender: UIButton) {
        if let text = displayNameTextField.text, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
         AntViewerManager.shared.change(displayName: text) { [weak self] (result) in
-          guard let `self` = self else { return }
           switch result {
           case .success:
-           self.currentDisplayName = User.current?.displayName ?? ""
+           self?.currentDisplayName = User.current?.displayName ?? ""
             break
           case .failure:
             break
           }
-          self.delegate?.editProfileCloseButtonPressed(withChanges: true)
+          self?.delegate?.editProfileCloseButtonPressed(withChanges: true)
         }
      }
   }
