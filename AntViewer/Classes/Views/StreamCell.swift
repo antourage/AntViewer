@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AntViewerExt
 
 public class StreamCell: UICollectionViewCell {
 
@@ -38,17 +39,22 @@ public class StreamCell: UICollectionViewCell {
   @IBOutlet var joinButton: UIButton!
   @IBOutlet private var timeLabelWidth: NSLayoutConstraint!
 
-  var message: (text: String, name: String, date: Date)? {
+  var message: LatestComment? {
     didSet {
       if let message = self.message {
         chatTextLabel.text = message.text
-        chatNameLabel.text = "\(message.name) • most recent"
+        chatNameLabel.text = "\(message.nickname) • most recent"
         messageStackView.isHidden = false
+        chatView.isHidden = false
       } else {
         messageStackView.isHidden = true
+//        chatView.isHidden = isLive
       }
     }
   }
+
+  var chatEnabled = false
+
 
   var isNew = false {
     didSet {
@@ -68,6 +74,7 @@ public class StreamCell: UICollectionViewCell {
       if isLive {
         liveLabel.text = "LIVE"
         liveLabel.backgroundColor = UIColor.color("a_pink")
+//        chatView.isHidden = !chatEnabled
       }
     }
   }

@@ -57,8 +57,8 @@ class StreamListController: UIViewController {
       playerDebouncer.call {}
       guard let item = activeItem else { return }
       playerDebouncer.call { [weak self] in
-        let generator = UISelectionFeedbackGenerator()
-        generator.selectionChanged()
+//        let generator = UISelectionFeedbackGenerator()
+//        generator.selectionChanged()
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
@@ -99,7 +99,6 @@ class StreamListController: UIViewController {
   fileprivate let playerDebouncer = Debouncer(delay: 1.2)
   fileprivate var isLoading = false {
     didSet {
-//      collectionView.isUserInteractionEnabled = !isLoading
     }
   }
   
@@ -156,6 +155,7 @@ class StreamListController: UIViewController {
         print(error)
       }
     }
+    dataSource.lastMessageHandler = MessageFetcher()
     if dataSource.streams.isEmpty {
       skeleton?.collectionView = collectionView
     }
@@ -185,6 +185,7 @@ class StreamListController: UIViewController {
       let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+//      self?.collectionView.collectionViewLayout.invalidateLayout()
     }
 
     collectionView.alwaysBounceVertical = true
@@ -249,6 +250,10 @@ class StreamListController: UIViewController {
     }
   }
 
+  deinit {
+    dataSource.lastMessageHandler = nil
+  }
+
   func updateFooter() {
     guard fetchingNextItems || reachedListsEnd else {
       footerView?.isHidden = true
@@ -287,6 +292,7 @@ class StreamListController: UIViewController {
         if self.activeCell == nil {
           self.activeCell = self.getTopVisibleCell()
         }
+        self.isLoading = false
       case .failure(let error):
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
@@ -361,7 +367,6 @@ class StreamListController: UIViewController {
         shouldResetActiveCell = true
       }
     }
-
   }
   
   @objc
@@ -421,15 +426,16 @@ class StreamListController: UIViewController {
     cell.titleLabel.text = item.title
     cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
     cell.joinButton.isHidden = item is VOD || !item.isChatOn
-    cell.chatView.isHidden = !item.isChatOn
-    cell.pollView.isHidden = !item.isPollOn
+    cell.chatView.isHidden = true
+    cell.pollView.isHidden = true
     cell.shareButton.isHidden = true
-    cell.buttonsStackView.isHidden = !item.isChatOn && !item.isPollOn
+    cell.chatEnabled = item.isChatOn
     cell.message = item.latestMessage
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
     if let item = item as? VOD {
+      cell.chatView.isHidden = item.latestMessage == nil
       cell.isLive = false
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
@@ -438,7 +444,9 @@ class StreamListController: UIViewController {
       cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
+      cell.chatView.isHidden = !((item.latestMessage == nil) || item.isChatOn)
       cell.isLive = true
+      cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
       cell.replayView.isHidden = true
@@ -446,6 +454,8 @@ class StreamListController: UIViewController {
         //TOD: open player with active field
       }
     }
+
+    cell.buttonsStackView.isHidden = cell.chatView.isHidden && !item.isPollOn
     return cell
   }
   
@@ -483,7 +493,6 @@ class StreamListController: UIViewController {
     })
     return cell as? StreamCell
   }
-
 }
 
 
@@ -491,10 +500,6 @@ class StreamListController: UIViewController {
 extension StreamListController {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     refreshControl.scrollViewDidScroll(scrollView)
-//    if skeletonView?.isHidden == false {
-//      collectionView.backgroundView?.frame.origin.y = refreshControl.bounds.height
-//      collectionView.setNeedsDisplay()
-//    }
     resetActiveCell()
     if newLivesButton.isHidden == false, scrollView.contentOffset.y < 250 {
       newLivesButton.isHidden = true
@@ -640,7 +645,7 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
       let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
       height += labelHeight + 2 + 12 + 14.5
     }
-    if item.isChatOn || item.isPollOn || item.shareLink != nil {
+    if (item.isChatOn && item is Live || item.latestMessage != nil && item is VOD) || item.isPollOn || item.shareLink != nil {
       height += 12 + 0.075 * view.bounds.width
     }
     if item is Live, item.isChatOn {
