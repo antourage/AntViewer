@@ -45,7 +45,6 @@ class StreamListController: UIViewController {
     return button
   }()
 
-  fileprivate var swiftMessage: SwiftMessage?
   private lazy var bottomMessage = BottomMessage(presentingController: self)
 
   fileprivate var activeCell: StreamCell? {
@@ -160,9 +159,6 @@ class StreamListController: UIViewController {
       skeleton?.collectionView = collectionView
     }
 
-
-    swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
-//    setupNavigationBar()
     setupCollectionView()
     isLoading = true
     initialVodsUpdate()
@@ -289,8 +285,10 @@ class StreamListController: UIViewController {
       case .success:
         self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
-        if self.activeCell == nil {
-          self.activeCell = self.getTopVisibleCell()
+        self.collectionView.performBatchUpdates(nil) { (result) in
+          if self.activeCell == nil {
+            self.activeCell = self.getTopVisibleCell()
+          }
         }
         self.isLoading = false
       case .failure(let error):
@@ -383,7 +381,6 @@ class StreamListController: UIViewController {
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
             self?.skeleton?.setError()
-            self?.swiftMessage?.showBanner(title: error.localizedDescription )
           }
         }
       }
@@ -492,6 +489,16 @@ class StreamListController: UIViewController {
       return listRect.contains(cellRect)
     })
     return cell as? StreamCell
+  }
+
+  private func showErrorMessage(autohide: Bool = true) {
+    let color = UIColor.color("a_bottomMessageGray") ?? .gray
+    let text = "Something is not right. We are working to get this fixed".uppercased()
+    if autohide {
+      bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
+      return
+    }
+    bottomMessage.showMessage(title: text, backgroundColor: color)
   }
 }
 
@@ -622,8 +629,7 @@ extension StreamListController: UICollectionViewDelegate {
 
         case .failure:
           if self.isReachable {
-            let color = UIColor.color("a_bottomMessageGray")
-            self.bottomMessage.showMessage(title: "SOMETHING IS NOT RIGHT. WE ARE WORKING TO GET THIS FIXED.",duration: 5, backgroundColor: color ?? .gray)
+            self.showErrorMessage()
             print("Error fetching vods")
           }
         }

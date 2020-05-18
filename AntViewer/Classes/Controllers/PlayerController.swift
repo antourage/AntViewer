@@ -319,6 +319,7 @@ class PlayerController: UIViewController {
         self.shouldShowExpandedBanner = true
         self.isFirstTimeBanerShown = true
         self.pollControllerCloseButtonPressed()
+        self.collapsePollBanner()
         self.pollBannerView.isHidden = true
         self.pollBannerIcon.hideBadge()
         self.updateContentInsetForTableView(self.portraitTableView)
@@ -556,9 +557,7 @@ class PlayerController: UIViewController {
     pollBannerAspectRatio.isActive = true
     UIView.animate(withDuration: animated ? 0.3 : 0, animations: {
       self.view.layoutIfNeeded()
-    }) { (success) in
-      self.pollBannerView.subviews.first { $0.isKind(of: UIImageView.self) }?.isUserInteractionEnabled = true
-    }
+    })
   }
 
   func expandPollBanner(enableAutoHide: Bool = true) {
@@ -568,9 +567,7 @@ class PlayerController: UIViewController {
     }
     UIView.animate(withDuration: 0.3, animations: {
       self.view.layoutIfNeeded()
-    }) { (success) in
-      self.pollBannerIcon.subviews.first { $0.isKind(of: UIImageView.self) }?.isUserInteractionEnabled = false
-    }
+    })
     guard isFirstTimeBanerShown else { return }
     isFirstTimeBanerShown = false
     pollBannerDebouncer.call { [weak self] in
