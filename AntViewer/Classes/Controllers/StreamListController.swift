@@ -52,6 +52,7 @@ class StreamListController: UIViewController {
       oldValue?.contentImageView.player = nil
       oldValue?.timeImageView.isHidden = true
       oldValue?.timeImageView.stopAnimating()
+      fakeThumbnail.removeFromSuperview()
       player.stop()
       playerDebouncer.call {}
       guard let item = activeItem else { return }
@@ -64,10 +65,18 @@ class StreamListController: UIViewController {
         if let item = item as? VOD {
           position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
         }
-        self?.player.load(media: media, autostart: false, position: position)
+        if let fakeThumb = self?.fakeThumbnail, let contentImageView = self?.activeCell?.contentImageView {
+          contentImageView.addSubview(fakeThumb)
+          fakeThumb.fixInView(contentImageView)
+          fakeThumb.image = contentImageView.image
+          fakeThumb.contentMode = .scaleAspectFill
+        }
+        self?.player.load(media: media, autostart: true, position: position)
       }
     }
   }
+
+  private let fakeThumbnail = UIImageView()
   
   private var footerView: FooterView? {
     didSet {
@@ -375,7 +384,8 @@ class StreamListController: UIViewController {
         case .success:
           self?.reachedListsEnd = false
           self?.skeleton?.loaded(videoContent: VOD.self, isEmpty: self?.isDataSourceEmpty == true)
-          self?.collectionView.reloadData()
+            self?.collectionView.reloadSections(IndexSet(arrayLiteral: 0, 1))
+
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
             self?.skeleton?.setError()
@@ -676,13 +686,11 @@ extension StreamListController: ModernAVPlayerDelegate {
     case .failed:
       activeCell = nil
     case .loaded:
-      UIView.animate(withDuration: 0.5, animations: {
-        self.activeCell?.contentImageView.alpha = 0
+      UIView.animate(withDuration: 0.3, animations: {
+        self.fakeThumbnail.alpha = 0
       }) { (_) in
-        UIView.animate(withDuration: 0.15) {
-          self.activeCell?.contentImageView.alpha = 1
-          self.player.play()
-        }
+        self.fakeThumbnail.removeFromSuperview()
+        self.fakeThumbnail.alpha = 1
       }
     default:
       return
