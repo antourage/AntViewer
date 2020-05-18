@@ -52,7 +52,7 @@ class StreamListController: UIViewController {
       oldValue?.contentImageView.player = nil
       oldValue?.timeImageView.isHidden = true
       oldValue?.timeImageView.stopAnimating()
-      fakeThumbnail.removeFromSuperview()
+      curtainThumbnail.removeFromSuperview()
       player.stop()
       playerDebouncer.call {}
       guard let item = activeItem else { return }
@@ -65,7 +65,7 @@ class StreamListController: UIViewController {
         if let item = item as? VOD {
           position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
         }
-        if let fakeThumb = self?.fakeThumbnail, let contentImageView = self?.activeCell?.contentImageView {
+        if let fakeThumb = self?.curtainThumbnail, let contentImageView = self?.activeCell?.contentImageView {
           contentImageView.addSubview(fakeThumb)
           fakeThumb.fixInView(contentImageView)
           fakeThumb.image = contentImageView.image
@@ -76,7 +76,7 @@ class StreamListController: UIViewController {
     }
   }
 
-  private let fakeThumbnail = UIImageView()
+  private let curtainThumbnail = UIImageView()
   
   private var footerView: FooterView? {
     didSet {
@@ -687,10 +687,10 @@ extension StreamListController: ModernAVPlayerDelegate {
       activeCell = nil
     case .loaded:
       UIView.animate(withDuration: 0.3, animations: {
-        self.fakeThumbnail.alpha = 0
+        self.curtainThumbnail.alpha = 0
       }) { (_) in
-        self.fakeThumbnail.removeFromSuperview()
-        self.fakeThumbnail.alpha = 1
+        self.curtainThumbnail.removeFromSuperview()
+        self.curtainThumbnail.alpha = 1
       }
     default:
       return
