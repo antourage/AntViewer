@@ -17,7 +17,7 @@ class MessageFetcher: FirebaseFetcher {
     self.firebaseApp = FirebaseApp.app(name: "AntViewerFirebase")!
     let settings = FirestoreSettings()
     settings.isPersistenceEnabled = false
-    let db = Firestore.firestore()
+    let db = Firestore.firestore(app: firebaseApp)
     db.settings = settings
   }
 
