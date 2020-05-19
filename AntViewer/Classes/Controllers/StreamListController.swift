@@ -45,7 +45,6 @@ class StreamListController: UIViewController {
     return button
   }()
 
-  fileprivate var swiftMessage: SwiftMessage?
   private lazy var bottomMessage = BottomMessage(presentingController: self)
 
   fileprivate var activeCell: StreamCell? {
@@ -53,12 +52,11 @@ class StreamListController: UIViewController {
       oldValue?.contentImageView.player = nil
       oldValue?.timeImageView.isHidden = true
       oldValue?.timeImageView.stopAnimating()
+      curtainThumbnail.removeFromSuperview()
       player.stop()
       playerDebouncer.call {}
       guard let item = activeItem else { return }
       playerDebouncer.call { [weak self] in
-        let generator = UISelectionFeedbackGenerator()
-        generator.selectionChanged()
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
@@ -67,10 +65,18 @@ class StreamListController: UIViewController {
         if let item = item as? VOD {
           position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
         }
+        if let fakeThumb = self?.curtainThumbnail, let contentImageView = self?.activeCell?.contentImageView {
+          contentImageView.addSubview(fakeThumb)
+          fakeThumb.fixInView(contentImageView)
+          fakeThumb.image = contentImageView.image
+          fakeThumb.contentMode = .scaleAspectFill
+        }
         self?.player.load(media: media, autostart: true, position: position)
       }
     }
   }
+
+  private let curtainThumbnail = UIImageView()
   
   private var footerView: FooterView? {
     didSet {
@@ -99,7 +105,6 @@ class StreamListController: UIViewController {
   fileprivate let playerDebouncer = Debouncer(delay: 1.2)
   fileprivate var isLoading = false {
     didSet {
-      collectionView.isUserInteractionEnabled = !isLoading
     }
   }
   
@@ -129,6 +134,12 @@ class StreamListController: UIViewController {
     return antRefreshControl
   }()
 
+  lazy var skeleton: Skeleton? = {
+    let skeleton = Skeleton()
+    skeleton.delegate = self
+    return skeleton
+  }()
+
   private var hiddenAuthCompleted = false
   fileprivate var shouldResetActiveCell = true
   
@@ -150,8 +161,11 @@ class StreamListController: UIViewController {
         print(error)
       }
     }
-    swiftMessage = SwiftMessage(presentingController: navigationController ?? self)
-//    setupNavigationBar()
+    dataSource.lastMessageHandler = MessageFetcher()
+    if dataSource.streams.isEmpty {
+      skeleton?.collectionView = collectionView
+    }
+
     setupCollectionView()
     isLoading = true
     initialVodsUpdate()
@@ -173,6 +187,8 @@ class StreamListController: UIViewController {
       let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
       let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
+      self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+//      self?.collectionView.collectionViewLayout.invalidateLayout()
     }
 
     collectionView.alwaysBounceVertical = true
@@ -201,6 +217,7 @@ class StreamListController: UIViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
+    skeleton?.didChangeReachability(isReachable)
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
   }
 
@@ -221,6 +238,7 @@ class StreamListController: UIViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
+    skeleton?.didChangeReachability(isReachable)
   }
 
 
@@ -233,6 +251,10 @@ class StreamListController: UIViewController {
     if collectionView.contentOffset.y < 0 {
       collectionView.contentOffset = .zero
     }
+  }
+
+  deinit {
+    dataSource.lastMessageHandler = nil
   }
 
   func updateFooter() {
@@ -268,17 +290,19 @@ class StreamListController: UIViewController {
       guard let `self` = self else { return }
       switch result {
       case .success:
-        if !self.isDataSourceEmpty {
-          self.isLoading = false
-        }
+        self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
-        if self.activeCell == nil {
-          self.activeCell = self.getTopVisibleCell()
+        self.collectionView.performBatchUpdates(nil) { (result) in
+          if self.activeCell == nil {
+            self.activeCell = self.getTopVisibleCell()
+          }
         }
+        self.isLoading = false
       case .failure(let error):
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
-          self.swiftMessage?.showBanner(title: error.localizedDescription )
+          self.bottomMessage.showMessage(title: "Something is not right")
+          self.skeleton?.setError()
         }
       }
     }
@@ -304,7 +328,9 @@ class StreamListController: UIViewController {
     guard var visibleIndexPath = getTopVisibleRow(),
       var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
         reachedListsEnd = false
-        collectionView.reloadData()
+        if skeleton == nil {
+          collectionView.reloadData()
+        }
         return
     }
     var shouldScroll = true
@@ -346,21 +372,23 @@ class StreamListController: UIViewController {
         shouldResetActiveCell = true
       }
     }
-
   }
   
   @objc
   private func didPullToRefresh(_ sender: Any) {
+    skeleton?.startLoading()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
       self?.dataSource.updateVods { (result) in
         self?.refreshControl.endRefreshing()
         switch result {
         case .success:
           self?.reachedListsEnd = false
-          self?.collectionView.reloadData()
+          self?.skeleton?.loaded(videoContent: VOD.self, isEmpty: self?.isDataSourceEmpty == true)
+            self?.collectionView.reloadSections(IndexSet(arrayLiteral: 0, 1))
+
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
-            self?.swiftMessage?.showBanner(title: error.localizedDescription )
+            self?.skeleton?.setError()
           }
         }
       }
@@ -403,15 +431,16 @@ class StreamListController: UIViewController {
     cell.titleLabel.text = item.title
     cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
     cell.joinButton.isHidden = item is VOD || !item.isChatOn
-    cell.chatView.isHidden = !item.isChatOn
-    cell.pollView.isHidden = !item.isPollOn
+    cell.chatView.isHidden = true
+    cell.pollView.isHidden = true
     cell.shareButton.isHidden = true
-    cell.buttonsStackView.isHidden = !item.isChatOn && !item.isPollOn
+    cell.chatEnabled = item.isChatOn
     cell.message = item.latestMessage
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
     if let item = item as? VOD {
+      cell.chatView.isHidden = item.latestMessage == nil
       cell.isLive = false
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
@@ -420,14 +449,19 @@ class StreamListController: UIViewController {
       cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
+      cell.chatView.isHidden = !((item.latestMessage == nil) || item.isChatOn)
       cell.isLive = true
+      cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
       cell.replayView.isHidden = true
-      cell.joinAction = { itemCell in
-        //TOD: open player with active field
+      cell.joinAction = { [weak self] itemCell in
+        guard let indexPath = self?.collectionView.indexPath(for: itemCell) else { return }
+        self?.openPlayer(indexPath: indexPath, shouldEnableChatField: true)
       }
     }
+
+    cell.buttonsStackView.isHidden = cell.chatView.isHidden && !item.isPollOn
     return cell
   }
   
@@ -464,6 +498,48 @@ class StreamListController: UIViewController {
       return listRect.contains(cellRect)
     })
     return cell as? StreamCell
+  }
+
+  private func showErrorMessage(autohide: Bool = true) {
+    let color = UIColor.color("a_bottomMessageGray") ?? .gray
+    let text = "Something is not right. We are working to get this fixed".uppercased()
+    if autohide {
+      bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
+      return
+    }
+    bottomMessage.showMessage(title: text, backgroundColor: color)
+  }
+
+  fileprivate func openPlayer(indexPath: IndexPath, shouldEnableChatField: Bool = false) {
+    let item = getItemWith(indexPath: indexPath)
+    let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
+    playerVC.videoContent = item
+    playerVC.dataSource = dataSource
+    playerVC.shouldEnableChatField = shouldEnableChatField
+    // TODO: set temp stop time from list
+
+    //temp solution
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { [weak self] in
+      guard let `self` = self, OrientationUtility.isLandscape else { return }
+      self.collectionView.contentOffset = CGPoint(x: self.topInset, y: self.collectionView.contentOffset.y)
+      self.collectionView.collectionViewLayout.invalidateLayout()
+      self.headerTop.constant = self.topInset
+      self.view.layoutIfNeeded()
+    }
+
+    if item is VOD {
+      let navController = PlayerNavigationController(rootViewController: playerVC)
+      navController.modalPresentationStyle = .fullScreen
+      return present(navController, animated: true, completion: { [weak self] in
+        self?.headerTop.constant = .zero
+        self?.view.layoutIfNeeded()
+      })
+    }
+    playerVC.modalPresentationStyle = .fullScreen
+    present(playerVC, animated: true, completion: { [weak self] in
+      self?.headerTop.constant = .zero
+       self?.view.layoutIfNeeded()
+    })
   }
 
 }
@@ -544,35 +620,7 @@ extension StreamListController: UICollectionViewDataSource {
 extension StreamListController: UICollectionViewDelegate {
    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     guard isReachable else { return }
-
-    let item = getItemWith(indexPath: indexPath)
-    let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
-    playerVC.videoContent = item
-    playerVC.dataSource = dataSource
-    // TODO: set temp stop time from list
-
-    //temp solution
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { [weak self] in
-      guard let `self` = self, OrientationUtility.isLandscape else { return }
-      collectionView.contentOffset = CGPoint(x: self.topInset, y: collectionView.contentOffset.y)
-      collectionView.collectionViewLayout.invalidateLayout()
-      self.headerTop.constant = self.topInset
-      self.view.layoutIfNeeded()
-    }
-
-    if item is VOD {
-      let navController = PlayerNavigationController(rootViewController: playerVC)
-      navController.modalPresentationStyle = .fullScreen
-      return present(navController, animated: true, completion: { [weak self] in
-        self?.headerTop.constant = .zero
-        self?.view.layoutIfNeeded()
-      })
-    }
-    playerVC.modalPresentationStyle = .fullScreen
-    present(playerVC, animated: true, completion: { [weak self] in
-      self?.headerTop.constant = .zero
-       self?.view.layoutIfNeeded()
-    })
+    openPlayer(indexPath: indexPath)
   }
   
    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
@@ -595,8 +643,7 @@ extension StreamListController: UICollectionViewDelegate {
 
         case .failure:
           if self.isReachable {
-            let color = UIColor.color("a_bottomMessageGray")
-            self.bottomMessage.showMessage(title: "SOMETHING IS NOT RIGHT. WE ARE WORKING TO GET THIS FIXED.",duration: 5, backgroundColor: color ?? .gray)
+            self.showErrorMessage()
             print("Error fetching vods")
           }
         }
@@ -618,7 +665,7 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
       let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
       height += labelHeight + 2 + 12 + 14.5
     }
-    if item.isChatOn || item.isPollOn || item.shareLink != nil {
+    if (item.isChatOn && item is Live || item.latestMessage != nil && item is VOD) || item.isPollOn || item.shareLink != nil {
       height += 12 + 0.075 * view.bounds.width
     }
     if item is Live, item.isChatOn {
@@ -644,6 +691,13 @@ extension StreamListController: ModernAVPlayerDelegate {
     switch state {
     case .failed:
       activeCell = nil
+    case .loaded:
+      UIView.animate(withDuration: 0.3, animations: {
+        self.curtainThumbnail.alpha = 0
+      }) { (_) in
+        self.curtainThumbnail.removeFromSuperview()
+        self.curtainThumbnail.alpha = 1
+      }
     default:
       return
     }
@@ -674,10 +728,26 @@ extension StreamListController: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didItemDurationChange itemDuration: Double?) {
     DispatchQueue.main.async { [weak self] in
       guard let `self` = self else { return }
-      self.activeCell?.timeImageView.isHidden = false
+      UIView.animate(withDuration: 0.1) {
+        self.activeCell?.timeImageView.isHidden = false
+      }
       self.activeCell?.timeImageView.startAnimating()
     }
   }
 
 }
 
+extension StreamListController: SkeletonDelegate {
+  func skeletonWillHide(_ skeleton: Skeleton) {
+    collectionView.delegate = self
+    collectionView.dataSource = self
+    collectionView.isUserInteractionEnabled = true
+    collectionView.reloadData()
+    skeleton.delegate = nil
+    self.skeleton = nil
+  }
+
+  func skeletonOnTimeout(_ skeleton: Skeleton) {
+    //TODO: set error
+  }
+}

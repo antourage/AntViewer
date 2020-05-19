@@ -27,6 +27,7 @@ public class PollTableViewCell: UITableViewCell {
 
   public var isStatistic = false {
     didSet {
+      titleLabel.textAlignment = isStatistic ? .left : .center
       percentageLabel.isHidden = !isStatistic
       titleLabelTrailing.isActive = !isStatistic
       animateChanges()

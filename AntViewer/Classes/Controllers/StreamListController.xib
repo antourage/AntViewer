@@ -118,6 +118,9 @@
         </tapGestureRecognizer>
     </objects>
     <resources>
+        <namedColor name="a_backgroundDarkGrey">
+            <color red="0.13333333333333333" green="0.13333333333333333" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <image name="Close" width="24" height="24"/>
         <image name="HolderLogoLarge" width="56" height="56"/>
     </resources>

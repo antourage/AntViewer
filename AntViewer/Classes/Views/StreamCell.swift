@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import AntViewerExt
 
 public class StreamCell: UICollectionViewCell {
 
@@ -38,17 +39,21 @@ public class StreamCell: UICollectionViewCell {
   @IBOutlet var joinButton: UIButton!
   @IBOutlet private var timeLabelWidth: NSLayoutConstraint!
 
-  var message: (text: String, name: String, date: Date)? {
+  var message: LatestComment? {
     didSet {
       if let message = self.message {
         chatTextLabel.text = message.text
-        chatNameLabel.text = "\(message.name) • most recent"
+        chatNameLabel.text = "\(message.nickname) • most recent"
         messageStackView.isHidden = false
+        chatView.isHidden = false
       } else {
         messageStackView.isHidden = true
       }
     }
   }
+
+  var chatEnabled = false
+
 
   var isNew = false {
     didSet {
@@ -68,6 +73,7 @@ public class StreamCell: UICollectionViewCell {
       if isLive {
         liveLabel.text = "LIVE"
         liveLabel.backgroundColor = UIColor.color("a_pink")
+        chatView.isHidden = !chatEnabled
       }
     }
   }
@@ -127,7 +133,17 @@ public class StreamCell: UICollectionViewCell {
       timeLabel.text = "\(duration.durationString(short: true))"
     }
     configureTimeLabelWidth()
-    watchedTimeLinePaddingView.isHidden = isLive//watchedTime <= 0
+    if isLive {
+      watchedTimeLinePaddingView.isHidden = true
+    } else {
+      if watchedTimeLinePaddingView.isHidden {
+        watchedTimeLinePaddingView.alpha = 0
+        watchedTimeLinePaddingView.isHidden = false
+        UIView.animate(withDuration: 0.2) {
+          self.watchedTimeLinePaddingView.alpha = 1
+        }
+      }
+    }
     watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
   }
 
