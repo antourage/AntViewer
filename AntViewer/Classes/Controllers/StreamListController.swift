@@ -455,8 +455,9 @@ class StreamListController: UIViewController {
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
       cell.replayView.isHidden = true
-      cell.joinAction = { itemCell in
-        //TOD: open player with active field
+      cell.joinAction = { [weak self] itemCell in
+        guard let indexPath = self?.collectionView.indexPath(for: itemCell) else { return }
+        self?.openPlayer(indexPath: indexPath, shouldEnableChatField: true)
       }
     }
 
@@ -508,6 +509,39 @@ class StreamListController: UIViewController {
     }
     bottomMessage.showMessage(title: text, backgroundColor: color)
   }
+
+  fileprivate func openPlayer(indexPath: IndexPath, shouldEnableChatField: Bool = false) {
+    let item = getItemWith(indexPath: indexPath)
+    let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
+    playerVC.videoContent = item
+    playerVC.dataSource = dataSource
+    playerVC.shouldEnableChatField = shouldEnableChatField
+    // TODO: set temp stop time from list
+
+    //temp solution
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { [weak self] in
+      guard let `self` = self, OrientationUtility.isLandscape else { return }
+      self.collectionView.contentOffset = CGPoint(x: self.topInset, y: self.collectionView.contentOffset.y)
+      self.collectionView.collectionViewLayout.invalidateLayout()
+      self.headerTop.constant = self.topInset
+      self.view.layoutIfNeeded()
+    }
+
+    if item is VOD {
+      let navController = PlayerNavigationController(rootViewController: playerVC)
+      navController.modalPresentationStyle = .fullScreen
+      return present(navController, animated: true, completion: { [weak self] in
+        self?.headerTop.constant = .zero
+        self?.view.layoutIfNeeded()
+      })
+    }
+    playerVC.modalPresentationStyle = .fullScreen
+    present(playerVC, animated: true, completion: { [weak self] in
+      self?.headerTop.constant = .zero
+       self?.view.layoutIfNeeded()
+    })
+  }
+
 }
 
 
@@ -586,35 +620,7 @@ extension StreamListController: UICollectionViewDataSource {
 extension StreamListController: UICollectionViewDelegate {
    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
     guard isReachable else { return }
-
-    let item = getItemWith(indexPath: indexPath)
-    let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
-    playerVC.videoContent = item
-    playerVC.dataSource = dataSource
-    // TODO: set temp stop time from list
-
-    //temp solution
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { [weak self] in
-      guard let `self` = self, OrientationUtility.isLandscape else { return }
-      collectionView.contentOffset = CGPoint(x: self.topInset, y: collectionView.contentOffset.y)
-      collectionView.collectionViewLayout.invalidateLayout()
-      self.headerTop.constant = self.topInset
-      self.view.layoutIfNeeded()
-    }
-
-    if item is VOD {
-      let navController = PlayerNavigationController(rootViewController: playerVC)
-      navController.modalPresentationStyle = .fullScreen
-      return present(navController, animated: true, completion: { [weak self] in
-        self?.headerTop.constant = .zero
-        self?.view.layoutIfNeeded()
-      })
-    }
-    playerVC.modalPresentationStyle = .fullScreen
-    present(playerVC, animated: true, completion: { [weak self] in
-      self?.headerTop.constant = .zero
-       self?.view.layoutIfNeeded()
-    })
+    openPlayer(indexPath: indexPath)
   }
   
    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

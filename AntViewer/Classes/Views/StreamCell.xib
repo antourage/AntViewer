@@ -276,7 +276,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="ArrowSmallRight"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="joinButtonPressed:" destination="-1" eventType="touchUpInside" id="mJR-by-v6U"/>
+                                            <action selector="joinButtonPressed:" destination="-1" eventType="touchUpInside" id="a2Y-WR-AmH"/>
                                         </connections>
                                     </button>
                                 </subviews>

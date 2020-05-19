@@ -504,6 +504,7 @@ class PlayerController: UIViewController {
       }
     }
   }
+  var shouldEnableChatField = false
   
   override var preferredStatusBarStyle : UIStatusBarStyle {
     return .lightContent
@@ -564,6 +565,9 @@ class PlayerController: UIViewController {
     }
     startPlayer()
     adjustHeightForTextView(chatTextView)
+    if shouldEnableChatField {
+      chatTextView.becomeFirstResponder()
+    }
   }
 
   func updateChatTipView(isNewUser: Bool = false, newMessagesCount: Int = 0) {
