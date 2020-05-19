@@ -48,7 +48,6 @@ public class StreamCell: UICollectionViewCell {
         chatView.isHidden = false
       } else {
         messageStackView.isHidden = true
-//        chatView.isHidden = isLive
       }
     }
   }
@@ -74,7 +73,7 @@ public class StreamCell: UICollectionViewCell {
       if isLive {
         liveLabel.text = "LIVE"
         liveLabel.backgroundColor = UIColor.color("a_pink")
-//        chatView.isHidden = !chatEnabled
+        chatView.isHidden = !chatEnabled
       }
     }
   }
