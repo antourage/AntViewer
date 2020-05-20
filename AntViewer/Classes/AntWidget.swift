@@ -52,9 +52,11 @@ public class AntWidget {
   private var player: ModernAVPlayer?
   private lazy var widgetView: WidgetView = {
     let screenSize = UIScreen.main.bounds.size
-    let width: CGFloat = screenSize.width * 0.225
+    let window = UIApplication.shared.windows[0]
+    let bottomPadding = window.safeAreaInsets.bottom
+    let width: CGFloat = 84
     let x = (screenSize.width - width)/2
-    let y = screenSize.height - width - 80
+    let y = screenSize.height - width - 75 - bottomPadding
     let rect = CGRect(x: x, y: y, width: width, height: width)
     let view = WidgetView(frame: rect)
     view.backgroundColor = .clear

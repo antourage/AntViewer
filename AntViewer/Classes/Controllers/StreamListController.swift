@@ -142,6 +142,10 @@ class StreamListController: UIViewController {
 
   private var hiddenAuthCompleted = false
   fileprivate var shouldResetActiveCell = true
+
+  override var preferredStatusBarStyle: UIStatusBarStyle {
+      .lightContent
+  }
   
   var onViewerDismiss: ((NSDictionary) -> Void)?
 
@@ -205,6 +209,7 @@ class StreamListController: UIViewController {
 
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
+    setNeedsStatusBarAppearanceUpdate()
     if activeCell == nil {
       activeCell = getTopVisibleCell()
     }
