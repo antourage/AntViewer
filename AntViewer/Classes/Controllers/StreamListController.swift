@@ -332,7 +332,10 @@ class StreamListController: UIViewController {
     if collectionView.contentOffset.y < 0 {
        collectionView.contentOffset = .zero
      }
-    activeCell = getTopVisibleCell()
+    //MARK: wait 0.1 sec because visible cells is empty in moment notification triggering
+    DispatchQueue.main.asyncAfter(deadline: .now()+0.1) { [weak self] in
+      self?.activeCell = self?.getTopVisibleCell()
+    }
   }
   
   private func reloadCollectionViewDataSource(addedCount: Int, deletedIndexes: [Int]) {
