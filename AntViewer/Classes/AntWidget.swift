@@ -39,7 +39,7 @@ public class AntWidget {
         animationProcessing = true
       }
       widgetView.prepare(for: currentState, completion: { state in
-        print(state.description)
+        print("Button state: \(state.description)")
         self.currentContent = self.preparedContent
         self.preparedContent = nil
         if case .loading = state {
@@ -74,7 +74,6 @@ public class AntWidget {
 
   private init() {
     NotificationCenter.default.addObserver(self, selector: #selector(handleStreamUpdate(_:)), name: NSNotification.Name(rawValue: "StreamsUpdated"), object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(handleNewVodUpdate), name: NSNotification.Name(rawValue: "newVodsDidUpdate"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerDisappear(_:)), name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -173,6 +172,7 @@ public class AntWidget {
       self.player?.stop()
       self.player = nil
     }
+    print("Setting state: \(state)")
     currentState = state
   }
 
@@ -211,6 +211,7 @@ public class AntWidget {
       var playerNavController: PlayerNavigationController!
       if currentContent is VOD {
         playerNavController = PlayerNavigationController(rootViewController: playerVC)
+//        playerNavController.view.isHidden = true
       }
       let controllerToPresent: UIViewController = currentContent is VOD ? playerNavController : playerVC
       controllerToPresent.modalPresentationStyle = .fullScreen
@@ -254,24 +255,6 @@ public class AntWidget {
   }
 
   @objc
-  func handleNewVodUpdate() {
-    switch currentState {
-    case .vod, .resting:
-          guard let dataSource = AntWidget.dataSource else {
-        return
-      }
-          if let vod = dataSource.newVod {
-        preparedContent = vod
-        set(state: .vod)
-        return
-      }
-      set(state: .resting)
-    default:
-      return
-    }
-  }
-
-  @objc
   func handleViewerDisappear(_ notification: NSNotification) {
     onViewerDisappear?([:])
   }
@@ -285,8 +268,10 @@ public class AntWidget {
 
   @objc
   func handleDidBecomeActive(_ notification: NSNotification) {
+    if isBackground {
+      AntWidget.dataSource?.startUpdatingVods()
+    }
     isBackground = false
-    AntWidget.dataSource?.startUpdatingVods()
   }
 }
 
