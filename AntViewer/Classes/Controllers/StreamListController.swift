@@ -312,7 +312,7 @@ class StreamListController: UIViewController {
       case .failure(let error):
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
-          self.bottomMessage.showMessage(title: "Something is not right")
+          self.showErrorMessage(autohide: false)
           self.skeleton?.setError()
         }
       }
@@ -389,6 +389,9 @@ class StreamListController: UIViewController {
   private func didPullToRefresh(_ sender: Any) {
     skeleton?.startLoading()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+      if self?.isReachable == true {
+        self?.bottomMessage.hideMessage()
+      }
       self?.dataSource.updateVods { (result) in
         self?.refreshControl.endRefreshing()
         switch result {
@@ -400,6 +403,9 @@ class StreamListController: UIViewController {
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
             self?.skeleton?.setError()
+            if self?.isReachable == true {
+              self?.showErrorMessage(autohide: false)
+            }
           }
         }
       }
