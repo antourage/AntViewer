@@ -153,6 +153,7 @@ class StreamListController: UIViewController {
   fileprivate var stopTimes = [Int : Int]()
 
   private var topInset: CGFloat = .zero
+  private var failedToLoadVods = false
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -238,6 +239,11 @@ class StreamListController: UIViewController {
       bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
       if collectionView.numberOfItems(inSection: 1) == 0 {
         initialVodsUpdate()
+      } else {
+        if let lastCell = collectionView.cellForItem(at: IndexPath(item: dataSource.videos.count-1, section: 1)),
+          collectionView.visibleCells.contains(lastCell), failedToLoadVods {
+          fetchNextBunchOfVods()
+        }
       }
     } else {
       let color = UIColor.color("a_bottomMessageGray")
@@ -546,7 +552,35 @@ class StreamListController: UIViewController {
        self?.view.layoutIfNeeded()
     })
   }
+  private func fetchNextBunchOfVods() {
+    guard !fetchingNextItems else { return }
+    if dataSource.videos.count % 15 == 0 {
+      let index = dataSource.videos.count
+      self.fetchingNextItems = true
+      self.failedToLoadVods = false
+      self.collectionView.invalidateIntrinsicContentSize()
+      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
+        guard let `self` = self else { return }
+        self.fetchingNextItems = false
+        self.collectionView.invalidateIntrinsicContentSize()
+        switch result {
+        case .success :
+          let count = self.dataSource.videos.count
+          let indexPaths = (index..<count).map {IndexPath(row: $0, section: 1)}
+          self.collectionView.insertItems(at: indexPaths)
 
+        case .failure:
+          self.failedToLoadVods = true
+          if self.isReachable {
+            self.showErrorMessage()
+            print("Error fetching vods")
+          }
+        }
+      }
+    } else {
+      reachedListsEnd = true
+    }
+  }
 }
 
 
@@ -632,30 +666,7 @@ extension StreamListController: UICollectionViewDelegate {
     guard indexPath.section == 1, indexPath.row == dataSource.videos.count - 1, !isLoading else {
       return
     }
-    if dataSource.videos.count % 15 == 0 {
-      let index = dataSource.videos.count
-      self.fetchingNextItems = true
-      self.collectionView.invalidateIntrinsicContentSize()
-      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
-        guard let `self` = self else { return }
-        self.fetchingNextItems = false
-        self.collectionView.invalidateIntrinsicContentSize()
-        switch result {
-        case .success :
-          let count = self.dataSource.videos.count
-          let indexPaths = (index..<count).map {IndexPath(row: $0, section: 1)}
-          self.collectionView.insertItems(at: indexPaths)
-
-        case .failure:
-          if self.isReachable {
-            self.showErrorMessage()
-            print("Error fetching vods")
-          }
-        }
-      }
-    } else {
-      reachedListsEnd = true
-    }
+    fetchNextBunchOfVods()
   }
 }
 
