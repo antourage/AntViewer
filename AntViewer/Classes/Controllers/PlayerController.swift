@@ -1297,14 +1297,21 @@ class PlayerController: UIViewController {
       editProfileController.view.rightAnchor.constraint(equalTo: self.editProfileContainerView.rightAnchor).isActive = true
       editProfileController.view.bottomAnchor.constraint(equalTo: self.editProfileContainerView.bottomAnchor).isActive = true
     }
-    
-    
+
+    let paddingView = UIView(frame: view.bounds)
+    paddingView.backgroundColor = UIColor.gradientDark.withAlphaComponent(0.8)
+    paddingView.tag = 1234
+    view.insertSubview(paddingView, belowSubview: editProfileContainerView)
+    paddingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+    paddingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+    paddingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    paddingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     editProfileContainerView.isHidden = false
   }
   
   func dismissEditProfileView() {
     shouldEnableMessageTextFields(true)
-
+    view.subviews.first { $0.tag == 1234 }?.removeFromSuperview()
     editProfileContainerView.isHidden = true
     let editProfile = children.first(where: { $0 is EditProfileViewController})
     editProfile?.willMove(toParent: nil)
