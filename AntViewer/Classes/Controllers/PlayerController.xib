@@ -695,7 +695,7 @@
                     <rect key="frame" x="0.0" y="726" width="375" height="52"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="UX0-Xb-BEW">
-                            <rect key="frame" x="12" y="8" width="84" height="36"/>
+                            <rect key="frame" x="12" y="8" width="36" height="36"/>
                             <subviews>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="paQ-Po-fED">
                                     <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
@@ -715,7 +715,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </button>
                                 <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGr-g5-sJg">
-                                    <rect key="frame" x="48" y="0.0" width="36" height="36"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="mGr-g5-sJg" secondAttribute="height" multiplier="1:1" id="XPR-Gh-8A2"/>
                                         <constraint firstAttribute="width" constant="36" id="bds-vy-Gud"/>
@@ -735,12 +735,17 @@
                                     </connections>
                                 </button>
                             </subviews>
+                            <variation key="default">
+                                <mask key="subviews">
+                                    <exclude reference="paQ-Po-fED"/>
+                                </mask>
+                            </variation>
                         </stackView>
                         <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IH0-sC-vt7">
-                            <rect key="frame" x="108" y="8" width="255" height="36"/>
+                            <rect key="frame" x="60" y="8" width="303" height="36"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sop-fK-jch">
-                                    <rect key="frame" x="263" y="12" width="34" height="12"/>
+                                    <rect key="frame" x="311" y="12" width="34" height="12"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                     <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="SEND">
@@ -751,7 +756,7 @@
                                     </connections>
                                 </button>
                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="VBH-QZ-0Zs" customClass="IQTextView" customModule="AntViewer">
-                                    <rect key="frame" x="20" y="2" width="223" height="32"/>
+                                    <rect key="frame" x="20" y="2" width="271" height="32"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" priority="900" constant="26" id="4cy-uL-E5x"/>

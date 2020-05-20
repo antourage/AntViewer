@@ -32,16 +32,10 @@ class PlayerController: UIViewController {
   @IBOutlet weak var bottomContainerViewHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var chatTextView: IQTextView! {
     didSet {
-      chatTextView.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
       chatTextView.placeholder = "Chat disabled"
     }
   }
-  @IBOutlet weak var chatTextViewHolderView: UIView! {
-    didSet {
-      chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
-
-    }
-  }
+  @IBOutlet weak var chatTextViewHolderView: UIView!
   @IBOutlet weak var chatTextViewHolderViewLeading: NSLayoutConstraint!
   @IBOutlet var chatTextViewTrailing: NSLayoutConstraint!
   @IBOutlet weak var bottomContainerLeading: NSLayoutConstraint!
@@ -407,6 +401,9 @@ class PlayerController: UIViewController {
       chatTextView.isEditable = isChatEnabled
       chatTextView.placeholder = isChatEnabled ? "Chat" : "Chat disabled"
       bottomContainerLandscapeTop.isActive = !isChatEnabled
+      let alpha: CGFloat = isChatEnabled ? 0.6 : 0.2
+      chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(alpha).cgColor
+      chatTextView.placeholderTextColor = isChatEnabled ? .cellGray : .bottomMessageGray
       view.layoutIfNeeded()
       if !isChatEnabled {
         chatTextView.text = ""

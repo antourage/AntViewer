@@ -40,4 +40,7 @@ public extension UIColor {
   static var gradientDark: UIColor {
     return UIColor.color("gradientDark") ?? .black
   }
+  static var bottomMessageGray: UIColor {
+    return UIColor.color("a_bottomMessageGray") ?? .gray
+  }
 }
