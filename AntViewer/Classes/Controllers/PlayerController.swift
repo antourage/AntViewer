@@ -619,7 +619,7 @@ class PlayerController: UIViewController {
 
   func collapseChatTextView() {
     chatTextViewHolderViewLeading.isActive = false
-    chatTextViewTrailing.isActive = true
+    chatTextViewTrailing.isActive = chatTextView.text.isEmpty
     bottomContainerLeading.constant = .zero
     bottomContainerTrailing.constant = .zero
     UIView.animate(withDuration: 0.3) {
@@ -717,6 +717,7 @@ class PlayerController: UIViewController {
     shouldUpdateIndexPath = false
     chatTextView.resignFirstResponder()
     chatTextView.text.removeAll()
+    collapseChatTextView()
     if size.width > size.height {
       self.landscapeTableView.reloadData()
     } else {
@@ -1247,7 +1248,10 @@ class PlayerController: UIViewController {
     guard let _ = videoContent as? AntViewerExt.Live else {return}
     sender.isEnabled = false
     let message = Message(userID: "\(user.id)", nickname: user.displayName, text: text, avatarUrl: User.current?.imageUrl)
-    chatTextView.text = ""
+    chatTextView.text.removeAll()
+    if !chatTextView.isFirstResponder {
+      collapseChatTextView()
+    }
     self.adjustHeightForTextView(self.chatTextView)
     self.chat?.send(message: message) { (error) in
       if error == nil {
