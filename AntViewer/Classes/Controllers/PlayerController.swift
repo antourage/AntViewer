@@ -1493,11 +1493,6 @@ extension PlayerController: UITextViewDelegate {
 extension PlayerController: UITableViewDataSource, UITableViewDelegate {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    if messagesDataSource.count > 0 {
-      portraitTableView.backgroundView = nil
-    } else if portraitTableView.backgroundView == nil {
-      portraitTableView.backgroundView = EmptyView(frame: tableView.bounds)
-    }
     return messagesDataSource.count
   }
   
