@@ -1423,7 +1423,9 @@ extension PlayerController {
           liveLabel.isHidden = true
           viewersCountView.isHidden = true
         } else {
-          headerHeightConstraint.isActive = true
+          if chatTextView.isFirstResponder {
+            headerHeightConstraint.isActive = true
+          }
           portraitMessageBottomSpace.constant = keyboardSize.height - bottomPadding
           editProfileContainerPortraitBottom.constant = keyboardSize.height
         }
