@@ -131,6 +131,7 @@ class StreamListController: UIViewController {
   private lazy var refreshControl: AntRefreshControl = {
     let antRefreshControl = AntRefreshControl(frame: self.view.bounds)
     antRefreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+    antRefreshControl.shouldAnimate = isReachable
     return antRefreshControl
   }()
 
@@ -247,6 +248,7 @@ class StreamListController: UIViewController {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
+    refreshControl.shouldAnimate = isReachable
     skeleton?.didChangeReachability(isReachable)
   }
 
@@ -511,7 +513,8 @@ class StreamListController: UIViewController {
     .sorted()
     .map { self.collectionView.cellForItem(at: $0 ) as? StreamCell }
     .first(where: {
-      let cellRect = $0!.frame
+      guard let cell = $0 else { return false }
+      let cellRect = cell.frame
       var listRect = self.collectionView.bounds
       listRect.origin.y -= cellRect.height * 0.25
       listRect.size.height += cellRect.height * 0.4
