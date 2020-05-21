@@ -190,12 +190,12 @@ public class AntWidget {
   }
 
   private func didTapButton() {
-    func configureTransitionAnimation(inView view: UIView = self.view) {
+    func configureTransitionAnimation(inView view: UIView = self.view, animated: Bool = true) {
       let transition = CATransition()
-      transition.duration = 0.3
+      transition.duration = animated ? 0.3 : 0
       transition.type = .push
       transition.subtype = .fromRight
-      transition.timingFunction = CAMediaTimingFunction(name:CAMediaTimingFunctionName.easeInEaseOut)
+      transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
       view.window?.layer.add(transition, forKey: kCATransition)
     }
     guard let vc = view.findViewController() else {return}
@@ -213,17 +213,19 @@ public class AntWidget {
       var playerNavController: PlayerNavigationController!
       if currentContent is VOD {
         playerNavController = PlayerNavigationController(rootViewController: playerVC)
-//        playerNavController.view.isHidden = true
       }
       let controllerToPresent: UIViewController = currentContent is VOD ? playerNavController : playerVC
       controllerToPresent.modalPresentationStyle = .fullScreen
+      //FIXME: view flickers when playerNavContr presents
+      if controllerToPresent is PlayerNavigationController {
+        configureTransitionAnimation(animated: false)
+      }
       vc.present(navController, animated: false, completion: {
         configureTransitionAnimation(inView: navController.view)
         navController.present(controllerToPresent, animated: false, completion: {
           navController.view.isHidden = false
         })
       })
-
       return
     }
     configureTransitionAnimation()
