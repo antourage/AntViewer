@@ -189,11 +189,11 @@ class StreamListController: UIViewController {
     }
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-      let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
-      let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
+      guard let addedCount = notification.userInfo?["addedCount"] as? Int,
+      let deleted = notification.userInfo?["deleted"] as? [Int] else { return }
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
-//      self?.collectionView.collectionViewLayout.invalidateLayout()
+      self?.collectionView.collectionViewLayout.invalidateLayout()
     }
 
     collectionView.alwaysBounceVertical = true
@@ -211,9 +211,7 @@ class StreamListController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
-    if activeCell == nil {
       activeCell = getTopVisibleCell()
-    }
     startObservingReachability()
     topInset = headerView.frame.origin.y
   }
@@ -459,9 +457,9 @@ class StreamListController: UIViewController {
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
+    cell.isLive = item is Live
     if let item = item as? VOD {
       cell.chatView.isHidden = item.latestMessage == nil
-      cell.isLive = false
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
       //Temp solution
@@ -470,7 +468,6 @@ class StreamListController: UIViewController {
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
       cell.chatView.isHidden = !((item.latestMessage == nil) || item.isChatOn)
-      cell.isLive = true
       cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
@@ -510,8 +507,11 @@ class StreamListController: UIViewController {
   }
 
   fileprivate func getTopVisibleCell() -> StreamCell? {
-    let cell = collectionView.visibleCells.last(where: {
-      let cellRect = $0.frame
+   let cell = collectionView.indexPathsForVisibleItems
+    .sorted()
+    .map { self.collectionView.cellForItem(at: $0 ) as? StreamCell }
+    .first(where: {
+      let cellRect = $0!.frame
       var listRect = self.collectionView.bounds
       listRect.origin.y -= cellRect.height * 0.25
       listRect.size.height += cellRect.height * 0.4
