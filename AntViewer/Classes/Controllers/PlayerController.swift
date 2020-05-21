@@ -688,6 +688,7 @@ class PlayerController: UIViewController {
     landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
     UIApplication.shared.isIdleTimerDisabled = true
   }
   
@@ -751,6 +752,13 @@ class PlayerController: UIViewController {
       return
     }
     super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
+  }
+
+  @objc
+  private func handleWillBecomeActive(_ notification: NSNotification) {
+    if videoContent is Live {
+      landscapeSeekSlider.removeFromSuperview()
+    }
   }
 
 
