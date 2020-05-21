@@ -212,7 +212,7 @@ class StreamListController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
-      activeCell = getTopVisibleCell()
+    activeCell = getTopVisibleCell()
     startObservingReachability()
     topInset = headerView.frame.origin.y
   }
@@ -253,7 +253,7 @@ class StreamListController: UIViewController {
   }
 
 
-  override func viewWillDisappear(_ animated: Bool) {
+  override func viewDidDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
@@ -304,7 +304,7 @@ class StreamListController: UIViewController {
         self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
         self.collectionView.performBatchUpdates(nil) { (result) in
-          if self.activeCell == nil {
+          if self.activeCell == nil, self.view.window != nil {
             self.activeCell = self.getTopVisibleCell()
           }
         }
