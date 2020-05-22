@@ -38,6 +38,7 @@
                 <outlet property="landscapeTableView" destination="ng6-pd-xEZ" id="8U4-Nz-KXc"/>
                 <outlet property="landscapeTableViewContainer" destination="aEk-7a-LBQ" id="Wrr-G7-u4O"/>
                 <outlet property="landscapeTitleLabel" destination="D0o-Y7-3zz" id="IuO-Bi-xxo"/>
+                <outlet property="liveDurationLabel" destination="fR5-eA-SOa" id="gUW-dd-Meo"/>
                 <outlet property="liveLabel" destination="jVY-fl-H6n" id="fLE-yb-5MJ"/>
                 <outlet property="liveLabelWidth" destination="nto-WJ-giA" id="rZb-Gg-MYi"/>
                 <outlet property="liveToLandscapeInfoTop" destination="LtT-dh-TzT" id="6ZR-aA-7Hb"/>
@@ -397,6 +398,12 @@
                                 </mask>
                             </variation>
                         </view>
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:20" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR5-eA-SOa">
+                            <rect key="frame" x="14" y="179.66666666666663" width="26" height="14.333333333333343"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <stackView opaque="NO" contentMode="scaleToFill" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="Vu1-v4-hRr" userLabel="topStack View">
                             <rect key="frame" x="53.999999999999993" y="13" width="65.333333333333314" height="18"/>
                             <subviews>
@@ -529,9 +536,11 @@
                         <constraint firstItem="Y8L-11-K5X" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="top" id="Zs2-ka-6Pa"/>
                         <constraint firstItem="Y8L-11-K5X" firstAttribute="leading" secondItem="6SG-AQ-Vmv" secondAttribute="leading" id="Zuu-OS-PFa"/>
                         <constraint firstAttribute="trailing" secondItem="cLA-Rd-OPc" secondAttribute="trailing" id="aII-yg-1OG"/>
+                        <constraint firstItem="fR5-eA-SOa" firstAttribute="centerY" secondItem="u8m-su-2fE" secondAttribute="centerY" id="c7G-ia-1TM"/>
                         <constraint firstAttribute="bottom" secondItem="cLA-Rd-OPc" secondAttribute="bottom" id="f1P-Ll-OVs"/>
                         <constraint firstItem="vk0-JI-SRF" firstAttribute="leading" secondItem="jVY-fl-H6n" secondAttribute="leading" id="l1p-fJ-mwo"/>
                         <constraint firstItem="cLA-Rd-OPc" firstAttribute="leading" secondItem="6SG-AQ-Vmv" secondAttribute="leading" id="rjS-Fg-22u"/>
+                        <constraint firstItem="fR5-eA-SOa" firstAttribute="centerX" secondItem="u8m-su-2fE" secondAttribute="centerX" id="rxi-9B-BwS"/>
                         <constraint firstAttribute="width" secondItem="6SG-AQ-Vmv" secondAttribute="height" multiplier="16:9" priority="850" id="sdE-i2-C6Y"/>
                         <constraint firstItem="aEk-7a-LBQ" firstAttribute="width" secondItem="IoW-Ne-fB8" secondAttribute="width" multiplier="0.4" id="tN6-AF-4cM"/>
                         <constraint firstItem="Vu1-v4-hRr" firstAttribute="leading" secondItem="jVY-fl-H6n" secondAttribute="trailing" constant="6" id="vZz-Lw-QY6"/>
@@ -862,6 +871,7 @@
                 <constraint firstItem="o26-cm-drr" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" id="Haq-4H-US2"/>
                 <constraint firstItem="yiB-1m-rRo" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="12" id="LCo-MZ-PL2"/>
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="MhO-Ik-UE5"/>
+                <constraint firstItem="FJc-3f-swx" firstAttribute="top" secondItem="6KR-R7-XLO" secondAttribute="bottom" priority="800" id="QZt-qZ-RSp"/>
                 <constraint firstAttribute="trailing" secondItem="O7y-qk-2G8" secondAttribute="trailing" id="Riv-Vm-pfX"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="0.315" priority="800" id="S6Y-lF-KiG"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" id="S6f-9L-rnb"/>
@@ -919,16 +929,16 @@
                     <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="r4d-s0-iKt"/>
                     <exclude reference="gSk-0Y-f5l"/>
+                    <exclude reference="MhO-Ik-UE5"/>
+                    <exclude reference="t6u-oH-s4c"/>
+                    <exclude reference="Haq-4H-US2"/>
+                    <exclude reference="hc7-Vw-qgR"/>
+                    <exclude reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
                     <exclude reference="6ee-UV-Q6I"/>
                     <exclude reference="Fcs-eH-UPc"/>
                     <exclude reference="aoO-Zn-1i2"/>
                     <exclude reference="fDd-QS-XBE"/>
-                    <exclude reference="MhO-Ik-UE5"/>
-                    <exclude reference="t6u-oH-s4c"/>
-                    <exclude reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
-                    <exclude reference="Haq-4H-US2"/>
-                    <exclude reference="hc7-Vw-qgR"/>
                     <exclude reference="Bpa-XM-g56"/>
                     <exclude reference="Y1K-vH-Kvu"/>
                     <exclude reference="kk0-bD-5Az"/>
@@ -975,16 +985,16 @@
                     <include reference="4Nv-gJ-7Te"/>
                     <include reference="S6Y-lF-KiG"/>
                     <exclude reference="S6f-9L-rnb"/>
-                    <include reference="fDd-QS-XBE"/>
                     <exclude reference="2fN-uq-9UC"/>
                     <include reference="MhO-Ik-UE5"/>
                     <exclude reference="hhr-Ab-UfO"/>
                     <exclude reference="qv8-1H-cX9"/>
                     <include reference="t6u-oH-s4c"/>
-                    <include reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
                     <include reference="Haq-4H-US2"/>
                     <include reference="hc7-Vw-qgR"/>
+                    <include reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
+                    <include reference="fDd-QS-XBE"/>
                     <include reference="Bpa-XM-g56"/>
                     <include reference="Y1K-vH-Kvu"/>
                     <include reference="kk0-bD-5Az"/>

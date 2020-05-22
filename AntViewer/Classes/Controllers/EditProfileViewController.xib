@@ -113,6 +113,7 @@
                         <constraint firstAttribute="trailing" secondItem="U1Q-pb-G0k" secondAttribute="trailing" constant="24" id="MGw-NC-0Nk"/>
                         <constraint firstItem="iMt-Oc-ql9" firstAttribute="top" relation="greaterThanOrEqual" secondItem="3L4-lj-cEw" secondAttribute="top" constant="1" id="PjK-zc-ZQ3"/>
                         <constraint firstItem="Rlm-Tr-7MF" firstAttribute="top" relation="greaterThanOrEqual" secondItem="iMt-Oc-ql9" secondAttribute="bottom" constant="5" id="Ruk-Zg-OcI"/>
+                        <constraint firstAttribute="width" constant="376" id="Tnv-4S-RzF"/>
                         <constraint firstItem="J0c-Vv-5Dd" firstAttribute="top" secondItem="Rlm-Tr-7MF" secondAttribute="bottom" priority="800" constant="24" id="Vvs-F9-pUh"/>
                         <constraint firstItem="Rlm-Tr-7MF" firstAttribute="leading" secondItem="3L4-lj-cEw" secondAttribute="leading" constant="24" id="WLz-Hv-dtj"/>
                         <constraint firstItem="U1Q-pb-G0k" firstAttribute="leading" secondItem="3L4-lj-cEw" secondAttribute="leading" constant="24" id="WWr-YT-eiH"/>
@@ -159,6 +160,7 @@
                     </variation>
                     <variation key="heightClass=regular-widthClass=compact">
                         <mask key="constraints">
+                            <exclude reference="Tnv-4S-RzF"/>
                             <include reference="WWr-YT-eiH"/>
                             <include reference="2Mb-p9-UrW"/>
                             <include reference="8n2-CN-SZw"/>
@@ -175,23 +177,11 @@
                 <constraint firstItem="3L4-lj-cEw" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="IUX-Hs-3Cu" secondAttribute="leading" constant="1" id="evH-d1-CqP"/>
                 <constraint firstItem="3L4-lj-cEw" firstAttribute="top" relation="greaterThanOrEqual" secondItem="IUX-Hs-3Cu" secondAttribute="top" constant="5" id="jGS-IY-OQJ"/>
                 <constraint firstItem="3L4-lj-cEw" firstAttribute="width" secondItem="IUX-Hs-3Cu" secondAttribute="width" multiplier="0.85" id="rMq-Y6-2Vh"/>
-                <constraint firstItem="3L4-lj-cEw" firstAttribute="width" secondItem="IUX-Hs-3Cu" secondAttribute="width" multiplier="0.69" id="uhS-hJ-fc5"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <variation key="default">
                 <mask key="constraints">
                     <exclude reference="rMq-Y6-2Vh"/>
-                    <exclude reference="uhS-hJ-fc5"/>
-                </mask>
-            </variation>
-            <variation key="heightClass=compact-widthClass=compact">
-                <mask key="constraints">
-                    <include reference="uhS-hJ-fc5"/>
-                </mask>
-            </variation>
-            <variation key="heightClass=compact-widthClass=regular">
-                <mask key="constraints">
-                    <include reference="uhS-hJ-fc5"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=compact">

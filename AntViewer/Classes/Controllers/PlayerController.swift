@@ -97,6 +97,7 @@ class PlayerController: UIViewController {
   @IBOutlet var cancelButton: UIButton!
   @IBOutlet var fullScreenButtons: [UIButton]!
   @IBOutlet var thanksForWatchingLabel: UILabel!
+  @IBOutlet var liveDurationLabel: UILabel!
   private var isAutoplayMode = false
   private lazy var backgroundShape = CAShapeLayer()
   private lazy var progressShape = CAShapeLayer()
@@ -872,6 +873,9 @@ class PlayerController: UIViewController {
         let newImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
 
+        self.isPlayerControlsHidden = true
+        self.liveDurationLabel.text = self.seekLabel.text
+        self.liveDurationLabel.isHidden = false
         self.videoContainerView.image = newImage
         self.videoContainerView.isUserInteractionEnabled = false
       }
