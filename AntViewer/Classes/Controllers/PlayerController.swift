@@ -1157,15 +1157,14 @@ class PlayerController: UIViewController {
           self.timeOfLastTap = nil
           self.seekToByTapping = nil
           self.isSeekByTappingMode = false
-        }
-        else {
+        } else {
           self.isSeekByTappingMode = true
           handleSeekByTapping(sender)
         }
       }
     }
     guard !self.isSeekByTappingMode else { return }
-    self.isPlayerControlsHidden = !self.isPlayerControlsHidden
+    self.isPlayerControlsHidden = !self.videoControlsView.isHidden
   }
   
   @objc
