@@ -687,9 +687,10 @@ class PlayerController: UIViewController {
     super.viewWillAppear(animated)
     adjustVideoControlsButtons()
     landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+    //UIApplicationWillResignActiveNotification
     UIApplication.shared.isIdleTimerDisabled = true
   }
   
@@ -937,7 +938,7 @@ class PlayerController: UIViewController {
   }
 
 
-  @IBAction func cancelButtonTapped(_ sender: UIButton) {
+  @IBAction func cancelButtonTapped(_ sender: UIButton?) {
     autoplayDebouncer.call {}
     isAutoplayMode = false
     previousButton.isHidden = false
@@ -1084,6 +1085,9 @@ class PlayerController: UIViewController {
     player.pause()
     updatePlayButtonImage()
     isPlayerControlsHidden = false
+    if isAutoplayMode {
+      cancelButtonTapped(nil)
+    }
   }
   
   func handleSeekByTapping(_ sender: UITapGestureRecognizer) {
