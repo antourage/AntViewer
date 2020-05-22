@@ -386,6 +386,9 @@ class StreamListController: UIViewController {
         shouldResetActiveCell = true
       }
     }
+    if activeCell == nil {
+      activeCell = getTopVisibleCell()
+    }
   }
   
   @objc

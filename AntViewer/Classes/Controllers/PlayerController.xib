@@ -312,6 +312,7 @@
                                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="CLJ-4Y-mmc">
                                     <rect key="frame" x="54" y="333" width="696" height="31"/>
                                     <color key="tintColor" name="a_pink"/>
+                                    <color key="maximumTrackTintColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <connections>
                                         <action selector="onSliderValChangedWithSlider:event:" destination="-1" eventType="valueChanged" id="NKq-uc-o14"/>
                                     </connections>
@@ -653,10 +654,10 @@
                     </connections>
                 </view>
                 <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="AntViewer">
-                    <rect key="frame" x="-2" y="306.66666666666669" width="379" height="31"/>
+                    <rect key="frame" x="-2" y="303.66666666666669" width="379" height="31"/>
                     <color key="tintColor" name="a_pink"/>
                     <color key="minimumTrackTintColor" name="a_pink"/>
-                    <color key="maximumTrackTintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <color key="maximumTrackTintColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="calibratedRGB"/>
                 </slider>
                 <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OhH-Kf-RoE" userLabel="ChatTipView">
                     <rect key="frame" x="124.33333333333331" y="690" width="126.66666666666669" height="20"/>
@@ -876,7 +877,7 @@
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="0.315" priority="800" id="S6Y-lF-KiG"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" id="S6f-9L-rnb"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="6KR-R7-XLO" secondAttribute="bottom" id="TSL-4H-jrA"/>
-                <constraint firstItem="O7y-qk-2G8" firstAttribute="centerY" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="1" id="UAH-ny-PjT"/>
+                <constraint firstItem="O7y-qk-2G8" firstAttribute="centerY" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="-2" id="UAH-ny-PjT"/>
                 <constraint firstAttribute="bottom" secondItem="FJc-3f-swx" secondAttribute="bottom" id="Y1K-vH-Kvu"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="o26-cm-drr" secondAttribute="trailing" id="Zof-hi-OiQ"/>
                 <constraint firstItem="Lff-C4-vvV" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="aW2-Cs-KOQ"/>

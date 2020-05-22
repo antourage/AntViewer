@@ -765,7 +765,8 @@ class PlayerController: UIViewController {
 
   private func handleVODsChat(forTime time: Int) {
     let messagesAfterStream = isVideoEnd ? 600 : 0
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream
+    let countDown = 5
+    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream + countDown
     guard let vodMessages = self.vodMessages else { return }
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
     let dif = filteredArr.count - messagesDataSource.count
@@ -966,7 +967,6 @@ class PlayerController: UIViewController {
   
   private func insertMessage(_ message: Message) {
     messagesDataSource.append(message)
-    updateChatTipView(newMessagesCount: messagesDataSource.count-alreadyWatchedMessage)
     let shouldScroll = currentTableView.contentOffset.y >= currentTableView.contentSize.height - currentTableView.frame.size.height - 20
     let indexPath = IndexPath(row: messagesDataSource.count - 1, section: 0)
     currentTableView.beginUpdates()
@@ -975,10 +975,15 @@ class PlayerController: UIViewController {
     updateContentInsetForTableView(currentTableView)
     currentTableView.layoutIfNeeded()
     if shouldScroll {
+      alreadyWatchedMessage = messagesDataSource.count
       UIView.animate(withDuration: 0.3) {
         self.currentTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
       }
     }
+    if portraitTableView.contentSize.height > portraitTableView.bounds.height {
+      alreadyWatchedMessage = messagesDataSource.count
+    }
+    updateChatTipView(newMessagesCount: messagesDataSource.count-alreadyWatchedMessage)
   }
   
   private func removeMessage(_ message: Message) {
@@ -1520,18 +1525,20 @@ extension PlayerController: UITableViewDataSource, UITableViewDelegate {
   
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "portraitCell", for: indexPath) as! PortraitMessageCell
-    
     let message = messagesDataSource[indexPath.row]
     let isCurrentUser = Int(message.userID) == User.current?.id
     cell.messageLabel.text = message.text
     let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
-    let date = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
-    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, formatter.string(from: date))
+    let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
+    var diff = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
+    // countdown
+    diff = diff-5 > 0 ? diff-5 : diff
+    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, diff.durationString())
     return cell
   }
 
   func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    guard tableView == portraitTableView, shouldUpdateIndexPath else { return }
+    guard tableView == portraitTableView, shouldUpdateIndexPath, tableView.contentSize.height > tableView.bounds.height else { return }
     alreadyWatchedMessage = max(indexPath.row+1, alreadyWatchedMessage)
   }
 }
