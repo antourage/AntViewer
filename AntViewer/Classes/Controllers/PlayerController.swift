@@ -865,7 +865,7 @@ class PlayerController: UIViewController {
         context.fill(labelFrame)
         let label = UILabel(frame: labelFrame)
         label.text = text.uppercased()
-        label.font = UIFont.systemFont(ofSize: labelFrame.size.height*0.08, weight: .bold)
+        label.font = UIFont.systemFont(ofSize: labelFrame.size.height*0.06, weight: .bold)
         label.textAlignment = .center
         label.textColor = .white
         label.draw(labelFrame)
