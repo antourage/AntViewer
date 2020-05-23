@@ -450,7 +450,7 @@ class PlayerController: UIViewController {
   }
   
   fileprivate var isControlsEnabled = false
-  fileprivate var controlsDebouncer = Debouncer(delay: 3)
+  fileprivate var controlsDebouncer = Debouncer(delay: 1.2)
   fileprivate var controlsAppearingDebouncer = Debouncer(delay: 0.4)
   fileprivate var seekByTapDebouncer = Debouncer(delay: 0.7)
   
@@ -901,7 +901,7 @@ class PlayerController: UIViewController {
     playButton.layer.addSublayer(backgroundShape)
     playButton.layer.addSublayer(progressShape)
     adjustCircleLayersPath()
-    let strokeWidth: CGFloat = 4.0
+    let strokeWidth: CGFloat = 2.64
     backgroundShape.strokeColor = UIColor.white.withAlphaComponent(0.2).cgColor
     backgroundShape.lineWidth = strokeWidth
     backgroundShape.fillColor = UIColor.clear.cgColor
