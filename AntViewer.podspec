@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 
-  isDebug = false
+  isDebug = true
 
   s.name             = 'AntViewer'
   s.version          = '1.1.22'
@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
     s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/AntViewerExt.framework'
   end
 
-  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist}'
+  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'
   s.resource_bundles = {
     'AntWidget' => ['AntViewer/Assets/*']
   }
