@@ -581,6 +581,10 @@
                         <outletCollection property="gestureRecognizers" destination="pUl-9a-wpr" appends="YES" id="CqX-Gn-7C1"/>
                     </connections>
                 </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-7j-wKT">
+                    <rect key="frame" x="0.0" y="778" width="375" height="34"/>
+                    <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </view>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="o26-cm-drr">
                     <rect key="frame" x="0.0" y="320.66666666666674" width="375" height="405.33333333333326"/>
                     <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -854,6 +858,7 @@
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="I5n-7j-wKT" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="0EK-HT-kRB"/>
                 <constraint firstAttribute="right" secondItem="CfQ-pS-qRe" secondAttribute="right" id="2fN-uq-9UC"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="OhH-Kf-RoE" secondAttribute="trailing" constant="16" id="2zQ-M0-X2v"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="top" secondItem="TEb-9g-51W" secondAttribute="bottom" id="3eR-AK-cch"/>
@@ -871,6 +876,7 @@
                 <constraint firstItem="FJc-3f-swx" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Bpa-XM-g56"/>
                 <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="aEk-7a-LBQ" secondAttribute="bottom" priority="999" id="Fcs-eH-UPc"/>
                 <constraint firstItem="o26-cm-drr" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" id="Haq-4H-US2"/>
+                <constraint firstItem="I5n-7j-wKT" firstAttribute="top" secondItem="6KR-R7-XLO" secondAttribute="bottom" id="Kft-qu-wX4"/>
                 <constraint firstItem="yiB-1m-rRo" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="12" id="LCo-MZ-PL2"/>
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="MhO-Ik-UE5"/>
                 <constraint firstItem="FJc-3f-swx" firstAttribute="top" secondItem="6KR-R7-XLO" secondAttribute="bottom" priority="800" id="QZt-qZ-RSp"/>
@@ -888,6 +894,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="yiB-1m-rRo" secondAttribute="trailing" constant="12" id="eNw-fq-7ZI"/>
                 <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="o26-cm-drr" secondAttribute="bottom" priority="999" id="fDd-QS-XBE"/>
                 <constraint firstItem="IoW-Ne-fB8" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="yiB-1m-rRo" secondAttribute="bottom" constant="12" id="gSk-0Y-f5l"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="I5n-7j-wKT" secondAttribute="trailing" id="gaY-Xf-Aba"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="CfQ-pS-qRe" secondAttribute="trailing" id="hDO-e0-jeW"/>
                 <constraint firstItem="XUg-NW-7D6" firstAttribute="bottom" secondItem="TEb-9g-51W" secondAttribute="top" id="hVa-Vd-OpK"/>
                 <constraint firstItem="o26-cm-drr" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="hc7-Vw-qgR"/>
@@ -907,6 +914,7 @@
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" id="t6u-oH-s4c"/>
                 <constraint firstAttribute="bottom" secondItem="CfQ-pS-qRe" secondAttribute="bottom" id="tf8-v9-FfC"/>
                 <constraint firstItem="OhH-Kf-RoE" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="vBE-Lr-UF0"/>
+                <constraint firstItem="I5n-7j-wKT" firstAttribute="bottom" secondItem="CfQ-pS-qRe" secondAttribute="bottom" id="wtv-n0-dkq"/>
                 <constraint firstItem="TEb-9g-51W" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="xfo-DJ-syP"/>
                 <constraint firstItem="XUg-NW-7D6" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="yFw-Ea-tOn"/>
                 <constraint firstAttribute="trailing" secondItem="6KR-R7-XLO" secondAttribute="trailing" id="zva-3g-aGJ"/>
@@ -915,6 +923,7 @@
             <variation key="default">
                 <mask key="subviews">
                     <exclude reference="TEb-9g-51W"/>
+                    <exclude reference="I5n-7j-wKT"/>
                     <exclude reference="o26-cm-drr"/>
                     <exclude reference="O7y-qk-2G8"/>
                     <exclude reference="OhH-Kf-RoE"/>
@@ -976,6 +985,7 @@
             <variation key="heightClass=regular-widthClass=compact">
                 <mask key="subviews">
                     <include reference="TEb-9g-51W"/>
+                    <include reference="I5n-7j-wKT"/>
                     <include reference="o26-cm-drr"/>
                     <include reference="O7y-qk-2G8"/>
                     <include reference="OhH-Kf-RoE"/>
