@@ -422,8 +422,12 @@ class PlayerController: UIViewController {
         self?.removeMessage(message)
       }
       chat?.onStateChange = { [weak self] isActive in
-        if !(self?.videoContent is VOD) {
+        if self?.videoContent is Live {
           self?.isChatEnabled = isActive
+          if self?.shouldEnableChatField == true, isActive {
+            self?.chatTextView.becomeFirstResponder()
+          }
+          self?.shouldEnableChatField = false
         } else {
           self?.isChatEnabled = false
         }
@@ -564,9 +568,6 @@ class PlayerController: UIViewController {
     }
     startPlayer()
     adjustHeightForTextView(chatTextView)
-    if shouldEnableChatField {
-      chatTextView.becomeFirstResponder()
-    }
   }
 
   func updateChatTipView(isNewUser: Bool = false, newMessagesCount: Int = 0) {
