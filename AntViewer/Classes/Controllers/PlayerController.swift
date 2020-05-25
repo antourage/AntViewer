@@ -1150,7 +1150,7 @@ class PlayerController: UIViewController {
 
     //MARK: seek by typing
     self.updatePlayButtonImage()
-    if self.isSeekByTappingMode {
+    if self.isSeekByTappingMode, videoContent is VOD {
       self.isPlayerControlsHidden = true
       handleSeekByTapping(sender)
     } else {
