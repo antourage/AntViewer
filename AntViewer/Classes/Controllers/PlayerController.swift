@@ -398,7 +398,6 @@ class PlayerController: UIViewController {
   
   private var isChatEnabled = false {
     didSet {
-      editProfileButton.isHidden = !isChatEnabled
       sendButton.isEnabled = isChatEnabled
       chatTextView.isEditable = isChatEnabled
       chatTextView.placeholder = isChatEnabled ? "Chat" : "Chat disabled"
