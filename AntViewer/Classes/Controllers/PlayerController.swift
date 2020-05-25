@@ -621,6 +621,7 @@ class PlayerController: UIViewController {
 
   func collapseChatTextView() {
     chatTextViewHolderViewLeading.isActive = false
+    editProfileButton.isHidden = false
     chatTextViewTrailing.isActive = chatTextView.text.isEmpty
     bottomContainerLeading.constant = .zero
     bottomContainerTrailing.constant = .zero
@@ -632,6 +633,7 @@ class PlayerController: UIViewController {
   func expandChatTextView() {
     chatTextViewHolderViewLeading.isActive = true
     chatTextViewTrailing.isActive = false
+    editProfileButton.isHidden = true
     if view.safeAreaInsets.left > 0, OrientationUtility.isLandscape {
       let leading: CGFloat = OrientationUtility.currentOrientatin == .landscapeLeft ? 0 : 30
       let trailing: CGFloat = OrientationUtility.currentOrientatin == .landscapeLeft ? 30 : 0
@@ -691,7 +693,6 @@ class PlayerController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-    //UIApplicationWillResignActiveNotification
     UIApplication.shared.isIdleTimerDisabled = true
   }
   
@@ -761,6 +762,7 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
+      bottomContainerLandscapeTop.isActive = !(currentOrientation.isLandscape && isChatEnabled)
     }
   }
 
@@ -1090,6 +1092,7 @@ class PlayerController: UIViewController {
     if isAutoplayMode {
       cancelButtonTapped(nil)
     }
+    chatTextView.resignFirstResponder()
   }
   
   func handleSeekByTapping(_ sender: UITapGestureRecognizer) {
@@ -1389,7 +1392,6 @@ class PlayerController: UIViewController {
     pollController.delegate = self
     pollContainerView.isHidden = false
     portraitTableView.isHidden = true
-    bottomContainerView.isHidden = true
     pollBannerIcon.hideBadge()
     collapsePollBanner(animated: false)
     shouldShowPollBadge = true
@@ -1558,7 +1560,6 @@ extension PlayerController: PollControllerDelegate {
     pollController = nil
     pollContainerView.isHidden = true
     portraitTableView.isHidden = false
-    bottomContainerView.isHidden = false
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
     bottomContainerView.isHidden = false
     landscapeTableViewContainer.isHidden = false
