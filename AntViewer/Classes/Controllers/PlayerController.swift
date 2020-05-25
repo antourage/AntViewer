@@ -168,7 +168,7 @@ class PlayerController: UIViewController {
         portraitSeekSlider.isHidden = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
-        portraitSeekSlider.tintColor = UIColor.color("a_pink")//.clear
+        portraitSeekSlider.tintColor = UIColor.color("a_pink")
         portraitSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
       }
     }
@@ -271,6 +271,8 @@ class PlayerController: UIViewController {
       if currentOrientation != oldValue {
         if videoContent is VOD {
           seekTo = nil
+          bottomContainerView.isHidden = true
+          bottomContainerViewHeightConstraint.constant = 0
         }
         adjustHeightForTextView(chatTextView)
         if OrientationUtility.isLandscape {
@@ -313,7 +315,6 @@ class PlayerController: UIViewController {
         }
         updatePollBannerVisibility()
         if isAutoplayMode {
-          print("PlayButton: \(playButton.bounds)")
           adjustCircleLayersPath()
         }
         if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
