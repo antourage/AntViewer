@@ -35,12 +35,13 @@ class PlayerController: UIViewController {
       chatTextView.placeholder = "Chat disabled"
     }
   }
-  @IBOutlet weak var chatTextViewHolderView: UIView!
-  @IBOutlet weak var chatTextViewHolderViewLeading: NSLayoutConstraint!
+  @IBOutlet  var chatTextViewHolderView: UIView!
+  @IBOutlet  var chatTextViewHolderViewLeading: NSLayoutConstraint!
   @IBOutlet var chatTextViewTrailing: NSLayoutConstraint!
-  @IBOutlet weak var bottomContainerLeading: NSLayoutConstraint!
-  @IBOutlet weak var bottomContainerTrailing: NSLayoutConstraint!
-  @IBOutlet weak var bottomContainerLandscapeTop: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerLeading: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerTrailing: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerLandscapeTop: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerPortraitTop: NSLayoutConstraint!
   fileprivate var isBottomContainerHidedByUser = false
   private var bottomContainerGradientLayer: CAGradientLayer = {
     let gradient = CAGradientLayer()
@@ -271,8 +272,8 @@ class PlayerController: UIViewController {
       if currentOrientation != oldValue {
         if videoContent is VOD {
           seekTo = nil
+          bottomContainerPortraitTop.isActive = true
           bottomContainerView.isHidden = true
-          bottomContainerViewHeightConstraint.constant = 0
         }
         adjustHeightForTextView(chatTextView)
         if OrientationUtility.isLandscape {
@@ -304,8 +305,8 @@ class PlayerController: UIViewController {
             landscapeSeekSlider.removeFromSuperview()
           }
         } else {
-          liveLabel.isHidden = false
-          viewersCountView.isHidden = false
+          liveLabel.alpha = 1
+          viewersCountView.alpha = 1
           shouldUpdateIndexPath = true
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
@@ -401,7 +402,9 @@ class PlayerController: UIViewController {
       sendButton.isEnabled = isChatEnabled
       chatTextView.isEditable = isChatEnabled
       chatTextView.placeholder = isChatEnabled ? "Chat" : "Chat disabled"
-      bottomContainerLandscapeTop.isActive = !isChatEnabled
+      if currentOrientation.isLandscape {
+         bottomContainerLandscapeTop.isActive = !isChatEnabled
+      }
       let alpha: CGFloat = isChatEnabled ? 0.6 : 0.2
       chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(alpha).cgColor
       chatTextView.placeholderTextColor = isChatEnabled ? .cellGray : .bottomMessageGray
@@ -553,6 +556,9 @@ class PlayerController: UIViewController {
         }
       })
       
+    } else {
+      bottomContainerPortraitTop.isActive = true
+      bottomContainerView.isHidden = true
     }
     self.chat = Chat(streamID: videoContent.id)
 
@@ -563,7 +569,6 @@ class PlayerController: UIViewController {
         return
       }
       self.currentOrientation = OrientationUtility.currentOrientatin
-      
     }
     startPlayer()
     adjustHeightForTextView(chatTextView)
@@ -727,6 +732,11 @@ class PlayerController: UIViewController {
       self.landscapeTableView.reloadData()
     } else {
       self.portraitTableView.reloadData()
+    }
+    if videoContent is VOD {
+      bottomContainerPortraitTop.isActive = true
+      bottomContainerView.isHidden = true
+      view.layoutIfNeeded()
     }
     var lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
@@ -1447,16 +1457,16 @@ extension PlayerController {
           if editProfileControllerIsLoading { return }
           portraitMessageBottomSpace.constant = 0
           landscapeMessageBottomSpace.constant = 0
-          liveLabel.isHidden = false
-          viewersCountView.isHidden = false
+          liveLabel.alpha = 1
+          viewersCountView.alpha = 1
           headerHeightConstraint.isActive = false
         } else if OrientationUtility.isLandscape {
           let isLeftInset = view.safeAreaInsets.left > 0
           chatFieldLeading = OrientationUtility.currentOrientatin == .landscapeRight && isLeftInset ? 30 : 0
           editProfileContainerLandscapeBottom.constant = keyboardSize.height
           landscapeMessageBottomSpace.constant = keyboardSize.height - bottomPadding
-          liveLabel.isHidden = true
-          viewersCountView.isHidden = true
+          liveLabel.alpha = 0
+          viewersCountView.alpha = 0
         } else {
           if chatTextView.isFirstResponder {
             headerHeightConstraint.isActive = true

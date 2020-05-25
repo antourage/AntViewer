@@ -12,6 +12,7 @@
             <connections>
                 <outlet property="bottomContainerLandscapeTop" destination="aoO-Zn-1i2" id="UZF-Fu-A4H"/>
                 <outlet property="bottomContainerLeading" destination="ild-vh-Dmh" id="6jq-M4-gKN"/>
+                <outlet property="bottomContainerPortraitTop" destination="rzk-lA-SNQ" id="zf5-eo-h8M"/>
                 <outlet property="bottomContainerTrailing" destination="zva-3g-aGJ" id="uw6-u1-YqR"/>
                 <outlet property="bottomContainerView" destination="6KR-R7-XLO" id="vIV-ok-OVn"/>
                 <outlet property="bottomContainerViewHeightConstraint" destination="Jxr-18-cEd" id="foQ-fd-eaS"/>
@@ -701,7 +702,7 @@
                         <outletCollection property="gestureRecognizers" destination="ETb-tg-dnL" appends="YES" id="jeH-ts-SqH"/>
                     </connections>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6KR-R7-XLO" userLabel="BottomContainer">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6KR-R7-XLO" userLabel="BottomContainer">
                     <rect key="frame" x="0.0" y="726" width="375" height="52"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="UX0-Xb-BEW">
@@ -876,16 +877,16 @@
                 <constraint firstAttribute="trailing" secondItem="O7y-qk-2G8" secondAttribute="trailing" id="Riv-Vm-pfX"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="0.315" priority="800" id="S6Y-lF-KiG"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" id="S6f-9L-rnb"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="6KR-R7-XLO" secondAttribute="bottom" id="TSL-4H-jrA"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="6KR-R7-XLO" secondAttribute="bottom" priority="999" id="TSL-4H-jrA"/>
                 <constraint firstItem="O7y-qk-2G8" firstAttribute="centerY" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="-2" id="UAH-ny-PjT"/>
                 <constraint firstAttribute="bottom" secondItem="FJc-3f-swx" secondAttribute="bottom" id="Y1K-vH-Kvu"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="o26-cm-drr" secondAttribute="trailing" id="Zof-hi-OiQ"/>
                 <constraint firstItem="Lff-C4-vvV" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="aW2-Cs-KOQ"/>
-                <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="bottom" constant="50" id="aoO-Zn-1i2"/>
+                <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="bottom" constant="80" id="aoO-Zn-1i2"/>
                 <constraint firstItem="yiB-1m-rRo" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="12" id="bC2-iv-7rd"/>
                 <constraint firstAttribute="trailing" secondItem="XUg-NW-7D6" secondAttribute="trailing" id="cDx-4P-TxH"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="yiB-1m-rRo" secondAttribute="trailing" constant="12" id="eNw-fq-7ZI"/>
-                <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="o26-cm-drr" secondAttribute="bottom" id="fDd-QS-XBE"/>
+                <constraint firstItem="6KR-R7-XLO" firstAttribute="top" secondItem="o26-cm-drr" secondAttribute="bottom" priority="999" id="fDd-QS-XBE"/>
                 <constraint firstItem="IoW-Ne-fB8" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="yiB-1m-rRo" secondAttribute="bottom" constant="12" id="gSk-0Y-f5l"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="CfQ-pS-qRe" secondAttribute="trailing" id="hDO-e0-jeW"/>
                 <constraint firstItem="XUg-NW-7D6" firstAttribute="bottom" secondItem="TEb-9g-51W" secondAttribute="top" id="hVa-Vd-OpK"/>
@@ -902,6 +903,7 @@
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="qv8-1H-cX9"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="r4d-s0-iKt"/>
                 <constraint firstItem="OhH-Kf-RoE" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="rpL-Pf-xTK"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="6KR-R7-XLO" secondAttribute="top" constant="-50" id="rzk-lA-SNQ"/>
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" id="t6u-oH-s4c"/>
                 <constraint firstAttribute="bottom" secondItem="CfQ-pS-qRe" secondAttribute="bottom" id="tf8-v9-FfC"/>
                 <constraint firstItem="OhH-Kf-RoE" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="vBE-Lr-UF0"/>
@@ -926,20 +928,21 @@
                     <exclude reference="Zof-hi-OiQ"/>
                     <exclude reference="hDO-e0-jeW"/>
                     <exclude reference="q0H-jp-Vrz"/>
+                    <exclude reference="rzk-lA-SNQ"/>
                     <exclude reference="4Nv-gJ-7Te"/>
                     <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="r4d-s0-iKt"/>
                     <exclude reference="gSk-0Y-f5l"/>
+                    <exclude reference="MhO-Ik-UE5"/>
+                    <exclude reference="t6u-oH-s4c"/>
+                    <exclude reference="Haq-4H-US2"/>
+                    <exclude reference="hc7-Vw-qgR"/>
+                    <exclude reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
                     <exclude reference="6ee-UV-Q6I"/>
                     <exclude reference="Fcs-eH-UPc"/>
                     <exclude reference="aoO-Zn-1i2"/>
                     <exclude reference="fDd-QS-XBE"/>
-                    <exclude reference="MhO-Ik-UE5"/>
-                    <exclude reference="t6u-oH-s4c"/>
-                    <exclude reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
-                    <exclude reference="Haq-4H-US2"/>
-                    <exclude reference="hc7-Vw-qgR"/>
                     <exclude reference="Bpa-XM-g56"/>
                     <exclude reference="Y1K-vH-Kvu"/>
                     <exclude reference="kk0-bD-5Az"/>
@@ -986,16 +989,16 @@
                     <include reference="4Nv-gJ-7Te"/>
                     <include reference="S6Y-lF-KiG"/>
                     <exclude reference="S6f-9L-rnb"/>
-                    <include reference="fDd-QS-XBE"/>
                     <exclude reference="2fN-uq-9UC"/>
                     <include reference="MhO-Ik-UE5"/>
                     <exclude reference="hhr-Ab-UfO"/>
                     <exclude reference="qv8-1H-cX9"/>
                     <include reference="t6u-oH-s4c"/>
-                    <include reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
                     <include reference="Haq-4H-US2"/>
                     <include reference="hc7-Vw-qgR"/>
+                    <include reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
+                    <include reference="fDd-QS-XBE"/>
                     <include reference="Bpa-XM-g56"/>
                     <include reference="Y1K-vH-Kvu"/>
                     <include reference="kk0-bD-5Az"/>
