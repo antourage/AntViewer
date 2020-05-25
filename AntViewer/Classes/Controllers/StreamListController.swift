@@ -472,7 +472,7 @@ class StreamListController: UIViewController {
       cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
-      cell.chatView.isHidden = !((item.latestMessage == nil) || item.isChatOn)
+      cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
       cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
@@ -696,7 +696,9 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
       let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
       height += labelHeight + 2 + 12 + 14.5
     }
-    if (item.isChatOn && item is Live || item.latestMessage != nil && item is VOD) || item.isPollOn || item.shareLink != nil {
+    let isVod = item is VOD
+    let hasLatestMessage = item.latestMessage != nil
+    if (!isVod && (item.isChatOn || hasLatestMessage) || hasLatestMessage && isVod) || item.isPollOn || item.shareLink != nil {
       height += 12 + 0.075 * view.bounds.width
     }
     if item is Live, item.isChatOn {

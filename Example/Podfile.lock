@@ -325,30 +325,30 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.6.0):
     - GoogleUtilities/Logger
-  - "gRPC-C++ (1.28.0)":
-    - "gRPC-C++/Implementation (= 1.28.0)"
-    - "gRPC-C++/Interface (= 1.28.0)"
-  - "gRPC-C++/Implementation (1.28.0)":
+  - "gRPC-C++ (1.28.2)":
+    - "gRPC-C++/Implementation (= 1.28.2)"
+    - "gRPC-C++/Interface (= 1.28.2)"
+  - "gRPC-C++/Implementation (1.28.2)":
     - abseil/container/inlined_vector (= 0.20200225.0)
     - abseil/memory/memory (= 0.20200225.0)
     - abseil/strings/str_format (= 0.20200225.0)
     - abseil/strings/strings (= 0.20200225.0)
     - abseil/types/optional (= 0.20200225.0)
-    - "gRPC-C++/Interface (= 1.28.0)"
-    - gRPC-Core (= 1.28.0)
-  - "gRPC-C++/Interface (1.28.0)"
-  - gRPC-Core (1.28.0):
-    - gRPC-Core/Implementation (= 1.28.0)
-    - gRPC-Core/Interface (= 1.28.0)
-  - gRPC-Core/Implementation (1.28.0):
+    - "gRPC-C++/Interface (= 1.28.2)"
+    - gRPC-Core (= 1.28.2)
+  - "gRPC-C++/Interface (1.28.2)"
+  - gRPC-Core (1.28.2):
+    - gRPC-Core/Implementation (= 1.28.2)
+    - gRPC-Core/Interface (= 1.28.2)
+  - gRPC-Core/Implementation (1.28.2):
     - abseil/container/inlined_vector (= 0.20200225.0)
     - abseil/memory/memory (= 0.20200225.0)
     - abseil/strings/str_format (= 0.20200225.0)
     - abseil/strings/strings (= 0.20200225.0)
     - abseil/types/optional (= 0.20200225.0)
     - BoringSSL-GRPC (= 0.0.7)
-    - gRPC-Core/Interface (= 1.28.0)
-  - gRPC-Core/Interface (1.28.0)
+    - gRPC-Core/Interface (= 1.28.2)
+  - gRPC-Core/Interface (1.28.2)
   - GTMSessionFetcher/Core (1.4.0)
   - leveldb-library (1.22)
   - nanopb (1.30905.0):
@@ -416,8 +416,8 @@ SPEC CHECKSUMS:
   GoogleDataTransport: ad884314b81cdb808fb1d23787b367ff8da4e28a
   GoogleDataTransportCCTSupport: d70a561f7d236af529fee598835caad5e25f6d3d
   GoogleUtilities: 39530bc0ad980530298e9c4af8549e991fd033b1
-  "gRPC-C++": 2ea13a2e14f0b89991a0b4b0151e7c6a56319516
-  gRPC-Core: 325ba201411619a7302c621a1c8ee787719d4b9b
+  "gRPC-C++": 13d8ccef97d5c3c441b7e3c529ef28ebee86fad2
+  gRPC-Core: 4afa11bfbedf7cdecd04de535a9e046893404ed5
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
