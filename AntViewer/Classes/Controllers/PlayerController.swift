@@ -845,6 +845,7 @@ class PlayerController: UIViewController {
       } else {
         //TODO: set thanks image
         self?.setThanksImage()
+        self?.isChatEnabled = false
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
         self?.liveLabelWidth.constant = 0
         self?.playButton.isHidden = true
