@@ -113,6 +113,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
@@ -133,6 +134,7 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi

@@ -419,6 +419,7 @@ class PlayerController: UIViewController {
       }
       chat?.onRemove = { [weak self] message in
         self?.removeMessage(message)
+
       }
       chat?.onStateChange = { [weak self] isActive in
         if !(self?.videoContent is VOD) {
@@ -550,7 +551,7 @@ class PlayerController: UIViewController {
       })
       
     }
-    self.chat = Chat(streamID: videoContent.id)
+    self.chat = Chat(for: videoContent)
 
     var token: NSObjectProtocol?
     token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
@@ -713,6 +714,12 @@ class PlayerController: UIViewController {
     print("Player DEINITED")
     pollManager?.removeFirObserver()
     Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
+    if videoContent is Live {
+      StorageManager.shared.saveChat(for: videoContent, value: messagesDataSource)
+    } else {
+      StorageManager.shared.saveChat(for: videoContent, value: vodMessages ?? [])
+    }
+
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -765,7 +772,7 @@ class PlayerController: UIViewController {
 
 
   private func handleVODsChat(forTime time: Int) {
-    let messagesAfterStream = isVideoEnd ? 600 : 0
+     let messagesAfterStream = isVideoEnd ? 600 : 0
     let countDown = 5
     let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream + countDown
     guard let vodMessages = self.vodMessages else { return }
@@ -805,6 +812,7 @@ class PlayerController: UIViewController {
       self.activeSpendTime += 0.2
       
       if let vod = self.videoContent as? VOD {
+        vod.stopTime = Int(time.seconds).durationString()
         self.handleVODsChat(forTime: Int(time.seconds))
         //temp: needs refactoring
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())

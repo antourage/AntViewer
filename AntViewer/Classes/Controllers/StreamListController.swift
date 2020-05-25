@@ -63,7 +63,7 @@ class StreamListController: UIViewController {
         let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
         var position: Double?
         if let item = item as? VOD {
-          position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
+          position = Double(item.stopTime.duration())
         }
         if let fakeThumb = self?.curtainThumbnail, let contentImageView = self?.activeCell?.contentImageView {
           contentImageView.addSubview(fakeThumb)
@@ -149,9 +149,6 @@ class StreamListController: UIViewController {
   }
   
   var onViewerDismiss: ((NSDictionary) -> Void)?
-
-  // MARK: Temp solution
-  fileprivate var stopTimes = [Int : Int]()
 
   private var topInset: CGFloat = .zero
   private var failedToLoadVods = false
@@ -469,7 +466,7 @@ class StreamListController: UIViewController {
       cell.duration = item.duration.duration()
       //Temp solution
       let duration = item.stopTime.duration() == 0 ? nil : item.stopTime.duration()
-      cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
+      cell.watchedTime = item.isNew ? nil : duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
       cell.chatView.isHidden = !((item.latestMessage == nil) || item.isChatOn)
@@ -748,7 +745,7 @@ extension StreamListController: ModernAVPlayerDelegate {
       if let item = self?.activeItem as? VOD {
         self?.activeCell?.duration = item.duration.duration()
         self?.activeCell?.watchedTime = Int(currentTime)
-        self?.stopTimes[item.id] = Int(currentTime)
+        item.stopTime = Int(currentTime).durationString()
       } else if let item = self?.activeItem as? Live {
         let duration = Date().timeIntervalSince(item.date)
         self?.activeCell?.duration = Int(duration)

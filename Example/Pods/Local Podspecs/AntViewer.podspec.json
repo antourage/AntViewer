@@ -30,7 +30,7 @@
 
     ]
   },
-  "resources": "AntViewer/Classes/**/*.{storyboard,xib,plist}",
+  "resources": "AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}",
   "resource_bundles": {
     "AntWidget": [
       "AntViewer/Assets/*"
