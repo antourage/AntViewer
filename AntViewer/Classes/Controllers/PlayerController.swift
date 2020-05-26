@@ -868,6 +868,9 @@ class PlayerController: UIViewController {
     player.onVideoEnd = { [weak self] in
       self?.playButton.setImage(UIImage.image("Play"), for: .normal)
       if self?.videoContent is VOD {
+        self?.isSeekByTappingMode = false
+        self?.seekByTapDebouncer.call {}
+        self?.seekPaddingView = nil
         self?.isVideoEnd = true
         self?.isPlayerControlsHidden = false
         self?.startAutoplayNexItem()
@@ -920,8 +923,6 @@ class PlayerController: UIViewController {
       playButton.setImage(UIImage.image("PlayAgain"), for: .normal)
       return
     }
-
-    isSeekByTappingMode = false
 
     playButton.setImage(UIImage.image("PlayNext"), for: .normal)
     previousButton.isHidden = true
