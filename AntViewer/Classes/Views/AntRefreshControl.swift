@@ -51,6 +51,7 @@ class AntRefreshControl: UIRefreshControl {
 
   private var backgroundViews = [UIView]()
   private var isDragging = false
+  var shouldAnimate = true
 
   required override public init() {
     fatalError("use init(frame:) instead")
@@ -94,7 +95,7 @@ class AntRefreshControl: UIRefreshControl {
       startImageView.image = UIImage.image(String(format: "PullToUpdateStart%02d", pullProgress))
     }
 
-    if isRefreshing && !isRefreshControlAnimating {
+    if isRefreshing && !isRefreshControlAnimating && shouldAnimate {
       animateRefreshView()
     }
   }

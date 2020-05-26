@@ -115,6 +115,7 @@ public class SeekPaddingView: UIView {
     self.seekTimeLabel?.center.y = (animationView?.frame.origin.y ?? 0) + (animationView?.frame.height ?? 0)
     self.seekTimeLabel?.textAlignment = .center
     self.seekTimeLabel?.textColor = UIColor.white
+    self.seekTimeLabel?.font = UIFont.systemFont(ofSize: 12)
     self.seekView?.addSubview(seekTimeLabel!)
   }
   
@@ -140,7 +141,7 @@ public class SeekPaddingView: UIView {
     animationView.animationDuration = 0.5
     guard let view = seekView else { return }
 //    seek
-    animationView.frame = CGRect(x: 0, y: 0, width: 70, height: 50)
+    animationView.frame = CGRect(x: 0, y: 0, width: 50, height: 35)
     animationView.center = CGPoint(x: view.bounds.width / 2, y: view.bounds.height / 2)
     self.animationView = animationView
   }

@@ -131,6 +131,7 @@ class StreamListController: UIViewController {
   private lazy var refreshControl: AntRefreshControl = {
     let antRefreshControl = AntRefreshControl(frame: self.view.bounds)
     antRefreshControl.addTarget(self, action: #selector(didPullToRefresh(_:)), for: .valueChanged)
+    antRefreshControl.shouldAnimate = isReachable
     return antRefreshControl
   }()
 
@@ -153,6 +154,7 @@ class StreamListController: UIViewController {
   fileprivate var stopTimes = [Int : Int]()
 
   private var topInset: CGFloat = .zero
+  private var failedToLoadVods = false
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -188,11 +190,11 @@ class StreamListController: UIViewController {
     }
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-      let addedCount = notification.userInfo?["addedCount"] as? Int ?? 0
-      let deleted = notification.userInfo?["deleted"] as? [Int] ?? []
+      guard let addedCount = notification.userInfo?["addedCount"] as? Int,
+      let deleted = notification.userInfo?["deleted"] as? [Int] else { return }
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
-//      self?.collectionView.collectionViewLayout.invalidateLayout()
+      self?.collectionView.collectionViewLayout.invalidateLayout()
     }
 
     collectionView.alwaysBounceVertical = true
@@ -210,9 +212,7 @@ class StreamListController: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     setNeedsStatusBarAppearanceUpdate()
-    if activeCell == nil {
-      activeCell = getTopVisibleCell()
-    }
+    activeCell = getTopVisibleCell()
     startObservingReachability()
     topInset = headerView.frame.origin.y
   }
@@ -238,17 +238,23 @@ class StreamListController: UIViewController {
       bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
       if collectionView.numberOfItems(inSection: 1) == 0 {
         initialVodsUpdate()
+      } else {
+        if let lastCell = collectionView.cellForItem(at: IndexPath(item: dataSource.videos.count-1, section: 1)),
+          collectionView.visibleCells.contains(lastCell), failedToLoadVods {
+          fetchNextBunchOfVods()
+        }
       }
     } else {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
     }
+    refreshControl.shouldAnimate = isReachable
     skeleton?.didChangeReachability(isReachable)
   }
 
 
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
+  override func viewDidDisappear(_ animated: Bool) {
+    super.viewDidDisappear(animated)
     NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
     NotificationCenter.default.removeObserver(self, name: UIApplication.willResignActiveNotification, object: nil)
     stopObservingReachability()
@@ -298,7 +304,7 @@ class StreamListController: UIViewController {
         self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
         self.collectionView.performBatchUpdates(nil) { (result) in
-          if self.activeCell == nil {
+          if self.activeCell == nil, self.view.window != nil {
             self.activeCell = self.getTopVisibleCell()
           }
         }
@@ -306,7 +312,7 @@ class StreamListController: UIViewController {
       case .failure(let error):
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
-          self.bottomMessage.showMessage(title: "Something is not right")
+          self.showErrorMessage(autohide: false)
           self.skeleton?.setError()
         }
       }
@@ -326,7 +332,10 @@ class StreamListController: UIViewController {
     if collectionView.contentOffset.y < 0 {
        collectionView.contentOffset = .zero
      }
-    activeCell = getTopVisibleCell()
+    //MARK: wait 0.1 sec because visible cells is empty in moment notification triggering
+    DispatchQueue.main.asyncAfter(deadline: .now()+0.1) { [weak self] in
+      self?.activeCell = self?.getTopVisibleCell()
+    }
   }
   
   private func reloadCollectionViewDataSource(addedCount: Int, deletedIndexes: [Int]) {
@@ -377,12 +386,18 @@ class StreamListController: UIViewController {
         shouldResetActiveCell = true
       }
     }
+    if activeCell == nil {
+      activeCell = getTopVisibleCell()
+    }
   }
   
   @objc
   private func didPullToRefresh(_ sender: Any) {
     skeleton?.startLoading()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+      if self?.isReachable == true {
+        self?.bottomMessage.hideMessage()
+      }
       self?.dataSource.updateVods { (result) in
         self?.refreshControl.endRefreshing()
         switch result {
@@ -394,6 +409,9 @@ class StreamListController: UIViewController {
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
             self?.skeleton?.setError()
+            if self?.isReachable == true {
+              self?.showErrorMessage(autohide: false)
+            }
           }
         }
       }
@@ -444,9 +462,9 @@ class StreamListController: UIViewController {
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
+    cell.isLive = item is Live
     if let item = item as? VOD {
       cell.chatView.isHidden = item.latestMessage == nil
-      cell.isLive = false
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
       //Temp solution
@@ -454,8 +472,7 @@ class StreamListController: UIViewController {
       cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
-      cell.chatView.isHidden = !((item.latestMessage == nil) || item.isChatOn)
-      cell.isLive = true
+      cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
       cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
@@ -495,8 +512,12 @@ class StreamListController: UIViewController {
   }
 
   fileprivate func getTopVisibleCell() -> StreamCell? {
-    let cell = collectionView.visibleCells.last(where: {
-      let cellRect = $0.frame
+   let cell = collectionView.indexPathsForVisibleItems
+    .sorted()
+    .map { self.collectionView.cellForItem(at: $0 ) as? StreamCell }
+    .first(where: {
+      guard let cell = $0 else { return false }
+      let cellRect = cell.frame
       var listRect = self.collectionView.bounds
       listRect.origin.y -= cellRect.height * 0.25
       listRect.size.height += cellRect.height * 0.4
@@ -546,7 +567,35 @@ class StreamListController: UIViewController {
        self?.view.layoutIfNeeded()
     })
   }
+  private func fetchNextBunchOfVods() {
+    guard !fetchingNextItems else { return }
+    if dataSource.videos.count % 15 == 0 {
+      let index = dataSource.videos.count
+      self.fetchingNextItems = true
+      self.failedToLoadVods = false
+      self.collectionView.invalidateIntrinsicContentSize()
+      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
+        guard let `self` = self else { return }
+        self.fetchingNextItems = false
+        self.collectionView.invalidateIntrinsicContentSize()
+        switch result {
+        case .success :
+          let count = self.dataSource.videos.count
+          let indexPaths = (index..<count).map {IndexPath(row: $0, section: 1)}
+          self.collectionView.insertItems(at: indexPaths)
 
+        case .failure:
+          self.failedToLoadVods = true
+          if self.isReachable {
+            self.showErrorMessage()
+            print("Error fetching vods")
+          }
+        }
+      }
+    } else {
+      reachedListsEnd = true
+    }
+  }
 }
 
 
@@ -632,30 +681,7 @@ extension StreamListController: UICollectionViewDelegate {
     guard indexPath.section == 1, indexPath.row == dataSource.videos.count - 1, !isLoading else {
       return
     }
-    if dataSource.videos.count % 15 == 0 {
-      let index = dataSource.videos.count
-      self.fetchingNextItems = true
-      self.collectionView.invalidateIntrinsicContentSize()
-      dataSource.fetchNextItemsFrom(index: index) { [weak self] (result) in
-        guard let `self` = self else { return }
-        self.fetchingNextItems = false
-        self.collectionView.invalidateIntrinsicContentSize()
-        switch result {
-        case .success :
-          let count = self.dataSource.videos.count
-          let indexPaths = (index..<count).map {IndexPath(row: $0, section: 1)}
-          self.collectionView.insertItems(at: indexPaths)
-
-        case .failure:
-          if self.isReachable {
-            self.showErrorMessage()
-            print("Error fetching vods")
-          }
-        }
-      }
-    } else {
-      reachedListsEnd = true
-    }
+    fetchNextBunchOfVods()
   }
 }
 
@@ -670,7 +696,9 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
       let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
       height += labelHeight + 2 + 12 + 14.5
     }
-    if (item.isChatOn && item is Live || item.latestMessage != nil && item is VOD) || item.isPollOn || item.shareLink != nil {
+    let isVod = item is VOD
+    let hasLatestMessage = item.latestMessage != nil
+    if (!isVod && (item.isChatOn || hasLatestMessage) || hasLatestMessage && isVod) || item.isPollOn || item.shareLink != nil {
       height += 12 + 0.075 * view.bounds.width
     }
     if item is Live, item.isChatOn {

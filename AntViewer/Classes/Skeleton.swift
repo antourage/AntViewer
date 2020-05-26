@@ -11,7 +11,7 @@ import AntViewerExt
 
 protocol SkeletonDelegate {
   func skeletonWillHide(_ skeleton: Skeleton)
-  func skeletonOnTimeout(_ skeleton: Skeleton)
+//  func skeletonOnTimeout(_ skeleton: Skeleton)
 }
 
 class Skeleton: NSObject {
@@ -39,11 +39,9 @@ class Skeleton: NSObject {
 
   private lazy var emptyDataSourceView: EmptyDataSourceView = {
     let view = EmptyDataSourceView()
-
     return view
   }()
 
-  private let loadingDebouncer = Debouncer(delay: 30)
 
   private var animator: Animator?
 
@@ -105,7 +103,6 @@ class Skeleton: NSObject {
 
   private func resetView() {
     animator?.stop(immediately: true)
-    loadingDebouncer.call {}
     delegate?.skeletonWillHide(self)
   }
 
@@ -146,11 +143,6 @@ class Skeleton: NSObject {
       animator?.animate(repeatCount: .infinity)
     }
     setEmptyDataSourseViewVisible(visible: false)
-    loadingDebouncer.call { [weak self] in
-      guard let `self` = self else { return }
-      self.setError()
-      self.delegate?.skeletonOnTimeout(self)
-    }
   }
 
   func setError() {
