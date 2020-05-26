@@ -327,6 +327,10 @@ class PlayerController: UIViewController {
     }
   }
 
+  fileprivate var isReachable: Bool {
+    URLSessionNetworkDispatcher.instance.isReachable
+  }
+
   private func updatePollBannerVisibility() {
     if OrientationUtility.isLandscape {
       if !videoControlsView.isHidden {
@@ -1298,6 +1302,7 @@ class PlayerController: UIViewController {
       collapseChatTextView()
     }
     self.adjustHeightForTextView(self.chatTextView)
+    sender.isEnabled = !isReachable
     self.chat?.send(message: message) { (error) in
       if error == nil {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {

@@ -15,10 +15,10 @@ class MessageFetcher: FirebaseFetcher {
 
   init() {
     self.firebaseApp = FirebaseApp.app(name: "AntViewerFirebase")!
-    let settings = FirestoreSettings()
-    settings.isPersistenceEnabled = false
-    let db = Firestore.firestore(app: firebaseApp)
-    db.settings = settings
+//    let settings = FirestoreSettings()
+//    settings.isPersistenceEnabled = false
+//    let db = Firestore.firestore(app: firebaseApp)
+//    db.settings = settings
   }
 
   func fetchLatestMessagesFor(VODs: [VOD], completion: @escaping(([Int: LatestComment])->())) {
