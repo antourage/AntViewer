@@ -368,7 +368,12 @@ class StreamListController: UIViewController {
       collectionView.performBatchUpdates({
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
-      }, completion: nil)
+        collectionView.reloadItems(at: addedPaths)
+      }, completion: { _ in
+        if self.activeCell == nil, self.view.window != nil {
+          self.activeCell = self.getTopVisibleCell()
+        }
+      })
 
       if addedCount > 0, newLivesButton.isHidden {
         let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
@@ -381,11 +386,6 @@ class StreamListController: UIViewController {
         collectionView.scrollToItem(at: visibleIndexPath, at: .top, animated: false)
         collectionView.contentOffset.y = collectionView.contentOffset.y - differenceBetweenRowAndNavBar
         shouldResetActiveCell = true
-      }
-    }
-    self.collectionView.performBatchUpdates(nil) { (result) in
-      if self.activeCell == nil, self.view.window != nil {
-        self.activeCell = self.getTopVisibleCell()
       }
     }
   }
