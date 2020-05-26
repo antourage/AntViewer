@@ -528,50 +528,53 @@ class PlayerController: UIViewController {
     nextButton.isExclusiveTouch = true
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
-    currentOrientation = OrientationUtility.currentOrientatin
-    try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-    
-    isChatEnabled = false
-    
-    Statistic.send(action: .open, for: videoContent)
-    dataSource.pauseUpdatingStreams()
-    if videoContent is Live {
 
-      pollManager = PollManager(streamId: videoContent.id)
-      pollManager?.observePolls(completion: { [weak self] (poll) in
-        self?.activePoll = poll
-      })
-      streamTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { [weak self] (myTimer) in
-        guard let `self` = self else {
-          myTimer.invalidate()
-          return
-        }
-        self.dataSource.getViewers(for: self.videoContent.id) { (result) in
-          switch result {
-          case .success(let count):
-            self.viewersCountLabel.text = "\(count)"
-          case .failure(let error):
-            print(error.localizedDescription)
-          }
-        }
-      })
-      
-    } else {
-      bottomContainerPortraitTop.isActive = true
-      bottomContainerView.isHidden = true
-    }
-    self.chat = Chat(streamID: videoContent.id)
+    self.dataSource.pauseUpdatingStreams()
+     var token: NSObjectProtocol?
+     token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
+       guard let `self` = self else {
+         NotificationCenter.default.removeObserver(token!)
+         return
+       }
+       self.currentOrientation = OrientationUtility.currentOrientatin
+     }
 
-    var token: NSObjectProtocol?
-    token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
-      guard let `self` = self else {
-        NotificationCenter.default.removeObserver(token!)
-        return
-      }
+      if self.videoContent is Live {
+
+         self.pollManager = PollManager(streamId: self.videoContent.id)
+         self.pollManager?.observePolls(completion: { [weak self] (poll) in
+            self?.activePoll = poll
+          })
+         self.streamTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { [weak self] (myTimer) in
+            guard let `self` = self else {
+              myTimer.invalidate()
+              return
+            }
+            self.dataSource.getViewers(for: self.videoContent.id) { (result) in
+              switch result {
+              case .success(let count):
+                self.viewersCountLabel.text = "\(count)"
+              case .failure(let error):
+                print(error.localizedDescription)
+              }
+            }
+          })
+
+        } else {
+         self.bottomContainerPortraitTop.isActive = true
+         self.bottomContainerView.isHidden = true
+        }
+    
+    DispatchQueue.main.async { [weak self] in
+      guard let `self` = self else { return }
       self.currentOrientation = OrientationUtility.currentOrientatin
+      self.isChatEnabled = false
+      try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+      Statistic.send(action: .open, for: self.videoContent)
+      self.chat = Chat(streamID: self.videoContent.id)
+      self.startPlayer()
     }
-    startPlayer()
-    adjustHeightForTextView(chatTextView)
+    self.adjustHeightForTextView(self.chatTextView)
   }
 
   func updateChatTipView(isNewUser: Bool = false, newMessagesCount: Int = 0) {

@@ -205,6 +205,9 @@ public class AntWidget {
     listController.dataSource = AntWidget.dataSource
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
+    if currentContent == nil || currentContent is Live {
+      currentContent = AntWidget.dataSource?.videos.first
+    }
     if let stream = currentContent {
       let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
       playerVC.videoContent = stream
@@ -216,15 +219,11 @@ public class AntWidget {
       }
       let controllerToPresent: UIViewController = currentContent is VOD ? playerNavController : playerVC
       controllerToPresent.modalPresentationStyle = .fullScreen
-      //FIXME: view flickers when playerNavContr presents
-      if controllerToPresent is PlayerNavigationController {
-        configureTransitionAnimation(animated: false)
-      }
       vc.present(navController, animated: false, completion: {
-        configureTransitionAnimation(inView: navController.view)
-        navController.present(controllerToPresent, animated: false, completion: {
-          navController.view.isHidden = false
-        })
+          configureTransitionAnimation(inView: navController.view)
+          navController.present(controllerToPresent, animated: false, completion: {
+            navController.view.isHidden = false
+          })
       })
       return
     }
