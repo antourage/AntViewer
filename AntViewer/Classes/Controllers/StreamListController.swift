@@ -383,8 +383,10 @@ class StreamListController: UIViewController {
         shouldResetActiveCell = true
       }
     }
-    if activeCell == nil {
-      activeCell = getTopVisibleCell()
+    self.collectionView.performBatchUpdates(nil) { (result) in
+      if self.activeCell == nil, self.view.window != nil {
+        self.activeCell = self.getTopVisibleCell()
+      }
     }
   }
   

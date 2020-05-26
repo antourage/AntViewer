@@ -786,6 +786,9 @@ class PlayerController: UIViewController {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
       bottomContainerLandscapeTop.isActive = !(currentOrientation.isLandscape && isChatEnabled)
+      if isVideoEnd {
+        videoControlsView.isHidden = true
+      }
     }
   }
 
@@ -1151,7 +1154,7 @@ class PlayerController: UIViewController {
       self.seekPaddingView?.soughtTime = self.seekToByTapping! == 0 ? 10 : (self.seekPaddingView?.soughtTime)! + 10
     } else {
       self.seekPaddingView?.seekForward()
-      self.seekPaddingView?.soughtTime = (self.seekToByTapping! != vod.duration.duration() - 1) ? (self.seekPaddingView?.soughtTime)! + 10 : 0
+      self.seekPaddingView?.soughtTime = (self.seekToByTapping! != vod.duration.duration() - 1) ? (self.seekPaddingView?.soughtTime)! + 10 : 10
     }
     activeSlider?.setValue(Float(self.seekToByTapping!), animated: true)
     self.seekTo = self.seekToByTapping
