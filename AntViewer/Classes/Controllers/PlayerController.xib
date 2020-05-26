@@ -729,13 +729,14 @@
                                         </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
                                 </button>
-                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGr-g5-sJg">
+                                <button opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mGr-g5-sJg">
                                     <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
                                     <constraints>
                                         <constraint firstAttribute="width" secondItem="mGr-g5-sJg" secondAttribute="height" multiplier="1:1" id="XPR-Gh-8A2"/>
                                         <constraint firstAttribute="width" constant="36" id="bds-vy-Gud"/>
                                     </constraints>
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <state key="normal" image="User(White)"/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
                                             <integer key="value" value="18"/>
@@ -942,16 +943,16 @@
                     <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="r4d-s0-iKt"/>
                     <exclude reference="gSk-0Y-f5l"/>
-                    <exclude reference="MhO-Ik-UE5"/>
-                    <exclude reference="t6u-oH-s4c"/>
-                    <exclude reference="Haq-4H-US2"/>
-                    <exclude reference="hc7-Vw-qgR"/>
-                    <exclude reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
-                    <exclude reference="6ee-UV-Q6I"/>
                     <exclude reference="Fcs-eH-UPc"/>
                     <exclude reference="aoO-Zn-1i2"/>
                     <exclude reference="fDd-QS-XBE"/>
+                    <exclude reference="MhO-Ik-UE5"/>
+                    <exclude reference="t6u-oH-s4c"/>
+                    <exclude reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
+                    <exclude reference="6ee-UV-Q6I"/>
+                    <exclude reference="Haq-4H-US2"/>
+                    <exclude reference="hc7-Vw-qgR"/>
                     <exclude reference="Bpa-XM-g56"/>
                     <exclude reference="Y1K-vH-Kvu"/>
                     <exclude reference="kk0-bD-5Az"/>
@@ -965,9 +966,9 @@
                     <include reference="q0H-jp-Vrz"/>
                     <include reference="r4d-s0-iKt"/>
                     <include reference="gSk-0Y-f5l"/>
-                    <include reference="6ee-UV-Q6I"/>
                     <include reference="Fcs-eH-UPc"/>
                     <include reference="aoO-Zn-1i2"/>
+                    <include reference="6ee-UV-Q6I"/>
                 </mask>
             </variation>
             <variation key="heightClass=compact-widthClass=regular">
@@ -977,9 +978,9 @@
                     <include reference="q0H-jp-Vrz"/>
                     <include reference="r4d-s0-iKt"/>
                     <include reference="gSk-0Y-f5l"/>
-                    <include reference="6ee-UV-Q6I"/>
                     <include reference="Fcs-eH-UPc"/>
                     <include reference="aoO-Zn-1i2"/>
+                    <include reference="6ee-UV-Q6I"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=compact">
@@ -999,16 +1000,16 @@
                     <include reference="4Nv-gJ-7Te"/>
                     <include reference="S6Y-lF-KiG"/>
                     <exclude reference="S6f-9L-rnb"/>
+                    <include reference="fDd-QS-XBE"/>
                     <exclude reference="2fN-uq-9UC"/>
                     <include reference="MhO-Ik-UE5"/>
                     <exclude reference="hhr-Ab-UfO"/>
                     <exclude reference="qv8-1H-cX9"/>
                     <include reference="t6u-oH-s4c"/>
-                    <include reference="Haq-4H-US2"/>
-                    <include reference="hc7-Vw-qgR"/>
                     <include reference="LCo-MZ-PL2"/>
                     <exclude reference="bC2-iv-7rd"/>
-                    <include reference="fDd-QS-XBE"/>
+                    <include reference="Haq-4H-US2"/>
+                    <include reference="hc7-Vw-qgR"/>
                     <include reference="Bpa-XM-g56"/>
                     <include reference="Y1K-vH-Kvu"/>
                     <include reference="kk0-bD-5Az"/>
@@ -1052,6 +1053,7 @@
         <image name="Play" width="84" height="84"/>
         <image name="PlayNext" width="72" height="72"/>
         <image name="PlayPrevious" width="72" height="72"/>
+        <image name="User(White)" width="24" height="24"/>
         <image name="Views" width="16" height="16"/>
         <image name="cross" width="24" height="24"/>
         <namedColor name="a_cell_subtitle">

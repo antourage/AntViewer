@@ -128,7 +128,7 @@
                                                 <rect key="frame" x="6" y="0.0" width="58.5" height="22.5"/>
                                                 <subviews>
                                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" image="Views" translatesAutoresizingMaskIntoConstraints="NO" id="A08-Le-CwJ">
-                                                        <rect key="frame" x="0.0" y="1.5" width="20" height="20"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="22.5" height="22.5"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" secondItem="A08-Le-CwJ" secondAttribute="height" multiplier="1:1" id="LtO-3y-lOe"/>
                                                         </constraints>
@@ -137,7 +137,7 @@
                                                         </userDefinedRuntimeAttributes>
                                                     </imageView>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="252" horizontalCompressionResistancePriority="1000" text="103" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="A1u-ZE-yv1">
-                                                        <rect key="frame" x="24" y="4" width="34.5" height="14.5"/>
+                                                        <rect key="frame" x="26.5" y="4" width="32" height="14.5"/>
                                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <nil key="highlightedColor"/>
@@ -148,7 +148,6 @@
                                         </subviews>
                                         <color key="backgroundColor" red="0.058823529411764705" green="0.058823529411764705" blue="0.058823529411764705" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstItem="A08-Le-CwJ" firstAttribute="height" secondItem="XFB-8k-21I" secondAttribute="height" multiplier="0.89" id="6xB-hn-0VR"/>
                                             <constraint firstItem="4rb-xX-dJu" firstAttribute="leading" secondItem="XFB-8k-21I" secondAttribute="leading" constant="6" id="EPW-zB-qDX"/>
                                             <constraint firstItem="4rb-xX-dJu" firstAttribute="top" secondItem="XFB-8k-21I" secondAttribute="top" id="FgZ-pd-JAs"/>
                                             <constraint firstAttribute="bottom" secondItem="4rb-xX-dJu" secondAttribute="bottom" id="avc-Wb-n3A"/>

@@ -875,9 +875,11 @@ class PlayerController: UIViewController {
         self?.isPlayerControlsHidden = false
         self?.startAutoplayNexItem()
       } else {
-        //TODO: set thanks image
+        //MARK: set thanks image
         self?.setThanksImage()
         self?.isChatEnabled = false
+        self?.editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+        self?.editProfileButton.tintColor = UIColor.white.withAlphaComponent(0.2)
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
         self?.liveLabelWidth.constant = 0
         self?.playButton.isHidden = true
