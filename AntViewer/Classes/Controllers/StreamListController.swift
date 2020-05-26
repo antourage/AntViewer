@@ -473,6 +473,7 @@ class StreamListController: UIViewController {
       cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
+      cell.watchedTime = nil
       cell.replayView.isHidden = true
       cell.joinAction = { [weak self] itemCell in
         guard let indexPath = self?.collectionView.indexPath(for: itemCell) else { return }
