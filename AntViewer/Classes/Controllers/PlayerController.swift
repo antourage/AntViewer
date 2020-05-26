@@ -35,12 +35,13 @@ class PlayerController: UIViewController {
       chatTextView.placeholder = "Chat disabled"
     }
   }
-  @IBOutlet weak var chatTextViewHolderView: UIView!
-  @IBOutlet weak var chatTextViewHolderViewLeading: NSLayoutConstraint!
+  @IBOutlet  var chatTextViewHolderView: UIView!
+  @IBOutlet  var chatTextViewHolderViewLeading: NSLayoutConstraint!
   @IBOutlet var chatTextViewTrailing: NSLayoutConstraint!
-  @IBOutlet weak var bottomContainerLeading: NSLayoutConstraint!
-  @IBOutlet weak var bottomContainerTrailing: NSLayoutConstraint!
-  @IBOutlet weak var bottomContainerLandscapeTop: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerLeading: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerTrailing: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerLandscapeTop: NSLayoutConstraint!
+  @IBOutlet  var bottomContainerPortraitTop: NSLayoutConstraint!
   fileprivate var isBottomContainerHidedByUser = false
   private var bottomContainerGradientLayer: CAGradientLayer = {
     let gradient = CAGradientLayer()
@@ -168,7 +169,7 @@ class PlayerController: UIViewController {
         portraitSeekSlider.isHidden = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
-        portraitSeekSlider.tintColor = UIColor.color("a_pink")//.clear
+        portraitSeekSlider.tintColor = UIColor.color("a_pink")
         portraitSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
       }
     }
@@ -271,6 +272,8 @@ class PlayerController: UIViewController {
       if currentOrientation != oldValue {
         if videoContent is VOD {
           seekTo = nil
+          bottomContainerPortraitTop.isActive = true
+          bottomContainerView.isHidden = true
         }
         adjustHeightForTextView(chatTextView)
         if OrientationUtility.isLandscape {
@@ -302,8 +305,8 @@ class PlayerController: UIViewController {
             landscapeSeekSlider.removeFromSuperview()
           }
         } else {
-          liveLabel.isHidden = false
-          viewersCountView.isHidden = false
+          liveLabel.alpha = 1
+          viewersCountView.alpha = 1
           shouldUpdateIndexPath = true
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
@@ -313,7 +316,6 @@ class PlayerController: UIViewController {
         }
         updatePollBannerVisibility()
         if isAutoplayMode {
-          print("PlayButton: \(playButton.bounds)")
           adjustCircleLayersPath()
         }
         if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
@@ -397,11 +399,12 @@ class PlayerController: UIViewController {
   
   private var isChatEnabled = false {
     didSet {
-      editProfileButton.isHidden = !isChatEnabled
       sendButton.isEnabled = isChatEnabled
       chatTextView.isEditable = isChatEnabled
       chatTextView.placeholder = isChatEnabled ? "Chat" : "Chat disabled"
-      bottomContainerLandscapeTop.isActive = !isChatEnabled
+      if currentOrientation.isLandscape {
+         bottomContainerLandscapeTop.isActive = !isChatEnabled
+      }
       let alpha: CGFloat = isChatEnabled ? 0.6 : 0.2
       chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(alpha).cgColor
       chatTextView.placeholderTextColor = isChatEnabled ? .cellGray : .bottomMessageGray
@@ -419,11 +422,14 @@ class PlayerController: UIViewController {
       }
       chat?.onRemove = { [weak self] message in
         self?.removeMessage(message)
-
       }
       chat?.onStateChange = { [weak self] isActive in
-        if !(self?.videoContent is VOD) {
+        if self?.videoContent is Live {
           self?.isChatEnabled = isActive
+          if self?.shouldEnableChatField == true, isActive {
+            self?.chatTextView.becomeFirstResponder()
+          }
+          self?.shouldEnableChatField = false
         } else {
           self?.isChatEnabled = false
         }
@@ -522,51 +528,53 @@ class PlayerController: UIViewController {
     nextButton.isExclusiveTouch = true
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
-    currentOrientation = OrientationUtility.currentOrientatin
-    try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-    
-    isChatEnabled = false
-    
-    Statistic.send(action: .open, for: videoContent)
-    dataSource.pauseUpdatingStreams()
-    if videoContent is Live {
 
-      pollManager = PollManager(streamId: videoContent.id)
-      pollManager?.observePolls(completion: { [weak self] (poll) in
-        self?.activePoll = poll
-      })
-      streamTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { [weak self] (myTimer) in
-        guard let `self` = self else {
-          myTimer.invalidate()
-          return
-        }
-        self.dataSource.getViewers(for: self.videoContent.id) { (result) in
-          switch result {
-          case .success(let count):
-            self.viewersCountLabel.text = "\(count)"
-          case .failure(let error):
-            print(error.localizedDescription)
-          }
-        }
-      })
-      
-    }
-    self.chat = Chat(for: videoContent)
+    self.dataSource.pauseUpdatingStreams()
+     var token: NSObjectProtocol?
+     token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
+       guard let `self` = self else {
+         NotificationCenter.default.removeObserver(token!)
+         return
+       }
+       self.currentOrientation = OrientationUtility.currentOrientatin
+     }
 
-    var token: NSObjectProtocol?
-    token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
-      guard let `self` = self else {
-        NotificationCenter.default.removeObserver(token!)
-        return
-      }
+      if self.videoContent is Live {
+
+         self.pollManager = PollManager(streamId: self.videoContent.id)
+         self.pollManager?.observePolls(completion: { [weak self] (poll) in
+            self?.activePoll = poll
+          })
+         self.streamTimer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { [weak self] (myTimer) in
+            guard let `self` = self else {
+              myTimer.invalidate()
+              return
+            }
+            self.dataSource.getViewers(for: self.videoContent.id) { (result) in
+              switch result {
+              case .success(let count):
+                self.viewersCountLabel.text = "\(count)"
+              case .failure(let error):
+                print(error.localizedDescription)
+              }
+            }
+          })
+
+        } else {
+         self.bottomContainerPortraitTop.isActive = true
+         self.bottomContainerView.isHidden = true
+        }
+    
+    DispatchQueue.main.async { [weak self] in
+      guard let `self` = self else { return }
       self.currentOrientation = OrientationUtility.currentOrientatin
-      
+      self.isChatEnabled = false
+      try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+      Statistic.send(action: .open, for: self.videoContent)
+      self.chat = Chat(streamID: self.videoContent.id)
+      self.startPlayer()
     }
-    startPlayer()
-    adjustHeightForTextView(chatTextView)
-    if shouldEnableChatField {
-      chatTextView.becomeFirstResponder()
-    }
+    self.adjustHeightForTextView(self.chatTextView)
   }
 
   func updateChatTipView(isNewUser: Bool = false, newMessagesCount: Int = 0) {
@@ -621,6 +629,7 @@ class PlayerController: UIViewController {
 
   func collapseChatTextView() {
     chatTextViewHolderViewLeading.isActive = false
+    editProfileButton.isHidden = false
     chatTextViewTrailing.isActive = chatTextView.text.isEmpty
     bottomContainerLeading.constant = .zero
     bottomContainerTrailing.constant = .zero
@@ -632,6 +641,7 @@ class PlayerController: UIViewController {
   func expandChatTextView() {
     chatTextViewHolderViewLeading.isActive = true
     chatTextViewTrailing.isActive = false
+    editProfileButton.isHidden = true
     if view.safeAreaInsets.left > 0, OrientationUtility.isLandscape {
       let leading: CGFloat = OrientationUtility.currentOrientatin == .landscapeLeft ? 0 : 30
       let trailing: CGFloat = OrientationUtility.currentOrientatin == .landscapeLeft ? 30 : 0
@@ -691,7 +701,6 @@ class PlayerController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-    //UIApplicationWillResignActiveNotification
     UIApplication.shared.isIdleTimerDisabled = true
   }
   
@@ -733,6 +742,11 @@ class PlayerController: UIViewController {
     } else {
       self.portraitTableView.reloadData()
     }
+    if videoContent is VOD {
+      bottomContainerPortraitTop.isActive = true
+      bottomContainerView.isHidden = true
+      view.layoutIfNeeded()
+    }
     var lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
       lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
@@ -767,12 +781,13 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
+      bottomContainerLandscapeTop.isActive = !(currentOrientation.isLandscape && isChatEnabled)
     }
   }
 
 
   private func handleVODsChat(forTime time: Int) {
-     let messagesAfterStream = isVideoEnd ? 600 : 0
+    let messagesAfterStream = isVideoEnd ? 600 : 0
     let countDown = 5
     let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream + countDown
     guard let vodMessages = self.vodMessages else { return }
@@ -852,6 +867,7 @@ class PlayerController: UIViewController {
       } else {
         //TODO: set thanks image
         self?.setThanksImage()
+        self?.isChatEnabled = false
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
         self?.liveLabelWidth.constant = 0
         self?.playButton.isHidden = true
@@ -1096,6 +1112,7 @@ class PlayerController: UIViewController {
     if isAutoplayMode {
       cancelButtonTapped(nil)
     }
+    chatTextView.resignFirstResponder()
   }
   
   func handleSeekByTapping(_ sender: UITapGestureRecognizer) {
@@ -1158,7 +1175,7 @@ class PlayerController: UIViewController {
 
     //MARK: seek by typing
     self.updatePlayButtonImage()
-    if self.isSeekByTappingMode {
+    if self.isSeekByTappingMode, videoContent is VOD {
       self.isPlayerControlsHidden = true
       handleSeekByTapping(sender)
     } else {
@@ -1395,7 +1412,6 @@ class PlayerController: UIViewController {
     pollController.delegate = self
     pollContainerView.isHidden = false
     portraitTableView.isHidden = true
-    bottomContainerView.isHidden = true
     pollBannerIcon.hideBadge()
     collapsePollBanner(animated: false)
     shouldShowPollBadge = true
@@ -1451,16 +1467,16 @@ extension PlayerController {
           if editProfileControllerIsLoading { return }
           portraitMessageBottomSpace.constant = 0
           landscapeMessageBottomSpace.constant = 0
-          liveLabel.isHidden = false
-          viewersCountView.isHidden = false
+          liveLabel.alpha = 1
+          viewersCountView.alpha = 1
           headerHeightConstraint.isActive = false
         } else if OrientationUtility.isLandscape {
           let isLeftInset = view.safeAreaInsets.left > 0
           chatFieldLeading = OrientationUtility.currentOrientatin == .landscapeRight && isLeftInset ? 30 : 0
           editProfileContainerLandscapeBottom.constant = keyboardSize.height
           landscapeMessageBottomSpace.constant = keyboardSize.height - bottomPadding
-          liveLabel.isHidden = true
-          viewersCountView.isHidden = true
+          liveLabel.alpha = 0
+          viewersCountView.alpha = 0
         } else {
           if chatTextView.isFirstResponder {
             headerHeightConstraint.isActive = true
@@ -1564,7 +1580,6 @@ extension PlayerController: PollControllerDelegate {
     pollController = nil
     pollContainerView.isHidden = true
     portraitTableView.isHidden = false
-    bottomContainerView.isHidden = false
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
     bottomContainerView.isHidden = false
     landscapeTableViewContainer.isHidden = false

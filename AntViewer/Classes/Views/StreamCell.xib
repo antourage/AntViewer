@@ -239,6 +239,7 @@
                                                 </userDefinedRuntimeAttributes>
                                                 <connections>
                                                     <action selector="shareButtonPressed:" destination="-1" eventType="touchUpInside" id="a64-q9-PCD"/>
+                                                    <action selector="shareButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="uqN-Hz-ACB"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -263,7 +264,7 @@
                                             </label>
                                         </subviews>
                                     </stackView>
-                                    <button opaque="NO" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jEI-Jg-0nN">
+                                    <button contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="top" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jEI-Jg-0nN">
                                         <rect key="frame" x="0.0" y="113" width="114" height="71"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="2Kf-rN-9Ft"/>
@@ -276,7 +277,7 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="ArrowSmallRight"/>
                                         </userDefinedRuntimeAttributes>
                                         <connections>
-                                            <action selector="joinButtonPressed:" destination="-1" eventType="touchUpInside" id="a2Y-WR-AmH"/>
+                                            <action selector="joinButtonPressed:" destination="gTV-IL-0wX" eventType="touchUpInside" id="nz8-4n-25y"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -354,7 +355,7 @@
         <image name="Autoplay00" width="16" height="16"/>
         <image name="BroadcasterColorWheel" width="40" height="40"/>
         <image name="Chat" width="24" height="24"/>
-        <image name="PlaceholderVideo" width="144" height="144"/>
+        <image name="PlaceholderVideo" width="320" height="240"/>
         <image name="PlayAgain" width="84" height="84"/>
         <image name="Polls" width="24" height="24"/>
         <image name="Share" width="24" height="24"/>
