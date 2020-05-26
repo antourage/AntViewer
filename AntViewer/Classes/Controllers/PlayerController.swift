@@ -575,7 +575,7 @@ class PlayerController: UIViewController {
       self.isChatEnabled = false
       try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
       Statistic.send(action: .open, for: self.videoContent)
-      self.chat = Chat(streamID: self.videoContent.id)
+      self.chat = Chat(for: self.videoContent)
       self.startPlayer()
     }
     self.adjustHeightForTextView(self.chatTextView)

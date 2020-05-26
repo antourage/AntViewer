@@ -2,24 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/maryanluchko/Documents/widget.ios/AntViewer_ios/AntViewer/Classes/CoreDataStaff/MessageMO+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/maryanluchko/Documents/widget.ios/AntViewer_ios/AntViewer/Classes/CoreDataStaff/MessageMO+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/maryanluchko/Documents/widget.ios/AntViewer_ios/AntViewer/Classes/CoreDataStaff/PollMO+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/maryanluchko/Documents/widget.ios/AntViewer_ios/AntViewer/Classes/CoreDataStaff/PollMO+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/maryanluchko/Documents/widget.ios/AntViewer_ios/AntViewer/Classes/CoreDataStaff/VideoContentMO+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/maryanluchko/Documents/widget.ios/AntViewer_ios/AntViewer/Classes/CoreDataStaff/VideoContentMO+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
       location = "group:AntViewer_ios.xcodeproj">
    </FileRef>
    <FileRef
