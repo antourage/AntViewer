@@ -190,9 +190,9 @@ public class AntWidget {
   }
 
   private func didTapButton() {
-    func configureTransitionAnimation(inView view: UIView = self.view, animated: Bool = true) {
+    func configureTransitionAnimation(inView view: UIView = self.view) {
       let transition = CATransition()
-      transition.duration = animated ? 0.3 : 0
+      transition.duration = 0.3
       transition.type = .push
       transition.subtype = .fromRight
       transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
@@ -205,9 +205,6 @@ public class AntWidget {
     listController.dataSource = AntWidget.dataSource
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
-    if currentContent == nil || currentContent is Live {
-      currentContent = AntWidget.dataSource?.videos.first
-    }
     if let stream = currentContent {
       let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
       playerVC.videoContent = stream
