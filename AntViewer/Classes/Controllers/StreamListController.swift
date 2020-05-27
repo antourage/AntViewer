@@ -341,9 +341,15 @@ class StreamListController: UIViewController {
         reachedListsEnd = false
         if skeleton == nil {
           collectionView.reloadData()
+          collectionView.performBatchUpdates(nil) { [weak self] (_) in
+            if self?.view.window != nil {
+              self?.activeCell = self?.getTopVisibleCell()
+            }
+          }
         }
         return
     }
+
     var shouldScroll = true
     let streamsCount = dataSource.streams.count
     if visibleIndexPath.section == 0 {
@@ -369,11 +375,7 @@ class StreamListController: UIViewController {
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
         collectionView.reloadItems(at: addedPaths)
-      }, completion: { _ in
-        if self.activeCell == nil, self.view.window != nil {
-          self.activeCell = self.getTopVisibleCell()
-        }
-      })
+      }, completion: nil)
 
       if addedCount > 0, newLivesButton.isHidden {
         let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
