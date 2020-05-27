@@ -22,6 +22,7 @@ extension VideoContentMO {
     @NSManaged public var latestMessage: LatestComment?
     @NSManaged public var stopTime: String
     @NSManaged public var chatLoaded: Bool
+    @NSManaged public var latestCommentLoaded: Bool
     @NSManaged public var messagesMO: NSSet?
     @NSManaged public var pollsMO: NSSet?
 

@@ -15,31 +15,40 @@ class MessageFetcher: FirebaseFetcher {
 
   init() {
     self.firebaseApp = FirebaseApp.app(name: "AntViewerFirebase")!
-//    let settings = FirestoreSettings()
-//    settings.isPersistenceEnabled = false
-//    let db = Firestore.firestore(app: firebaseApp)
-//    db.settings = settings
   }
 
-  func fetchLatestMessagesFor(VODs: [VOD], completion: @escaping(([Int: LatestComment])->())) {
-    var latestComments = Dictionary<Int, LatestComment>()
-    let group = DispatchGroup()
-    for video in VODs {
-      getLatestMessageFor(video: video, group: group, completion: { infoDict in
-        latestComments.merge(infoDict, uniquingKeysWith: { (_, updated) in updated  })
-      })
-    }
-    group.notify(queue: .main) {
-      completion((latestComments))
-    }
+  func setLatestMessagesTo(VODs: [VOD], completion: @escaping(([VOD])->())) {
+     let group = DispatchGroup()
+     let editedVODs = VODs
+     for video in editedVODs {
+       group.enter()
+       let vodFromCache = StorageManager.shared.loadVideoContent(content: video)
+       if vodFromCache.latestCommentLoaded {
+         video.latestMessage = vodFromCache.latestMessage
+         group.leave()
+       } else {
+         getLatestMessageFor(video: video, group: group, completion: { infoDict in
+           let latestComment = infoDict[video.id]
+           video.latestMessage = latestComment
+           StorageManager.shared.saveLatestComment(for: video, value: latestComment)
+         })
+       }
+     }
+
+     group.notify(queue: .main) {
+       completion((editedVODs))
+     }
   }
 
-  func fetchInfoFor(lives: [Live], completion: @escaping(([Int: (LatestComment?, pollOn: Bool?, chanOn: Bool?)])->())) {
-    var liveInfo = Dictionary<Int, (LatestComment?, Bool?, Bool?)>()
-    lives.forEach { liveInfo[$0.id] = (nil, nil, nil) }
+
+
+  func setInfoTo(lives: [Live], completion: @escaping(([Live])->())) {
+    var liveInfo = Dictionary<Int, (LatestComment?, Bool, Bool)>()
+    lives.forEach { liveInfo[$0.id] = (nil, false, false) }
     let group = DispatchGroup()
 
     for video in lives {
+      group.enter()
       getLatestMessageFor(video: video, group: group, completion: { infoDict in
         liveInfo[video.id]?.0 = infoDict[video.id]
       })
@@ -54,7 +63,14 @@ class MessageFetcher: FirebaseFetcher {
     }
 
     group.notify(queue: .main) {
-      completion((liveInfo))
+      let editedLives = lives.map { (content) -> Live in
+            var content = content
+            content.latestMessage = liveInfo[content.id]?.0
+            content.isPollOn = liveInfo[content.id]?.1 ?? false
+            content.isChatOn = liveInfo[content.id]?.2 ?? false
+            return content
+          }
+      completion((editedLives))
     }
   }
 
@@ -67,12 +83,13 @@ class MessageFetcher: FirebaseFetcher {
       .order(by: "timestamp", descending: true)
       .limit(to: 1)
 
-    group.enter()
     ref.getDocuments { (snapshot, error) in
       if let json = snapshot?.documents.first?.data(),
         let nickname = json["nickname"] as? String,
         let text = json["text"] as? String {
-        completion([video.id : LatestComment(nickname: nickname, text: text, timestamp: nil)])
+        completion([video.id : LatestComment(nickname: nickname, text: text, timestamp: 0)])
+      } else {
+        completion([:])
       }
       group.leave()
     }

@@ -727,12 +727,9 @@ class PlayerController: UIViewController {
     print("Player DEINITED")
     pollManager?.removeFirObserver()
     Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
-    if videoContent is Live {
-      StorageManager.shared.saveChat(for: videoContent, value: messagesDataSource)
-    } else {
+    if videoContent is VOD {
       StorageManager.shared.saveChat(for: videoContent, value: vodMessages ?? [])
     }
-
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -785,10 +782,10 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
-      bottomContainerLandscapeTop.isActive = !(currentOrientation.isLandscape && isChatEnabled)
-      if isVideoEnd {
-        videoControlsView.isHidden = true
-      }
+//      bottomContainerLandscapeTop.isActive = !(currentOrientation.isLandscape && isChatEnabled)
+//      if isVideoEnd {
+//        videoControlsView.isHidden = true
+//      }
     }
   }
 
@@ -1118,7 +1115,9 @@ class PlayerController: UIViewController {
   private func didEnterBackgroundHandler() {
     player.pause()
     updatePlayButtonImage()
-    isPlayerControlsHidden = false
+    if liveDurationLabel.isHidden, videoContent is Live {
+      isPlayerControlsHidden = true
+    }
     if isAutoplayMode {
       cancelButtonTapped(nil)
     }

@@ -29,7 +29,6 @@ public class StorageManager {
         print("Unexpected error: \(error)")
       }
     })
-
     return container
   }()
 
@@ -60,6 +59,7 @@ public class StorageManager {
   }
 
   private func videoContentMO(for content: VideoContent) -> VideoContentMO {
+    defer { saveContext() }
     let contentMO = VideoContentMO(context: persistentContainer.viewContext)
     contentMO.id = Int64(content.id)
     contentMO.date = content.date
@@ -126,21 +126,15 @@ public extension StorageManager {
     contentToSave.stopTime = value
   }
 
-  func loadLatestComment(for videoContent: VideoContent) -> LatestComment? {
-    return loadVideoContent(content: videoContent).latestMessage
-  }
-
-  func saveLatestComment(for videoContent: VideoContent, value: LatestComment) {
+  func saveLatestComment(for videoContent: VideoContent, value: LatestComment?) {
     defer { saveContext() }
     let contentToSave = loadVideoContent(content: videoContent)
     contentToSave.latestMessage = value
+    contentToSave.latestCommentLoaded = true
   }
 
   func saveChat(for videoContent: VideoContent, value: [Message]) {
-    defer {
-      saveContext()
-      print("hui")
-    }
+    defer { saveContext() }
     let contentToSave = loadVideoContent(content: videoContent)
     let messagesMO = value.map { (message) -> MessageMO in
      let messageMO = MessageMO(context: persistentContainer.viewContext)
