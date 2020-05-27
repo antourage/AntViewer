@@ -451,7 +451,6 @@ class PlayerController: UIViewController {
   
   var videoContent: VideoContent!
   fileprivate var isVideoEnd = false
-  fileprivate var swiftMessage: SwiftMessage?
   fileprivate var isPlayerError = false
   
   fileprivate var messagesDataSource = [Message]()
@@ -482,7 +481,9 @@ class PlayerController: UIViewController {
       setPlayerControlsHidden(isPlayerControlsHidden)
     }
   }
-  
+
+  private lazy var bottomMessage = BottomMessage(presentingController: self)
+
   
   fileprivate var seekTo: Int? {
     didSet {
@@ -527,7 +528,6 @@ class PlayerController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    swiftMessage = SwiftMessage(presentingController: self)
     previousButton.isExclusiveTouch = true
     nextButton.isExclusiveTouch = true
     //FIXME:
@@ -697,7 +697,31 @@ class PlayerController: UIViewController {
       view.endEditing(true)
     }
   }
-  
+
+  func startObservingReachability() {
+    if !isReachable {
+      let color = UIColor.color("a_bottomMessageGray")
+      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+    }
+    NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
+  }
+
+  func stopObservingReachability() {
+    NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: nil)
+    bottomMessage.hideMessage()
+  }
+
+  @objc
+  private func handleReachability(_ notification: Notification) {
+    if isReachable {
+      let color = UIColor.color("a_bottomMessageGreen")
+      bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
+    } else {
+      let color = UIColor.color("a_bottomMessageGray")
+      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+    }
+  }
+
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     adjustVideoControlsButtons()
@@ -706,6 +730,7 @@ class PlayerController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
     UIApplication.shared.isIdleTimerDisabled = true
+    startObservingReachability()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -721,6 +746,7 @@ class PlayerController: UIViewController {
     }
     dataSource.startUpdatingStreams()
     streamTimer?.invalidate()
+    stopObservingReachability()
   }
   
   deinit {
@@ -858,7 +884,11 @@ class PlayerController: UIViewController {
       self?.isPlayerControlsHidden = false
       self?.videoContainerView.removeActivityIndicator()
       self?.isControlsEnabled = true
-      self?.swiftMessage?.showBanner(title: error.description)
+      if self?.isReachable == true {
+        let color = UIColor.color("a_bottomMessageGray") ?? .gray
+        let text = "Something is not right. We are working to get this fixed".uppercased()
+        self?.bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
+      }
       self?.isPlayerError = true
     }
     
