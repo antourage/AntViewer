@@ -838,7 +838,9 @@ class PlayerController: UIViewController {
     
     var seekTo: Double?
     if let vod = videoContent as? VOD {
-      seekTo = Double(vod.stopTime.duration())
+      let alreadyWatchedTime = Double(vod.stopTime.duration())
+      let duration = Double(vod.duration.duration())
+      seekTo =  alreadyWatchedTime/duration >= 0.9 ? 0 : alreadyWatchedTime
     }
     player = Player(url: URL(string:videoContent.url)!, seekTo: seekTo)
     
