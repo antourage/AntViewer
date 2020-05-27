@@ -102,7 +102,7 @@ class StreamListController: UIViewController {
     return player
   }()
 
-  fileprivate let playerDebouncer = Debouncer(delay: 1.2)
+  fileprivate let playerDebouncer = Debouncer(delay: 0.5)
   fileprivate var isLoading = false {
     didSet {
     }
