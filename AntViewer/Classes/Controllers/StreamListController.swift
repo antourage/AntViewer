@@ -164,7 +164,7 @@ class StreamListController: UIViewController {
         print(error)
       }
     }
-    dataSource.lastMessageHandler = MessageFetcher()
+    dataSource.firebaseFetcher = MessageFetcher()
     if dataSource.streams.isEmpty {
       skeleton?.collectionView = collectionView
     }
@@ -262,7 +262,7 @@ class StreamListController: UIViewController {
   }
 
   deinit {
-    dataSource.lastMessageHandler = nil
+    dataSource.firebaseFetcher = nil
   }
 
   func updateFooter() {

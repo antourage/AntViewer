@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 
-  isDebug = true
+  isDebug = false
 
   s.name             = 'AntViewer'
   s.version          = '1.1.22'

@@ -213,10 +213,8 @@ PODS:
     - abseil/base/config
     - abseil/meta/type_traits
   - AntViewer (1.1.22):
-    - AntViewerExt
     - Firebase/Auth
     - Firebase/Firestore
-  - AntViewerExt (1.0.0)
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -363,7 +361,6 @@ PODS:
 
 DEPENDENCIES:
   - AntViewer (from `../`)
-  - AntViewerExt (from `../../AntViewerExt/AntViewerExt/`)
   - Firebase/Core
   - Firebase/Messaging
 
@@ -398,13 +395,10 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   AntViewer:
     :path: "../"
-  AntViewerExt:
-    :path: "../../AntViewerExt/AntViewerExt/"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AntViewer: fff893fea2a53c9f3daae72bdf769622e89bb527
-  AntViewerExt: e991e87b95422a07ddb09396d64160dd05a7fbdf
+  AntViewer: fec44cdf217612ef630bbe1517595159b74b6c63
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: 5719b4f965f76643241a1bb8244483ff6117db39
   FirebaseAnalytics: 93565f3f0f0f50a5d8770850bfe6a82eaba5db27
@@ -430,6 +424,6 @@ SPEC CHECKSUMS:
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
 
-PODFILE CHECKSUM: 1c870e1fc2da2830dcc3bee4ed8ed4eae2e59360
+PODFILE CHECKSUM: 1dfd06a3eb346b5239cda10c551b970404f57ca4
 
 COCOAPODS: 1.8.4
