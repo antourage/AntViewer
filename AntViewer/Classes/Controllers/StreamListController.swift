@@ -313,10 +313,10 @@ class StreamListController: UIViewController {
         self.isLoading = false
       case .failure(let error):
         print(error)
-        if !error.noInternetConnection && self.hiddenAuthCompleted {
+        if !error.noInternetConnection /*&& self.hiddenAuthCompleted*/ {
           self.showErrorMessage(autohide: false)
+          self.skeleton?.setError()
         }
-        self.skeleton?.setError()
       }
     }
   }
@@ -414,7 +414,7 @@ class StreamListController: UIViewController {
             self?.collectionView.reloadSections(IndexSet(arrayLiteral: 0, 1))
 
         case .failure(let error):
-          if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
+          if !error.noInternetConnection /*&& self?.hiddenAuthCompleted == true*/ {
             if self?.isReachable == true {
               self?.showErrorMessage(autohide: false)
               self?.skeleton?.setError()
