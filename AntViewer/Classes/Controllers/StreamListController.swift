@@ -303,6 +303,7 @@ class StreamListController: UIViewController {
       guard let `self` = self else { return }
       switch result {
       case .success:
+        self.bottomMessage.hideMessage()
         self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
         self.collectionView.performBatchUpdates(nil) { (result) in
