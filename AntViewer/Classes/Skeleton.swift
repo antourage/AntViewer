@@ -124,7 +124,7 @@ class Skeleton: NSObject {
       startLoading()
     } else {
       state = .noConnection
-      animator?.stop(immediately: false)
+//      animator?.stop(immediately: false)
       cell?.iconImageView.image = UIImage.image("SkeletonNoConnection")
       collectionView?.isUserInteractionEnabled = true
     }
@@ -146,7 +146,7 @@ class Skeleton: NSObject {
   }
 
   func setError() {
-    animator?.stop(immediately: false)
+//    animator?.stop(immediately: false)
     cell?.iconImageView.image = UIImage.image("SkeletonError")
     collectionView?.isUserInteractionEnabled = true
     state = .onError
