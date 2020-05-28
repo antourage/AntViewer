@@ -374,8 +374,9 @@ class StreamListController: UIViewController {
       collectionView.performBatchUpdates({
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
-        collectionView.reloadItems(at: addedPaths)
-      }, completion: nil)
+      }, completion: { _ in
+        self.collectionView.reloadItems(at: addedPaths)
+      })
 
       if addedCount > 0, newLivesButton.isHidden {
         let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0

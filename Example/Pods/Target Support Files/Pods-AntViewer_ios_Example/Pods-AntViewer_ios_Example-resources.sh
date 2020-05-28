@@ -97,6 +97,7 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/ChatViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
@@ -118,6 +119,7 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/ChatViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"

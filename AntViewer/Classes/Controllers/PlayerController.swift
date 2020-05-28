@@ -53,35 +53,17 @@ class PlayerController: UIViewController {
     gradient.locations = [0, 0.33, 0.44, 1]
     return gradient
   }()
-  var shouldScrollPortraitTable = false {
-    didSet {
-      if shouldScrollPortraitTable {
-        alreadyWatchedMessage = messagesDataSource.count
-      }
-    }
-  }
   //MARK:  -
 
-  @IBOutlet weak var portraitTableView: UITableView! {
-    didSet {
-      setupChatTableView(portraitTableView)
-      let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleHideKeyboardGesture(_:)))
-      portraitTableView.addGestureRecognizer(tapGesture)
-    }
-  }
-  
-  @IBOutlet weak var landscapeTableViewContainer: UIView! {
-    didSet {
-      chatGradientLayer.frame = landscapeTableViewContainer.bounds
-      landscapeTableViewContainer.layer.mask = chatGradientLayer
-    }
-  }
-  @IBOutlet weak var landscapeTableViewContainerLeading: NSLayoutConstraint!
-  @IBOutlet weak var landscapeTableView: UITableView! {
-    didSet {
-      setupChatTableView(landscapeTableView)
-    }
-  }
+  //MARK: - new chat flow
+  @IBOutlet var chatContainerView: UIView!
+  @IBOutlet var chatContainerViewLandscapeLeading: NSLayoutConstraint!
+  lazy var chatController: ChatViewController = {
+    let vc = ChatViewController(nibName: "ChatViewController", bundle: Bundle(for: type(of: self)))
+    vc.videoContent = videoContent
+    return vc
+  }()
+  //MARK: -
   @IBOutlet weak var sendButton: UIButton!
   @IBOutlet weak var videoContainerView: AVPlayerView! {
     didSet {
@@ -204,18 +186,6 @@ class PlayerController: UIViewController {
   private var isFirstTimeBanerShown = true
   //MARK: -
 
-  //MARK: - chat tip staff
-  @IBOutlet private var chatTipView: UIView!
-  @IBOutlet private var chatTipLabel: UILabel!
-  @IBOutlet private var chatTipIcon: UIImageView!
-  var alreadyWatchedMessage = 0 {
-    didSet {
-      updateChatTipView(newMessagesCount: messagesDataSource.count-alreadyWatchedMessage)
-    }
-  }
-  var shouldUpdateIndexPath = true
-  //MARK: -
-
   //MARK: - player header staff
   @IBOutlet private var circleImageView: UIImageView! {
     didSet {
@@ -289,7 +259,6 @@ class PlayerController: UIViewController {
             bottomContainerLeading.constant = leading
           }
           bottomContainerView.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
-          landscapeTableViewContainer.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
           if !isBottomContainerHidedByUser {
             bottomContainerLandscapeTop.isActive = !isChatEnabled
             isChatEnabled ? bottomContainerView.layer.insertSublayer(bottomContainerGradientLayer, at: 0) :
@@ -299,7 +268,6 @@ class PlayerController: UIViewController {
             chatTextView.resignFirstResponder()
             bottomContainerGradientLayer.removeFromSuperlayer()
           }
-          currentTableView.frame.origin = CGPoint(x: !isBottomContainerHidedByUser ? 0 : -self.currentTableView.frame.width, y: 0)
           liveToLandscapeInfoTop.isActive = !videoControlsView.isHidden
           if videoContent is Live {
             landscapeSeekSlider.removeFromSuperview()
@@ -307,12 +275,10 @@ class PlayerController: UIViewController {
         } else {
           liveLabel.alpha = 1
           viewersCountView.alpha = 1
-          shouldUpdateIndexPath = true
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
           bottomContainerView.isHidden = false
           bottomContainerGradientLayer.removeFromSuperlayer()
-          alreadyWatchedMessage += 0
         }
         updatePollBannerVisibility()
         if isAutoplayMode {
@@ -321,8 +287,6 @@ class PlayerController: UIViewController {
         if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
           expandPollBanner(enableAutoHide: false)
         }
-        self.updateContentInsetForTableView(self.currentTableView)
-        shouldUpdateIndexPath = true
       }
     }
   }
@@ -364,7 +328,6 @@ class PlayerController: UIViewController {
         self.collapsePollBanner()
         updatePollBannerVisibility()
         self.pollBannerIcon.hideBadge()
-        self.updateContentInsetForTableView(self.portraitTableView)
         return
       }
 
@@ -422,10 +385,10 @@ class PlayerController: UIViewController {
   private var chat: Chat? {
     didSet {
       chat?.onAdd = { [weak self] message in
-        self?.videoContent is VOD ? self?.vodMessages?.append(message) : self?.insertMessage(message)
+        self?.videoContent is VOD ? self?.chatController.vodMessages.append(message) : self?.chatController.insertMessage(message)
       }
       chat?.onRemove = { [weak self] message in
-        self?.removeMessage(message)
+        self?.chatController.deleteMessage(message)
       }
       chat?.onStateChange = { [weak self] isActive in
         if self?.videoContent is Live {
@@ -438,13 +401,9 @@ class PlayerController: UIViewController {
           self?.isChatEnabled = false
         }
       }
+
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-        if self?.messagesDataSource.isEmpty == false {
-          let lastIndexPath = IndexPath(row: self!.messagesDataSource.count - 1, section: 0)
-          if lastIndexPath.row >= 0 {
-            self?.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-          }
-        }
+        self?.chatController.scrollToBottom()
       }
     }
   }
@@ -453,11 +412,8 @@ class PlayerController: UIViewController {
   fileprivate var isVideoEnd = false
   fileprivate var isPlayerError = false
   
-  fileprivate var messagesDataSource = [Message]()
   fileprivate var pollController: PollController?
-  fileprivate var currentTableView: UITableView {
-    return OrientationUtility.isPortrait ? portraitTableView : landscapeTableView
-  }
+
   
   fileprivate var isControlsEnabled = false
   fileprivate var controlsDebouncer = Debouncer(delay: 1.2)
@@ -498,11 +454,8 @@ class PlayerController: UIViewController {
           }
           
         })
-        handleVODsChat(forTime: time)
-        if messagesDataSource.count > 0 {
-          currentTableView.scrollToRow(at: IndexPath(row: messagesDataSource.count - 1, section: 0), at: .bottom, animated: true)
-          alreadyWatchedMessage = messagesDataSource.count
-        }
+        chatController.handleVODsChat(forTime: time)
+        chatController.scrollToBottom()
         controlsDebouncer.call { [weak self] in
           if self?.player.isPlayerPaused == false {
             if OrientationUtility.isLandscape && self?.seekTo != nil {
@@ -579,32 +532,10 @@ class PlayerController: UIViewController {
       self.startPlayer()
     }
     self.adjustHeightForTextView(self.chatTextView)
-  }
 
-  func updateChatTipView(isNewUser: Bool = false, newMessagesCount: Int = 0) {
-    chatTipIcon.isHidden = false
-    chatTipView.isHidden = false
-    chatTipView.isUserInteractionEnabled = false
-    switch (isNewUser, newMessagesCount) {
-    case (false, let count) where count >= 1:
-      chatTipLabel.text = String(format: "%d NEW COMMENTS", count)
-      chatTipView.isUserInteractionEnabled = true
-    case (false, let count) where count < 1:
-      chatTipView.isHidden = true
-      chatTipView.isUserInteractionEnabled = false
-    case (true, _):
-      chatTipIcon.isHidden = true
-      if messagesDataSource.isEmpty, let displayName = User.current?.displayName {
-        let attributedString = NSMutableAttributedString()
-        let displayName = NSAttributedString(string: displayName, attributes: [.font: UIFont.systemFont(ofSize: 9, weight: .bold)])
-        attributedString.append(displayName)
-        let joinedString = NSAttributedString(string: " JOINED", attributes: [.font: UIFont.systemFont(ofSize: 9, weight: .regular)])
-        attributedString.append(joinedString)
-        chatTipLabel.attributedText = attributedString
-      }
-    default:
-      break
-    }
+    addChild(chatController)
+    chatController.view.fixInView(chatContainerView)
+    chatController.didMove(toParent: self)
   }
 
   func collapsePollBanner(animated: Bool = true) {
@@ -689,15 +620,6 @@ class PlayerController: UIViewController {
     imageView.layer.masksToBounds = true
   }
 
-  @objc
-  func handleTouches(sender: UITapGestureRecognizer) {
-    let point = sender.location(in: view)
-    let isTouchOnTableView = portraitTableView.frame.contains(point)
-    if isTouchOnTableView {
-      view.endEditing(true)
-    }
-  }
-
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
@@ -725,7 +647,7 @@ class PlayerController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     adjustVideoControlsButtons()
-    landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
+//    landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -736,7 +658,7 @@ class PlayerController: UIViewController {
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
     NotificationCenter.default.removeObserver(self)
-    landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
+//    landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
     if let vod = videoContent as? VOD {
@@ -753,34 +675,14 @@ class PlayerController: UIViewController {
     print("Player DEINITED")
     pollManager?.removeFirObserver()
     Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
-    if videoContent is VOD {
-      StorageManager.shared.saveChat(for: videoContent, value: vodMessages ?? [])
-    }
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
-    shouldUpdateIndexPath = false
-    chatTextView.resignFirstResponder()
-    chatTextView.text.removeAll()
-    collapseChatTextView()
-    if size.width > size.height {
-      self.landscapeTableView.reloadData()
-    } else {
-      self.portraitTableView.reloadData()
-    }
     if videoContent is VOD {
       bottomContainerPortraitTop.isActive = true
       bottomContainerView.isHidden = true
       view.layoutIfNeeded()
-    }
-    var lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-      lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
-      if lastIndexPath.row >= 0 {
-        self.landscapeTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-      }
-      self.updateContentInsetForTableView(self.currentTableView)
     }
   }
 
@@ -791,16 +693,15 @@ class PlayerController: UIViewController {
     }
     userImageView.layer.cornerRadius = userImageView.bounds.width/2
     landscapeUserImageView.layer.cornerRadius = landscapeUserImageView.bounds.width/2
-    updateContentInsetForTableView(currentTableView)
   }
   
   override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-    if (keyPath == #keyPath(UIView.bounds)) {
-      if let tableViewContainerBounds = landscapeTableView.superview?.bounds {
-        chatGradientLayer.frame = tableViewContainerBounds
-      }
-      return
-    }
+//    if (keyPath == #keyPath(UIView.bounds)) {
+//      if let tableViewContainerBounds = landscapeTableView.superview?.bounds {
+//        chatGradientLayer.frame = tableViewContainerBounds
+//      }
+//      return
+//    }
     super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
   }
 
@@ -808,29 +709,6 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
-//      bottomContainerLandscapeTop.isActive = !(currentOrientation.isLandscape && isChatEnabled)
-//      if isVideoEnd {
-//        videoControlsView.isHidden = true
-//      }
-    }
-  }
-
-
-  private func handleVODsChat(forTime time: Int) {
-    let messagesAfterStream = isVideoEnd ? 600 : 0
-    let countDown = 5
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time + messagesAfterStream + countDown
-    guard let vodMessages = self.vodMessages else { return }
-    let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
-    let dif = filteredArr.count - messagesDataSource.count
-    guard dif != 0 else { return }
-    var difArr: [Message]
-    difArr =  dif > 0 ?
-      filteredArr.filter { mes in !messagesDataSource.contains(where: { $0.key == mes.key })} :
-      messagesDataSource.filter { mes in !filteredArr.contains(where: { $0.key == mes.key })}
-    
-    difArr.forEach { (message) in
-      dif > 0 ? self.insertMessage(message) : self.removeMessage(message)
     }
   }
   
@@ -860,7 +738,7 @@ class PlayerController: UIViewController {
       
       if let vod = self.videoContent as? VOD {
         vod.stopTime = Int(time.seconds).durationString()
-        self.handleVODsChat(forTime: Int(time.seconds))
+        self.chatController.handleVODsChat(forTime: Int(time.seconds))
         //temp: needs refactoring
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())
         if self.seekTo == nil, self.player.player.rate == 1 {
@@ -1028,43 +906,6 @@ class PlayerController: UIViewController {
       }
     }
   }
-  
-  private func insertMessage(_ message: Message) {
-    messagesDataSource.append(message)
-    let shouldScroll = currentTableView.contentOffset.y >= currentTableView.contentSize.height - currentTableView.frame.size.height - 20
-    let indexPath = IndexPath(row: messagesDataSource.count - 1, section: 0)
-    currentTableView.beginUpdates()
-    currentTableView.insertRows(at: [indexPath], with: .none)
-    currentTableView.endUpdates()
-    updateContentInsetForTableView(currentTableView)
-    currentTableView.layoutIfNeeded()
-    if shouldScroll {
-      alreadyWatchedMessage = messagesDataSource.count
-      UIView.animate(withDuration: 0.3) {
-        self.currentTableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-      }
-    }
-    if portraitTableView.contentSize.height > portraitTableView.bounds.height {
-      alreadyWatchedMessage = messagesDataSource.count
-    }
-    updateChatTipView(newMessagesCount: messagesDataSource.count-alreadyWatchedMessage)
-  }
-  
-  private func removeMessage(_ message: Message) {
-    if let index = messagesDataSource.firstIndex(where: {$0.key == message.key}) {
-      self.messagesDataSource.remove(at: index)
-      if alreadyWatchedMessage > messagesDataSource.count {
-        alreadyWatchedMessage = messagesDataSource.count
-      }
-      let indexPath = IndexPath(row: index, section: 0)
-      UIView.setAnimationsEnabled(false)
-      currentTableView.beginUpdates()
-      currentTableView.deleteRows(at: [indexPath], with: .none)
-      currentTableView.endUpdates()
-      updateContentInsetForTableView(currentTableView)
-      UIView.setAnimationsEnabled(true)
-    }
-  }
 
   private func updateBottomContainerGradientFrame() {
     let topExtra: CGFloat = 35
@@ -1094,43 +935,6 @@ class PlayerController: UIViewController {
     default:
       break
     }
-  }
-  
-  private func updateContentInsetForTableView(_ table: UITableView) {
-    let numRows = tableView(table, numberOfRowsInSection: 0)
-    var contentInsetHeight = table.bounds.size.height
-    guard table.contentSize.height <= contentInsetHeight else {
-      table.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-      if currentTableView == portraitTableView, shouldScrollPortraitTable {
-        let lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
-        if lastIndexPath.row >= 0 {
-          self.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-          shouldScrollPortraitTable = false
-        }
-      }
-      return
-    }
-    for i in 0..<numRows {
-      let rowRect = table.rectForRow(at: IndexPath(item: i, section: 0))
-      contentInsetHeight -= rowRect.size.height
-      if contentInsetHeight <= 0 {
-        contentInsetHeight = 0
-      }
-    }
-    UIView.animate(
-      withDuration: 0.3,
-      delay: 0,
-      options: [.curveEaseOut, .beginFromCurrentState],
-      animations: {
-        table.contentInset = UIEdgeInsets(top: contentInsetHeight, left: 0, bottom: 0, right: 0)
-    },
-      completion: nil)
-  }
-
-  @IBAction func chatTipPressed(_ sender: UITapGestureRecognizer) {
-    let lastIndexPath = IndexPath(row: messagesDataSource.count-1, section: 0)
-    currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-    alreadyWatchedMessage = messagesDataSource.count
   }
 
   @IBAction func fullScreenButtonPressed(_ sender: UIButton) {
@@ -1204,8 +1008,8 @@ class PlayerController: UIViewController {
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
     guard !isAutoplayMode else { return }
-    let buttons: [UIButton] = [cancelButton, playButton] + fullScreenButtons
-    let onButtons = buttons.map { $0.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
+    let views: [UIView] = [cancelButton, playButton] + fullScreenButtons
+    let onButtons = views.map { $0.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
     guard isControlsEnabled else { return }
     if isKeyboardShown {
       chatTextView.endEditing(true)
@@ -1255,7 +1059,7 @@ class PlayerController: UIViewController {
       self.updateSeekThumbAppearance(isHidden: isHidden)
       if OrientationUtility.isLandscape {
         self.liveToLandscapeInfoTop.isActive = !isHidden
-        self.landscapeTableViewContainer.isHidden = !isHidden
+        self.chatContainerView.isHidden = !isHidden
         self.bottomContainerView.isHidden = !isHidden
         self.updatePollBannerVisibility()
         self.view.layoutIfNeeded()
@@ -1268,7 +1072,7 @@ class PlayerController: UIViewController {
             return
           }
           if OrientationUtility.isLandscape {
-            self.landscapeTableViewContainer.isHidden = !self.pollContainerView.isHidden
+            self.chatContainerView.isHidden = !self.pollContainerView.isHidden
             self.bottomContainerView.isHidden = !self.pollContainerView.isHidden
             self.liveToLandscapeInfoTop.isActive = false
             self.view.layoutIfNeeded()
@@ -1343,10 +1147,7 @@ class PlayerController: UIViewController {
     self.chat?.send(message: message) { (error) in
       if error == nil {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3, execute: {
-          let lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
-          if lastIndexPath.row >= 0 {
-            self.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-          }
+          self.chatController.scrollToBottom()
         })
       }
       sender.isEnabled = true
@@ -1422,21 +1223,17 @@ class PlayerController: UIViewController {
     switch sender.direction {
     case .right:
       isRightDirection = true
-    case .left:
-      chatFieldLeading = -currentTableView.frame.width
-      
     default:
-      return
+      break
     }
     if videoContent is Live, isChatEnabled {
       isBottomContainerHidedByUser = !isRightDirection
       bottomContainerLandscapeTop.isActive = !isRightDirection
     }
+
+    chatContainerViewLandscapeLeading.constant = isRightDirection ? 16 : chatContainerView.bounds.width+16
     view.endEditing(false)
-    UIView.animate(withDuration: 0.3) {
-      self.view.layoutIfNeeded()
-      self.currentTableView.frame.origin = CGPoint(x: isRightDirection ? 0 : -self.currentTableView.frame.width, y: 0)
-    }
+    UIView.animate(withDuration: 0.3) { self.view.layoutIfNeeded() }
   }
 
   @IBAction func openPollBannerPressed(_ sender: Any) {
@@ -1453,13 +1250,12 @@ class PlayerController: UIViewController {
     pollController.didMove(toParent: self)
     pollController.delegate = self
     pollContainerView.isHidden = false
-    portraitTableView.isHidden = true
+    chatContainerView.isHidden = true
     pollBannerIcon.hideBadge()
     collapsePollBanner(animated: false)
     shouldShowPollBadge = true
     shouldShowExpandedBanner = false
     bottomContainerView.isHidden = true
-    landscapeTableViewContainer.isHidden = true
   }
 
   
@@ -1477,16 +1273,6 @@ class PlayerController: UIViewController {
     player.stop()
     navController.pushViewController(playerVC, withPopAnimation: sender == previousButton)
     
-  }
-  
-  private func setupChatTableView(_ sender: UITableView) {
-    let  cellNib = UINib.init(nibName: "PortraitMessageCell", bundle: Bundle(for: type(of: self)))
-    let reuseIdentifire = "portraitCell"
-    sender.register(cellNib, forCellReuseIdentifier: reuseIdentifire)
-    sender.estimatedRowHeight = 50
-    sender.estimatedSectionHeaderHeight = 0
-    sender.estimatedSectionFooterHeight = 0
-    sender.rowHeight = UITableView.automaticDimension
   }
 }
 
@@ -1536,11 +1322,8 @@ extension PlayerController {
     adjustHeightForTextView(chatTextView)
     UIView.animate(withDuration: animationDuration, delay: 0, options: [.beginFromCurrentState, animationCurve], animations: {
       self.view.layoutIfNeeded()
-      self.updateContentInsetForTableView(self.currentTableView)
-    }, completion: { value in
-      self.currentTableView.beginUpdates()
-      self.currentTableView.endUpdates()
-    })
+      self.chatController.updateContentInsetForTableView()
+    }, completion: nil)
   }
 }
 
@@ -1561,11 +1344,7 @@ extension PlayerController: UITextViewDelegate {
   }
 
   func textViewDidBeginEditing(_ textView: UITextView) {
-    shouldScrollPortraitTable = true
-    let lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
-    if lastIndexPath.row >= 0 {
-      self.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-    }
+    chatController.scrollToBottom()
   }
 
   func textViewDidEndEditing(_ textView: UITextView) {
@@ -1586,32 +1365,6 @@ extension PlayerController: UITextViewDelegate {
   
 }
 
-extension PlayerController: UITableViewDataSource, UITableViewDelegate {
-  
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return messagesDataSource.count
-  }
-  
-  public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "portraitCell", for: indexPath) as! PortraitMessageCell
-    let message = messagesDataSource[indexPath.row]
-    let isCurrentUser = Int(message.userID) == User.current?.id
-    cell.messageLabel.text = message.text
-    let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
-    let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
-    var diff = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
-    // countdown
-    diff = diff-5 > 0 ? diff-5 : diff
-    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, diff.durationString())
-    return cell
-  }
-
-  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    guard tableView == portraitTableView, shouldUpdateIndexPath, tableView.contentSize.height > tableView.bounds.height else { return }
-    alreadyWatchedMessage = max(indexPath.row+1, alreadyWatchedMessage)
-  }
-}
-
 
 extension PlayerController: PollControllerDelegate {
   
@@ -1621,13 +1374,14 @@ extension PlayerController: PollControllerDelegate {
     pollController?.removeFromParent()
     pollController = nil
     pollContainerView.isHidden = true
-    portraitTableView.isHidden = false
+    chatContainerView.isHidden = false
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
     bottomContainerView.isHidden = false
-    landscapeTableViewContainer.isHidden = false
+    chatContainerView.isHidden = false
     shouldEnableMessageTextFields(true)
   }
 }
+
 
 extension PlayerController: EditProfileControllerDelegate {
   func editProfileLoaded() {
@@ -1636,7 +1390,7 @@ extension PlayerController: EditProfileControllerDelegate {
   
   func editProfileCloseButtonPressed(withChanges: Bool) {
     if withChanges {
-      currentTableView.reloadData()
+      chatController.reloadData()
     }
     dismissEditProfileView()
   }

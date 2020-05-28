@@ -136,6 +136,7 @@ public extension StorageManager {
   func saveChat(for videoContent: VideoContent, value: [Message]) {
     defer { saveContext() }
     let contentToSave = loadVideoContent(content: videoContent)
+    guard !contentToSave.chatLoaded else { return }
     let messagesMO = value.map { (message) -> MessageMO in
      let messageMO = MessageMO(context: persistentContainer.viewContext)
       messageMO.nickname = message.nickname
