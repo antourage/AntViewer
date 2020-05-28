@@ -138,7 +138,7 @@ class Skeleton: NSObject {
     state = .loading
     collectionView?.isUserInteractionEnabled = false
     cell?.iconImageView.image = UIImage.image("SkeletonPlaceholder")
-    cell?.loaderImageView.image = UIImage.image("SkeletonLoader")
+    cell?.loaderImageView.image = UIImage.image("PlaceholderIconLoad")
     if animator?.isActive == false {
       animator?.animate(repeatCount: .infinity)
     }
