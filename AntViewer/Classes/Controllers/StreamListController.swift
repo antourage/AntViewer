@@ -188,10 +188,15 @@ class StreamListController: UIViewController {
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
       guard let addedCount = notification.userInfo?["addedCount"] as? Int,
-      let deleted = notification.userInfo?["deleted"] as? [Int] else { return }
+      let deleted = notification.userInfo?["deleted"] as? [Int],
+      let hasChanges = notification.userInfo?["updated"] as? Bool, hasChanges else {
+        self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+        return
+      }
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
       self?.collectionView.collectionViewLayout.invalidateLayout()
+      self?.bottomMessage.hideMessage()
     }
 
     collectionView.alwaysBounceVertical = true
@@ -310,8 +315,8 @@ class StreamListController: UIViewController {
         print(error)
         if !error.noInternetConnection && self.hiddenAuthCompleted {
           self.showErrorMessage(autohide: false)
-          self.skeleton?.setError()
         }
+        self.skeleton?.setError()
       }
     }
   }
@@ -410,9 +415,9 @@ class StreamListController: UIViewController {
 
         case .failure(let error):
           if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
-            self?.skeleton?.setError()
             if self?.isReachable == true {
               self?.showErrorMessage(autohide: false)
+              self?.skeleton?.setError()
             }
           }
         }

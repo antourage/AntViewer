@@ -212,10 +212,8 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     cell.messageLabel.text = message.text
     let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
     let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
-    var diff = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
-    // countdown
-    diff = diff-5 > 0 ? diff-5 : diff
-    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, diff.durationString())
+    let time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
+    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, time.durationString())
     return cell
   }
 

@@ -11,11 +11,11 @@ import AntViewerExt
 
 protocol SkeletonDelegate {
   func skeletonWillHide(_ skeleton: Skeleton)
-//  func skeletonOnTimeout(_ skeleton: Skeleton)
 }
 
 class Skeleton: NSObject {
 
+  
   var delegate: SkeletonDelegate?
   var collectionView: UICollectionView? {
     didSet {
@@ -150,6 +150,7 @@ class Skeleton: NSObject {
     cell?.iconImageView.image = UIImage.image("SkeletonError")
     collectionView?.isUserInteractionEnabled = true
     state = .onError
+    setEmptyDataSourseViewVisible(visible: false)
   }
 
   private func setEmptyDataSourseViewVisible(visible: Bool) {
@@ -161,7 +162,6 @@ class Skeleton: NSObject {
   deinit {
     print("Skeleton: DEINITED")
   }
-
 }
 
 extension Skeleton: UICollectionViewDelegate, UICollectionViewDataSource {
