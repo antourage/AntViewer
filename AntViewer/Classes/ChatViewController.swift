@@ -24,6 +24,8 @@ class ChatViewController: UIViewController {
     }
   }
 
+  var onTableViewTapped: (()->())?
+
   private var shouldUpdateIndexPath = true
   private var chatGradientLayer: CAGradientLayer = {
     let gradient = CAGradientLayer()
@@ -52,9 +54,14 @@ class ChatViewController: UIViewController {
       chatGradientLayer.removeFromSuperlayer()
     }
     shouldUpdateIndexPath = false
+
+    let lastVisibleIndexPath = tableView.indexPathsForVisibleRows?.sorted().last
+
     DispatchQueue.main.asyncAfter(deadline: .now()+0.1) {
       self.updateContentInsetForTableView(false)
       self.shouldUpdateIndexPath = true
+      guard let indexPath = lastVisibleIndexPath else { return }
+      self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
     }
   }
 
@@ -74,6 +81,10 @@ class ChatViewController: UIViewController {
     let latestIndex = messagesDataSource.count - 1
     tableView.scrollToRow(at: IndexPath(row: latestIndex, section: 0), at: .bottom, animated: false)
     alreadyWatchedMessage = messagesDataSource.count
+  }
+
+  @IBAction func handleTableViewTapped(_ sender: UITapGestureRecognizer) {
+    onTableViewTapped?()
   }
 
   func insertMessage(_ message: Message) {

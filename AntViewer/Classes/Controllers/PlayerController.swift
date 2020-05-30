@@ -61,6 +61,9 @@ class PlayerController: UIViewController {
   lazy var chatController: ChatViewController = {
     let vc = ChatViewController(nibName: "ChatViewController", bundle: Bundle(for: type(of: self)))
     vc.videoContent = videoContent
+    vc.onTableViewTapped = { [weak self] in
+      self?.view.endEditing(false)
+    }
     return vc
   }()
   //MARK: -
@@ -242,8 +245,6 @@ class PlayerController: UIViewController {
       if currentOrientation != oldValue {
         if videoContent is VOD {
           seekTo = nil
-          bottomContainerPortraitTop.isActive = true
-          bottomContainerView.isHidden = true
         }
         adjustHeightForTextView(chatTextView)
         if OrientationUtility.isLandscape {
@@ -258,15 +259,8 @@ class PlayerController: UIViewController {
             bottomContainerTrailing.constant = trailing
             bottomContainerLeading.constant = leading
           }
-          bottomContainerView.isHidden = !(videoControlsView.isHidden && pollContainerView.isHidden)
-          if !isBottomContainerHidedByUser {
-            bottomContainerLandscapeTop.isActive = !isChatEnabled
-            isChatEnabled ? bottomContainerView.layer.insertSublayer(bottomContainerGradientLayer, at: 0) :
-                            bottomContainerGradientLayer.removeFromSuperlayer()
-          } else {
-            bottomContainerLandscapeTop.isActive = true
+          if isBottomContainerHidedByUser {
             chatTextView.resignFirstResponder()
-            bottomContainerGradientLayer.removeFromSuperlayer()
           }
           liveToLandscapeInfoTop.isActive = !videoControlsView.isHidden
           if videoContent is Live {
@@ -277,8 +271,6 @@ class PlayerController: UIViewController {
           viewersCountView.alpha = 1
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
-          bottomContainerView.isHidden = false
-          bottomContainerGradientLayer.removeFromSuperlayer()
         }
         updatePollBannerVisibility()
         if isAutoplayMode {
@@ -287,6 +279,9 @@ class PlayerController: UIViewController {
         if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
           expandPollBanner(enableAutoHide: false)
         }
+        chatController.updateContentInsetForTableView()
+        updateChatVisibility()
+        updateBottomContainerVisibility()
       }
     }
   }
@@ -369,9 +364,7 @@ class PlayerController: UIViewController {
       sendButton.isEnabled = isChatEnabled
       chatTextView.isEditable = isChatEnabled
       chatTextView.placeholder = isChatEnabled ? "Chat" : "Chat disabled"
-      if currentOrientation.isLandscape {
-         bottomContainerLandscapeTop.isActive = !isChatEnabled
-      }
+      updateBottomContainerVisibility()
       let alpha: CGFloat = isChatEnabled ? 0.6 : 0.2
       chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(alpha).cgColor
       chatTextView.placeholderTextColor = isChatEnabled ? .cellGray : .bottomMessageGray
@@ -518,8 +511,7 @@ class PlayerController: UIViewController {
           })
 
         } else {
-         self.bottomContainerPortraitTop.isActive = true
-         self.bottomContainerView.isHidden = true
+         self.updateBottomContainerVisibility()
         }
     
     DispatchQueue.main.async { [weak self] in
@@ -587,6 +579,52 @@ class PlayerController: UIViewController {
       self.view.layoutIfNeeded()
     }
   }
+
+  private func updateChatVisibility() {
+    if videoContent is Live {
+      guard !isVideoEnd else {
+        chatContainerView.isHidden = currentOrientation.isLandscape
+        return
+      }
+      if currentOrientation.isLandscape {
+        chatContainerView.isHidden = !videoControlsView.isHidden || !pollContainerView.isHidden
+        return
+      }
+    } else {
+      if currentOrientation.isLandscape {
+        chatContainerView.isHidden = !videoControlsView.isHidden || isAutoplayMode
+        return
+      }
+    }
+    chatContainerView.isHidden = false
+  }
+
+  private func updateBottomContainerVisibility(animated: Bool = false) {
+    defer {
+      UIView.animate(withDuration: animated ? 0.3 : 0) {
+        self.view.layoutIfNeeded()
+      }
+    }
+    if videoContent is Live {
+      guard !isVideoEnd else {
+        bottomContainerView.isHidden = currentOrientation.isLandscape
+        return
+      }
+      if currentOrientation.isLandscape {
+        bottomContainerView.isHidden = !videoControlsView.isHidden || !pollContainerView.isHidden
+        bottomContainerLandscapeTop.isActive = isBottomContainerHidedByUser
+        bottomContainerGradientLayer.removeFromSuperlayer()
+        bottomContainerView.layer.insertSublayer(bottomContainerGradientLayer, at: 0)
+        return
+      }
+    } else {
+      bottomContainerView.isHidden = true
+      bottomContainerPortraitTop.isActive = true
+      bottomContainerLandscapeTop.isActive = true
+    }
+    bottomContainerGradientLayer.removeFromSuperlayer()
+  }
+
 
   func updateContentTimeAgo() {
     guard videoContent.date <= Date() else {
@@ -680,9 +718,7 @@ class PlayerController: UIViewController {
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
     super.viewWillTransition(to: size, with: coordinator)
     if videoContent is VOD {
-      bottomContainerPortraitTop.isActive = true
-      bottomContainerView.isHidden = true
-      view.layoutIfNeeded()
+      updateBottomContainerVisibility()
     }
   }
 
@@ -774,17 +810,18 @@ class PlayerController: UIViewController {
     
     player.onVideoEnd = { [weak self] in
       self?.playButton.setImage(UIImage.image("Play"), for: .normal)
+      self?.isVideoEnd = true
       if self?.videoContent is VOD {
         self?.isSeekByTappingMode = false
         self?.seekByTapDebouncer.call {}
         self?.seekPaddingView = nil
-        self?.isVideoEnd = true
         self?.isPlayerControlsHidden = false
         self?.startAutoplayNexItem()
       } else {
         //MARK: set thanks image
         self?.setThanksImage()
         self?.isChatEnabled = false
+        self?.updateChatVisibility()
         self?.editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
         self?.editProfileButton.tintColor = UIColor.white.withAlphaComponent(0.2)
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
@@ -822,7 +859,7 @@ class PlayerController: UIViewController {
         self.liveDurationLabel.text = self.seekLabel.text
         self.liveDurationLabel.isHidden = false
         self.videoContainerView.image = newImage
-        self.videoContainerView.isUserInteractionEnabled = false
+        self.videoContainerView.isUserInteractionEnabled = true
       }
     }
   }
@@ -951,7 +988,7 @@ class PlayerController: UIViewController {
   private func didEnterBackgroundHandler() {
     player.pause()
     updatePlayButtonImage()
-    if liveDurationLabel.isHidden, videoContent is Live {
+    if !liveDurationLabel.isHidden, videoContent is Live {
       isPlayerControlsHidden = true
     }
     if isAutoplayMode {
@@ -1059,11 +1096,11 @@ class PlayerController: UIViewController {
       self.updateSeekThumbAppearance(isHidden: isHidden)
       if OrientationUtility.isLandscape {
         self.liveToLandscapeInfoTop.isActive = !isHidden
-        self.chatContainerView.isHidden = !isHidden
-        self.bottomContainerView.isHidden = !isHidden
         self.updatePollBannerVisibility()
         self.view.layoutIfNeeded()
       }
+      self.updateChatVisibility()
+      self.updateBottomContainerVisibility()
       self.controlsDebouncer.call { [weak self] in
         guard let `self` = self else { return }
         //MARK: auto hide player controls
@@ -1072,14 +1109,14 @@ class PlayerController: UIViewController {
             return
           }
           if OrientationUtility.isLandscape {
-            self.chatContainerView.isHidden = !self.pollContainerView.isHidden
-            self.bottomContainerView.isHidden = !self.pollContainerView.isHidden
             self.liveToLandscapeInfoTop.isActive = false
             self.view.layoutIfNeeded()
           }
           self.updateSeekThumbAppearance(isHidden: true)
           self.videoControlsView.isHidden = true
           self.updatePollBannerVisibility()
+          self.updateChatVisibility()
+          self.updateBottomContainerVisibility()
         }
       }
     }
@@ -1226,14 +1263,16 @@ class PlayerController: UIViewController {
     default:
       break
     }
-    if videoContent is Live, isChatEnabled {
+    if videoContent is Live {
       isBottomContainerHidedByUser = !isRightDirection
-      bottomContainerLandscapeTop.isActive = !isRightDirection
     }
-
+    updateBottomContainerVisibility()
     chatContainerViewLandscapeLeading.constant = isRightDirection ? 16 : chatContainerView.bounds.width+16
     view.endEditing(false)
-    UIView.animate(withDuration: 0.3) { self.view.layoutIfNeeded() }
+    UIView.animate(withDuration: 0.3) {
+      self.view.layoutIfNeeded()
+      self.chatController.updateContentInsetForTableView()
+    }
   }
 
   @IBAction func openPollBannerPressed(_ sender: Any) {
@@ -1250,12 +1289,12 @@ class PlayerController: UIViewController {
     pollController.didMove(toParent: self)
     pollController.delegate = self
     pollContainerView.isHidden = false
-    chatContainerView.isHidden = true
+    updateChatVisibility()
     pollBannerIcon.hideBadge()
     collapsePollBanner(animated: false)
     shouldShowPollBadge = true
     shouldShowExpandedBanner = false
-    bottomContainerView.isHidden = true
+    updateBottomContainerVisibility()
   }
 
   
@@ -1374,10 +1413,9 @@ extension PlayerController: PollControllerDelegate {
     pollController?.removeFromParent()
     pollController = nil
     pollContainerView.isHidden = true
-    chatContainerView.isHidden = false
+    updateChatVisibility()
     pollAnswersFromLastView = activePoll?.answersCount.reduce(0,+) ?? 0
-    bottomContainerView.isHidden = false
-    chatContainerView.isHidden = false
+    updateBottomContainerVisibility()
     shouldEnableMessageTextFields(true)
   }
 }

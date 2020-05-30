@@ -30,6 +30,7 @@
                     <connections>
                         <outlet property="dataSource" destination="-1" id="d4J-Ll-P2n"/>
                         <outlet property="delegate" destination="-1" id="KLK-br-Jph"/>
+                        <outletCollection property="gestureRecognizers" destination="jHp-Cv-LMV" appends="YES" id="Qwe-mG-TlD"/>
                     </connections>
                 </tableView>
                 <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cqG-x1-Rg7" userLabel="ChatTipView">
@@ -92,6 +93,11 @@
         <tapGestureRecognizer id="Mgr-GB-vCa">
             <connections>
                 <action selector="handleNewCommentButtonTapped:" destination="-1" id="jmT-ZR-VHC"/>
+            </connections>
+        </tapGestureRecognizer>
+        <tapGestureRecognizer id="jHp-Cv-LMV">
+            <connections>
+                <action selector="handleTableViewTapped:" destination="-1" id="1YY-aC-NGF"/>
             </connections>
         </tapGestureRecognizer>
     </objects>

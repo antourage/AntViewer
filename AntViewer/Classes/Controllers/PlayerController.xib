@@ -272,7 +272,7 @@
                                         <action selector="cancelButtonTapped:" destination="-1" eventType="touchUpInside" id="R1s-hd-x9x"/>
                                     </connections>
                                 </button>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:20" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u8m-su-2fE">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:20" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="u8m-su-2fE">
                                     <rect key="frame" x="12" y="169" width="30" height="36"/>
                                     <constraints>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="30" id="vTC-P8-xbg"/>
@@ -371,7 +371,7 @@
                                 </mask>
                             </variation>
                         </view>
-                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:20" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR5-eA-SOa">
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:20" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fR5-eA-SOa">
                             <rect key="frame" x="14" y="179.66666666666663" width="26" height="14.333333333333343"/>
                             <fontDescription key="fontDescription" type="system" pointSize="12"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -545,34 +545,13 @@
                         <outletCollection property="gestureRecognizers" destination="pUl-9a-wpr" appends="YES" id="CqX-Gn-7C1"/>
                     </connections>
                 </view>
-                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-7j-wKT">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-7j-wKT">
                     <rect key="frame" x="0.0" y="778" width="375" height="34"/>
                     <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="J5R-iM-lmN" userLabel="ChatContainerView">
                     <rect key="frame" x="0.0" y="320.66666666666674" width="375" height="405.33333333333326"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lff-C4-vvV" userLabel="EditProfileView">
-                    <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-                <view hidden="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CfQ-pS-qRe" userLabel="PollContainerView">
-                    <rect key="frame" x="0.0" y="320.66666666666674" width="375" height="491.33333333333326"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstAttribute="width" secondItem="CfQ-pS-qRe" secondAttribute="height" multiplier="0.96:1" id="lec-a0-7SA"/>
-                    </constraints>
-                    <variation key="default">
-                        <mask key="constraints">
-                            <exclude reference="lec-a0-7SA"/>
-                        </mask>
-                    </variation>
-                    <variation key="heightClass=regular-widthClass=compact">
-                        <mask key="constraints">
-                            <exclude reference="lec-a0-7SA"/>
-                        </mask>
-                    </variation>
                 </view>
                 <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yiB-1m-rRo" userLabel="PollBannerView">
                     <rect key="frame" x="319" y="332.66666666666669" width="44" height="44"/>
@@ -636,12 +615,10 @@
                         <outletCollection property="gestureRecognizers" destination="yeb-b5-ncr" appends="YES" id="0RZ-nm-U9v"/>
                     </connections>
                 </view>
-                <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="AntViewer">
-                    <rect key="frame" x="-2" y="303.66666666666669" width="379" height="31"/>
-                    <color key="tintColor" name="a_pink"/>
-                    <color key="minimumTrackTintColor" name="a_pink"/>
-                    <color key="maximumTrackTintColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                </slider>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJc-3f-swx">
+                    <rect key="frame" x="0.0" y="778" width="375" height="34"/>
+                    <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </view>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6KR-R7-XLO" userLabel="BottomContainer">
                     <rect key="frame" x="0.0" y="726" width="375" height="52"/>
                     <subviews>
@@ -767,9 +744,32 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </variation>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FJc-3f-swx">
-                    <rect key="frame" x="0.0" y="778" width="375" height="34"/>
-                    <color key="backgroundColor" red="0.098039215686274508" green="0.098039215686274508" blue="0.098039215686274508" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                <view hidden="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CfQ-pS-qRe" userLabel="PollContainerView">
+                    <rect key="frame" x="0.0" y="320.66666666666674" width="375" height="491.33333333333326"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="CfQ-pS-qRe" secondAttribute="height" multiplier="0.96:1" id="lec-a0-7SA"/>
+                    </constraints>
+                    <variation key="default">
+                        <mask key="constraints">
+                            <exclude reference="lec-a0-7SA"/>
+                        </mask>
+                    </variation>
+                    <variation key="heightClass=regular-widthClass=compact">
+                        <mask key="constraints">
+                            <exclude reference="lec-a0-7SA"/>
+                        </mask>
+                    </variation>
+                </view>
+                <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="AntViewer">
+                    <rect key="frame" x="-2" y="303.66666666666669" width="379" height="31"/>
+                    <color key="tintColor" name="a_pink"/>
+                    <color key="minimumTrackTintColor" name="a_pink"/>
+                    <color key="maximumTrackTintColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                </slider>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lff-C4-vvV" userLabel="EditProfileView">
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -839,24 +839,10 @@
                     <exclude reference="XUg-NW-7D6"/>
                     <exclude reference="TEb-9g-51W"/>
                     <exclude reference="I5n-7j-wKT"/>
-                    <exclude reference="Lff-C4-vvV"/>
-                    <exclude reference="CfQ-pS-qRe"/>
-                    <exclude reference="O7y-qk-2G8"/>
                     <exclude reference="FJc-3f-swx"/>
+                    <exclude reference="O7y-qk-2G8"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="3hf-1V-Q3Q"/>
-                    <exclude reference="6Fd-4h-zW2"/>
-                    <exclude reference="AoT-lZ-9F9"/>
-                    <exclude reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
-                    <exclude reference="6ee-UV-Q6I"/>
-                    <exclude reference="aoO-Zn-1i2"/>
-                    <exclude reference="MhO-Ik-UE5"/>
-                    <exclude reference="t6u-oH-s4c"/>
-                    <exclude reference="Bpa-XM-g56"/>
-                    <exclude reference="Y1K-vH-Kvu"/>
-                    <exclude reference="q7X-hg-2Hm"/>
                     <exclude reference="hqg-GW-Byu"/>
                     <exclude reference="kpW-EJ-0hl"/>
                     <exclude reference="TSL-4H-jrA"/>
@@ -868,26 +854,38 @@
                     <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="r4d-s0-iKt"/>
                     <exclude reference="gSk-0Y-f5l"/>
+                    <exclude reference="MhO-Ik-UE5"/>
+                    <exclude reference="t6u-oH-s4c"/>
+                    <exclude reference="3hf-1V-Q3Q"/>
+                    <exclude reference="6Fd-4h-zW2"/>
+                    <exclude reference="AoT-lZ-9F9"/>
+                    <exclude reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
+                    <exclude reference="6ee-UV-Q6I"/>
+                    <exclude reference="aoO-Zn-1i2"/>
+                    <exclude reference="Bpa-XM-g56"/>
+                    <exclude reference="Y1K-vH-Kvu"/>
+                    <exclude reference="q7X-hg-2Hm"/>
                 </mask>
             </variation>
             <variation key="heightClass=compact-widthClass=compact">
                 <mask key="constraints">
-                    <include reference="6ee-UV-Q6I"/>
-                    <include reference="aoO-Zn-1i2"/>
                     <include reference="kpW-EJ-0hl"/>
                     <include reference="q0H-jp-Vrz"/>
                     <include reference="r4d-s0-iKt"/>
                     <include reference="gSk-0Y-f5l"/>
+                    <include reference="6ee-UV-Q6I"/>
+                    <include reference="aoO-Zn-1i2"/>
                 </mask>
             </variation>
             <variation key="heightClass=compact-widthClass=regular">
                 <mask key="constraints">
-                    <include reference="6ee-UV-Q6I"/>
-                    <include reference="aoO-Zn-1i2"/>
                     <include reference="kpW-EJ-0hl"/>
                     <include reference="q0H-jp-Vrz"/>
                     <include reference="r4d-s0-iKt"/>
                     <include reference="gSk-0Y-f5l"/>
+                    <include reference="6ee-UV-Q6I"/>
+                    <include reference="aoO-Zn-1i2"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=compact">
@@ -895,25 +893,10 @@
                     <include reference="XUg-NW-7D6"/>
                     <include reference="TEb-9g-51W"/>
                     <include reference="I5n-7j-wKT"/>
-                    <include reference="O7y-qk-2G8"/>
                     <include reference="FJc-3f-swx"/>
+                    <include reference="O7y-qk-2G8"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="3hf-1V-Q3Q"/>
-                    <include reference="6Fd-4h-zW2"/>
-                    <include reference="AoT-lZ-9F9"/>
-                    <exclude reference="C1M-qz-6YH"/>
-                    <exclude reference="d4f-BM-MuR"/>
-                    <include reference="LCo-MZ-PL2"/>
-                    <exclude reference="bC2-iv-7rd"/>
-                    <exclude reference="2fN-uq-9UC"/>
-                    <include reference="MhO-Ik-UE5"/>
-                    <exclude reference="hhr-Ab-UfO"/>
-                    <exclude reference="qv8-1H-cX9"/>
-                    <include reference="t6u-oH-s4c"/>
-                    <include reference="Bpa-XM-g56"/>
-                    <include reference="Y1K-vH-Kvu"/>
-                    <include reference="q7X-hg-2Hm"/>
                     <include reference="hqg-GW-Byu"/>
                     <exclude reference="5fl-Vx-aVY"/>
                     <include reference="TSL-4H-jrA"/>
@@ -922,6 +905,21 @@
                     <include reference="4Nv-gJ-7Te"/>
                     <include reference="S6Y-lF-KiG"/>
                     <exclude reference="S6f-9L-rnb"/>
+                    <exclude reference="2fN-uq-9UC"/>
+                    <include reference="MhO-Ik-UE5"/>
+                    <exclude reference="hhr-Ab-UfO"/>
+                    <exclude reference="qv8-1H-cX9"/>
+                    <include reference="t6u-oH-s4c"/>
+                    <include reference="3hf-1V-Q3Q"/>
+                    <include reference="6Fd-4h-zW2"/>
+                    <include reference="AoT-lZ-9F9"/>
+                    <exclude reference="C1M-qz-6YH"/>
+                    <exclude reference="d4f-BM-MuR"/>
+                    <include reference="LCo-MZ-PL2"/>
+                    <exclude reference="bC2-iv-7rd"/>
+                    <include reference="Bpa-XM-g56"/>
+                    <include reference="Y1K-vH-Kvu"/>
+                    <include reference="q7X-hg-2Hm"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="135.19999999999999" y="149.26108374384236"/>
