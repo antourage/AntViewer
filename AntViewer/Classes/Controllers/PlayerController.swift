@@ -156,13 +156,15 @@ class PlayerController: UIViewController {
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
         portraitSeekSlider.tintColor = UIColor.color("a_pink")
         portraitSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
+        portraitSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: portraitSeekSlider), for: .normal)
       }
     }
   }
   
-  @IBOutlet weak var landscapeSeekSlider: UISlider! {
+  @IBOutlet weak var landscapeSeekSlider: CustomSlide! {
     didSet {
       if let video = videoContent as? VOD {
+        landscapeSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: landscapeSeekSlider), for: .normal)
         landscapeSeekSlider.maximumValue = Float(video.duration.duration())
         landscapeSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
         landscapeSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
@@ -433,7 +435,6 @@ class PlayerController: UIViewController {
 
   private lazy var bottomMessage = BottomMessage(presentingController: self)
 
-  
   fileprivate var seekTo: Int? {
     didSet {
       if seekTo == nil, let time = oldValue {
@@ -658,6 +659,35 @@ class PlayerController: UIViewController {
     imageView.layer.masksToBounds = true
   }
 
+  private func createMaxTrackImage(for slider: CustomSlide) -> UIImage {
+    let backgroundColor = UIColor.white.withAlphaComponent(0.6)
+    let width: CGFloat = 1200
+    let imageSize = CGSize(width: width, height: slider.trackHeight)
+    UIGraphicsBeginImageContext(imageSize)
+    backgroundColor.setFill()
+    UIRectFill(CGRect(origin: .zero, size: imageSize))
+    guard let content = videoContent as? VOD  else {
+      let newImage = UIGraphicsGetImageFromCurrentImageContext()
+      UIGraphicsEndImageContext()
+      return newImage ?? UIImage()
+    }
+    for curtain in content.curtainRangeModels {
+      var cur = curtain
+      let lowerBoudn = cur.range.lowerBound
+      let upperBoudn = cur.range.upperBound
+      let videoDuration = Double(content.duration.duration())
+      let context = UIGraphicsGetCurrentContext()!
+      let origin = CGPoint(x: CGFloat(lowerBoudn/videoDuration)*width, y: 0)
+      let size = CGSize(width: CGFloat(upperBoudn/videoDuration)*width - origin.x, height: imageSize.height)
+      UIColor.curtainYellow.setFill()
+      context.fill(CGRect(origin: origin, size: size))
+    }
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
+
+    return newImage ?? UIImage()
+  }
+
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
@@ -745,7 +775,11 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
+    } else {
+      portraitSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: portraitSeekSlider), for: .normal)
+      landscapeSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: landscapeSeekSlider), for: .normal)
     }
+    updateBottomContainerVisibility()
   }
   
   private func startPlayer(){
@@ -755,6 +789,12 @@ class PlayerController: UIViewController {
       let alreadyWatchedTime = Double(vod.stopTime.duration())
       let duration = Double(vod.duration.duration())
       seekTo =  alreadyWatchedTime/duration >= 0.9 ? 0 : alreadyWatchedTime
+      var startCurtain = vod.curtainRangeModels.first { curtain in
+        var tempCurt = curtain
+        return tempCurt.range.lowerBound == 0 &&
+          tempCurt.range.contains(seekTo ?? 0)
+        }
+        seekTo = startCurtain?.range.upperBound ?? seekTo
     }
     player = Player(url: URL(string:videoContent.url)!, seekTo: seekTo)
     
@@ -821,7 +861,6 @@ class PlayerController: UIViewController {
         //MARK: set thanks image
         self?.setThanksImage()
         self?.isChatEnabled = false
-        self?.updateChatVisibility()
         self?.editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
         self?.editProfileButton.tintColor = UIColor.white.withAlphaComponent(0.2)
         self?.videoContainerView.layer.sublayers?.first?.isHidden = true
@@ -829,6 +868,7 @@ class PlayerController: UIViewController {
         self?.playButton.isHidden = true
         self?.view.layoutIfNeeded()
       }
+      self?.updateChatVisibility()
       
     }
     videoContainerView.showActivityIndicator()

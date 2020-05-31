@@ -58,6 +58,8 @@
 		E1F95A928F532FE807835E1E /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		E411A4CA7F802F67048895F2 /* Pods-AntViewer_ios_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AntViewer_ios_Example.release.xcconfig"; path = "Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example.release.xcconfig"; sourceTree = "<group>"; };
 		EBC22EEF660EBF0D0443B8D2 /* AntViewer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = AntViewer.podspec; path = ../AntViewer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		F11F1BB52482EDD500296EB8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/Main.strings; sourceTree = "<group>"; };
+		F11F1BB62482EDD700296EB8 /* sv */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = sv; path = sv.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,7 +193,6 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				E04528E7D2D970367F8A9310 /* [CP] Copy Pods Resources */,
-				6BF7FFA23E15D68F5A884DCB /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -211,7 +212,6 @@
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
 				B6918FF606E4E411D3673604 /* [CP] Copy Pods Resources */,
-				7FB72B590727FD46C29FE740 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -259,6 +259,7 @@
 				English,
 				en,
 				Base,
+				sv,
 			);
 			mainGroup = 607FACC71AFB9204008FA782;
 			productRefGroup = 607FACD11AFB9204008FA782 /* Products */;
@@ -293,42 +294,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6BF7FFA23E15D68F5A884DCB /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7FB72B590727FD46C29FE740 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		A48BDE3E0A609C1F2993303A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -365,7 +330,7 @@
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist",
 				"${PODS_ROOT}/../../AntViewer/Classes/SwiftMessage/MessageView.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/Base.lproj/EmptyDataSourceView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib",
@@ -421,7 +386,7 @@
 				"${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist",
 				"${PODS_ROOT}/../../AntViewer/Classes/SwiftMessage/MessageView.xib",
-				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/Views/Base.lproj/EmptyDataSourceView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib",
@@ -521,6 +486,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				607FACDA1AFB9204008FA782 /* Base */,
+				F11F1BB52482EDD500296EB8 /* sv */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -529,6 +495,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				607FACDF1AFB9204008FA782 /* Base */,
+				F11F1BB62482EDD700296EB8 /* sv */,
 			);
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";

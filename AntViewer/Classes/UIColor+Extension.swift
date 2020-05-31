@@ -43,4 +43,7 @@ public extension UIColor {
   static var bottomMessageGray: UIColor {
     return UIColor.color("a_bottomMessageGray") ?? .gray
   }
+  static var curtainYellow: UIColor {
+    return UIColor.color("a_curtainYellow") ?? .yellow
+  }
 }

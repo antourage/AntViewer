@@ -281,7 +281,7 @@
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="CLJ-4Y-mmc">
+                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="CLJ-4Y-mmc" customClass="CustomSlide" customModule="AntViewer">
                                     <rect key="frame" x="54" y="333" width="696" height="31"/>
                                     <color key="tintColor" name="a_pink"/>
                                     <color key="maximumTrackTintColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -765,7 +765,7 @@
                     <rect key="frame" x="-2" y="303.66666666666669" width="379" height="31"/>
                     <color key="tintColor" name="a_pink"/>
                     <color key="minimumTrackTintColor" name="a_pink"/>
-                    <color key="maximumTrackTintColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                    <color key="maximumTrackTintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </slider>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Lff-C4-vvV" userLabel="EditProfileView">
                     <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>

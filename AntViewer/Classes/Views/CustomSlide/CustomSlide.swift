@@ -8,7 +8,9 @@ class CustomSlide: UISlider {
 @IBInspectable var trackHeight: CGFloat = 4 {
   didSet { setNeedsDisplay() }
 }
-  
+
+
+
 override func trackRect(forBounds bounds: CGRect) -> CGRect {
   //set your bounds here
 
