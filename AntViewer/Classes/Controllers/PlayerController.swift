@@ -32,7 +32,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var bottomContainerViewHeightConstraint: NSLayoutConstraint!
   @IBOutlet weak var chatTextView: IQTextView! {
     didSet {
-      chatTextView.placeholder = "Chat disabled"
+      chatTextView.placeholder = LocalizedStrings.chatDisabled.localized
     }
   }
   @IBOutlet  var chatTextViewHolderView: UIView!
@@ -365,7 +365,9 @@ class PlayerController: UIViewController {
     didSet {
       sendButton.isEnabled = isChatEnabled
       chatTextView.isEditable = isChatEnabled
-      chatTextView.placeholder = isChatEnabled ? "Chat" : "Chat disabled"
+
+      chatTextView.placeholder = isChatEnabled ? LocalizedStrings.chat.localized :
+        LocalizedStrings.chatDisabled.localized
       updateBottomContainerVisibility()
       let alpha: CGFloat = isChatEnabled ? 0.6 : 0.2
       chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(alpha).cgColor
@@ -691,7 +693,7 @@ class PlayerController: UIViewController {
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized, backgroundColor: color ?? .gray)
     }
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
   }
@@ -705,10 +707,10 @@ class PlayerController: UIViewController {
   private func handleReachability(_ notification: Notification) {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
-      bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
+      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized, duration: 2, backgroundColor: color ?? .green)
     } else {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized, backgroundColor: color ?? .gray)
     }
   }
 
@@ -842,7 +844,7 @@ class PlayerController: UIViewController {
       self?.isControlsEnabled = true
       if self?.isReachable == true {
         let color = UIColor.color("a_bottomMessageGray") ?? .gray
-        let text = "Something is not right. We are working to get this fixed".uppercased()
+        let text = LocalizedStrings.generalError.localized.uppercased()
         self?.bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
       }
       self?.isPlayerError = true
@@ -875,7 +877,7 @@ class PlayerController: UIViewController {
   }
 
   private func setThanksImage() {
-    let text = "thanks for watching"
+    let text = LocalizedStrings.thanksForWatching.localized.uppercased()
     if let imageUrl = URL(string: videoContent.thumbnailUrl) {
       let _ =  ImageService.getImage(withURL: imageUrl) { [weak self] thumbnail in
         guard let `self` = self, let thumbnail = thumbnail else { return }

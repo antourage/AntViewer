@@ -27,7 +27,7 @@ class StreamListController: UIViewController {
     button.clipsToBounds = true
     button.backgroundColor = UIColor.color("a_button_blue")
     button.setImage(UIImage.image("ArrowSmallTop"), for: .normal)
-    button.setTitle("NEW", for: .normal)
+    button.setTitle(LocalizedStrings.new.localized.uppercased(), for: .normal)
     button.titleLabel?.font = UIFont.systemFont(ofSize: 9, weight: .bold)
     button.setTitleColor(.white, for: .normal)
     button.semanticContentAttribute = .forceRightToLeft
@@ -222,7 +222,7 @@ class StreamListController: UIViewController {
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
     }
     skeleton?.didChangeReachability(isReachable)
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
@@ -237,7 +237,7 @@ class StreamListController: UIViewController {
   private func handleReachability(_ notification: Notification) {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
-      bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
+      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
       if collectionView.numberOfItems(inSection: 1) == 0 {
         initialVodsUpdate()
       } else {
@@ -248,7 +248,7 @@ class StreamListController: UIViewController {
       }
     } else {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
     }
     refreshControl.shouldAnimate = isReachable
     skeleton?.didChangeReachability(isReachable)
@@ -537,7 +537,7 @@ class StreamListController: UIViewController {
 
   private func showErrorMessage(autohide: Bool = true) {
     let color = UIColor.color("a_bottomMessageGray") ?? .gray
-    let text = "Something is not right. We are working to get this fixed".uppercased()
+    let text = LocalizedStrings.generalError.localized.uppercased()
     if autohide {
       bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
       return

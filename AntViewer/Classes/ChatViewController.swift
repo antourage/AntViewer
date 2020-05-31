@@ -161,7 +161,7 @@ class ChatViewController: UIViewController {
      newCommentsView.isUserInteractionEnabled = false
      switch (isNewUser, newMessagesCount) {
      case (false, let count) where count >= 1:
-       newCommentsLabel.text = String(format: "%d NEW COMMENTS", count)
+      newCommentsLabel.text = String(format: "NewComment".localized(), count)
        newCommentsView.isUserInteractionEnabled = true
      case (false, let count) where count < 1:
        newCommentsView.isHidden = true
@@ -224,7 +224,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
     let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
     let time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
-    cell.messageInfoLabel.text = String(format: "%@ at %@", userName, time.durationString())
+    cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
     return cell
   }
 
