@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
 
-  isDebug = true
+  isDebug = false
 
   s.name             = 'AntViewer'
   s.version          = '1.1.22'
@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
 
   s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'
   s.resource_bundles = {
-    'AntWidget' => ['AntViewer/Assets/**/*.{lproj,strings,stringsdict}']
+    'AntWidget' => ['AntViewer/Assets/**/*']
   }
   s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
   s.static_framework = true

@@ -19,21 +19,13 @@
     "ios": "11.3"
   },
   "source_files": "AntViewer/Classes/**/*.{swift}",
-  "dependencies": {
-    "AntViewerExt": [
-
-    ],
-    "Firebase/Auth": [
-
-    ],
-    "Firebase/Firestore": [
-
-    ]
+  "ios": {
+    "vendored_frameworks": "AntViewer/MyFrameworks/AntViewerExt.framework"
   },
   "resources": "AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}",
   "resource_bundles": {
     "AntWidget": [
-      "AntViewer/Assets/**/*.{lproj,strings,stringsdict}"
+      "AntViewer/Assets/**/*"
     ]
   },
   "pod_target_xcconfig": {
@@ -48,6 +40,14 @@
     "UIKit",
     "AVKit"
   ],
+  "dependencies": {
+    "Firebase/Auth": [
+
+    ],
+    "Firebase/Firestore": [
+
+    ]
+  },
   "swift_versions": "5.2",
   "swift_version": "5.2"
 }

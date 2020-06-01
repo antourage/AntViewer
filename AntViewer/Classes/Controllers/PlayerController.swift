@@ -793,7 +793,7 @@ class PlayerController: UIViewController {
       seekTo =  alreadyWatchedTime/duration >= 0.9 ? 0 : alreadyWatchedTime
       var startCurtain = vod.curtainRangeModels.first { curtain in
         var tempCurt = curtain
-        return tempCurt.range.lowerBound == 0 &&
+        return tempCurt.range.lowerBound == 0 &&     
           tempCurt.range.contains(seekTo ?? 0)
         }
         seekTo = startCurtain?.range.upperBound ?? seekTo
