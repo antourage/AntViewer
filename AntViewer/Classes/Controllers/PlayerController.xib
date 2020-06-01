@@ -927,6 +927,7 @@
         <swipeGestureRecognizer cancelsTouchesInView="NO" direction="right" id="eka-0d-1Xr">
             <connections>
                 <action selector="handleSwipeGesture:" destination="-1" id="MPY-oV-05H"/>
+                <outlet property="delegate" destination="-1" id="DWV-y7-NLl"/>
             </connections>
         </swipeGestureRecognizer>
         <swipeGestureRecognizer cancelsTouchesInView="NO" direction="left" id="dxZ-5N-CrK">

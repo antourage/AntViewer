@@ -479,9 +479,13 @@ class PlayerController: UIViewController {
     super.viewDidLoad()
     previousButton.isExclusiveTouch = true
     nextButton.isExclusiveTouch = true
+
+    addChild(chatController)
+    chatController.view.fixInView(chatContainerView)
+    chatController.didMove(toParent: self)
     //FIXME:
     OrientationUtility.rotateToOrientation(OrientationUtility.currentOrientatin)
-
+    currentOrientation = OrientationUtility.currentOrientatin
     self.dataSource.pauseUpdatingStreams()
      var token: NSObjectProtocol?
      token = NotificationCenter.default.addObserver(forName: UIDevice.orientationDidChangeNotification, object: nil, queue: .main) { [weak self] (notification) in
@@ -513,13 +517,11 @@ class PlayerController: UIViewController {
             }
           })
 
-        } else {
-         self.updateBottomContainerVisibility()
         }
+    updateBottomContainerVisibility()
     
     DispatchQueue.main.async { [weak self] in
       guard let `self` = self else { return }
-      self.currentOrientation = OrientationUtility.currentOrientatin
       self.isChatEnabled = false
       try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
       Statistic.send(action: .open, for: self.videoContent)
@@ -527,10 +529,6 @@ class PlayerController: UIViewController {
       self.startPlayer()
     }
     self.adjustHeightForTextView(self.chatTextView)
-
-    addChild(chatController)
-    chatController.view.fixInView(chatContainerView)
-    chatController.didMove(toParent: self)
   }
 
   func collapsePollBanner(animated: Bool = true) {
@@ -620,6 +618,8 @@ class PlayerController: UIViewController {
         bottomContainerView.layer.insertSublayer(bottomContainerGradientLayer, at: 0)
         return
       }
+      bottomContainerView.isHidden = false
+      bottomContainerPortraitTop.isActive = false
     } else {
       bottomContainerView.isHidden = true
       bottomContainerPortraitTop.isActive = true
@@ -1308,7 +1308,7 @@ class PlayerController: UIViewController {
     if videoContent is Live {
       isBottomContainerHidedByUser = !isRightDirection
     }
-    updateBottomContainerVisibility()
+    updateBottomContainerVisibility(animated: true)
     chatContainerViewLandscapeLeading.constant = isRightDirection ? 16 : chatContainerView.bounds.width+16
     view.endEditing(false)
     UIView.animate(withDuration: 0.3) {
@@ -1473,5 +1473,11 @@ extension PlayerController: EditProfileControllerDelegate {
       chatController.reloadData()
     }
     dismissEditProfileView()
+  }
+}
+
+extension PlayerController: UIGestureRecognizerDelegate {
+  func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
   }
 }
