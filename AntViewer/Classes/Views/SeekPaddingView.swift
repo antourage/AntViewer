@@ -50,7 +50,7 @@ public class SeekPaddingView: UIView {
   public var soughtTime = 0 {
     didSet {
       guard soughtTime > 0, let label = seekTimeLabel else { return }
-      label.text = String(format: "%d seconds", soughtTime)
+      label.text = String(format: "SecondsSeek".localized(), soughtTime)
     }
   }
   

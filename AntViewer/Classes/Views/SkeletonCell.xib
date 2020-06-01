@@ -69,13 +69,13 @@
                                             <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="SkeletonPlaceholder"/>
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="SkeletonLoader" translatesAutoresizingMaskIntoConstraints="NO" id="2zO-f2-dgI">
-                                        <rect key="frame" x="72" y="27" width="216" height="216"/>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="PlaceholderIconLoad" translatesAutoresizingMaskIntoConstraints="NO" id="2zO-f2-dgI">
+                                        <rect key="frame" x="104.5" y="59.5" width="151" height="151"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="2zO-f2-dgI" secondAttribute="height" multiplier="1:1" id="jja-Db-Yho"/>
                                         </constraints>
                                         <userDefinedRuntimeAttributes>
-                                            <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="SkeletonLoader"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="PlaceholderIconLoad"/>
                                         </userDefinedRuntimeAttributes>
                                     </imageView>
                                 </subviews>
@@ -85,7 +85,7 @@
                                     <constraint firstItem="u2N-py-BQQ" firstAttribute="centerX" secondItem="Rgm-Xe-EmA" secondAttribute="centerX" id="55I-9H-AtT"/>
                                     <constraint firstItem="2zO-f2-dgI" firstAttribute="centerX" secondItem="u2N-py-BQQ" secondAttribute="centerX" id="80Z-42-aAw"/>
                                     <constraint firstItem="u2N-py-BQQ" firstAttribute="centerY" secondItem="Rgm-Xe-EmA" secondAttribute="centerY" id="8NH-S1-afp"/>
-                                    <constraint firstItem="2zO-f2-dgI" firstAttribute="width" secondItem="u2N-py-BQQ" secondAttribute="width" multiplier="0.6" id="Hos-9F-SbW"/>
+                                    <constraint firstItem="2zO-f2-dgI" firstAttribute="width" secondItem="u2N-py-BQQ" secondAttribute="width" multiplier="0.42" id="Hos-9F-SbW"/>
                                     <constraint firstItem="2zO-f2-dgI" firstAttribute="centerY" secondItem="u2N-py-BQQ" secondAttribute="centerY" id="Pd9-uZ-wa7"/>
                                     <constraint firstItem="u2N-py-BQQ" firstAttribute="width" secondItem="Rgm-Xe-EmA" secondAttribute="width" id="U9w-2a-haA"/>
                                     <constraint firstAttribute="width" secondItem="Rgm-Xe-EmA" secondAttribute="height" multiplier="320:240" id="w1R-mj-pZR"/>
@@ -209,7 +209,7 @@
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="SkeletonLoader" width="144" height="144"/>
+        <image name="PlaceholderIconLoad" width="144" height="144"/>
         <image name="SkeletonPlaceholder" width="320" height="240"/>
     </resources>
 </document>

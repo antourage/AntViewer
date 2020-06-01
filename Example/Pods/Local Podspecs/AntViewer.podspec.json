@@ -22,10 +22,10 @@
   "ios": {
     "vendored_frameworks": "AntViewer/MyFrameworks/AntViewerExt.framework"
   },
-  "resources": "AntViewer/Classes/**/*.{storyboard,xib,plist}",
+  "resources": "AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}",
   "resource_bundles": {
     "AntWidget": [
-      "AntViewer/Assets/*"
+      "AntViewer/Assets/**/*"
     ]
   },
   "pod_target_xcconfig": {

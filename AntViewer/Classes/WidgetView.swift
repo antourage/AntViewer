@@ -100,10 +100,10 @@ class WidgetView: UIView {
   }
 
   private func showBadge(for state: WidgetState) {
-    var text = "NEW"
+    var text = LocalizedStrings.new.localized.uppercased()
     var color = UIColor.color("a_poll3Blue")
     if case .live = state {
-      text = "LIVE"
+      text = LocalizedStrings.live.localized
       color = UIColor.color("a_pink")
     }
     let width = bounds.width * 0.385

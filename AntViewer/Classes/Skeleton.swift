@@ -11,11 +11,11 @@ import AntViewerExt
 
 protocol SkeletonDelegate {
   func skeletonWillHide(_ skeleton: Skeleton)
-//  func skeletonOnTimeout(_ skeleton: Skeleton)
 }
 
 class Skeleton: NSObject {
 
+  
   var delegate: SkeletonDelegate?
   var collectionView: UICollectionView? {
     didSet {
@@ -124,7 +124,7 @@ class Skeleton: NSObject {
       startLoading()
     } else {
       state = .noConnection
-      animator?.stop(immediately: false)
+      startAnimate()
       cell?.iconImageView.image = UIImage.image("SkeletonNoConnection")
       collectionView?.isUserInteractionEnabled = true
     }
@@ -135,21 +135,28 @@ class Skeleton: NSObject {
       didChangeReachability(isReachable)
       return
     }
+    guard state != .onError else { return }
     state = .loading
     collectionView?.isUserInteractionEnabled = false
     cell?.iconImageView.image = UIImage.image("SkeletonPlaceholder")
-    cell?.loaderImageView.image = UIImage.image("SkeletonLoader")
-    if animator?.isActive == false {
-      animator?.animate(repeatCount: .infinity)
-    }
+    cell?.loaderImageView.image = UIImage.image("PlaceholderIconLoad")
+    startAnimate()
     setEmptyDataSourseViewVisible(visible: false)
   }
 
   func setError() {
-    animator?.stop(immediately: false)
+    startAnimate()
+    setEmptyDataSourseViewVisible(visible: false)
     cell?.iconImageView.image = UIImage.image("SkeletonError")
     collectionView?.isUserInteractionEnabled = true
     state = .onError
+
+  }
+
+  private func startAnimate() {
+    if animator?.isActive == false {
+      animator?.animate(repeatCount: .infinity)
+    }
   }
 
   private func setEmptyDataSourseViewVisible(visible: Bool) {
@@ -161,7 +168,6 @@ class Skeleton: NSObject {
   deinit {
     print("Skeleton: DEINITED")
   }
-
 }
 
 extension Skeleton: UICollectionViewDelegate, UICollectionViewDataSource {

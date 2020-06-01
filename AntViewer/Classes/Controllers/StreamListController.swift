@@ -27,7 +27,7 @@ class StreamListController: UIViewController {
     button.clipsToBounds = true
     button.backgroundColor = UIColor.color("a_button_blue")
     button.setImage(UIImage.image("ArrowSmallTop"), for: .normal)
-    button.setTitle("NEW", for: .normal)
+    button.setTitle(LocalizedStrings.new.localized.uppercased(), for: .normal)
     button.titleLabel?.font = UIFont.systemFont(ofSize: 9, weight: .bold)
     button.setTitleColor(.white, for: .normal)
     button.semanticContentAttribute = .forceRightToLeft
@@ -63,7 +63,7 @@ class StreamListController: UIViewController {
         let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
         var position: Double?
         if let item = item as? VOD {
-          position = Double(self?.stopTimes[item.id] ?? item.stopTime.duration())
+          position = Double(item.stopTime.duration())
         }
         if let fakeThumb = self?.curtainThumbnail, let contentImageView = self?.activeCell?.contentImageView {
           contentImageView.addSubview(fakeThumb)
@@ -102,7 +102,7 @@ class StreamListController: UIViewController {
     return player
   }()
 
-  fileprivate let playerDebouncer = Debouncer(delay: 1.2)
+  fileprivate let playerDebouncer = Debouncer(delay: 0.5)
   fileprivate var isLoading = false {
     didSet {
     }
@@ -150,9 +150,6 @@ class StreamListController: UIViewController {
   
   var onViewerDismiss: ((NSDictionary) -> Void)?
 
-  // MARK: Temp solution
-  fileprivate var stopTimes = [Int : Int]()
-
   private var topInset: CGFloat = .zero
   private var failedToLoadVods = false
 
@@ -167,7 +164,7 @@ class StreamListController: UIViewController {
         print(error)
       }
     }
-    dataSource.lastMessageHandler = MessageFetcher()
+    dataSource.firebaseFetcher = MessageFetcher()
     if dataSource.streams.isEmpty {
       skeleton?.collectionView = collectionView
     }
@@ -191,10 +188,15 @@ class StreamListController: UIViewController {
     
     NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
       guard let addedCount = notification.userInfo?["addedCount"] as? Int,
-      let deleted = notification.userInfo?["deleted"] as? [Int] else { return }
+      let deleted = notification.userInfo?["deleted"] as? [Int],
+      let hasChanges = notification.userInfo?["updated"] as? Bool, hasChanges else {
+        self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+        return
+      }
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
       self?.collectionView.collectionViewLayout.invalidateLayout()
+      self?.bottomMessage.hideMessage()
     }
 
     collectionView.alwaysBounceVertical = true
@@ -220,7 +222,7 @@ class StreamListController: UIViewController {
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
     }
     skeleton?.didChangeReachability(isReachable)
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
@@ -235,7 +237,7 @@ class StreamListController: UIViewController {
   private func handleReachability(_ notification: Notification) {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
-      bottomMessage.showMessage(title: "YOU ARE ONLINE", duration: 2, backgroundColor: color ?? .green)
+      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
       if collectionView.numberOfItems(inSection: 1) == 0 {
         initialVodsUpdate()
       } else {
@@ -246,7 +248,7 @@ class StreamListController: UIViewController {
       }
     } else {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: "NO CONNECTION", backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
     }
     refreshControl.shouldAnimate = isReachable
     skeleton?.didChangeReachability(isReachable)
@@ -265,7 +267,7 @@ class StreamListController: UIViewController {
   }
 
   deinit {
-    dataSource.lastMessageHandler = nil
+    dataSource.firebaseFetcher = nil
   }
 
   func updateFooter() {
@@ -301,6 +303,7 @@ class StreamListController: UIViewController {
       guard let `self` = self else { return }
       switch result {
       case .success:
+        self.bottomMessage.hideMessage()
         self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
         self.collectionView.reloadData()
         self.collectionView.performBatchUpdates(nil) { (result) in
@@ -311,7 +314,7 @@ class StreamListController: UIViewController {
         self.isLoading = false
       case .failure(let error):
         print(error)
-        if !error.noInternetConnection && self.hiddenAuthCompleted {
+        if !error.noInternetConnection /*&& self.hiddenAuthCompleted*/ {
           self.showErrorMessage(autohide: false)
           self.skeleton?.setError()
         }
@@ -344,9 +347,15 @@ class StreamListController: UIViewController {
         reachedListsEnd = false
         if skeleton == nil {
           collectionView.reloadData()
+          collectionView.performBatchUpdates(nil) { [weak self] (_) in
+            if self?.view.window != nil {
+              self?.activeCell = self?.getTopVisibleCell()
+            }
+          }
         }
         return
     }
+
     var shouldScroll = true
     let streamsCount = dataSource.streams.count
     if visibleIndexPath.section == 0 {
@@ -371,7 +380,9 @@ class StreamListController: UIViewController {
       collectionView.performBatchUpdates({
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
-      }, completion: nil)
+      }, completion: { _ in
+        self.collectionView.reloadItems(at: addedPaths)
+      })
 
       if addedCount > 0, newLivesButton.isHidden {
         let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
@@ -385,9 +396,6 @@ class StreamListController: UIViewController {
         collectionView.contentOffset.y = collectionView.contentOffset.y - differenceBetweenRowAndNavBar
         shouldResetActiveCell = true
       }
-    }
-    if activeCell == nil {
-      activeCell = getTopVisibleCell()
     }
   }
   
@@ -407,10 +415,10 @@ class StreamListController: UIViewController {
             self?.collectionView.reloadSections(IndexSet(arrayLiteral: 0, 1))
 
         case .failure(let error):
-          if !error.noInternetConnection && self?.hiddenAuthCompleted == true {
-            self?.skeleton?.setError()
+          if !error.noInternetConnection /*&& self?.hiddenAuthCompleted == true*/ {
             if self?.isReachable == true {
               self?.showErrorMessage(autohide: false)
+              self?.skeleton?.setError()
             }
           }
         }
@@ -469,13 +477,14 @@ class StreamListController: UIViewController {
       cell.duration = item.duration.duration()
       //Temp solution
       let duration = item.stopTime.duration() == 0 ? nil : item.stopTime.duration()
-      cell.watchedTime = item.isNew ? nil : stopTimes[item.id] ?? duration
+      cell.watchedTime = item.isNew ? nil : duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
       cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
       cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
+      cell.watchedTime = nil
       cell.replayView.isHidden = true
       cell.joinAction = { [weak self] itemCell in
         guard let indexPath = self?.collectionView.indexPath(for: itemCell) else { return }
@@ -528,7 +537,7 @@ class StreamListController: UIViewController {
 
   private func showErrorMessage(autohide: Bool = true) {
     let color = UIColor.color("a_bottomMessageGray") ?? .gray
-    let text = "Something is not right. We are working to get this fixed".uppercased()
+    let text = LocalizedStrings.generalError.localized.uppercased()
     if autohide {
       bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
       return
@@ -750,7 +759,7 @@ extension StreamListController: ModernAVPlayerDelegate {
       if let item = self?.activeItem as? VOD {
         self?.activeCell?.duration = item.duration.duration()
         self?.activeCell?.watchedTime = Int(currentTime)
-        self?.stopTimes[item.id] = Int(currentTime)
+        item.stopTime = Int(currentTime).durationString()
       } else if let item = self?.activeItem as? Live {
         let duration = Date().timeIntervalSince(item.date)
         self?.activeCell?.duration = Int(duration)

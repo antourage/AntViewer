@@ -43,7 +43,7 @@ public class StreamCell: UICollectionViewCell {
     didSet {
       if let message = self.message {
         chatTextLabel.text = message.text
-        chatNameLabel.text = "\(message.nickname) • most recent"
+        chatNameLabel.text = "\(message.nickname) • \(LocalizedStrings.mostRecent.localized)"
         messageStackView.isHidden = false
         chatView.isHidden = false
       } else {
@@ -60,7 +60,7 @@ public class StreamCell: UICollectionViewCell {
       liveLabel.isHidden = !isNew
       watchedTimeLinePaddingView.isHidden = isNew
       if isNew {
-        liveLabel.text = "NEW"
+        liveLabel.text = LocalizedStrings.new.localized.uppercased()
         liveLabel.backgroundColor = UIColor.color("a_button_blue")
       }
     }
@@ -71,7 +71,7 @@ public class StreamCell: UICollectionViewCell {
       liveLabel.isHidden = !isLive
       watchedTimeLinePaddingView.isHidden = isLive
       if isLive {
-        liveLabel.text = "LIVE"
+        liveLabel.text = LocalizedStrings.live.localized.uppercased()
         liveLabel.backgroundColor = UIColor.color("a_pink")
         chatView.isHidden = !chatEnabled
       }

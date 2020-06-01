@@ -39,9 +39,9 @@ Pod::Spec.new do |s|
     s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/AntViewerExt.framework'
   end
 
-  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist}'
+  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'
   s.resource_bundles = {
-    'AntWidget' => ['AntViewer/Assets/*']
+    'AntWidget' => ['AntViewer/Assets/**/*']
   }
   s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
   s.static_framework = true
