@@ -19,7 +19,7 @@ class Animator {
       case .pulse:
         return 1.52
       case .pulseFade:
-        return 6
+        return 15
       }
     }
   }
@@ -96,14 +96,13 @@ class Animator {
     case .pulseFade:
       let opacityAnimation = CAKeyframeAnimation(keyPath: "opacity")
       opacityAnimation.values = [0, 1, 1, 0, 0]
-      opacityAnimation.keyTimes = [0, 0.033, 0.633, 0.666, 1]
+      opacityAnimation.keyTimes = [0.0, 0.0132, 0.2532, 0.2664, 1]
       let scaleAnimation = CAKeyframeAnimation(keyPath: "transform.scale")
       scaleAnimation.values =   [2.2, 1, 1, 1.2, 1, 1.15, 1, 1, 2.2, 2.2]
-      scaleAnimation.keyTimes = [0, 0.033, 0.273, 0.306, 0.339, 0.366, 0.393, 0.633, 0.666, 1]
+      scaleAnimation.keyTimes = [0.0, 0.0132, 0.1092, 0.1224, 0.1356, 0.1464, 0.1572, 0.2532, 0.2664, 1]
       let group = CAAnimationGroup()
       group.animations = [opacityAnimation, scaleAnimation]
       return group
     }
   }
-
 }
