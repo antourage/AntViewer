@@ -80,7 +80,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var playButton: UIButton!
   @IBOutlet weak var nextButton: UIButton!
   @IBOutlet weak var previousButton: UIButton!
-  @IBOutlet var cancelButton: UIButton!
+  @IBOutlet var cancelButton: LocalizedButton!
   @IBOutlet var fullScreenButtons: [UIButton]!
   @IBOutlet var thanksForWatchingLabel: UILabel!
   @IBOutlet var liveDurationLabel: UILabel!

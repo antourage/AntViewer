@@ -36,7 +36,7 @@ public class StreamCell: UICollectionViewCell {
   @IBOutlet var pollView: UIImageView!
   @IBOutlet var shareButton: UIButton!
   @IBOutlet var buttonsStackView: UIStackView!
-  @IBOutlet var joinButton: UIButton!
+  @IBOutlet var joinButton: LocalizedButton!
   @IBOutlet private var timeLabelWidth: NSLayoutConstraint!
 
   var message: LatestComment? {

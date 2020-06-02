@@ -29,7 +29,7 @@ class EditProfileViewController: UIViewController {
       displayNameTextField.rightViewMode = .always
     }
   }
-  @IBOutlet var confirmButton: UIButton!
+  @IBOutlet var confirmButton: LocalizedButton!
 
   var isConfirmButtonEnable = false {
       didSet {

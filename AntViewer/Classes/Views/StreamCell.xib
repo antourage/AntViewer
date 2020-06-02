@@ -263,7 +263,7 @@
                                             </label>
                                         </subviews>
                                     </stackView>
-                                    <button contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jEI-Jg-0nN">
+                                    <button contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jEI-Jg-0nN" customClass="LocalizedButton" customModule="AntViewer">
                                         <rect key="frame" x="0.0" y="90.5" width="114" height="23.5"/>
                                         <constraints>
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="2Kf-rN-9Ft"/>
