@@ -361,6 +361,7 @@
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
@@ -383,6 +384,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PortraitMessageCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SkeletonCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamCell.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntViewerModel.momd",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntWidget.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);
@@ -434,6 +436,7 @@
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib",
 				"${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib",
+				"${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld",
 				"${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle",
 			);
@@ -456,6 +459,7 @@
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/PortraitMessageCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/SkeletonCell.nib",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/StreamCell.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntViewerModel.momd",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntWidget.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Cpp.bundle",
 			);
