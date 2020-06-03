@@ -450,14 +450,14 @@ class PlayerController: UIViewController {
       if seekTo == nil, let time = oldValue {
         player.player.rate = 0
         self.isVideoEnd = false
-        self.shouldShowSkipButton = false
-        self.skipCurtainButton.isHidden = true
         player.seek(to: CMTime(seconds: Double(time), preferredTimescale: 1), completionHandler: { [weak self] (value) in
           self?.player.isPlayerPaused ?? false ? self?.player.pause() : self?.player.play()
           
           if self?.isSeekByTappingMode ?? true {
             self?.isSeekByTappingMode = false
           }
+          self?.shouldShowSkipButton = false
+          self?.skipCurtainButton.isHidden = true
           
         })
         chatController.handleVODsChat(forTime: time)
