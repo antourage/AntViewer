@@ -32,6 +32,7 @@ enum LocalizedStrings: String {
   case typeDisplayName = "Type your display name"
   case save = "Save"
   case cancel = "Cancel"
+  case startTyping = "Start typing"
   //POOLS
   case voteToSeeResults = "Vote to see results!"
   case thanksForVoting = "Thanks for voting!"

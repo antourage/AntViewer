@@ -744,7 +744,7 @@ class PlayerController: UIViewController {
     if let vod = videoContent as? VOD {
       let seconds = player.currentTime
       vod.isNew = false
-      vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString()
+      vod.stopTime = min(Int(seconds.isNaN ? 0 : seconds), vod.duration.duration()).durationString()
     }
     dataSource.startUpdatingStreams()
     streamTimer?.invalidate()
@@ -825,7 +825,7 @@ class PlayerController: UIViewController {
       self.activeSpendTime += 0.2
       
       if let vod = self.videoContent as? VOD {
-        vod.stopTime = Int(time.seconds).durationString()
+        vod.stopTime = min(Int(time.seconds), vod.duration.duration()).durationString()
         self.chatController.handleVODsChat(forTime: Int(time.seconds))
         self.checkCurtains()
         //temp: needs refactoring
