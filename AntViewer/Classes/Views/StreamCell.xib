@@ -269,6 +269,7 @@
                                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="20" id="2Kf-rN-9Ft"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="9"/>
+                                        <color key="tintColor" name="a_cell_subtitle"/>
                                         <state key="normal" title="JOIN CONVERSATION" image="ArrowSmallRight">
                                             <color key="titleColor" name="a_cell_subtitle"/>
                                         </state>

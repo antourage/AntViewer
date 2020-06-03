@@ -55,6 +55,7 @@
                 <outlet property="seekLabel" destination="u8m-su-2fE" id="eey-Wv-27u"/>
                 <outlet property="sendButton" destination="sop-fK-jch" id="y27-dz-4GY"/>
                 <outlet property="shareButton" destination="paQ-Po-fED" id="SXi-zo-1eF"/>
+                <outlet property="skipCurtainButton" destination="Vrg-3O-49T" id="SyZ-Jn-rid"/>
                 <outlet property="startLabel" destination="knS-6i-PS2" id="mZZ-Ch-6J8"/>
                 <outlet property="subtitleLabel" destination="o1u-w2-xag" id="UDP-4d-oEJ"/>
                 <outlet property="thanksForWatchingLabel" destination="cLA-Rd-OPc" id="SOv-ZU-FU5"/>
@@ -494,11 +495,34 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </label>
+                        <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vrg-3O-49T" customClass="LocalizedButton" customModule="AntViewer">
+                            <rect key="frame" x="140.66666666666666" y="177" width="94" height="20"/>
+                            <color key="backgroundColor" red="0.058823529411764705" green="0.058823529411764705" blue="0.058823529411764705" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="20" id="v0i-fz-9qu"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="boldSystem" pointSize="9"/>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="4" maxY="0.0"/>
+                            <state key="normal" title="SKIP CURTAIN" image="ArrowSmallRight">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                    <integer key="value" value="10"/>
+                                </userDefinedRuntimeAttribute>
+                                <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="ArrowSmallRight"/>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="skipCurtainButtonTapped:" destination="-1" eventType="touchUpInside" id="ee4-YJ-2QG"/>
+                            </connections>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <gestureRecognizers/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="Y8L-11-K5X" secondAttribute="trailing" id="8QY-lk-Wzg"/>
+                        <constraint firstItem="IoW-Ne-fB8" firstAttribute="bottom" secondItem="Vrg-3O-49T" secondAttribute="bottom" constant="14" id="FRy-gU-KIS"/>
                         <constraint firstItem="cLA-Rd-OPc" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="top" id="GrB-WJ-pa2"/>
                         <constraint firstItem="jVY-fl-H6n" firstAttribute="top" secondItem="vk0-JI-SRF" secondAttribute="bottom" constant="14" id="LtT-dh-TzT"/>
                         <constraint firstItem="jVY-fl-H6n" firstAttribute="leading" secondItem="IoW-Ne-fB8" secondAttribute="leading" constant="12" id="MQA-RN-Wnt"/>
@@ -510,6 +534,7 @@
                         <constraint firstItem="fR5-eA-SOa" firstAttribute="centerY" secondItem="u8m-su-2fE" secondAttribute="centerY" id="c7G-ia-1TM"/>
                         <constraint firstAttribute="bottom" secondItem="cLA-Rd-OPc" secondAttribute="bottom" id="f1P-Ll-OVs"/>
                         <constraint firstItem="vk0-JI-SRF" firstAttribute="leading" secondItem="jVY-fl-H6n" secondAttribute="leading" id="l1p-fJ-mwo"/>
+                        <constraint firstItem="Vrg-3O-49T" firstAttribute="centerX" secondItem="IoW-Ne-fB8" secondAttribute="centerX" id="pws-AD-eH8"/>
                         <constraint firstItem="cLA-Rd-OPc" firstAttribute="leading" secondItem="6SG-AQ-Vmv" secondAttribute="leading" id="rjS-Fg-22u"/>
                         <constraint firstItem="fR5-eA-SOa" firstAttribute="centerX" secondItem="u8m-su-2fE" secondAttribute="centerX" id="rxi-9B-BwS"/>
                         <constraint firstAttribute="width" secondItem="6SG-AQ-Vmv" secondAttribute="height" multiplier="16:9" priority="850" id="sdE-i2-C6Y"/>
@@ -945,13 +970,10 @@
                 <action selector="openPollBannerPressed:" destination="-1" id="ELE-Q0-KmW"/>
             </connections>
         </tapGestureRecognizer>
-        <tapGestureRecognizer id="ETb-tg-dnL">
-            <connections>
-                <action selector="chatTipPressed:" destination="-1" id="IWj-NW-fNw"/>
-            </connections>
-        </tapGestureRecognizer>
+        <tapGestureRecognizer id="ETb-tg-dnL"/>
     </objects>
     <resources>
+        <image name="ArrowSmallRight" width="12" height="12"/>
         <image name="BroadcasterColorWheel" width="40" height="40"/>
         <image name="FullScreenOff" width="24" height="24"/>
         <image name="FullScreenOn" width="24" height="24"/>

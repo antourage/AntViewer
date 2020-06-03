@@ -67,6 +67,14 @@ class PlayerController: UIViewController {
     return vc
   }()
   //MARK: -
+
+  //MARK: - curtain staff
+  @IBOutlet var skipCurtainButton: LocalizedButton!
+  lazy var skipCurtainButtonDebouncer = Debouncer(delay: 5)
+  var currentCurtain: CurtainRange?
+  var shouldShowSkipButton = true
+  //MARK: -
+
   @IBOutlet weak var sendButton: UIButton!
   @IBOutlet weak var videoContainerView: AVPlayerView! {
     didSet {
@@ -442,6 +450,8 @@ class PlayerController: UIViewController {
       if seekTo == nil, let time = oldValue {
         player.player.rate = 0
         self.isVideoEnd = false
+        self.shouldShowSkipButton = false
+        self.skipCurtainButton.isHidden = true
         player.seek(to: CMTime(seconds: Double(time), preferredTimescale: 1), completionHandler: { [weak self] (value) in
           self?.player.isPlayerPaused ?? false ? self?.player.pause() : self?.player.play()
           
@@ -817,6 +827,7 @@ class PlayerController: UIViewController {
       if let vod = self.videoContent as? VOD {
         vod.stopTime = Int(time.seconds).durationString()
         self.chatController.handleVODsChat(forTime: Int(time.seconds))
+        self.checkCurtains()
         //temp: needs refactoring
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())
         if self.seekTo == nil, self.player.player.rate == 1 {
@@ -970,6 +981,55 @@ class PlayerController: UIViewController {
     cancelButton.isHidden = true
   }
 
+  @IBAction func skipCurtainButtonTapped(_ sender: UIButton) {
+    //MARK: skip curtain
+    defer {
+      skipCurtainButtonDebouncer.call { }
+      skipCurtainButton.isHidden = true
+    }
+    guard let vod = videoContent as? VOD,
+      var currentCurtain = vod.curtainRangeModels
+        .first(where: {
+        var curtain = $0
+        return curtain.range.contains(player.currentTime)
+      }) else {
+        return
+    }
+    seekTo = Int(currentCurtain.range.upperBound)
+    seekTo = nil
+  }
+
+  private func checkCurtains() {
+    guard let vod = videoContent as? VOD,
+    var curtain = vod.curtainRangeModels
+      .first(where: {
+      var curtain = $0
+      return curtain.range.contains(player.currentTime)
+      }) else {
+        currentCurtain = nil
+        skipCurtainButton.isHidden = true
+        shouldShowSkipButton = true
+        return
+    }
+
+    if var currentCurtain = currentCurtain {
+      if currentCurtain.range != curtain.range {
+        currentCurtain = curtain
+        shouldShowSkipButton = false
+        skipCurtainButton.isHidden = true
+      }
+    } else {
+      currentCurtain = curtain
+      skipCurtainButton.isHidden = !shouldShowSkipButton
+      skipCurtainButtonDebouncer.call { [weak self] in
+        self?.shouldShowSkipButton = false
+        self?.skipCurtainButton.isHidden = true
+      }
+    }
+
+
+  }
+
   @objc
   private func onSliderValChanged(slider: UISlider, event: UIEvent) {
     if let touchEvent = event.allTouches?.first {
@@ -1087,7 +1147,7 @@ class PlayerController: UIViewController {
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
     guard !isAutoplayMode else { return }
-    let views: [UIView] = [cancelButton, playButton] + fullScreenButtons
+    let views: [UIView] = [cancelButton, playButton, skipCurtainButton] + fullScreenButtons
     let onButtons = views.map { $0.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
     guard isControlsEnabled else { return }
     if isKeyboardShown {
@@ -1133,6 +1193,7 @@ class PlayerController: UIViewController {
     }
     controlsAppearingDebouncer.call { [weak self] in
       guard let `self` = self else { return }
+      self.skipCurtainButton.alpha = !isHidden ? 0 : 1
       self.startLabel.text = self.videoContent.date.timeAgo()
       self.videoControlsView.isHidden = isHidden
       self.updateSeekThumbAppearance(isHidden: isHidden)
@@ -1146,6 +1207,7 @@ class PlayerController: UIViewController {
       self.controlsDebouncer.call { [weak self] in
         guard let `self` = self else { return }
         //MARK: auto hide player controls
+        self.skipCurtainButton.alpha = !isHidden ? 0 : 1
         if self.player.isPlayerPaused == false {
           if OrientationUtility.isLandscape && self.seekTo != nil {
             return
