@@ -24,7 +24,7 @@
                             <rect key="frame" x="29" y="242" width="262" height="84"/>
                             <subviews>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hackenLogo" translatesAutoresizingMaskIntoConstraints="NO" id="fFX-mX-K6N">
-                                    <rect key="frame" x="86" y="0.0" width="90" height="45"/>
+                                    <rect key="frame" x="109.5" y="0.0" width="43" height="45"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="45" id="NEC-R7-IQV"/>
                                     </constraints>
@@ -68,6 +68,6 @@
         </view>
     </objects>
     <resources>
-        <image name="hackenLogo" width="89.666664123535156" height="115.66666412353516"/>
+        <image name="hackenLogo" width="43" height="56"/>
     </resources>
 </document>

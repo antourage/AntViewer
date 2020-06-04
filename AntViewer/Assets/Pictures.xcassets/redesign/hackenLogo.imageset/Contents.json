@@ -1,15 +1,17 @@
 {
   "images" : [
     {
+      "filename" : "hackenLogo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
+      "filename" : "hackenLogo@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "hackenLogo.png",
+      "filename" : "hackenLogo@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }
