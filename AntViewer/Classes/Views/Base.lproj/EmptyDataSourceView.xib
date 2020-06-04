@@ -21,19 +21,19 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="23" translatesAutoresizingMaskIntoConstraints="NO" id="WTA-2v-KKP">
-                            <rect key="frame" x="20" y="242" width="280" height="84"/>
+                            <rect key="frame" x="29" y="242" width="262" height="84"/>
                             <subviews>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="hackenLogo" translatesAutoresizingMaskIntoConstraints="NO" id="fFX-mX-K6N">
-                                    <rect key="frame" x="73" y="0.0" width="134" height="45"/>
+                                    <rect key="frame" x="86" y="0.0" width="90" height="45"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" secondItem="fFX-mX-K6N" secondAttribute="height" multiplier="3:1" id="AXB-Ay-fBP"/>
+                                        <constraint firstAttribute="height" constant="45" id="NEC-R7-IQV"/>
                                     </constraints>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="hackenLogo"/>
                                     </userDefinedRuntimeAttributes>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4MG-lB-hi0">
-                                    <rect key="frame" x="9" y="68" width="262" height="16"/>
+                                    <rect key="frame" x="0.0" y="68" width="262" height="16"/>
                                     <attributedString key="attributedText">
                                         <fragment content="LIVE INTERACTIVE VIDEOS COMING SOON">
                                             <attributes>
@@ -46,9 +46,6 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
-                            <constraints>
-                                <constraint firstItem="fFX-mX-K6N" firstAttribute="width" secondItem="WTA-2v-KKP" secondAttribute="width" multiplier="0.48" id="4pT-d2-qie"/>
-                            </constraints>
                         </stackView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -71,6 +68,6 @@
         </view>
     </objects>
     <resources>
-        <image name="hackenLogo" width="1200" height="1546"/>
+        <image name="hackenLogo" width="89.666664123535156" height="115.66666412353516"/>
     </resources>
 </document>

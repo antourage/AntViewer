@@ -1332,6 +1332,7 @@ class PlayerController: UIViewController {
     let paddingView = UIView(frame: view.bounds)
     paddingView.backgroundColor = UIColor.gradientDark.withAlphaComponent(0.8)
     paddingView.tag = 1234
+    paddingView.translatesAutoresizingMaskIntoConstraints = false
     view.insertSubview(paddingView, belowSubview: editProfileContainerView)
     paddingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
     paddingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
