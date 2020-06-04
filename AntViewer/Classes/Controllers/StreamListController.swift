@@ -759,10 +759,13 @@ extension StreamListController: ModernAVPlayerDelegate {
       if let item = self?.activeItem as? VOD {
         self?.activeCell?.duration = item.duration.duration()
         self?.activeCell?.watchedTime = Int(currentTime)
-        item.stopTime = Int(currentTime).durationString()
+        item.stopTime = min(Int(currentTime), item.duration.duration()).durationString()
       } else if let item = self?.activeItem as? Live {
         let duration = Date().timeIntervalSince(item.date)
         self?.activeCell?.duration = Int(duration)
+        if self?.activeCell?.timeImageView.isAnimating == false {
+          self?.activeCell?.timeImageView.startAnimating()
+        }
       }
     }
   }
@@ -773,7 +776,9 @@ extension StreamListController: ModernAVPlayerDelegate {
       UIView.animate(withDuration: 0.1) {
         self.activeCell?.timeImageView.isHidden = false
       }
-      self.activeCell?.timeImageView.startAnimating()
+      if self.activeCell?.timeImageView.isAnimating == false {
+        self.activeCell?.timeImageView.startAnimating()
+      }
     }
   }
 

@@ -67,6 +67,14 @@ class PlayerController: UIViewController {
     return vc
   }()
   //MARK: -
+
+  //MARK: - curtain staff
+  @IBOutlet var skipCurtainButton: LocalizedButton!
+  lazy var skipCurtainButtonDebouncer = Debouncer(delay: 5)
+  var currentCurtain: CurtainRange?
+  var shouldShowSkipButton = true
+  //MARK: -
+
   @IBOutlet weak var sendButton: UIButton!
   @IBOutlet weak var videoContainerView: AVPlayerView! {
     didSet {
@@ -80,7 +88,7 @@ class PlayerController: UIViewController {
   @IBOutlet weak var playButton: UIButton!
   @IBOutlet weak var nextButton: UIButton!
   @IBOutlet weak var previousButton: UIButton!
-  @IBOutlet var cancelButton: UIButton!
+  @IBOutlet var cancelButton: LocalizedButton!
   @IBOutlet var fullScreenButtons: [UIButton]!
   @IBOutlet var thanksForWatchingLabel: UILabel!
   @IBOutlet var liveDurationLabel: UILabel!
@@ -154,7 +162,7 @@ class PlayerController: UIViewController {
         portraitSeekSlider.isHidden = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
-        portraitSeekSlider.tintColor = UIColor.color("a_pink")
+        portraitSeekSlider.tintColor = .clear//UIColor.color("a_pink")
         portraitSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
         portraitSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: portraitSeekSlider), for: .normal)
       }
@@ -448,6 +456,8 @@ class PlayerController: UIViewController {
           if self?.isSeekByTappingMode ?? true {
             self?.isSeekByTappingMode = false
           }
+          self?.shouldShowSkipButton = false
+          self?.skipCurtainButton.isHidden = true
           
         })
         chatController.handleVODsChat(forTime: time)
@@ -734,7 +744,7 @@ class PlayerController: UIViewController {
     if let vod = videoContent as? VOD {
       let seconds = player.currentTime
       vod.isNew = false
-      vod.stopTime = Int(seconds.isNaN ? 0 : seconds).durationString()
+      vod.stopTime = min(Int(seconds.isNaN ? 0 : seconds), vod.duration.duration()).durationString()
     }
     dataSource.startUpdatingStreams()
     streamTimer?.invalidate()
@@ -815,8 +825,9 @@ class PlayerController: UIViewController {
       self.activeSpendTime += 0.2
       
       if let vod = self.videoContent as? VOD {
-        vod.stopTime = Int(time.seconds).durationString()
+        vod.stopTime = min(Int(time.seconds), vod.duration.duration()).durationString()
         self.chatController.handleVODsChat(forTime: Int(time.seconds))
+        self.checkCurtains()
         //temp: needs refactoring
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())
         if self.seekTo == nil, self.player.player.rate == 1 {
@@ -970,6 +981,55 @@ class PlayerController: UIViewController {
     cancelButton.isHidden = true
   }
 
+  @IBAction func skipCurtainButtonTapped(_ sender: UIButton) {
+    //MARK: skip curtain
+    defer {
+      skipCurtainButtonDebouncer.call { }
+      skipCurtainButton.isHidden = true
+    }
+    guard let vod = videoContent as? VOD,
+      var currentCurtain = vod.curtainRangeModels
+        .first(where: {
+        var curtain = $0
+        return curtain.range.contains(player.currentTime)
+      }) else {
+        return
+    }
+    seekTo = Int(currentCurtain.range.upperBound)
+    seekTo = nil
+  }
+
+  private func checkCurtains() {
+    guard let vod = videoContent as? VOD,
+    var curtain = vod.curtainRangeModels
+      .first(where: {
+      var curtain = $0
+      return curtain.range.contains(player.currentTime)
+      }) else {
+        currentCurtain = nil
+        skipCurtainButton.isHidden = true
+        shouldShowSkipButton = true
+        return
+    }
+
+    if var currentCurtain = currentCurtain {
+      if currentCurtain.range != curtain.range {
+        currentCurtain = curtain
+        shouldShowSkipButton = false
+        skipCurtainButton.isHidden = true
+      }
+    } else {
+      currentCurtain = curtain
+      skipCurtainButton.isHidden = !shouldShowSkipButton
+      skipCurtainButtonDebouncer.call { [weak self] in
+        self?.shouldShowSkipButton = false
+        self?.skipCurtainButton.isHidden = true
+      }
+    }
+
+
+  }
+
   @objc
   private func onSliderValChanged(slider: UISlider, event: UIEvent) {
     if let touchEvent = event.allTouches?.first {
@@ -1087,7 +1147,7 @@ class PlayerController: UIViewController {
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
     guard !isAutoplayMode else { return }
-    let views: [UIView] = [cancelButton, playButton] + fullScreenButtons
+    let views: [UIView] = [cancelButton, playButton, skipCurtainButton] + fullScreenButtons
     let onButtons = views.map { $0.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
     guard isControlsEnabled else { return }
     if isKeyboardShown {
@@ -1133,6 +1193,7 @@ class PlayerController: UIViewController {
     }
     controlsAppearingDebouncer.call { [weak self] in
       guard let `self` = self else { return }
+      self.skipCurtainButton.alpha = !isHidden ? 0 : 1
       self.startLabel.text = self.videoContent.date.timeAgo()
       self.videoControlsView.isHidden = isHidden
       self.updateSeekThumbAppearance(isHidden: isHidden)
@@ -1146,6 +1207,7 @@ class PlayerController: UIViewController {
       self.controlsDebouncer.call { [weak self] in
         guard let `self` = self else { return }
         //MARK: auto hide player controls
+        self.skipCurtainButton.alpha = !isHidden ? 0 : 1
         if self.player.isPlayerPaused == false {
           if OrientationUtility.isLandscape && self.seekTo != nil {
             return
@@ -1166,6 +1228,8 @@ class PlayerController: UIViewController {
   
   func updateSeekThumbAppearance(isHidden: Bool) {
     let thumbTintColor = isHidden ? .clear : UIColor.color("a_pink")
+    self.portraitSeekSlider.tintColor = thumbTintColor
+    self.portraitSeekSlider.isUserInteractionEnabled = !isHidden
     self.landscapeSeekSlider?.tintColor = thumbTintColor
     self.landscapeSeekSlider?.isUserInteractionEnabled = !isHidden
   }

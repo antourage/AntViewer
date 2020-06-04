@@ -20,7 +20,7 @@ class EditProfileViewController: UIViewController {
   @IBOutlet var displayNameTextField: UITextField! {
     didSet {
       displayNameTextField.delegate = self
-      displayNameTextField.attributedPlaceholder = NSAttributedString(string: "Start typing", attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
+      displayNameTextField.attributedPlaceholder = NSAttributedString(string: LocalizedStrings.startTyping.localized, attributes: [NSAttributedString.Key.foregroundColor : UIColor.lightGray])
       displayNameTextField.layer.borderColor = UIColor.white.withAlphaComponent(0.6).cgColor
       let view = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 20, height: displayNameTextField.bounds.height)))
       displayNameTextField.leftView = view
@@ -29,7 +29,7 @@ class EditProfileViewController: UIViewController {
       displayNameTextField.rightViewMode = .always
     }
   }
-  @IBOutlet var confirmButton: UIButton!
+  @IBOutlet var confirmButton: LocalizedButton!
 
   var isConfirmButtonEnable = false {
       didSet {
@@ -41,7 +41,7 @@ class EditProfileViewController: UIViewController {
     
   var currentDisplayName: String = "" {
       didSet {
-        displayNameTextField.placeholder = currentDisplayName.isEmpty ? "Start typing" : currentDisplayName
+        displayNameTextField.placeholder = currentDisplayName.isEmpty ? LocalizedStrings.startTyping.localized : currentDisplayName
       }
     }
   private let confirmButtonDisabledColor = UIColor(red: 48/255, green: 48/255, blue: 48/255, alpha: 1)
