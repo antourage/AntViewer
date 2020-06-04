@@ -162,7 +162,7 @@ class PlayerController: UIViewController {
         portraitSeekSlider.isHidden = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
-        portraitSeekSlider.tintColor = UIColor.color("a_pink")
+        portraitSeekSlider.tintColor = .clear//UIColor.color("a_pink")
         portraitSeekSlider.addTarget(self, action: #selector(onSliderValChanged(slider:event:)), for: .valueChanged)
         portraitSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: portraitSeekSlider), for: .normal)
       }
@@ -1228,6 +1228,8 @@ class PlayerController: UIViewController {
   
   func updateSeekThumbAppearance(isHidden: Bool) {
     let thumbTintColor = isHidden ? .clear : UIColor.color("a_pink")
+    self.portraitSeekSlider.tintColor = thumbTintColor
+    self.portraitSeekSlider.isUserInteractionEnabled = !isHidden
     self.landscapeSeekSlider?.tintColor = thumbTintColor
     self.landscapeSeekSlider?.isUserInteractionEnabled = !isHidden
   }

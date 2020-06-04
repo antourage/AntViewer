@@ -187,8 +187,7 @@ class ChatViewController: UIViewController {
   }
 
   func handleVODsChat(forTime time: Int) {
-    let countDown = 5
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time /*+ messagesAfterStream*/ + countDown
+    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
     let dif = filteredArr.count - messagesDataSource.count
     guard dif != 0 else { return }
