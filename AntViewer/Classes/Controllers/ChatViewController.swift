@@ -25,6 +25,7 @@ class ChatViewController: UIViewController {
   }
 
   var onTableViewTapped: (()->())?
+  var handleTableViewSwipeGesture: (()->())?
 
   private var shouldUpdateIndexPath = true
   private var chatGradientLayer: CAGradientLayer = {
@@ -85,6 +86,12 @@ class ChatViewController: UIViewController {
 
   @IBAction func handleTableViewTapped(_ sender: UITapGestureRecognizer) {
     onTableViewTapped?()
+  }
+
+  @IBAction func handleSwipeGesture(_ sender: UISwipeGestureRecognizer) {
+    if OrientationUtility.isLandscape {
+      handleTableViewSwipeGesture?()
+    }
   }
 
   func insertMessage(_ message: Message) {
