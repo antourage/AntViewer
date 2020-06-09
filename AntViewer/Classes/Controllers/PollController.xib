@@ -10,6 +10,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PollController" customModule="AntViewer">
             <connections>
                 <outlet property="questionLabel" destination="6FR-mS-9Q5" id="Xnl-cF-wPI"/>
+                <outlet property="sponsoredBanner" destination="NRT-cN-iiO" id="abK-fi-RYy"/>
                 <outlet property="tableView" destination="IwL-oX-3Mv" id="EyG-6c-cjw"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -97,9 +98,21 @@
                             </constraints>
                         </view>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="IwL-oX-3Mv">
-                            <rect key="frame" x="44" y="61" width="287" height="606"/>
+                            <rect key="frame" x="44" y="61" width="287" height="542"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </tableView>
+                        <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sponsorPlaceholder" translatesAutoresizingMaskIntoConstraints="NO" id="NRT-cN-iiO">
+                            <rect key="frame" x="12" y="611" width="351" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="50" id="9dh-fb-h0U"/>
+                            </constraints>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="sponsorPlaceholder"/>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="ikW-Z8-eQC" appends="YES" id="eNo-ET-Sqe"/>
+                            </connections>
+                        </imageView>
                     </subviews>
                     <color key="backgroundColor" red="0.9882352941176471" green="0.9882352941176471" blue="0.9882352941176471" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
@@ -107,28 +120,47 @@
                         <constraint firstItem="IwL-oX-3Mv" firstAttribute="centerX" secondItem="eta-4i-Pcx" secondAttribute="centerX" id="CAw-63-zX1"/>
                         <constraint firstAttribute="trailing" secondItem="5VF-Eq-mLt" secondAttribute="trailing" id="DTe-5k-k3O"/>
                         <constraint firstAttribute="trailing" secondItem="aAy-ra-Rlw" secondAttribute="trailing" id="T9H-xl-3T1"/>
-                        <constraint firstAttribute="bottom" secondItem="IwL-oX-3Mv" secondAttribute="bottom" id="ce4-3t-L3X"/>
+                        <constraint firstItem="NRT-cN-iiO" firstAttribute="top" secondItem="IwL-oX-3Mv" secondAttribute="bottom" constant="8" id="V48-vd-H69"/>
                         <constraint firstItem="IwL-oX-3Mv" firstAttribute="top" secondItem="aAy-ra-Rlw" secondAttribute="bottom" id="jnJ-Uz-Lqu"/>
                         <constraint firstItem="aAy-ra-Rlw" firstAttribute="height" relation="lessThanOrEqual" secondItem="eta-4i-Pcx" secondAttribute="height" multiplier="0.3" priority="990" id="m1l-N5-7Bj"/>
                         <constraint firstItem="5VF-Eq-mLt" firstAttribute="top" secondItem="eta-4i-Pcx" secondAttribute="top" id="mdr-ku-NRd"/>
+                        <constraint firstAttribute="trailing" secondItem="NRT-cN-iiO" secondAttribute="trailing" id="rPT-10-7al">
+                            <variation key="heightClass=regular-widthClass=compact" constant="12"/>
+                        </constraint>
                         <constraint firstItem="qWH-mo-6Mz" firstAttribute="leading" secondItem="IwL-oX-3Mv" secondAttribute="trailing" constant="4" id="vVg-6L-bfi"/>
                         <constraint firstItem="aAy-ra-Rlw" firstAttribute="leading" secondItem="eta-4i-Pcx" secondAttribute="leading" id="wMg-Mh-ltX"/>
+                        <constraint firstAttribute="bottom" secondItem="NRT-cN-iiO" secondAttribute="bottom" id="yeu-AN-tzZ">
+                            <variation key="heightClass=regular-widthClass=compact" constant="6"/>
+                        </constraint>
                         <constraint firstItem="aAy-ra-Rlw" firstAttribute="top" secondItem="5VF-Eq-mLt" secondAttribute="bottom" id="z2y-eb-Hwm"/>
+                        <constraint firstItem="NRT-cN-iiO" firstAttribute="leading" secondItem="eta-4i-Pcx" secondAttribute="leading" id="zSm-Pt-8C3">
+                            <variation key="heightClass=regular-widthClass=compact" constant="12"/>
+                        </constraint>
                     </constraints>
                 </view>
             </subviews>
             <color key="backgroundColor" name="a_background_grey"/>
+            <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="eta-4i-Pcx" firstAttribute="bottom" secondItem="i5M-Pr-FkT" secondAttribute="bottom" id="5PZ-m1-Ap1"/>
                 <constraint firstItem="eta-4i-Pcx" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailing" id="g6c-az-rW8"/>
                 <constraint firstItem="eta-4i-Pcx" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="iUd-xZ-Ugm"/>
                 <constraint firstItem="eta-4i-Pcx" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="nuH-eV-2mJ"/>
             </constraints>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="ikW-Z8-eQC" appends="YES" id="Sqp-tX-VSJ"/>
+            </connections>
             <point key="canvasLocation" x="140" y="134.48275862068968"/>
         </view>
+        <tapGestureRecognizer id="ikW-Z8-eQC">
+            <connections>
+                <action selector="handleTapOnBanner:" destination="-1" id="Dp3-1P-IoZ"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="cross" width="24" height="24"/>
+        <image name="sponsorPlaceholder" width="296" height="46"/>
         <namedColor name="a_background_grey">
             <color red="0.12941176470588237" green="0.12941176470588237" blue="0.12941176470588237" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
