@@ -396,10 +396,10 @@ class PlayerController: UIViewController {
   private var chat: Chat? {
     didSet {
       chat?.onAdd = { [weak self] message in
-        self?.videoContent is VOD ? self?.chatController.vodMessages.append(message) : self?.chatController.insertMessage(message)
+        self?.videoContent is VOD ? self?.chatController.vodMessages.append(message) : self?.chatController.insertMessages([message])
       }
       chat?.onRemove = { [weak self] message in
-        self?.chatController.deleteMessage(message)
+        self?.chatController.deleteMessages([message])
       }
       chat?.onStateChange = { [weak self] isActive in
         if self?.videoContent is Live {
@@ -709,7 +709,7 @@ class PlayerController: UIViewController {
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized, backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased() , backgroundColor: color ?? .gray)
     }
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
   }
@@ -723,10 +723,10 @@ class PlayerController: UIViewController {
   private func handleReachability(_ notification: Notification) {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
-      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized, duration: 2, backgroundColor: color ?? .green)
+      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
     } else {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized, backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
     }
   }
 

@@ -94,20 +94,19 @@ class ChatViewController: UIViewController {
     }
   }
 
-  func insertMessage(_ message: Message) {
-    messagesDataSource.append(message)
+  func insertMessages(_ messages: [Message]) {
     let shouldScroll = tableView.contentOffset.y >= tableView.contentSize.height - tableView.frame.size.height - 20
-    let indexPath = IndexPath(row: messagesDataSource.count - 1, section: 0)
+    let addedIndexes: [Int] = Array(messagesDataSource.count..<messagesDataSource.count+messages.count)
+    messagesDataSource += messages
+    let indexPaths = addedIndexes.map { IndexPath(row: $0, section: 0) }
     tableView.beginUpdates()
-    tableView.insertRows(at: [indexPath], with: .none)
+    tableView.insertRows(at: indexPaths, with: .none)
     tableView.endUpdates()
     updateContentInsetForTableView()
     tableView.layoutIfNeeded()
     if shouldScroll {
       alreadyWatchedMessage = messagesDataSource.count
-      UIView.animate(withDuration: 0.3) {
-        self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: false)
-      }
+      tableView.scrollToRow(at: IndexPath(row: self.messagesDataSource.count-1, section: 0), at: .bottom, animated: true)
     }
     if tableView.contentSize.height < tableView.bounds.height {
       alreadyWatchedMessage = messagesDataSource.count
@@ -115,20 +114,20 @@ class ChatViewController: UIViewController {
     updateChatTipView(newMessagesCount: messagesDataSource.count-alreadyWatchedMessage)
   }
 
-  func deleteMessage(_ message: Message) {
-    if let index = messagesDataSource.firstIndex(where: {$0.key == message.key}) {
-      self.messagesDataSource.remove(at: index)
-      if alreadyWatchedMessage > messagesDataSource.count {
-        alreadyWatchedMessage = messagesDataSource.count
-      }
-      let indexPath = IndexPath(row: index, section: 0)
-      UIView.setAnimationsEnabled(false)
-      tableView.beginUpdates()
-      tableView.deleteRows(at: [indexPath], with: .none)
-      tableView.endUpdates()
-      updateContentInsetForTableView()
-      UIView.setAnimationsEnabled(true)
+  func deleteMessages(_ messages: [Message]) {
+    let arrWithoutUpdates = messagesDataSource
+    self.messagesDataSource.removeAll { mess in messages.contains { $0.key == mess.key } }//.remove(at: index)
+    let deletedIndexes: [Int] = Array(messagesDataSource.count..<arrWithoutUpdates.count)
+    let deletedIndexPaths = deletedIndexes.map { IndexPath(row: $0, section: 0) }
+    if alreadyWatchedMessage > messagesDataSource.count {
+      alreadyWatchedMessage = messagesDataSource.count
     }
+    UIView.setAnimationsEnabled(false)
+    tableView.beginUpdates()
+    tableView.deleteRows(at: deletedIndexPaths, with: .none)
+    tableView.endUpdates()
+    updateContentInsetForTableView()
+    UIView.setAnimationsEnabled(true)
   }
 
   func updateContentInsetForTableView(_ animated: Bool = true) {
@@ -203,9 +202,7 @@ class ChatViewController: UIViewController {
       filteredArr.filter { mes in !messagesDataSource.contains(where: { $0.key == mes.key })} :
       messagesDataSource.filter { mes in !filteredArr.contains(where: { $0.key == mes.key })}
 
-    difArr.forEach { (message) in
-      dif > 0 ? self.insertMessage(message) : self.deleteMessage(message)
-    }
+    dif > 0 ? self.insertMessages(difArr) : self.deleteMessages(difArr)
   }
 
   func scrollToBottom() {
