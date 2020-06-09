@@ -141,9 +141,9 @@
 			<key>NSStringFormatValueTypeKey</key>
 			<string>d</string>
 			<key>one</key>
-			<string>%d new comment</string>
+			<string>%d NEW COMMENT</string>
 			<key>other</key>
-			<string>%d new comments</string>
+			<string>%d NEW COMMENTS</string>
 		</dict>
 	</dict>
 </dict>

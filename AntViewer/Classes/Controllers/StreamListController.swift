@@ -191,6 +191,7 @@ class StreamListController: UIViewController {
       let deleted = notification.userInfo?["deleted"] as? [Int],
       let hasChanges = notification.userInfo?["updated"] as? Bool, hasChanges else {
         self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+        self?.updateStreamsViewersCount()
         return
       }
       self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
@@ -455,6 +456,15 @@ class StreamListController: UIViewController {
     dismiss(animated: false, completion: { [weak self] in
       self?.dataSource.videos = []
     })
+  }
+
+  private func updateStreamsViewersCount() {
+    let visibleCells = collectionView.visibleCells.filter { self.collectionView.indexPath(for: $0)?.section == 0 }
+    visibleCells.forEach { (cell) in
+      if let indexPath = self.collectionView.indexPath(for: cell) {
+        (cell as? StreamCell)?.viewersCountLabel.text = "\(self.getItemWith(indexPath: indexPath).viewsCount)"
+      }
+    }
   }
   
   fileprivate func configureCell(_ cell: StreamCell, forIndexPath indexPath: IndexPath) -> StreamCell {

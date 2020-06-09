@@ -63,6 +63,12 @@ class PlayerController: UIViewController {
     vc.videoContent = videoContent
     vc.onTableViewTapped = { [weak self] in
       self?.view.endEditing(false)
+      if OrientationUtility.isLandscape {
+        self?.onVideoTapped(shouldCheckLocation: false)
+      }
+    }
+    vc.handleTableViewSwipeGesture = { [weak self] in
+      self?.handleSwipe(isRightDirection: false)
     }
     return vc
   }()
@@ -390,10 +396,10 @@ class PlayerController: UIViewController {
   private var chat: Chat? {
     didSet {
       chat?.onAdd = { [weak self] message in
-        self?.videoContent is VOD ? self?.chatController.vodMessages.append(message) : self?.chatController.insertMessage(message)
+        self?.videoContent is VOD ? self?.chatController.vodMessages.append(message) : self?.chatController.insertMessages([message])
       }
       chat?.onRemove = { [weak self] message in
-        self?.chatController.deleteMessage(message)
+        self?.chatController.deleteMessages([message])
       }
       chat?.onStateChange = { [weak self] isActive in
         if self?.videoContent is Live {
@@ -703,7 +709,7 @@ class PlayerController: UIViewController {
   func startObservingReachability() {
     if !isReachable {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized, backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased() , backgroundColor: color ?? .gray)
     }
     NotificationCenter.default.addObserver(self, selector: #selector(handleReachability(_:)), name: .reachabilityChanged, object: nil)
   }
@@ -717,10 +723,10 @@ class PlayerController: UIViewController {
   private func handleReachability(_ notification: Notification) {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
-      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized, duration: 2, backgroundColor: color ?? .green)
+      bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
     } else {
       let color = UIColor.color("a_bottomMessageGray")
-      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized, backgroundColor: color ?? .gray)
+      bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
     }
   }
 
@@ -1099,13 +1105,13 @@ class PlayerController: UIViewController {
     chatTextView.resignFirstResponder()
   }
   
-  func handleSeekByTapping(_ sender: UITapGestureRecognizer) {
+  func handleSeekByTapping(_ backwardDirection: Bool) {
     guard let vod = self.videoContent as? VOD else { return }
     self.controlsAppearingDebouncer.call {}
     self.videoControlsView.isHidden = true
+
     self.liveToLandscapeInfoTop.isActive = false
     self.view.layoutIfNeeded()
-    let isLeftSide = sender.location(in: self.videoContainerView).x < self.videoContainerView.bounds.width / 2
     let activeSlider = OrientationUtility.currentOrientatin == .portrait ? self.portraitSeekSlider : self.landscapeSeekSlider
     self.seekTo = Int(activeSlider?.value ?? 0)
     
@@ -1113,7 +1119,7 @@ class PlayerController: UIViewController {
       self.seekToByTapping = self.seekTo
     }
     
-    self.seekToByTapping! += isLeftSide ? -10 : 10
+    self.seekToByTapping! += backwardDirection ? -10 : 10
     
     switch self.seekToByTapping! {
     case let val where val < 0:
@@ -1126,7 +1132,7 @@ class PlayerController: UIViewController {
       self.seekPaddingView = SeekPaddingView(showInView: self.videoContainerView)
     }
     //seek forward/backward
-    if isLeftSide {
+    if backwardDirection {
       self.seekPaddingView?.seekBackward()
       self.seekPaddingView?.soughtTime = self.seekToByTapping! == 0 ? 10 : (self.seekPaddingView?.soughtTime)! + 10
     } else {
@@ -1146,22 +1152,31 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleTouchOnVideo(_ sender: UITapGestureRecognizer) {
+    onVideoTapped(sender)
+  }
+
+  private func onVideoTapped(_ tapGesture: UITapGestureRecognizer? = nil, shouldCheckLocation: Bool = true) {
     guard !isAutoplayMode else { return }
-    let views: [UIView] = [cancelButton, playButton, skipCurtainButton] + fullScreenButtons
-    let onButtons = views.map { $0.frame.contains(sender.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
+    var onButtons = false
+    var isLeftSide = true
+    if shouldCheckLocation, let geture = tapGesture {
+      let views: [UIView] = [cancelButton, playButton, skipCurtainButton] + fullScreenButtons
+      onButtons = views.map { $0.frame.contains(geture.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
+      isLeftSide = geture.location(in: self.videoContainerView).x < self.videoContainerView.bounds.width / 2
+    }
+
     guard isControlsEnabled else { return }
     if isKeyboardShown {
       chatTextView.endEditing(true)
       return
     }
-    
-    guard !onButtons, !(!pollContainerView.isHidden&&OrientationUtility.isLandscape) else { return }
 
+    guard !onButtons, !(!pollContainerView.isHidden&&OrientationUtility.isLandscape) else { return }
     //MARK: seek by typing
     self.updatePlayButtonImage()
     if self.isSeekByTappingMode, videoContent is VOD {
       self.isPlayerControlsHidden = true
-      handleSeekByTapping(sender)
+      handleSeekByTapping(isLeftSide)
     } else {
       if self.timeOfLastTap == nil {
         self.timeOfLastTap = Date()
@@ -1172,7 +1187,7 @@ class PlayerController: UIViewController {
           self.isSeekByTappingMode = false
         } else {
           self.isSeekByTappingMode = true
-          handleSeekByTapping(sender)
+          handleSeekByTapping(isLeftSide)
         }
       }
     }
@@ -1332,6 +1347,7 @@ class PlayerController: UIViewController {
     let paddingView = UIView(frame: view.bounds)
     paddingView.backgroundColor = UIColor.gradientDark.withAlphaComponent(0.8)
     paddingView.tag = 1234
+    paddingView.translatesAutoresizingMaskIntoConstraints = false
     view.insertSubview(paddingView, belowSubview: editProfileContainerView)
     paddingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
     paddingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
@@ -1358,17 +1374,13 @@ class PlayerController: UIViewController {
   }
   
   @IBAction func handleSwipeGesture(_ sender: UISwipeGestureRecognizer) {
-    guard editProfileContainerView.isHidden, videoControlsView.isHidden else { return }
     let halfOfViewWidth = view.bounds.width / 2
     guard OrientationUtility.isLandscape, sender.location(in: view).x <= halfOfViewWidth else {return}
-    
-    var isRightDirection = false
-    switch sender.direction {
-    case .right:
-      isRightDirection = true
-    default:
-      break
-    }
+    handleSwipe(isRightDirection: true)
+  }
+
+  private func handleSwipe(isRightDirection: Bool) {
+    guard editProfileContainerView.isHidden, videoControlsView.isHidden else { return }
     if videoContent is Live {
       isBottomContainerHidedByUser = !isRightDirection
     }

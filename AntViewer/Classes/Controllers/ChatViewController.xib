@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina6_1" orientation="landscape" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -17,7 +17,7 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
@@ -31,10 +31,11 @@
                         <outlet property="dataSource" destination="-1" id="d4J-Ll-P2n"/>
                         <outlet property="delegate" destination="-1" id="KLK-br-Jph"/>
                         <outletCollection property="gestureRecognizers" destination="jHp-Cv-LMV" appends="YES" id="Qwe-mG-TlD"/>
+                        <outletCollection property="gestureRecognizers" destination="aC5-en-KgC" appends="YES" id="Lpj-tK-7Yx"/>
                     </connections>
                 </tableView>
                 <view hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cqG-x1-Rg7" userLabel="ChatTipView">
-                    <rect key="frame" x="143.5" y="860" width="127" height="20"/>
+                    <rect key="frame" x="64" y="860" width="127" height="20"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="VMh-XA-kIP">
                             <rect key="frame" x="10" y="0.0" width="107" height="20"/>
@@ -81,6 +82,7 @@
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="if0-xZ-lL2" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="Hjz-U5-cy3"/>
+                <constraint firstItem="cqG-x1-Rg7" firstAttribute="leading" secondItem="IFR-wB-CDp" secondAttribute="leading" constant="20" id="LBL-G5-Vq6"/>
                 <constraint firstItem="cqG-x1-Rg7" firstAttribute="centerX" secondItem="if0-xZ-lL2" secondAttribute="centerX" id="T4k-qg-PdB"/>
                 <constraint firstItem="if0-xZ-lL2" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="YEN-iR-5Ku"/>
                 <constraint firstAttribute="bottom" secondItem="if0-xZ-lL2" secondAttribute="bottom" id="cCU-cB-ota"/>
@@ -88,6 +90,18 @@
                 <constraint firstItem="if0-xZ-lL2" firstAttribute="bottom" secondItem="cqG-x1-Rg7" secondAttribute="bottom" constant="16" id="sex-kH-RQv"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="IFR-wB-CDp"/>
+            <variation key="default">
+                <mask key="constraints">
+                    <exclude reference="T4k-qg-PdB"/>
+                </mask>
+            </variation>
+            <variation key="heightClass=regular-widthClass=compact">
+                <mask key="constraints">
+                    <exclude reference="LBL-G5-Vq6"/>
+                    <include reference="T4k-qg-PdB"/>
+                </mask>
+            </variation>
             <point key="canvasLocation" x="141" y="154"/>
         </view>
         <tapGestureRecognizer id="Mgr-GB-vCa">
@@ -100,6 +114,11 @@
                 <action selector="handleTableViewTapped:" destination="-1" id="1YY-aC-NGF"/>
             </connections>
         </tapGestureRecognizer>
+        <swipeGestureRecognizer direction="left" id="aC5-en-KgC">
+            <connections>
+                <action selector="handleSwipeGesture:" destination="-1" id="Rmy-Xj-zze"/>
+            </connections>
+        </swipeGestureRecognizer>
     </objects>
     <resources>
         <image name="ArrowSmallBottom" width="12" height="12"/>
