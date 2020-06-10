@@ -293,7 +293,7 @@ class PlayerController: UIViewController {
         if isAutoplayMode {
           adjustCircleLayersPath()
         }
-        if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
+        if shouldShowExpandedBanner, activePoll?.userAnswer == nil {
           expandPollBanner(enableAutoHide: false)
         }
         chatController.updateContentInsetForTableView()
@@ -346,11 +346,7 @@ class PlayerController: UIViewController {
       poll.onUpdate = { [weak self] in
         guard let `self` = self, self.activePoll != nil else { return }
         if self.pollBannerView.isHidden {
-          if OrientationUtility.isPortrait {
-            poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
-          } else {
-            self.collapsePollBanner()
-          }
+          poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
           self.pollBannerView.isHidden = false
           self.pollTitleLabel.text = poll.pollQuestion
         }
