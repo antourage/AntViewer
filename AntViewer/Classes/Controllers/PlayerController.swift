@@ -166,6 +166,7 @@ class PlayerController: UIViewController {
     didSet {
       if let video = videoContent as? VOD {
         portraitSeekSlider.isHidden = false
+        self.portraitSeekSlider.isUserInteractionEnabled = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
         portraitSeekSlider.tintColor = .clear//UIColor.color("a_pink")
@@ -623,6 +624,7 @@ class PlayerController: UIViewController {
     if videoContent is Live {
       guard !isVideoEnd else {
         bottomContainerView.isHidden = currentOrientation.isLandscape
+        bottomContainerGradientLayer.removeFromSuperlayer()
         return
       }
       if currentOrientation.isLandscape {
