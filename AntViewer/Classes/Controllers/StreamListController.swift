@@ -60,7 +60,8 @@ class StreamListController: UIViewController {
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
-        let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
+        guard let url = URL(string: item.url) else { return }
+        let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: item is Live))
         var position: Double?
         if let item = item as? VOD {
           position = Double(item.stopTime.duration())

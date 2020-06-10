@@ -748,7 +748,7 @@ class PlayerController: UIViewController {
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
     if let vod = videoContent as? VOD {
-      let seconds = player.currentTime
+      let seconds = player?.currentTime ?? 0
       vod.isNew = false
       vod.stopTime = min(Int(seconds.isNaN ? 0 : seconds), vod.duration.duration()).durationString()
     }
@@ -814,7 +814,13 @@ class PlayerController: UIViewController {
         }
         seekTo = startCurtain?.range.upperBound ?? seekTo
     }
-    player = Player(url: URL(string:videoContent.url)!, seekTo: seekTo)
+
+    guard let url = URL(string: videoContent.url) else {
+      showError(autohide: false)
+      return
+    }
+
+    player = Player(url: url, seekTo: seekTo)
     
     player.addPeriodicTimeObserver { [weak self] (time, isLikelyToKeepUp) in
       guard let `self` = self else {return}
@@ -861,9 +867,7 @@ class PlayerController: UIViewController {
       self?.videoContainerView.removeActivityIndicator()
       self?.isControlsEnabled = true
       if self?.isReachable == true {
-        let color = UIColor.color("a_bottomMessageGray") ?? .gray
-        let text = LocalizedStrings.generalError.localized.uppercased()
-        self?.bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
+        self?.showError()
       }
       self?.isPlayerError = true
     }
@@ -892,6 +896,12 @@ class PlayerController: UIViewController {
       
     }
     videoContainerView.showActivityIndicator()
+  }
+
+  private func showError(autohide: Bool = true) {
+    let color = UIColor.color("a_bottomMessageGray") ?? .gray
+    let text = LocalizedStrings.generalError.localized.uppercased()
+    bottomMessage.showMessage(title: text, duration: autohide ? 3 : .infinity, backgroundColor: color)
   }
 
   private func setThanksImage() {
@@ -1089,13 +1099,13 @@ class PlayerController: UIViewController {
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-    player.stop()
+    player?.stop()
     dismiss(animated: true, completion: nil)
   }
   
   @objc
   private func didEnterBackgroundHandler() {
-    player.pause()
+    player?.pause()
     updatePlayButtonImage()
     if !liveDurationLabel.isHidden, videoContent is Live {
       isPlayerControlsHidden = true
@@ -1280,7 +1290,7 @@ class PlayerController: UIViewController {
   
   func updatePlayButtonImage() {
     guard !isAutoplayMode else { return }
-    let image = (player.isPlayerPaused == false) ? UIImage.image("Pause") :
+    let image = (player?.isPlayerPaused == false) ? UIImage.image("Pause") :
       isVideoEnd ? UIImage.image("PlayAgain") : UIImage.image("Play")
     self.playButton.setImage(image, for: .normal)
   }
