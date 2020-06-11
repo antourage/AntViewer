@@ -1089,11 +1089,11 @@ class PlayerController: UIViewController {
     }
   }
 
-  @IBAction func fullScreenButtonPressed(_ sender: UIButton) {
+  @IBAction func fullScreenButtonPressed(_ sender: UIButton?) {
     OrientationUtility.rotateToOrientation(OrientationUtility.isPortrait ? .landscapeRight : .portrait)
   }
   
-  @IBAction func closeButtonPressed(_ sender: UIButton) {
+  @IBAction func closeButtonPressed(_ sender: UIButton?) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     player?.stop()
     dismiss(animated: true, completion: nil)
@@ -1397,6 +1397,14 @@ class PlayerController: UIViewController {
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()
       self.chatController.updateContentInsetForTableView()
+    }
+  }
+
+  @IBAction func handleHideGesture(_ sender: UISwipeGestureRecognizer) {
+    if currentOrientation.isPortrait {
+      closeButtonPressed(nil)
+    } else {
+      fullScreenButtonPressed(nil)
     }
   }
 

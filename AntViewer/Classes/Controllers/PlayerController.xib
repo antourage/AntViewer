@@ -571,6 +571,7 @@
                     <connections>
                         <outletCollection property="gestureRecognizers" destination="eka-0d-1Xr" appends="YES" id="fLT-Bz-uya"/>
                         <outletCollection property="gestureRecognizers" destination="pUl-9a-wpr" appends="YES" id="CqX-Gn-7C1"/>
+                        <outletCollection property="gestureRecognizers" destination="r2U-eA-gRi" appends="YES" id="GVA-rW-0v3"/>
                     </connections>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-7j-wKT">
@@ -871,17 +872,12 @@
                     <exclude reference="O7y-qk-2G8"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="hqg-GW-Byu"/>
-                    <exclude reference="kpW-EJ-0hl"/>
-                    <exclude reference="MhO-Ik-UE5"/>
-                    <exclude reference="t6u-oH-s4c"/>
-                    <exclude reference="Bpa-XM-g56"/>
-                    <exclude reference="Y1K-vH-Kvu"/>
-                    <exclude reference="q7X-hg-2Hm"/>
                     <exclude reference="4Nv-gJ-7Te"/>
                     <exclude reference="S6Y-lF-KiG"/>
                     <exclude reference="r4d-s0-iKt"/>
                     <exclude reference="gSk-0Y-f5l"/>
+                    <exclude reference="hqg-GW-Byu"/>
+                    <exclude reference="kpW-EJ-0hl"/>
                     <exclude reference="TSL-4H-jrA"/>
                     <exclude reference="eaS-rO-eox"/>
                     <exclude reference="hDO-e0-jeW"/>
@@ -890,17 +886,22 @@
                     <exclude reference="3hf-1V-Q3Q"/>
                     <exclude reference="6Fd-4h-zW2"/>
                     <exclude reference="AoT-lZ-9F9"/>
+                    <exclude reference="MhO-Ik-UE5"/>
+                    <exclude reference="t6u-oH-s4c"/>
                     <exclude reference="6ee-UV-Q6I"/>
                     <exclude reference="aoO-Zn-1i2"/>
                     <exclude reference="LCo-MZ-PL2"/>
                     <exclude reference="bC2-iv-7rd"/>
+                    <exclude reference="Bpa-XM-g56"/>
+                    <exclude reference="Y1K-vH-Kvu"/>
+                    <exclude reference="q7X-hg-2Hm"/>
                 </mask>
             </variation>
             <variation key="heightClass=compact-widthClass=compact">
                 <mask key="constraints">
-                    <include reference="kpW-EJ-0hl"/>
                     <include reference="r4d-s0-iKt"/>
                     <include reference="gSk-0Y-f5l"/>
+                    <include reference="kpW-EJ-0hl"/>
                     <include reference="q0H-jp-Vrz"/>
                     <include reference="6ee-UV-Q6I"/>
                     <include reference="aoO-Zn-1i2"/>
@@ -908,9 +909,9 @@
             </variation>
             <variation key="heightClass=compact-widthClass=regular">
                 <mask key="constraints">
-                    <include reference="kpW-EJ-0hl"/>
                     <include reference="r4d-s0-iKt"/>
                     <include reference="gSk-0Y-f5l"/>
+                    <include reference="kpW-EJ-0hl"/>
                     <include reference="q0H-jp-Vrz"/>
                     <include reference="6ee-UV-Q6I"/>
                     <include reference="aoO-Zn-1i2"/>
@@ -925,18 +926,10 @@
                     <include reference="O7y-qk-2G8"/>
                 </mask>
                 <mask key="constraints">
-                    <include reference="hqg-GW-Byu"/>
-                    <exclude reference="2fN-uq-9UC"/>
-                    <include reference="MhO-Ik-UE5"/>
-                    <exclude reference="hhr-Ab-UfO"/>
-                    <exclude reference="qv8-1H-cX9"/>
-                    <include reference="t6u-oH-s4c"/>
-                    <include reference="Bpa-XM-g56"/>
-                    <include reference="Y1K-vH-Kvu"/>
-                    <include reference="q7X-hg-2Hm"/>
                     <include reference="4Nv-gJ-7Te"/>
                     <include reference="S6Y-lF-KiG"/>
                     <exclude reference="S6f-9L-rnb"/>
+                    <include reference="hqg-GW-Byu"/>
                     <exclude reference="5fl-Vx-aVY"/>
                     <include reference="TSL-4H-jrA"/>
                     <include reference="eaS-rO-eox"/>
@@ -946,9 +939,17 @@
                     <include reference="AoT-lZ-9F9"/>
                     <exclude reference="C1M-qz-6YH"/>
                     <exclude reference="d4f-BM-MuR"/>
+                    <exclude reference="2fN-uq-9UC"/>
+                    <include reference="MhO-Ik-UE5"/>
+                    <exclude reference="hhr-Ab-UfO"/>
+                    <exclude reference="qv8-1H-cX9"/>
+                    <include reference="t6u-oH-s4c"/>
                     <include reference="LCo-MZ-PL2"/>
                     <exclude reference="NyS-gc-bAq"/>
                     <exclude reference="bC2-iv-7rd"/>
+                    <include reference="Bpa-XM-g56"/>
+                    <include reference="Y1K-vH-Kvu"/>
+                    <include reference="q7X-hg-2Hm"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="135.19999999999999" y="149.26108374384236"/>
@@ -970,6 +971,11 @@
             </connections>
         </tapGestureRecognizer>
         <tapGestureRecognizer id="ETb-tg-dnL"/>
+        <swipeGestureRecognizer direction="down" id="r2U-eA-gRi">
+            <connections>
+                <action selector="handleHideGesture:" destination="-1" id="EgZ-cm-qIr"/>
+            </connections>
+        </swipeGestureRecognizer>
     </objects>
     <resources>
         <image name="ArrowSmallRight" width="12" height="12"/>
