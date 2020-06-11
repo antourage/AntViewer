@@ -525,8 +525,7 @@ class StreamListController: UIViewController {
   }
 
   fileprivate func getTopVisibleRow () -> IndexPath? {
-    guard let navBar = navigationController?.navigationBar else { return nil }
-    let whereIsNavBarInTableView = collectionView.convert(navBar.bounds, from: navBar)
+    let whereIsNavBarInTableView = collectionView.convert(headerView.bounds, from: headerView)
     let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height + 1)
     let accurateIndexPath = collectionView.indexPathForItem(at: pointWhereNavBarEnds)
     return accurateIndexPath
