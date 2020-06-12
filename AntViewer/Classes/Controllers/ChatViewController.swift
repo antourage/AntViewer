@@ -122,12 +122,10 @@ class ChatViewController: UIViewController {
     if alreadyWatchedMessage > messagesDataSource.count {
       alreadyWatchedMessage = messagesDataSource.count
     }
-    UIView.setAnimationsEnabled(false)
     tableView.beginUpdates()
     tableView.deleteRows(at: deletedIndexPaths, with: .none)
     tableView.endUpdates()
     updateContentInsetForTableView()
-    UIView.setAnimationsEnabled(true)
   }
 
   func updateContentInsetForTableView(_ animated: Bool = true) {

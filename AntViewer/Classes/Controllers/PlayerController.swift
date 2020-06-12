@@ -166,6 +166,7 @@ class PlayerController: UIViewController {
     didSet {
       if let video = videoContent as? VOD {
         portraitSeekSlider.isHidden = false
+        self.portraitSeekSlider.isUserInteractionEnabled = false
         portraitSeekSlider.maximumValue = Float(video.duration.duration())
         portraitSeekSlider.setThumbImage(UIImage.image("thumb"), for: .normal)
         portraitSeekSlider.tintColor = .clear//UIColor.color("a_pink")
@@ -292,7 +293,7 @@ class PlayerController: UIViewController {
         if isAutoplayMode {
           adjustCircleLayersPath()
         }
-        if shouldShowExpandedBanner, OrientationUtility.isPortrait, activePoll?.userAnswer == nil {
+        if shouldShowExpandedBanner, activePoll?.userAnswer == nil {
           expandPollBanner(enableAutoHide: false)
         }
         chatController.updateContentInsetForTableView()
@@ -345,11 +346,7 @@ class PlayerController: UIViewController {
       poll.onUpdate = { [weak self] in
         guard let `self` = self, self.activePoll != nil else { return }
         if self.pollBannerView.isHidden {
-          if OrientationUtility.isPortrait {
-            poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
-          } else {
-            self.collapsePollBanner()
-          }
+          poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
           self.pollBannerView.isHidden = false
           self.pollTitleLabel.text = poll.pollQuestion
         }
@@ -466,8 +463,6 @@ class PlayerController: UIViewController {
           self?.skipCurtainButton.isHidden = true
           
         })
-        chatController.handleVODsChat(forTime: time)
-        chatController.scrollToBottom()
         controlsDebouncer.call { [weak self] in
           if self?.player.isPlayerPaused == false {
             if OrientationUtility.isLandscape && self?.seekTo != nil {
@@ -545,6 +540,55 @@ class PlayerController: UIViewController {
       self.startPlayer()
     }
     self.adjustHeightForTextView(self.chatTextView)
+  }
+
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    adjustVideoControlsButtons()
+//    landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+    UIApplication.shared.isIdleTimerDisabled = true
+    startObservingReachability()
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    NotificationCenter.default.removeObserver(self)
+//    landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
+    view.endEditing(true)
+    UIApplication.shared.isIdleTimerDisabled = false
+    if let vod = videoContent as? VOD {
+      let seconds = player?.currentTime ?? 0
+      vod.isNew = false
+      vod.stopTime = min(Int(seconds.isNaN ? 0 : seconds), vod.duration.duration()).durationString()
+    }
+    dataSource.startUpdatingStreams()
+    streamTimer?.invalidate()
+    stopObservingReachability()
+  }
+  
+  deinit {
+    print("Player DEINITED")
+    pollManager?.removeFirObserver()
+    Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
+  }
+
+  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+    super.viewWillTransition(to: size, with: coordinator)
+    if videoContent is VOD {
+      updateBottomContainerVisibility()
+    }
+  }
+
+  override func viewDidLayoutSubviews() {
+    super.viewDidLayoutSubviews()
+    if OrientationUtility.isLandscape {
+      updateBottomContainerGradientFrame()
+    }
+    userImageView.layer.cornerRadius = userImageView.bounds.width/2
+    landscapeUserImageView.layer.cornerRadius = landscapeUserImageView.bounds.width/2
   }
 
   func collapsePollBanner(animated: Bool = true) {
@@ -625,6 +669,7 @@ class PlayerController: UIViewController {
     if videoContent is Live {
       guard !isVideoEnd else {
         bottomContainerView.isHidden = currentOrientation.isLandscape
+        bottomContainerGradientLayer.removeFromSuperlayer()
         return
       }
       if currentOrientation.isLandscape {
@@ -730,65 +775,6 @@ class PlayerController: UIViewController {
     }
   }
 
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    adjustVideoControlsButtons()
-//    landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-    UIApplication.shared.isIdleTimerDisabled = true
-    startObservingReachability()
-  }
-  
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
-    NotificationCenter.default.removeObserver(self)
-//    landscapeTableViewContainer.removeObserver(self, forKeyPath: #keyPath(UIView.bounds))
-    view.endEditing(true)
-    UIApplication.shared.isIdleTimerDisabled = false
-    if let vod = videoContent as? VOD {
-      let seconds = player.currentTime
-      vod.isNew = false
-      vod.stopTime = min(Int(seconds.isNaN ? 0 : seconds), vod.duration.duration()).durationString()
-    }
-    dataSource.startUpdatingStreams()
-    streamTimer?.invalidate()
-    stopObservingReachability()
-  }
-  
-  deinit {
-    print("Player DEINITED")
-    pollManager?.removeFirObserver()
-    Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
-  }
-
-  override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-    super.viewWillTransition(to: size, with: coordinator)
-    if videoContent is VOD {
-      updateBottomContainerVisibility()
-    }
-  }
-
-  override func viewDidLayoutSubviews() {
-    super.viewDidLayoutSubviews()
-    if OrientationUtility.isLandscape {
-      updateBottomContainerGradientFrame()
-    }
-    userImageView.layer.cornerRadius = userImageView.bounds.width/2
-    landscapeUserImageView.layer.cornerRadius = landscapeUserImageView.bounds.width/2
-  }
-  
-  override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-//    if (keyPath == #keyPath(UIView.bounds)) {
-//      if let tableViewContainerBounds = landscapeTableView.superview?.bounds {
-//        chatGradientLayer.frame = tableViewContainerBounds
-//      }
-//      return
-//    }
-    super.observeValue(forKeyPath: keyPath, of: object, change: change, context: context)
-  }
-
   @objc
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
@@ -814,7 +800,13 @@ class PlayerController: UIViewController {
         }
         seekTo = startCurtain?.range.upperBound ?? seekTo
     }
-    player = Player(url: URL(string:videoContent.url)!, seekTo: seekTo)
+
+    guard let url = URL(string: videoContent.url) else {
+      showError(autohide: false)
+      return
+    }
+
+    player = Player(url: url, seekTo: seekTo)
     
     player.addPeriodicTimeObserver { [weak self] (time, isLikelyToKeepUp) in
       guard let `self` = self else {return}
@@ -833,6 +825,7 @@ class PlayerController: UIViewController {
       if let vod = self.videoContent as? VOD {
         vod.stopTime = min(Int(time.seconds), vod.duration.duration()).durationString()
         self.chatController.handleVODsChat(forTime: Int(time.seconds))
+        self.chatController.scrollToBottom()
         self.checkCurtains()
         //temp: needs refactoring
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())
@@ -860,9 +853,7 @@ class PlayerController: UIViewController {
       self?.videoContainerView.removeActivityIndicator()
       self?.isControlsEnabled = true
       if self?.isReachable == true {
-        let color = UIColor.color("a_bottomMessageGray") ?? .gray
-        let text = LocalizedStrings.generalError.localized.uppercased()
-        self?.bottomMessage.showMessage(title: text, duration: 3, backgroundColor: color)
+        self?.showError()
       }
       self?.isPlayerError = true
     }
@@ -891,6 +882,12 @@ class PlayerController: UIViewController {
       
     }
     videoContainerView.showActivityIndicator()
+  }
+
+  private func showError(autohide: Bool = true) {
+    let color = UIColor.color("a_bottomMessageGray") ?? .gray
+    let text = LocalizedStrings.generalError.localized.uppercased()
+    bottomMessage.showMessage(title: text, duration: autohide ? 3 : .infinity, backgroundColor: color)
   }
 
   private func setThanksImage() {
@@ -1082,19 +1079,19 @@ class PlayerController: UIViewController {
     }
   }
 
-  @IBAction func fullScreenButtonPressed(_ sender: UIButton) {
+  @IBAction func fullScreenButtonPressed(_ sender: UIButton?) {
     OrientationUtility.rotateToOrientation(OrientationUtility.isPortrait ? .landscapeRight : .portrait)
   }
   
-  @IBAction func closeButtonPressed(_ sender: UIButton) {
+  @IBAction func closeButtonPressed(_ sender: UIButton?) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-    player.stop()
+    player?.stop()
     dismiss(animated: true, completion: nil)
   }
   
   @objc
   private func didEnterBackgroundHandler() {
-    player.pause()
+    player?.pause()
     updatePlayButtonImage()
     if !liveDurationLabel.isHidden, videoContent is Live {
       isPlayerControlsHidden = true
@@ -1223,7 +1220,7 @@ class PlayerController: UIViewController {
         guard let `self` = self else { return }
         //MARK: auto hide player controls
         self.skipCurtainButton.alpha = !isHidden ? 0 : 1
-        if self.player.isPlayerPaused == false {
+        if !self.player.isPlayerPaused || !(self.isVideoEnd && self.isAutoplayMode) {
           if OrientationUtility.isLandscape && self.seekTo != nil {
             return
           }
@@ -1279,7 +1276,7 @@ class PlayerController: UIViewController {
   
   func updatePlayButtonImage() {
     guard !isAutoplayMode else { return }
-    let image = (player.isPlayerPaused == false) ? UIImage.image("Pause") :
+    let image = (player?.isPlayerPaused == false) ? UIImage.image("Pause") :
       isVideoEnd ? UIImage.image("PlayAgain") : UIImage.image("Play")
     self.playButton.setImage(image, for: .normal)
   }
@@ -1390,6 +1387,14 @@ class PlayerController: UIViewController {
     UIView.animate(withDuration: 0.3) {
       self.view.layoutIfNeeded()
       self.chatController.updateContentInsetForTableView()
+    }
+  }
+
+  @IBAction func handleHideGesture(_ sender: UISwipeGestureRecognizer) {
+    if currentOrientation.isPortrait {
+      closeButtonPressed(nil)
+    } else {
+      fullScreenButtonPressed(nil)
     }
   }
 

@@ -60,7 +60,8 @@ class StreamListController: UIViewController {
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
-        let media = ModernAVPlayerMedia(url: URL(string: item.url)!, type: .stream(isLive: item is Live))
+        guard let url = URL(string: item.url) else { return }
+        let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: item is Live))
         var position: Double?
         if let item = item as? VOD {
           position = Double(item.stopTime.duration())
@@ -191,11 +192,12 @@ class StreamListController: UIViewController {
       let deleted = notification.userInfo?["deleted"] as? [Int],
       let hasChanges = notification.userInfo?["updated"] as? Bool, hasChanges else {
         self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
-        self?.updateStreamsViewersCount()
+        self?.updateVisibleCells()
+        self?.collectionView.collectionViewLayout.invalidateLayout()
         return
       }
-      self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.skeleton?.loaded(videoContent: Live.self, isEmpty: self?.dataSource.streams.isEmpty ?? true)
+      self?.reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
       self?.collectionView.collectionViewLayout.invalidateLayout()
       self?.bottomMessage.hideMessage()
     }
@@ -458,31 +460,42 @@ class StreamListController: UIViewController {
     })
   }
 
-  private func updateStreamsViewersCount() {
-    let visibleCells = collectionView.visibleCells.filter { self.collectionView.indexPath(for: $0)?.section == 0 }
+  private func updateVisibleCells() {
+    let visibleCells = collectionView.visibleCells.filter { self.collectionView.indexPath(for: $0)?.section == 0 }.compactMap { $0 as? StreamCell }
     visibleCells.forEach { (cell) in
       if let indexPath = self.collectionView.indexPath(for: cell) {
-        (cell as? StreamCell)?.viewersCountLabel.text = "\(self.getItemWith(indexPath: indexPath).viewsCount)"
+        let item = self.getItemWith(indexPath: indexPath)
+        cell.viewersCountLabel.text = "\(item.viewsCount)"
+        self.adjustBottomBarFor(cell, item: item)
       }
     }
   }
-  
-  fileprivate func configureCell(_ cell: StreamCell, forIndexPath indexPath: IndexPath) -> StreamCell {
-    let item = getItemWith(indexPath: indexPath)
-    cell.titleLabel.text = item.title
-    cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
+
+  private func adjustBottomBarFor(_ cell: StreamCell, item: VideoContent) {
     cell.joinButton.isHidden = item is VOD || !item.isChatOn
     cell.chatView.isHidden = true
     cell.pollView.isHidden = true
     cell.shareButton.isHidden = true
     cell.chatEnabled = item.isChatOn
     cell.message = item.latestMessage
+    if let item = item as? VOD {
+      cell.chatView.isHidden = item.latestMessage == nil
+    } else if let item = item as? Live {
+      cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
+      cell.pollView.isHidden = !item.isPollOn
+    }
+    cell.buttonsStackView.isHidden = cell.chatView.isHidden && !item.isPollOn
+  }
+  
+  fileprivate func configureCell(_ cell: StreamCell, forIndexPath indexPath: IndexPath) -> StreamCell {
+    let item = getItemWith(indexPath: indexPath)
+    cell.titleLabel.text = item.title
+    cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
     cell.viewersCountLabel.text = "\(item.viewsCount)"
     cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
     cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
     cell.isLive = item is Live
     if let item = item as? VOD {
-      cell.chatView.isHidden = item.latestMessage == nil
       cell.isNew = item.isNew
       cell.duration = item.duration.duration()
       //Temp solution
@@ -490,8 +503,6 @@ class StreamListController: UIViewController {
       cell.watchedTime = item.isNew ? nil : duration
       cell.replayView.isHidden = true
     } else if let item = item as? Live {
-      cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
-      cell.pollView.isHidden = !item.isPollOn
       let duration = Date().timeIntervalSince(item.date)
       cell.duration = Int(duration)
       cell.watchedTime = nil
@@ -501,8 +512,7 @@ class StreamListController: UIViewController {
         self?.openPlayer(indexPath: indexPath, shouldEnableChatField: true)
       }
     }
-
-    cell.buttonsStackView.isHidden = cell.chatView.isHidden && !item.isPollOn
+    adjustBottomBarFor(cell, item: item)
     return cell
   }
   
@@ -515,8 +525,7 @@ class StreamListController: UIViewController {
   }
 
   fileprivate func getTopVisibleRow () -> IndexPath? {
-    guard let navBar = navigationController?.navigationBar else { return nil }
-    let whereIsNavBarInTableView = collectionView.convert(navBar.bounds, from: navBar)
+    let whereIsNavBarInTableView = collectionView.convert(headerView.bounds, from: headerView)
     let pointWhereNavBarEnds = CGPoint(x: 0, y: whereIsNavBarInTableView.origin.y + whereIsNavBarInTableView.size.height + 1)
     let accurateIndexPath = collectionView.indexPathForItem(at: pointWhereNavBarEnds)
     return accurateIndexPath

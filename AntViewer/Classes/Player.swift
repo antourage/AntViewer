@@ -227,6 +227,10 @@ class Player: NSObject {
       let playerError = NPlayerError(kind: .noInternerConnection, description: "No internet connection available")
       pause(withError: playerError)
     }
+    if errorLog.events.last?.errorStatusCode == -12888 {
+      let playerError = NPlayerError(kind: .faildStatus, description: "Unexpected stream stop")
+      pause(withError: playerError)
+    }
     
   }
   
@@ -236,5 +240,5 @@ class Player: NSObject {
       print("Error failedToPlayToEndTime: \(error.localizedDescription), error: \(error)")
     }
   }
-  
+
 }

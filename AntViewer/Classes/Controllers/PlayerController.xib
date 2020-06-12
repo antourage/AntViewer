@@ -571,6 +571,7 @@
                     <connections>
                         <outletCollection property="gestureRecognizers" destination="eka-0d-1Xr" appends="YES" id="fLT-Bz-uya"/>
                         <outletCollection property="gestureRecognizers" destination="pUl-9a-wpr" appends="YES" id="CqX-Gn-7C1"/>
+                        <outletCollection property="gestureRecognizers" destination="r2U-eA-gRi" appends="YES" id="GVA-rW-0v3"/>
                     </connections>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="I5n-7j-wKT">
@@ -824,6 +825,7 @@
                 <constraint firstItem="I5n-7j-wKT" firstAttribute="top" secondItem="6KR-R7-XLO" secondAttribute="bottom" id="Kft-qu-wX4"/>
                 <constraint firstItem="yiB-1m-rRo" firstAttribute="top" secondItem="6SG-AQ-Vmv" secondAttribute="bottom" constant="12" id="LCo-MZ-PL2"/>
                 <constraint firstItem="CfQ-pS-qRe" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="MhO-Ik-UE5"/>
+                <constraint firstItem="yiB-1m-rRo" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.5" priority="990" id="NyS-gc-bAq"/>
                 <constraint firstAttribute="trailing" secondItem="O7y-qk-2G8" secondAttribute="trailing" id="Riv-Vm-pfX"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="fnl-2z-Ty3" secondAttribute="height" multiplier="0.315" priority="800" id="S6Y-lF-KiG"/>
                 <constraint firstItem="6SG-AQ-Vmv" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" id="S6f-9L-rnb"/>
@@ -943,6 +945,7 @@
                     <exclude reference="qv8-1H-cX9"/>
                     <include reference="t6u-oH-s4c"/>
                     <include reference="LCo-MZ-PL2"/>
+                    <exclude reference="NyS-gc-bAq"/>
                     <exclude reference="bC2-iv-7rd"/>
                     <include reference="Bpa-XM-g56"/>
                     <include reference="Y1K-vH-Kvu"/>
@@ -968,6 +971,11 @@
             </connections>
         </tapGestureRecognizer>
         <tapGestureRecognizer id="ETb-tg-dnL"/>
+        <swipeGestureRecognizer direction="down" id="r2U-eA-gRi">
+            <connections>
+                <action selector="handleHideGesture:" destination="-1" id="EgZ-cm-qIr"/>
+            </connections>
+        </swipeGestureRecognizer>
     </objects>
     <resources>
         <image name="ArrowSmallRight" width="12" height="12"/>

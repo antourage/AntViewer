@@ -15,9 +15,11 @@ protocol PollControllerDelegate: class {
 
 class PollController: UIViewController {
   
-  @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var questionLabel: UILabel!
-  
+  @IBOutlet var tableView: UITableView!
+  @IBOutlet var questionLabel: UILabel!
+  @IBOutlet var sponsoredBanner: UIImageView!
+  @IBOutlet var sponsoredBannerHeight: NSLayoutConstraint!
+
   weak var delegate: PollControllerDelegate?
   
   private var isPollStatistic: Bool! {
@@ -31,12 +33,22 @@ class PollController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setupUI()
+    fetchBanner()
     NotificationCenter.default.addObserver(self, selector: #selector(handlePollUpdate(_:)), name: NSNotification.Name(rawValue: "PollUpdated"), object: nil)
   }
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     tableView.reloadData()
+  }
+
+  private func fetchBanner() {
+    //TODO: fetch sponsored banner
+    DispatchQueue.main.asyncAfter(deadline: .now()+4) {
+      self.sponsoredBanner.image = UIImage.image("sponsorPlaceholder")
+      self.sponsoredBannerHeight.constant = self.sponsoredBanner.image == nil ? 0 : 50
+      self.view.layoutIfNeeded()
+    }
   }
 
   private func setupUI() {
@@ -60,6 +72,11 @@ class PollController: UIViewController {
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
     delegate?.pollControllerCloseButtonPressed()
+  }
+
+  @IBAction func handleTapOnBanner(_ sender: UITapGestureRecognizer) {
+    //TODO: redirect to sponsor link
+
   }
   
   deinit {
@@ -86,7 +103,7 @@ extension PollController: UITableViewDelegate, UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 56
+    return 50
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

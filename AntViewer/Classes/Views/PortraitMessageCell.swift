@@ -8,12 +8,7 @@
 
 import UIKit
 
-protocol MessageSupportable {
-//  var nameLabel: UILabel! { get set }
-//  var messageLabel: UILabel! { get set }
-}
-
-class PortraitMessageCell: UITableViewCell, MessageSupportable {
+class PortraitMessageCell: UITableViewCell {
   
   @IBOutlet weak var messageLabel: UILabel!
   @IBOutlet weak var messageInfoLabel: UILabel!
