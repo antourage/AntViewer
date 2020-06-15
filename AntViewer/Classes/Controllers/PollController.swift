@@ -17,7 +17,7 @@ class PollController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var questionLabel: UILabel!
-  @IBOutlet var sponsoredBanner: UIImageView!
+  @IBOutlet var sponsoredBanner: CacheImageView!
   @IBOutlet var sponsoredBannerHeight: NSLayoutConstraint!
 
   weak var delegate: PollControllerDelegate?
@@ -35,6 +35,7 @@ class PollController: UIViewController {
     setupUI()
     fetchBanner()
     NotificationCenter.default.addObserver(self, selector: #selector(handlePollUpdate(_:)), name: NSNotification.Name(rawValue: "PollUpdated"), object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleBannerUpdate), name: NSNotification.Name(rawValue: "SponsoredBannerDidUpdate"), object: nil)
   }
 
   override func viewDidLayoutSubviews() {
@@ -43,12 +44,12 @@ class PollController: UIViewController {
   }
 
   private func fetchBanner() {
-    //TODO: fetch sponsored banner
-    DispatchQueue.main.asyncAfter(deadline: .now()+4) {
-      self.sponsoredBanner.image = UIImage.image("sponsorPlaceholder")
-      self.sponsoredBannerHeight.constant = self.sponsoredBanner.image == nil ? 0 : 50
-      self.view.layoutIfNeeded()
+    guard let banner = SponsoredBanner.current, let url =  URL(string: banner.imageUrl) else {
+      print("Error: sponsored image url absent or broken")
+      return
     }
+    sponsoredBanner.load(url: url, placeholder: nil)
+    sponsoredBannerHeight.isActive = false
   }
 
   private func setupUI() {
@@ -69,14 +70,27 @@ class PollController: UIViewController {
     poll = newPoll
     isPollStatistic = poll?.userAnswer != nil
   }
+
+  @objc
+  func handleBannerUpdate() {
+    guard let banner = SponsoredBanner.current, let url =  URL(string: banner.imageUrl) else {
+      print("Error: sponsored image url absent or broken")
+      return
+    }
+    sponsoredBanner.load(url: url, placeholder: nil)
+    sponsoredBannerHeight.isActive = false
+  }
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
     delegate?.pollControllerCloseButtonPressed()
   }
 
   @IBAction func handleTapOnBanner(_ sender: UITapGestureRecognizer) {
-    //TODO: redirect to sponsor link
-
+    guard let banner = SponsoredBanner.current, let url =  URL(string: banner.externalUrl) else {
+      print("Error: sponsored external url absent or broken ")
+      return
+    }
+    UIApplication.shared.open(url, options: [:], completionHandler: nil)
   }
   
   deinit {
