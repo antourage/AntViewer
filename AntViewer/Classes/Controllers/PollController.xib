@@ -102,10 +102,11 @@
                             <rect key="frame" x="44" y="61" width="287" height="592"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </tableView>
-                        <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="NRT-cN-iiO">
+                        <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="NRT-cN-iiO" customClass="CacheImageView" customModule="AntViewer">
                             <rect key="frame" x="12" y="661" width="351" height="0.0"/>
                             <constraints>
                                 <constraint firstAttribute="height" id="9dh-fb-h0U"/>
+                                <constraint firstAttribute="height" relation="lessThanOrEqual" constant="50" id="O9a-dE-sAn"/>
                             </constraints>
                             <connections>
                                 <outletCollection property="gestureRecognizers" destination="ikW-Z8-eQC" appends="YES" id="eNo-ET-Sqe"/>

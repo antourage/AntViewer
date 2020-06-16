@@ -212,7 +212,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AntViewer (1.1.22):
+  - AntViewer (1.1.23):
     - Firebase/Auth
     - Firebase/Firestore
   - BoringSSL-GRPC (0.0.7):
@@ -398,7 +398,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AntViewer: a701cb5dbccbd5f1a3bf5d80c747dfaf0be2e250
+  AntViewer: 99459361fbdb54aa1418308072871eb2847da8d5
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
   FirebaseAnalytics: 96634d356482d4f3af8fe459a0ebf19a99c71b75

@@ -156,7 +156,7 @@ class PlayerController: UIViewController {
 
   @IBOutlet weak var viewersCountLabel: UILabel! {
     didSet {
-      viewersCountLabel.text = "\(videoContent.viewsCount)"
+      viewersCountLabel.text = videoContent.viewsCount.formatUsingAbbrevation()
     }
   }
 
@@ -521,7 +521,7 @@ class PlayerController: UIViewController {
             self.dataSource.getViewers(for: self.videoContent.id) { (result) in
               switch result {
               case .success(let count):
-                self.viewersCountLabel.text = "\(count)"
+                self.viewersCountLabel.text = count.formatUsingAbbrevation()
               case .failure(let error):
                 print(error.localizedDescription)
               }
@@ -573,6 +573,7 @@ class PlayerController: UIViewController {
     print("Player DEINITED")
     pollManager?.removeFirObserver()
     Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
+    SponsoredBanner.current = nil
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
