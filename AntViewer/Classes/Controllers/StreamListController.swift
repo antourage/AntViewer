@@ -353,11 +353,8 @@ class StreamListController: UIViewController {
       var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
         reachedListsEnd = false
         if skeleton == nil {
-          collectionView.reloadData()
-          collectionView.performBatchUpdates(nil) { [weak self] (_) in
-            if self?.view.window != nil {
-              self?.activeCell = self?.getTopVisibleCell()
-            }
+          if self.view.window != nil {
+            self.activeCell = self.getTopVisibleCell()
           }
         }
         return
@@ -378,18 +375,19 @@ class StreamListController: UIViewController {
       }
     }
 
-    UIView.performWithoutAnimation {
+//    UIView.performWithoutAnimation {
       let deletedPaths = deletedIndexes.map { IndexPath(item: $0, section: 0) }
       var addedPaths = [IndexPath]()
       for index in 0 ..< addedCount {
         addedPaths.append(IndexPath(item: index, section: 0))
       }
+    CATransaction.begin()
+    CATransaction.setDisableActions(true)
       collectionView.performBatchUpdates({
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
       }, completion: { _ in
         self.updateVisibleCells()
-
         if addedCount > 0, self.newLivesButton.isHidden {
           let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
           self.newLivesButton.isHidden = !shouldShow
@@ -398,15 +396,15 @@ class StreamListController: UIViewController {
         }
         if shouldScroll {
           self.shouldResetActiveCell = false
-          self.collectionView.scrollToItem(at: visibleIndexPath, at: .top, animated: false)
+          if !self.collectionView.isDecelerating {
+            self.collectionView.scrollToItem(at: visibleIndexPath, at: .top, animated: false)
+          }
           self.collectionView.contentOffset.y = self.collectionView.contentOffset.y - differenceBetweenRowAndNavBar
           self.shouldResetActiveCell = true
         }
         self.setActiveCell()
+        CATransaction.commit()
       })
-
-
-    }
   }
   
   @objc

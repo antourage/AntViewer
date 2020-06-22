@@ -279,7 +279,7 @@ class PlayerController: UIViewController {
           if isBottomContainerHidedByUser {
             chatTextView.resignFirstResponder()
           }
-          liveToLandscapeInfoTop.isActive = !videoControlsView.isHidden
+          liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
           if videoContent is Live {
             landscapeSeekSlider.removeFromSuperview()
           }
@@ -289,7 +289,7 @@ class PlayerController: UIViewController {
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
         }
-        updatePollBannerVisibility()
+//        updatePollBannerVisibility()
         if isAutoplayMode {
           adjustCircleLayersPath()
         }
@@ -350,9 +350,8 @@ class PlayerController: UIViewController {
       poll.onUpdate = { [weak self] in
         guard let `self` = self, self.activePoll != nil else { return }
         if self.pollBannerView.isHidden {
-          poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
-//          self.pollBannerView.isHidden = false
           self.updatePollBannerVisibility()
+          poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
           self.pollTitleLabel.text = poll.pollQuestion
         }
 
@@ -604,7 +603,7 @@ class PlayerController: UIViewController {
     })
   }
 
-  func expandPollBanner(enableAutoHide: Bool = true) {
+  func expandPollBanner() {
 
     pollBannerAspectRatio.isActive = false
     if OrientationUtility.currentOrientatin.isPortrait {
@@ -794,7 +793,7 @@ class PlayerController: UIViewController {
       landscapeSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: landscapeSeekSlider), for: .normal)
     }
     updateBottomContainerVisibility()
-    liveToLandscapeInfoTop.isActive = !isPlayerControlsHidden
+    liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
     self.view.layoutIfNeeded()
   }
   
@@ -1119,7 +1118,7 @@ class PlayerController: UIViewController {
     self.controlsAppearingDebouncer.call {}
     self.isPlayerControlsHidden = true//videoControlsView.isHidden = true
 
-    self.liveToLandscapeInfoTop.isActive = false
+    self.liveToLandscapeInfoTop?.isActive = false
     self.view.layoutIfNeeded()
     let activeSlider = OrientationUtility.currentOrientatin == .portrait ? self.portraitSeekSlider : self.landscapeSeekSlider
     self.seekTo = Int(activeSlider?.value ?? 0)
@@ -1238,7 +1237,7 @@ class PlayerController: UIViewController {
       animateChange(hidden: isHidden) {
         self.skipCurtainButton.alpha = !isHidden ? 0 : 1
         if OrientationUtility.isLandscape {
-          self.liveToLandscapeInfoTop.isActive = !isHidden
+          self.liveToLandscapeInfoTop?.isActive = !isHidden
           self.view.layoutIfNeeded()
           self.updatePollBannerVisibility()
         }
