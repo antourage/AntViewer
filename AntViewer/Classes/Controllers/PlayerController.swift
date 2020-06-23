@@ -280,6 +280,7 @@ class PlayerController: UIViewController {
             chatTextView.resignFirstResponder()
           }
           liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
+          view.layoutIfNeeded()
           if videoContent is Live {
             landscapeSeekSlider.removeFromSuperview()
           }
@@ -289,7 +290,6 @@ class PlayerController: UIViewController {
           bottomContainerLeading.constant = .zero
           bottomContainerTrailing.constant = .zero
         }
-//        updatePollBannerVisibility()
         if isAutoplayMode {
           adjustCircleLayersPath()
         }
@@ -549,7 +549,6 @@ class PlayerController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     adjustVideoControlsButtons()
-//    landscapeTableViewContainer.addObserver(self, forKeyPath: #keyPath(UIView.bounds), options: [.new], context: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackgroundHandler), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeFrame), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillBecomeActive(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
@@ -793,7 +792,9 @@ class PlayerController: UIViewController {
       landscapeSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: landscapeSeekSlider), for: .normal)
     }
     updateBottomContainerVisibility()
-    liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
+    if OrientationUtility.isLandscape {
+      self.liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
+    }
     self.view.layoutIfNeeded()
   }
   
@@ -1116,10 +1117,11 @@ class PlayerController: UIViewController {
   func handleSeekByTapping(_ backwardDirection: Bool) {
     guard let vod = self.videoContent as? VOD else { return }
     self.controlsAppearingDebouncer.call {}
-    self.isPlayerControlsHidden = true//videoControlsView.isHidden = true
-
-    self.liveToLandscapeInfoTop?.isActive = false
-    self.view.layoutIfNeeded()
+    self.isPlayerControlsHidden = true
+    if OrientationUtility.isLandscape {
+      self.liveToLandscapeInfoTop?.isActive = false
+      self.view.layoutIfNeeded()
+    }
     let activeSlider = OrientationUtility.currentOrientatin == .portrait ? self.portraitSeekSlider : self.landscapeSeekSlider
     self.seekTo = Int(activeSlider?.value ?? 0)
     
@@ -1200,7 +1202,7 @@ class PlayerController: UIViewController {
       }
     }
     guard !self.isSeekByTappingMode else { return }
-    self.isPlayerControlsHidden = !self.isPlayerControlsHidden//self.videoControlsView.isHidden
+    self.isPlayerControlsHidden = !self.isPlayerControlsHidden
   }
   
   @objc
@@ -1252,16 +1254,6 @@ class PlayerController: UIViewController {
             return
           }
           self.isPlayerControlsHidden = true
-//          animateChange(hidden: true) {
-//            self.skipCurtainButton.alpha = !isHidden ? 0 : 1
-//            if OrientationUtility.isLandscape {
-//              self.liveToLandscapeInfoTop.isActive = false
-//              self.updatePollBannerVisibility()
-//              self.updateChatVisibility()
-//              self.updateBottomContainerVisibility()
-//              self.view.layoutIfNeeded()
-//            }
-//          }
         }
       }
     }
