@@ -135,7 +135,10 @@ class Skeleton: NSObject {
       didChangeReachability(isReachable)
       return
     }
-    guard state != .onError else { return }
+    guard state != .onError else {
+      cell?.iconImageView.image = UIImage.image("SkeletonPlaceholder")
+      return
+    }
     state = .loading
     collectionView?.isUserInteractionEnabled = false
     cell?.iconImageView.image = UIImage.image("SkeletonPlaceholder")

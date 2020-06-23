@@ -144,7 +144,8 @@ public class StreamCell: UICollectionViewCell {
         }
       }
     }
-    watchedTimeLineViewWidthConstraint.constant = (CGFloat(watchedTime) / CGFloat(duration)) * bounds.width
+    let koef: CGFloat = duration != .zero ? (CGFloat(watchedTime) / CGFloat(duration)) : 0
+    watchedTimeLineViewWidthConstraint.constant = koef * bounds.width
   }
 
   @IBAction private func shareButtonPressed(_ sender: UIButton) {

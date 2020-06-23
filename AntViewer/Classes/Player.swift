@@ -28,6 +28,7 @@ class Player: NSObject {
   private var seekTo: Double?
   private var observerHandler: ((CMTime, Bool) -> Void)?
   private var perfMeasurements: PerfMeasurements?
+  private var errorsCount = 0
   
   var isPlayerPaused = false
   var isError = false
@@ -186,6 +187,7 @@ class Player: NSObject {
       //      if let track = self.player.currentItem?.tracks.first {
       //        print("Size = \(track.assetTrack?.naturalSize)")
       //      }
+      self.errorsCount = 0
       self.observerHandler?(time, (isPlaybackBufferFull || isPlaybackLikelyToKeepUp))
     })
   }
@@ -228,8 +230,11 @@ class Player: NSObject {
       pause(withError: playerError)
     }
     if errorLog.events.last?.errorStatusCode == -12888 {
-      let playerError = NPlayerError(kind: .faildStatus, description: "Unexpected stream stop")
-      pause(withError: playerError)
+      errorsCount += 1
+      if errorsCount > 2 {
+        let playerError = NPlayerError(kind: .faildStatus, description: "Unexpected stream stop")
+        pause(withError: playerError)
+      }
     }
     
   }
