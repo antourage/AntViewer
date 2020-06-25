@@ -1213,22 +1213,6 @@ class PlayerController: UIViewController {
   }
   
   func setPlayerControlsHidden(_ isHidden: Bool) {
-    func animateChange(hidden: Bool, animation: @escaping(()->())) {
-      if !hidden {
-        videoControlsView.alpha = 0
-        videoControlsView.isHidden = false
-      }
-      UIView.animate(withDuration: 0.2, animations: {
-        self.videoControlsView.alpha = isHidden ? 0 : 1
-        self.updateSeekThumbAppearance(isHidden: hidden)
-        animation()
-      }) { (finished) in
-        if hidden {
-          self.videoControlsView.isHidden = true
-        }
-      }
-    }
-
     if !isHidden {
       self.controlsDebouncer.call { }
     }
@@ -1236,7 +1220,13 @@ class PlayerController: UIViewController {
       guard let `self` = self else { return }
       self.startLabel.text = self.videoContent.date.timeAgo()
 
-      animateChange(hidden: isHidden) {
+      if !isHidden {
+        self.videoControlsView.alpha = 0
+        self.videoControlsView.isHidden = false
+      }
+      UIView.animate(withDuration: 0.2, animations: {
+        self.videoControlsView.alpha = isHidden ? 0 : 1
+        self.updateSeekThumbAppearance(isHidden: isHidden)
         self.skipCurtainButton.alpha = !isHidden ? 0 : 1
         if OrientationUtility.isLandscape {
           self.liveToLandscapeInfoTop?.isActive = !isHidden
@@ -1245,6 +1235,10 @@ class PlayerController: UIViewController {
         }
         self.updateChatVisibility()
         self.updateBottomContainerVisibility()
+      }) { (finished) in
+        if isHidden {
+          self.videoControlsView.isHidden = true
+        }
       }
       guard !self.isPlayerControlsHidden else { return }
       self.controlsDebouncer.call { [weak self] in
