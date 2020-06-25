@@ -187,9 +187,6 @@ class StreamListController: UIViewController {
       }
     }
     NotificationCenter.default.addObserver(self, selector: #selector(streamsDidUpdate(_:)), name: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil)
-//    NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-//    }
-
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
     topInset = view.safeAreaInsets.top
@@ -325,7 +322,6 @@ class StreamListController: UIViewController {
     }
     skeleton?.loaded(videoContent: Live.self, isEmpty: dataSource.streams.isEmpty)
     reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
-    collectionView.collectionViewLayout.invalidateLayout()
     bottomMessage.hideMessage()
   }
 
@@ -375,7 +371,6 @@ class StreamListController: UIViewController {
       }
     }
 
-//    UIView.performWithoutAnimation {
       let deletedPaths = deletedIndexes.map { IndexPath(item: $0, section: 0) }
       var addedPaths = [IndexPath]()
       for index in 0 ..< addedCount {
@@ -387,6 +382,7 @@ class StreamListController: UIViewController {
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
       }, completion: { _ in
+        self.collectionView.collectionViewLayout.invalidateLayout()
         self.updateVisibleCells()
         if addedCount > 0, self.newLivesButton.isHidden {
           let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
@@ -713,22 +709,31 @@ extension StreamListController: UICollectionViewDelegate {
 
 // MARK: UICollectionViewDelegateFlowLayout
 extension StreamListController: UICollectionViewDelegateFlowLayout {
+  func isItemExist(at indexPath: IndexPath) -> Bool {
+    if indexPath.section == .zero {
+      return dataSource.streams.indices.contains(indexPath.row)
+    }
+    return dataSource.videos.indices.contains(indexPath.row)
+  }
+
 
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     var height = view.bounds.width
-    let item = getItemWith(indexPath: indexPath)
-    if let message = item.latestMessage?.text {
-      let width = view.bounds.width - 40
-      let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
-      height += labelHeight + 2 + 12 + 14.5
-    }
-    let isVod = item is VOD
-    let hasLatestMessage = item.latestMessage != nil
-    if (!isVod && (item.isChatOn || hasLatestMessage) || hasLatestMessage && isVod) || item.isPollOn || item.shareLink != nil {
-      height += 12 + 0.075 * view.bounds.width
-    }
-    if item is Live, item.isChatOn {
-      height += 20 + 12
+    if isItemExist(at: indexPath) {
+      let item = getItemWith(indexPath: indexPath)
+      if let message = item.latestMessage?.text {
+        let width = view.bounds.width - 40
+        let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
+        height += labelHeight + 2 + 12 + 14.5
+      }
+      let isVod = item is VOD
+      let hasLatestMessage = item.latestMessage != nil
+      if (!isVod && (item.isChatOn || hasLatestMessage) || hasLatestMessage && isVod) || item.isPollOn || item.shareLink != nil {
+        height += 12 + 0.075 * view.bounds.width
+      }
+      if item is Live, item.isChatOn {
+        height += 20 + 12
+      }
     }
     return CGSize(width: view.bounds.width, height: height)
   }

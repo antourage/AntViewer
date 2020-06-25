@@ -279,8 +279,10 @@ class PlayerController: UIViewController {
           if isBottomContainerHidedByUser {
             chatTextView.resignFirstResponder()
           }
-          liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
-          view.layoutIfNeeded()
+          if !viewersCountView.isHidden {
+            liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
+            view.layoutIfNeeded()
+          }
           if videoContent is Live {
             landscapeSeekSlider.removeFromSuperview()
           }
@@ -293,7 +295,7 @@ class PlayerController: UIViewController {
         if isAutoplayMode {
           adjustCircleLayersPath()
         }
-        if shouldShowExpandedBanner, activePoll?.userAnswer == nil {
+        if shouldShowExpandedBanner, activePoll?.userAnswer == nil, activePoll != nil {
           expandPollBanner()
         }
         chatController.updateContentInsetForTableView()
@@ -312,14 +314,13 @@ class PlayerController: UIViewController {
     pollBannerView.isHidden = activePoll == nil
     if OrientationUtility.isLandscape {
       if !isPlayerControlsHidden {
-        pollBannerView.alpha = 0//isHidden = true
-//        pollBannerView.isHidden = activePoll == nil
+        pollBannerView.alpha = 0
       } else {
-        pollBannerView.alpha = activePoll == nil ? 0 : 1//isHidden = activePoll == nil
+        pollBannerView.alpha = activePoll == nil ? 0 : 1
 
       }
     } else {
-      pollBannerView.alpha = activePoll == nil ? 0 : 1//isHidden = activePoll == nil
+      pollBannerView.alpha = activePoll == nil ? 0 : 1
     }
   }
 
@@ -810,6 +811,7 @@ class PlayerController: UIViewController {
         return tempCurt.range.lowerBound == 0 &&     
           tempCurt.range.contains(seekTo ?? 0)
         }
+      currentCurtain = startCurtain
         seekTo = startCurtain?.range.upperBound ?? seekTo
     }
 
@@ -1213,22 +1215,6 @@ class PlayerController: UIViewController {
   }
   
   func setPlayerControlsHidden(_ isHidden: Bool) {
-    func animateChange(hidden: Bool, animation: @escaping(()->())) {
-      if !hidden {
-        videoControlsView.alpha = 0
-        videoControlsView.isHidden = false
-      }
-      UIView.animate(withDuration: 0.2, animations: {
-        self.videoControlsView.alpha = isHidden ? 0 : 1
-        self.updateSeekThumbAppearance(isHidden: hidden)
-        animation()
-      }) { (finished) in
-        if hidden {
-          self.videoControlsView.isHidden = true
-        }
-      }
-    }
-
     if !isHidden {
       self.controlsDebouncer.call { }
     }
@@ -1236,7 +1222,13 @@ class PlayerController: UIViewController {
       guard let `self` = self else { return }
       self.startLabel.text = self.videoContent.date.timeAgo()
 
-      animateChange(hidden: isHidden) {
+      if !isHidden {
+        self.videoControlsView.alpha = 0
+        self.videoControlsView.isHidden = false
+      }
+      UIView.animate(withDuration: 0.2, animations: {
+        self.videoControlsView.alpha = isHidden ? 0 : 1
+        self.updateSeekThumbAppearance(isHidden: isHidden)
         self.skipCurtainButton.alpha = !isHidden ? 0 : 1
         if OrientationUtility.isLandscape {
           self.liveToLandscapeInfoTop?.isActive = !isHidden
@@ -1245,6 +1237,10 @@ class PlayerController: UIViewController {
         }
         self.updateChatVisibility()
         self.updateBottomContainerVisibility()
+      }) { (finished) in
+        if isHidden {
+          self.videoControlsView.isHidden = true
+        }
       }
       guard !self.isPlayerControlsHidden else { return }
       self.controlsDebouncer.call { [weak self] in

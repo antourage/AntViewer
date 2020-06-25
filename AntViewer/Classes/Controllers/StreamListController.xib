@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -33,10 +33,11 @@
                             </constraints>
                         </view>
                         <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nordic_wellness" translatesAutoresizingMaskIntoConstraints="NO" id="qr6-vN-hyB">
-                            <rect key="frame" x="0.0" y="12" width="96" height="32"/>
+                            <rect key="frame" x="12" y="10" width="64" height="36"/>
                             <gestureRecognizers/>
                             <constraints>
-                                <constraint firstAttribute="width" secondItem="qr6-vN-hyB" secondAttribute="height" multiplier="3:1" id="LMf-2T-Cmb"/>
+                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="64" id="76c-Pn-sgX"/>
+                                <constraint firstAttribute="width" secondItem="qr6-vN-hyB" secondAttribute="height" multiplier="16:9" id="LMf-2T-Cmb"/>
                             </constraints>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="nordic_wellness"/>
@@ -55,8 +56,8 @@
                                 <action selector="closeButtonPressed:" destination="-1" eventType="touchUpInside" id="S5Y-LS-lcL"/>
                             </connections>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Studio Häcken" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NzV-cQ-KzL">
-                            <rect key="frame" x="136.5" y="19" width="102.5" height="18"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Studio Häcken" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NzV-cQ-KzL">
+                            <rect key="frame" x="136.5" y="19" width="102" height="18"/>
                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
@@ -68,7 +69,7 @@
                         <constraint firstItem="98f-eL-iNp" firstAttribute="leading" secondItem="OKE-FV-2Q3" secondAttribute="leading" id="3Wb-oX-JgK"/>
                         <constraint firstAttribute="bottom" secondItem="98f-eL-iNp" secondAttribute="bottom" id="8Rd-pU-uWh"/>
                         <constraint firstAttribute="trailing" secondItem="Xks-d0-h0o" secondAttribute="trailing" constant="15" id="KLv-eN-Z17"/>
-                        <constraint firstItem="Xks-d0-h0o" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NzV-cQ-KzL" secondAttribute="trailing" constant="15" id="X0E-vV-Lf5"/>
+                        <constraint firstItem="Xks-d0-h0o" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="NzV-cQ-KzL" secondAttribute="trailing" constant="8" id="X0E-vV-Lf5"/>
                         <constraint firstItem="qr6-vN-hyB" firstAttribute="centerY" secondItem="OKE-FV-2Q3" secondAttribute="centerY" id="n1w-Dv-gPP"/>
                         <constraint firstItem="Xks-d0-h0o" firstAttribute="centerY" secondItem="OKE-FV-2Q3" secondAttribute="centerY" id="p6N-uI-BDr"/>
                         <constraint firstAttribute="height" constant="56" id="ppk-GD-3xS">
@@ -76,9 +77,8 @@
                         </constraint>
                         <constraint firstItem="NzV-cQ-KzL" firstAttribute="centerY" secondItem="OKE-FV-2Q3" secondAttribute="centerY" id="sR2-B0-PDG"/>
                         <constraint firstItem="NzV-cQ-KzL" firstAttribute="centerX" secondItem="OKE-FV-2Q3" secondAttribute="centerX" id="u0k-xP-Uwv"/>
-                        <constraint firstItem="qr6-vN-hyB" firstAttribute="leading" secondItem="OKE-FV-2Q3" secondAttribute="leading" id="vB3-gh-lEi"/>
-                        <constraint firstItem="qr6-vN-hyB" firstAttribute="height" secondItem="OKE-FV-2Q3" secondAttribute="height" multiplier="0.57" id="yVA-Qx-ugv"/>
-                        <constraint firstItem="NzV-cQ-KzL" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qr6-vN-hyB" secondAttribute="trailing" constant="15" id="ysQ-J7-Omf"/>
+                        <constraint firstItem="qr6-vN-hyB" firstAttribute="leading" secondItem="OKE-FV-2Q3" secondAttribute="leading" constant="12" id="vB3-gh-lEi"/>
+                        <constraint firstItem="NzV-cQ-KzL" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qr6-vN-hyB" secondAttribute="trailing" constant="8" id="ysQ-J7-Omf"/>
                     </constraints>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="3Zf-73-Lbq">
