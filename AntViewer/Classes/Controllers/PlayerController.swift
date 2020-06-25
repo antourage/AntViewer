@@ -279,8 +279,10 @@ class PlayerController: UIViewController {
           if isBottomContainerHidedByUser {
             chatTextView.resignFirstResponder()
           }
-          liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
-          view.layoutIfNeeded()
+          if !viewersCountView.isHidden {
+            liveToLandscapeInfoTop?.isActive = !isPlayerControlsHidden
+            view.layoutIfNeeded()
+          }
           if videoContent is Live {
             landscapeSeekSlider.removeFromSuperview()
           }
@@ -810,6 +812,7 @@ class PlayerController: UIViewController {
         return tempCurt.range.lowerBound == 0 &&     
           tempCurt.range.contains(seekTo ?? 0)
         }
+      currentCurtain = startCurtain
         seekTo = startCurtain?.range.upperBound ?? seekTo
     }
 

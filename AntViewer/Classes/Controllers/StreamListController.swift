@@ -187,9 +187,6 @@ class StreamListController: UIViewController {
       }
     }
     NotificationCenter.default.addObserver(self, selector: #selector(streamsDidUpdate(_:)), name: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil)
-//    NotificationCenter.default.addObserver(forName: NSNotification.Name.init(rawValue: "StreamsUpdated"), object: nil, queue: .main) { [weak self](notification) in
-//    }
-
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
     topInset = view.safeAreaInsets.top
@@ -325,7 +322,6 @@ class StreamListController: UIViewController {
     }
     skeleton?.loaded(videoContent: Live.self, isEmpty: dataSource.streams.isEmpty)
     reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
-    collectionView.collectionViewLayout.invalidateLayout()
     bottomMessage.hideMessage()
   }
 
@@ -375,7 +371,6 @@ class StreamListController: UIViewController {
       }
     }
 
-//    UIView.performWithoutAnimation {
       let deletedPaths = deletedIndexes.map { IndexPath(item: $0, section: 0) }
       var addedPaths = [IndexPath]()
       for index in 0 ..< addedCount {
@@ -387,6 +382,7 @@ class StreamListController: UIViewController {
         collectionView.deleteItems(at: deletedPaths)
         collectionView.insertItems(at: addedPaths)
       }, completion: { _ in
+        self.collectionView.collectionViewLayout.invalidateLayout()
         self.updateVisibleCells()
         if addedCount > 0, self.newLivesButton.isHidden {
           let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
