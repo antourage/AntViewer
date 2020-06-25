@@ -295,7 +295,7 @@ class PlayerController: UIViewController {
         if isAutoplayMode {
           adjustCircleLayersPath()
         }
-        if shouldShowExpandedBanner, activePoll?.userAnswer == nil {
+        if shouldShowExpandedBanner, activePoll?.userAnswer == nil, activePoll != nil {
           expandPollBanner()
         }
         chatController.updateContentInsetForTableView()
@@ -314,14 +314,13 @@ class PlayerController: UIViewController {
     pollBannerView.isHidden = activePoll == nil
     if OrientationUtility.isLandscape {
       if !isPlayerControlsHidden {
-        pollBannerView.alpha = 0//isHidden = true
-//        pollBannerView.isHidden = activePoll == nil
+        pollBannerView.alpha = 0
       } else {
-        pollBannerView.alpha = activePoll == nil ? 0 : 1//isHidden = activePoll == nil
+        pollBannerView.alpha = activePoll == nil ? 0 : 1
 
       }
     } else {
-      pollBannerView.alpha = activePoll == nil ? 0 : 1//isHidden = activePoll == nil
+      pollBannerView.alpha = activePoll == nil ? 0 : 1
     }
   }
 
