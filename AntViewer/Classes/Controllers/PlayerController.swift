@@ -800,19 +800,20 @@ class PlayerController: UIViewController {
   }
   
   private func startPlayer(){
-    
     var seekTo: Double?
     if let vod = videoContent as? VOD {
       let alreadyWatchedTime = Double(vod.stopTime.duration())
       let duration = Double(vod.duration.duration())
-      seekTo =  alreadyWatchedTime/duration >= 0.9 ? 0 : alreadyWatchedTime
+      seekTo = alreadyWatchedTime/duration >= 0.9 ? 0 : alreadyWatchedTime
       var startCurtain = vod.curtainRangeModels.first { curtain in
         var tempCurt = curtain
         return tempCurt.range.lowerBound == 0 &&     
           tempCurt.range.contains(seekTo ?? 0)
         }
       currentCurtain = startCurtain
-        seekTo = startCurtain?.range.upperBound ?? seekTo
+      if let curtainUpperBound = startCurtain?.range.upperBound {
+        seekTo = Int(curtainUpperBound) >= vod.duration.duration() ? seekTo : curtainUpperBound
+      }
     }
 
     guard let url = URL(string: videoContent.url) else {
@@ -1035,16 +1036,18 @@ class PlayerController: UIViewController {
         shouldShowSkipButton = false
         skipCurtainButton.isHidden = true
       }
+    } else if Int(curtain.range.upperBound) >= vod.duration.duration() {
+      currentCurtain = curtain
+      shouldShowSkipButton = false
+      skipCurtainButton.isHidden = true
     } else {
       currentCurtain = curtain
       skipCurtainButton.isHidden = !shouldShowSkipButton
       skipCurtainButtonDebouncer.call { [weak self] in
-        self?.shouldShowSkipButton = false
-        self?.skipCurtainButton.isHidden = true
+      self?.shouldShowSkipButton = false
+      self?.skipCurtainButton.isHidden = true
       }
     }
-
-
   }
 
   @objc
