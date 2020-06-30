@@ -9,14 +9,14 @@ import Foundation
 import UIKit
 import AntViewerExt
 
-protocol SkeletonDelegate {
+protocol SkeletonDelegate: class {
   func skeletonWillHide(_ skeleton: Skeleton)
 }
 
 class Skeleton: NSObject {
 
   
-  var delegate: SkeletonDelegate?
+  weak var delegate: SkeletonDelegate?
   var collectionView: UICollectionView? {
     didSet {
       collectionView?.delegate = self
@@ -51,7 +51,7 @@ class Skeleton: NSObject {
     case noConnection, onError, emptyDataSource, loading
   }
 
-  private var state: SkeletonState = .loading
+  var state: SkeletonState = .loading
 
   private func initialUpdate() {
     switch state {
@@ -103,6 +103,7 @@ class Skeleton: NSObject {
 
   private func resetView() {
     animator?.stop(immediately: true)
+
     delegate?.skeletonWillHide(self)
   }
 
