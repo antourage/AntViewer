@@ -190,6 +190,7 @@ class StreamListController: UIViewController {
     collectionView.alwaysBounceVertical = true
     collectionView.refreshControl = refreshControl
     topInset = view.safeAreaInsets.top
+    skeleton?.loaded(videoContent: Live.self, isEmpty: dataSource.streams.isEmpty)
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -197,6 +198,7 @@ class StreamListController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
     collectionView.reloadData()
+//    collectionView.isUserInteractionEnabled = true
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -278,7 +280,6 @@ class StreamListController: UIViewController {
       footerView?.showButton = isEnoughContent
       footerView?.isHidden = !isEnoughContent
     }
-
   }
 
   @objc
@@ -321,6 +322,7 @@ class StreamListController: UIViewController {
       return
     }
     skeleton?.loaded(videoContent: Live.self, isEmpty: dataSource.streams.isEmpty)
+    skeleton?.loaded(videoContent: VOD.self, isEmpty: dataSource.videos.isEmpty)
     reloadCollectionViewDataSource(addedCount: addedCount, deletedIndexes: deleted)
     bottomMessage.hideMessage()
   }
@@ -405,6 +407,10 @@ class StreamListController: UIViewController {
   
   @objc
   private func didPullToRefresh(_ sender: Any) {
+    if isDataSourceEmpty {
+      skeleton?.collectionView?.delegate = skeleton
+      skeleton?.collectionView?.dataSource = skeleton
+    }
     skeleton?.startLoading()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
       if self?.isReachable == true {
@@ -811,12 +817,5 @@ extension StreamListController: SkeletonDelegate {
     collectionView.delegate = self
     collectionView.dataSource = self
     collectionView.isUserInteractionEnabled = true
-    collectionView.reloadData()
-    skeleton.delegate = nil
-    self.skeleton = nil
-  }
-
-  func skeletonOnTimeout(_ skeleton: Skeleton) {
-    //TODO: set error
   }
 }

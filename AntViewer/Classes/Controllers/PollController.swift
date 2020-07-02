@@ -86,7 +86,7 @@ class PollController: UIViewController {
   }
 
   @IBAction func handleTapOnBanner(_ sender: UITapGestureRecognizer) {
-    guard let banner = SponsoredBanner.current, let url =  URL(string: banner.externalUrl) else {
+    guard let banner = SponsoredBanner.current, let urlString = banner.externalUrl, let url = URL(string: urlString) else {
       print("Error: sponsored external url absent or broken ")
       return
     }
