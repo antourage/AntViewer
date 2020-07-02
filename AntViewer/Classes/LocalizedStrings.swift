@@ -24,7 +24,7 @@ enum LocalizedStrings: String {
   //CHAT
   case chat = "Chat"
   case joined = "Joined"
-  case jumpToTop = "Jump to the top"
+  case jumpToTop = "JUMP TO THE TOP"
   case send = "Send"
   case chatDisabled = "Chat disabled"
   //DISPLAY NAME

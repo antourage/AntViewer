@@ -30,8 +30,6 @@ class LocalizedLabel: UILabel {
 class LocalizedButton: UIButton {
   override func awakeFromNib() {
     super.awakeFromNib()
-//    let states = UIButton.State.init(arrayLiteral: [.normal, .highlighted, .focused, .disabled, .selected])
-
     setTitle(currentTitle?.localized(), for: .normal)
   }
 }
