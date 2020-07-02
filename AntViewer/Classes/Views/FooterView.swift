@@ -10,7 +10,7 @@ import UIKit
 public class FooterView: UICollectionReusableView {
 
   @IBOutlet private var spinnerView: UIImageView!
-  @IBOutlet var jumpButton: UIButton!
+  @IBOutlet var jumpButton: LocalizedButton!
   lazy private var animator = Animator(view: spinnerView, type: .fastSpin)
   var jumpAction: (() -> Void)?
 
@@ -30,7 +30,7 @@ public class FooterView: UICollectionReusableView {
     spinnerView.layer.cornerRadius = spinnerView.bounds.width / 2
   }
 
-  @IBAction private func jumpButtonPressed(_ sender: UIButton) {
+  @IBAction private func jumpButtonPressed(_ sender: LocalizedButton) {
     jumpAction?()
   }
 

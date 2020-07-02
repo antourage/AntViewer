@@ -293,7 +293,7 @@ class StreamListController: UIViewController {
       switch result {
       case .success:
         self.bottomMessage.hideMessage()
-        self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
+        self.skeleton?.loaded(videoContent: VOD.self , isEmpty: true/*self.dataSource.videos.isEmpty*/)
         self.collectionView.reloadData()
         self.collectionView.performBatchUpdates(nil) { (result) in
           if self.activeCell == nil, self.view.window != nil {

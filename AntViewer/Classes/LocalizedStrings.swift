@@ -42,6 +42,7 @@ enum LocalizedStrings: String {
   case thanksForWatching = "THANKS FOR WATCHING"
   case chooseLink = "Choose link"
   case set = "set"
+  case skipCurtain = "SKIP CURTAIN"
 }
 
 extension LocalizedStrings {

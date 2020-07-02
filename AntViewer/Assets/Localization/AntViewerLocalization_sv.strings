@@ -8,7 +8,7 @@
 "You are online" = "Du ha uppkoppling";
 "Something is not right. We are working to get this fixed" = "Något gick fel. Vi jobbar på en lösning";
 //FEED
-"Live interactive videos coming soon" = "Snart kan du se interaktiv video här";
+"LIVE INTERACTIVE VIDEOS COMING SOON" = "SNART KAN DU SE INTERAKTIV VIDEO HÄR";
 "New" = "Ny";
 "LIVE" = "LIVE";
 "most recent" = "Senaste";
@@ -35,3 +35,5 @@
 "Choose link" = "Välj länk";
 "set" = "Ställ in";
 "%@ at %@" = "%@ vid %@";
+"SKIP CURTAIN" = "SKIPPA RIDÅ";
+
