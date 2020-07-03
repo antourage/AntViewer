@@ -816,6 +816,6 @@ extension StreamListController: SkeletonDelegate {
   func skeletonWillHide(_ skeleton: Skeleton) {
     collectionView.delegate = self
     collectionView.dataSource = self
-    collectionView.isUserInteractionEnabled = true
+//    collectionView.isUserInteractionEnabled = true
   }
 }

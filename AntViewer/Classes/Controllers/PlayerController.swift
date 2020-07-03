@@ -76,7 +76,7 @@ class PlayerController: UIViewController {
 
   //MARK: - curtain staff
   @IBOutlet var skipCurtainButton: LocalizedButton!
-  lazy var skipCurtainButtonDebouncer = Debouncer(delay: 5)
+  lazy var skipCurtainButtonDebouncer = Debouncer(delay: 7)
   var currentCurtain: CurtainRange?
   var shouldShowSkipButton = true
   //MARK: -
@@ -465,7 +465,7 @@ class PlayerController: UIViewController {
             self?.isSeekByTappingMode = false
           }
           self?.shouldShowSkipButton = false
-          self?.skipCurtainButton.isHidden = true
+          self?.setSkipButtonHidden(hidden: true)
           
         })
         controlsDebouncer.call { [weak self] in
@@ -1003,7 +1003,7 @@ class PlayerController: UIViewController {
     //MARK: skip curtain
     defer {
       skipCurtainButtonDebouncer.call { }
-      skipCurtainButton.isHidden = true
+      setSkipButtonHidden(hidden: true)
     }
     guard let vod = videoContent as? VOD,
       var currentCurtain = vod.curtainRangeModels
@@ -1025,7 +1025,7 @@ class PlayerController: UIViewController {
       return curtain.range.contains(player.currentTime)
       }) else {
         currentCurtain = nil
-        skipCurtainButton.isHidden = true
+        setSkipButtonHidden(hidden: true)
         shouldShowSkipButton = true
         return
     }
@@ -1034,18 +1034,33 @@ class PlayerController: UIViewController {
       if currentCurtain.range != curtain.range {
         currentCurtain = curtain
         shouldShowSkipButton = false
-        skipCurtainButton.isHidden = true
+        setSkipButtonHidden(hidden: true)
       }
     } else if Int(curtain.range.upperBound) >= vod.duration.duration() {
       currentCurtain = curtain
       shouldShowSkipButton = false
-      skipCurtainButton.isHidden = true
+      setSkipButtonHidden(hidden: true)
     } else {
       currentCurtain = curtain
-      skipCurtainButton.isHidden = !shouldShowSkipButton
+      setSkipButtonHidden(hidden: !shouldShowSkipButton)
       skipCurtainButtonDebouncer.call { [weak self] in
       self?.shouldShowSkipButton = false
-      self?.skipCurtainButton.isHidden = true
+        self?.setSkipButtonHidden(hidden: true)
+      }
+    }
+  }
+
+  private func setSkipButtonHidden(hidden: Bool) {
+    guard skipCurtainButton.isHidden != hidden else { return }
+    if !hidden {
+      skipCurtainButton.alpha = 0
+      skipCurtainButton.isHidden = false
+    }
+    UIView.animate(withDuration: 0.2, animations: {
+      self.skipCurtainButton.alpha = hidden ? 0 : 1
+    }) { _ in
+      if hidden {
+        self.skipCurtainButton.isHidden = true
       }
     }
   }
