@@ -21,7 +21,7 @@ class Skeleton: NSObject {
     didSet {
       collectionView?.delegate = self
       collectionView?.dataSource = self
-      collectionView?.isUserInteractionEnabled = false
+//      collectionView?.isUserInteractionEnabled = false
       let cellNib = UINib(nibName: String(describing: SkeletonCell.self), bundle: Bundle(for: type(of: self)))
       collectionView?.register(cellNib, forCellWithReuseIdentifier: "skeletonCell")
       collectionView?.reloadData()
@@ -127,7 +127,7 @@ class Skeleton: NSObject {
       state = .noConnection
       startAnimate()
       cell?.iconImageView.image = UIImage.image("SkeletonNoConnection")
-      collectionView?.isUserInteractionEnabled = true
+//      collectionView?.isUserInteractionEnabled = true
     }
   }
 
@@ -141,7 +141,7 @@ class Skeleton: NSObject {
       return
     }
     state = .loading
-    collectionView?.isUserInteractionEnabled = false
+//    collectionView?.isUserInteractionEnabled = false
     cell?.iconImageView.image = UIImage.image("SkeletonPlaceholder")
     cell?.loaderImageView.image = UIImage.image("PlaceholderIconLoad")
     startAnimate()
@@ -152,7 +152,7 @@ class Skeleton: NSObject {
     startAnimate()
     setEmptyDataSourseViewVisible(visible: false)
     cell?.iconImageView.image = UIImage.image("SkeletonError")
-    collectionView?.isUserInteractionEnabled = true
+//    collectionView?.isUserInteractionEnabled = true
     state = .onError
 
   }
