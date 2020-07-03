@@ -164,7 +164,7 @@ class Skeleton: NSObject {
   }
 
   private func setEmptyDataSourseViewVisible(visible: Bool) {
-    collectionView?.isUserInteractionEnabled = visible
+//    collectionView?.isUserInteractionEnabled = visible
     cell?.contentView.alpha = visible ? 0 : 1
     collectionView?.backgroundView = visible ? emptyDataSourceView : nil
   }
