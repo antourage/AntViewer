@@ -16,6 +16,7 @@ class StreamListController: UIViewController {
   @IBOutlet private var headerView: UIView!
   @IBOutlet private var collectionView: UICollectionView!
   @IBOutlet private var logoImageView: UIImageView!
+  @IBOutlet private var tagLineLabel: UILabel!
   @IBOutlet private var collectionViewBottom: NSLayoutConstraint!
   @IBOutlet private var headerTop: NSLayoutConstraint!
 
@@ -165,6 +166,7 @@ class StreamListController: UIViewController {
         print(error)
       }
     }
+    configureHeader()
     dataSource.firebaseFetcher = MessageFetcher()
     if dataSource.streams.isEmpty {
       skeleton?.collectionView = collectionView
@@ -435,7 +437,26 @@ class StreamListController: UIViewController {
       }
     }
   }
-  
+
+  private func configureHeader() {
+    if let currentInfo = HeaderInfoModel.currentInfo, let imadeData = currentInfo.imageData {
+      tagLineLabel.text = currentInfo.tagLine
+      logoImageView.image = UIImage(data: imadeData)
+    }
+
+    HeaderInfoModel.fetchInfo { [weak self] (info) in
+      guard let info = info else { return }
+      self?.tagLineLabel.text = info.tagLine
+
+      if let urlString = info.imageUrl, let url = URL(string: urlString) {
+        ImageService.downloadImage(withURL: url) { [weak self] (image) in
+          self?.logoImageView.image = image
+          HeaderInfoModel.currentInfo?.imageData = image?.pngData()
+        }
+      }
+    }
+  }
+
   private func setupCollectionView() {
     let cellNib = UINib(nibName: "StreamCell", bundle: Bundle(for: type(of: self)))
     collectionView.register(cellNib, forCellWithReuseIdentifier: reuseIdentifier)
