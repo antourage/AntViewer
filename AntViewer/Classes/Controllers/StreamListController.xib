@@ -33,16 +33,13 @@
                                 <constraint firstAttribute="height" constant="1" id="GxG-64-g8U"/>
                             </constraints>
                         </view>
-                        <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="64" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="qr6-vN-hyB">
+                        <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" placeholderIntrinsicWidth="64" placeholderIntrinsicHeight="infinite" translatesAutoresizingMaskIntoConstraints="NO" id="qr6-vN-hyB">
                             <rect key="frame" x="12" y="10" width="64" height="36"/>
                             <gestureRecognizers/>
                             <constraints>
                                 <constraint firstAttribute="width" relation="lessThanOrEqual" constant="64" id="76c-Pn-sgX"/>
                                 <constraint firstAttribute="width" secondItem="qr6-vN-hyB" secondAttribute="height" multiplier="16:9" id="LMf-2T-Cmb"/>
                             </constraints>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="string" keyPath="imageFromBundle" value="nordic_wellness"/>
-                            </userDefinedRuntimeAttributes>
                             <connections>
                                 <outletCollection property="gestureRecognizers" destination="tGb-bB-Z4Q" appends="YES" id="nNg-mm-kKa"/>
                             </connections>

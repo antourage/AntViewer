@@ -445,14 +445,20 @@ class StreamListController: UIViewController {
     }
 
     HeaderInfoModel.fetchInfo { [weak self] (info) in
-      guard let info = info else { return }
+      guard let info = info else {
+        //TODO: show error
+        return
+      }
       self?.tagLineLabel.text = info.tagLine
 
+      HeaderInfoModel.currentInfo?.imageData = nil
       if let urlString = info.imageUrl, let url = URL(string: urlString) {
         ImageService.downloadImage(withURL: url) { [weak self] (image) in
           self?.logoImageView.image = image
           HeaderInfoModel.currentInfo?.imageData = image?.pngData()
         }
+      } else {
+        self?.logoImageView.image = nil
       }
     }
   }
