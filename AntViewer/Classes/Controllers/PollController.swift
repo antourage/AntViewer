@@ -17,9 +17,6 @@ class PollController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var questionLabel: UILabel!
-//  @IBOutlet var sponsoredBanner: CacheImageView!
-//  @IBOutlet var sponsoredBannerHeight: NSLayoutConstraint!
-
 
   weak var delegate: PollControllerDelegate?
   
@@ -34,7 +31,7 @@ class PollController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     setupUI()
-    fetchBanner()
+    tableView.reloadData()
     NotificationCenter.default.addObserver(self, selector: #selector(handlePollUpdate(_:)), name: NSNotification.Name(rawValue: "PollUpdated"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleBannerUpdate), name: NSNotification.Name(rawValue: "SponsoredBannerDidUpdate"), object: nil)
   }
@@ -44,15 +41,6 @@ class PollController: UIViewController {
     tableView.reloadData()
   }
 
-  private func fetchBanner() {
-//    guard let banner = SponsoredBanner.current, let url =  URL(string: banner.imageUrl) else {
-//      print("Error: sponsored image url absent or broken")
-//      return
-//    }
-//    sponsoredBanner.load(url: url, placeholder: nil)
-//    sponsoredBannerHeight.isActive = false
-    tableView.reloadData()
-  }
 
   private func setupUI() {
     let pollCellNib = UINib(nibName: String(describing: PollTableViewCell.self), bundle: Bundle(for: type(of: self)))
@@ -77,13 +65,7 @@ class PollController: UIViewController {
 
   @objc
   func handleBannerUpdate() {
-//    guard let banner = SponsoredBanner.current, let url =  URL(string: banner.imageUrl) else {
-//      print("Error: sponsored image url absent or broken")
-//      return
-//    }
     tableView.reloadData()
-//    sponsoredBanner.load(url: url, placeholder: nil)
-//    sponsoredBannerHeight.isActive = false
   }
   
   @IBAction func closeButtonPressed(_ sender: UIButton) {
@@ -134,11 +116,17 @@ extension PollController: UITableViewDelegate, UITableViewDataSource {
       return cell
     } else {
       let cell = tableView.dequeueReusableCell(withIdentifier: "sponsoredBannerCell", for: indexPath) as! SponsoredBannerCell
-      let url = URL(string: SponsoredBanner.current?.imageUrl ?? "")
-      cell.sponsoredBannerImageView.load(url: url, placeholder: nil)
-      cell.onBannerTapped = {
-        if let url = URL(string: SponsoredBanner.current?.externalUrl ?? "") {
-          UIApplication.shared.open(url, options: [:], completionHandler: nil)
+      if let url = URL(string: SponsoredBanner.current?.imageUrl ?? "") {
+        ImageService.getImage(withURL: url) { (image) in
+          cell.sponsoredBannerImageView.image = image
+          if let image = image {
+            cell.updateAspectRatioTo(image.size.width/image.size.height)
+          }
+        }
+        cell.onBannerTapped = {
+          if let url = URL(string: SponsoredBanner.current?.externalUrl ?? "") {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+          }
         }
       }
       return cell
@@ -146,7 +134,7 @@ extension PollController: UITableViewDelegate, UITableViewDataSource {
   }
 
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return indexPath.section == 0 ? 50 : 80
+    return indexPath.section == 0 ? 50 : 88
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

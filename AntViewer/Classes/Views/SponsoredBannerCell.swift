@@ -9,7 +9,24 @@ import UIKit
 
 class SponsoredBannerCell: UITableViewCell {
   @IBOutlet var sponsoredBannerImageView: CacheImageView!
+  @IBOutlet var imageViewAspectRatio: NSLayoutConstraint!
   var onBannerTapped: (()->())?
+
+  func updateAspectRatioTo(_ newValue: CGFloat) {
+    let newConstraint = NSLayoutConstraint(
+      item: imageViewAspectRatio.firstItem,
+      attribute: imageViewAspectRatio.firstAttribute,
+      relatedBy: imageViewAspectRatio.relation,
+      toItem: imageViewAspectRatio.secondItem,
+      attribute: imageViewAspectRatio.secondAttribute,
+      multiplier: newValue,
+      constant: imageViewAspectRatio.constant)
+    newConstraint.priority = imageViewAspectRatio.priority
+
+    NSLayoutConstraint.deactivate([imageViewAspectRatio])
+    imageViewAspectRatio = newConstraint
+    NSLayoutConstraint.activate([imageViewAspectRatio])
+  }
 
   override func didMoveToSuperview() {
     super.didMoveToSuperview()
