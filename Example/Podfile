@@ -6,7 +6,7 @@ target 'AntViewer_ios_Example' do
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
   # debug
-  # pod 'AntViewerExt', :path => '../../AntViewerExt/AntViewerExt/'
+  #pod 'AntViewerExt', :path => '../../AntViewerExt/AntViewerExt/'
 
   target 'AntViewer_ios_Tests' do
     inherit! :complete
