@@ -115,10 +115,16 @@ class ChatViewController: UIViewController {
   }
 
   func deleteMessages(_ messages: [Message]) {
-    let arrWithoutUpdates = messagesDataSource
-    self.messagesDataSource.removeAll { mess in messages.contains { $0.key == mess.key } }//.remove(at: index)
-    let deletedIndexes: [Int] = Array(messagesDataSource.count..<arrWithoutUpdates.count)
-    let deletedIndexPaths = deletedIndexes.map { IndexPath(row: $0, section: 0) }
+    var indexToDelete = Array<Int>()
+    messagesDataSource.enumerated().forEach { element in
+      if messages.contains(where: { $0.key == element.element.key }) {
+        indexToDelete.append(element.offset)
+      }
+    }
+    let deletedIndexPaths = indexToDelete.map { (index) -> IndexPath in
+      messagesDataSource.remove(at: index)
+      return IndexPath(row: index, section: 0)
+    }
     if alreadyWatchedMessage > messagesDataSource.count {
       alreadyWatchedMessage = messagesDataSource.count
     }
@@ -133,13 +139,6 @@ class ChatViewController: UIViewController {
     var contentInsetHeight = tableView.bounds.size.height
     guard tableView.contentSize.height <= contentInsetHeight else {
       tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//      if currentTableView == portraitTableView, shouldScrollPortraitTable {
-//        let lastIndexPath = IndexPath(row: self.messagesDataSource.count - 1, section: 0)
-//        if lastIndexPath.row >= 0 {
-//          self.currentTableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
-//          shouldScrollPortraitTable = false
-//        }
-//      }
       return
     }
     for i in 0..<numRows {

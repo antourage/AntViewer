@@ -193,7 +193,7 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				C01754ED98910271324AC15B /* [CP] Copy Pods Resources */,
-				DC3F1DC6982863286AADAAD9 /* [CP] Embed Pods Frameworks */,
+				5F37D30490EFCCDE221BAAD7 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -213,7 +213,7 @@
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
 				35EFC4948F4E08BE08107A0A /* [CP] Copy Pods Resources */,
-				73513C377E163A9F0FD06521 /* [CP] Embed Pods Frameworks */,
+				4702D4C0D8A95BB7657CB783 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -346,7 +346,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		73513C377E163A9F0FD06521 /* [CP] Embed Pods Frameworks */ = {
+		4702D4C0D8A95BB7657CB783 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -362,6 +362,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5F37D30490EFCCDE221BAAD7 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A48BDE3E0A609C1F2993303A /* [CP] Check Pods Manifest.lock */ = {
@@ -434,24 +452,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DC3F1DC6982863286AADAAD9 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EFA1707AC84B00E415294502 /* [CP] Check Pods Manifest.lock */ = {

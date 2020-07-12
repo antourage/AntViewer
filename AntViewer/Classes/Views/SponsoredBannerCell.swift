@@ -10,6 +10,7 @@ import UIKit
 class SponsoredBannerCell: UITableViewCell {
   @IBOutlet var sponsoredBannerImageView: CacheImageView!
   @IBOutlet var imageViewAspectRatio: NSLayoutConstraint!
+  @IBOutlet var imageViewWidth: NSLayoutConstraint!
   var onBannerTapped: (()->())?
 
   func updateAspectRatioTo(_ newValue: CGFloat) {
@@ -26,6 +27,7 @@ class SponsoredBannerCell: UITableViewCell {
     NSLayoutConstraint.deactivate([imageViewAspectRatio])
     imageViewAspectRatio = newConstraint
     NSLayoutConstraint.activate([imageViewAspectRatio])
+    imageViewWidth.isActive = newValue == CGFloat(320)/50
   }
 
   override func didMoveToSuperview() {
