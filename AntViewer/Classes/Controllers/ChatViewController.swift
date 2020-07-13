@@ -129,7 +129,7 @@ class ChatViewController: UIViewController {
       alreadyWatchedMessage = messagesDataSource.count
     }
     tableView.beginUpdates()
-    tableView.deleteRows(at: deletedIndexPaths, with: .none)
+    tableView.deleteRows(at: deletedIndexPaths, with: .left)
     tableView.endUpdates()
     updateContentInsetForTableView()
   }
