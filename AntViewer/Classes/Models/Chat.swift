@@ -48,21 +48,19 @@ public class Chat {
         return
       }
       snapshot.documentChanges.forEach { diff in
-        DispatchQueue.main.async {
-          switch diff.type {
-          case .added:
-            print("New message: \(diff.document.data())")
-            if let message = Message(snapshot: diff.document) {
-              self.onAdd?(message)
-            }
-          case .removed:
-            print("Removed message: \(diff.document.data())")
-            if let message = Message(snapshot: diff.document) {
-              self.onRemove?(message)
-            }
-          default:
-            break
+        switch diff.type {
+        case .added:
+          print("New message: \(diff.document.data())")
+          if let message = Message(snapshot: diff.document) {
+            self.onAdd?(message)
           }
+        case .removed:
+          print("Removed message: \(diff.document.data())")
+          if let message = Message(snapshot: diff.document) {
+            self.onRemove?(message)
+          }
+        default:
+          break
         }
       }
     }
@@ -75,17 +73,13 @@ public class Chat {
         return
       }
       let isActive = (document["isChatActive"] as? Bool) ?? false
-      DispatchQueue.main.async {
-        self?.onStateChange?(isActive)
-      }
+      self?.onStateChange?(isActive)
     }
   }
   
   public func send(message: Message, withCompletionBlock: @escaping (Error?) -> ()) {
     ref?.collection("messages").addDocument(data: message.toAnyObject(), completion: { (error) in
-      DispatchQueue.main.async {
-        withCompletionBlock(error)
-      }
+      withCompletionBlock(error)
     })
   }
   

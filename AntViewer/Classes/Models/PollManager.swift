@@ -25,15 +25,13 @@ public class PollManager {
     let ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams/\(streamId)/polls")
     
     pollListener = ref.whereField("isActive", isEqualTo: true).addSnapshotListener( { (querySnapshot, error) in
-      DispatchQueue.main.async {
-        guard let document = querySnapshot?.documents.first else {
-          print("Error fetching documents or empty")
-          completion(nil)
-          return
-        }
-        if let newPoll = Poll(snapshot: document) {
-          completion(newPoll)
-        }
+      guard let document = querySnapshot?.documents.first else {
+        print("Error fetching documents or empty")
+        completion(nil)
+        return
+      }
+      if let newPoll = Poll(snapshot: document) {
+        completion(newPoll)
       }
     })
   }

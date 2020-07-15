@@ -28,9 +28,7 @@ public class Poll {
   
   public var percentForEachAnswer: [Int] {
     didSet {
-      DispatchQueue.main.async {
-        self.onUpdate?()
-      }
+      self.onUpdate?()
     }
   }
   
