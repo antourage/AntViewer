@@ -353,6 +353,7 @@ DEPENDENCIES:
   - AntViewer (from `../`)
   - Firebase/Core
   - Firebase/Messaging
+  - FirebaseFirestore (from `https://github.com/firebase/firebase-ios-sdk.git`, branch `master`)
 
 SPEC REPOS:
   trunk:
@@ -363,7 +364,6 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
-    - FirebaseFirestore
     - FirebaseInstallations
     - FirebaseInstanceID
     - FirebaseMessaging
@@ -381,6 +381,14 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   AntViewer:
     :path: "../"
+  FirebaseFirestore:
+    :branch: master
+    :git: https://github.com/firebase/firebase-ios-sdk.git
+
+CHECKOUT OPTIONS:
+  FirebaseFirestore:
+    :commit: 05b24583945bfbaef02b4c385eb2ef92a3d6442c
+    :git: https://github.com/firebase/firebase-ios-sdk.git
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
@@ -406,6 +414,6 @@ SPEC CHECKSUMS:
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
 
-PODFILE CHECKSUM: d95eaabec51d53126dcff985a0d5d4d0abb1a0d1
+PODFILE CHECKSUM: 2919dce8a4e26713071013faee5481d7723117e9
 
 COCOAPODS: 1.8.4
