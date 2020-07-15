@@ -121,10 +121,9 @@ class ChatViewController: UIViewController {
         indexToDelete.append(element.offset)
       }
     }
-    let deletedIndexPaths = indexToDelete.map { (index) -> IndexPath in
-      messagesDataSource.remove(at: index)
-      return IndexPath(row: index, section: 0)
-    }
+    indexToDelete.reversed().forEach { self.messagesDataSource.remove(at: $0) }
+    let deletedIndexPaths = indexToDelete.map { IndexPath(row: $0, section: 0)}
+
     if alreadyWatchedMessage > messagesDataSource.count {
       alreadyWatchedMessage = messagesDataSource.count
     }
@@ -224,7 +223,10 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
     let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
     let time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
-    cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
+    cell.messageInfoLabel.text = userName
+    if videoContent is VOD {
+      cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
+    }
     return cell
   }
 
