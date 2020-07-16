@@ -840,7 +840,6 @@ class PlayerController: UIViewController {
       if let vod = self.videoContent as? VOD {
         vod.stopTime = min(Int(time.seconds), vod.duration.duration()).durationString()
         self.chatController.handleVODsChat(forTime: Int(time.seconds))
-        self.chatController.scrollToBottom()
         self.checkCurtains()
         //temp: needs refactoring
         self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())

@@ -73,7 +73,6 @@ public class Chat {
         return
       }
       let isActive = (document["isChatActive"] as? Bool) ?? false
-      
       self?.onStateChange?(isActive)
     }
   }
