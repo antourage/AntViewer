@@ -556,6 +556,11 @@ class PlayerController: UIViewController {
     UIApplication.shared.isIdleTimerDisabled = true
     startObservingReachability()
   }
+
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    chatController.updateContentInsetForTableView()
+  }
   
   override func viewWillDisappear(_ animated: Bool) {
     super.viewWillDisappear(animated)
