@@ -97,7 +97,9 @@ class Player: NSObject {
       } else {
         let error = NPlayerError(kind: .invalidLink, description: "Can't load content")
         self?.isError = true
-        self?.onErrorApear?(error)
+        DispatchQueue.main.async { [weak self] in
+          self?.onErrorApear?(error)
+        }
       }
     }
   }
