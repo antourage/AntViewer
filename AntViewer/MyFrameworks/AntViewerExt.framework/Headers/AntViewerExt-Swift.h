@@ -317,7 +317,7 @@ SWIFT_PROTOCOL("_TtP12AntViewerExt17WebSocketDelegate_")
 @end
 
 /// The WebSocketReadyState enum is used by the readyState property to describe the status of the WebSocket connection.
-typedef SWIFT_ENUM(NSInteger, WebSocketReadyState, closed) {
+typedef SWIFT_ENUM(NSInteger, WebSocketReadyState, open) {
 /// The connection is not yet open.
   WebSocketReadyStateConnecting = 0,
 /// The connection is open and ready to communicate.
