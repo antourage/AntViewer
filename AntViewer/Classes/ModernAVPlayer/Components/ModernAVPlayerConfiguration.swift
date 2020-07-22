@@ -48,7 +48,7 @@ public struct ModernAVPlayerConfiguration: PlayerConfiguration {
     public let reachabilityNetworkTestingTickTime: TimeInterval = 3
     public let reachabilityNetworkTestingIteration: UInt = 5
 
-    public var useDefaultRemoteCommand = true
+    public var useDefaultRemoteCommand = false
     
     public let allowsExternalPlayback = false
 
