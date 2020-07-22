@@ -23,6 +23,7 @@ class ChatViewController: UIViewController {
       updateChatTipView(newMessagesCount: messagesDataSource.count-alreadyWatchedMessage)
     }
   }
+  var updateMessageTimeWorkItem: DispatchWorkItem?
 
   var onTableViewTapped: (()->())?
   var handleTableViewSwipeGesture: (()->())?
@@ -44,6 +45,9 @@ class ChatViewController: UIViewController {
     tableView.estimatedSectionHeaderHeight = 0
     tableView.estimatedSectionFooterHeight = 0
     tableView.rowHeight = UITableView.automaticDimension
+    if videoContent is Live {
+      updateMessageTime()
+    }
   }
 
   override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -188,6 +192,25 @@ class ChatViewController: UIViewController {
     tableView.reloadData()
   }
 
+  private func updateMessageTime() {
+    updateMessageTimeWorkItem?.cancel()
+    updateMessageTimeWorkItem = nil
+    updateMessageTimeWorkItem = DispatchWorkItem { [weak self] in
+      guard let `self` = self else { return }
+      self.reloadVisibleCells()
+      self.updateMessageTime()
+    }
+    if let workItem = updateMessageTimeWorkItem {
+      DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: workItem)
+    }
+  }
+  
+  func reloadVisibleCells() {
+    if let indexPaths = tableView.indexPathsForVisibleRows {
+      tableView.reloadRows(at: indexPaths, with: .none)
+    }
+  }
+  
   func handleVODsChat(forTime time: Int) {
     let currentTime = Int(videoContent.date.timeIntervalSince1970) + time
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
@@ -226,6 +249,10 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     cell.messageInfoLabel.text = userName
     if videoContent is VOD {
       cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
+    } else {
+      let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
+      let timeString = messageDate.timeAgo(shouldShowSeconds: true).localized()
+      cell.messageInfoLabel.text = String(format: "%@ %@", userName, timeString)
     }
     return cell
   }
