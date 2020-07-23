@@ -30,7 +30,7 @@ enum WidgetState {
 
 public class AntWidget {
   public static let shared = AntWidget()
-  private static var dataSource: DataSource?
+  private var dataSource = DataSource()
   private var animationProcessing = false
   private var isBackground = false
   private var currentState = WidgetState.resting {
@@ -82,9 +82,6 @@ public class AntWidget {
 
     AppAuth.shared.auth()
     Statistic.sync()
-    if AntWidget.dataSource == nil {
-      AntWidget.dataSource = DataSource()
-    }
     widgetView.prepare(for: .resting, completion: nil)
   }
 
@@ -130,26 +127,15 @@ public class AntWidget {
   }
 
   @objc
-  public static func getListController() -> UIViewController {
+  public func getListController() -> UIViewController {
     AppAuth.shared.auth()
     Statistic.sync()
 
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: AntWidget.self))
-    if AntWidget.dataSource == nil {
-      AntWidget.dataSource = DataSource()
-    }
-    listController.dataSource = AntWidget.dataSource
+    listController.dataSource = dataSource
 
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
-    return navController
-  }
-
-  @objc
-  public static func getListController(withDismissCallback callback: @escaping (NSDictionary) -> Void) -> UIViewController {
-    let navController = AntWidget.getListController() as! NavigationController
-    let listController = navController.viewControllers.first as! StreamListController
-    listController.onViewerDismiss = callback
     return navController
   }
 
@@ -202,13 +188,13 @@ public class AntWidget {
     onViewerAppear?([:])
 
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: type(of: self)))
-    listController.dataSource = AntWidget.dataSource
+    listController.dataSource = dataSource
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
     if let stream = currentContent {
       let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
       playerVC.videoContent = stream
-      playerVC.dataSource = AntWidget.dataSource
+      playerVC.dataSource = dataSource
       navController.view.isHidden = true
       var playerNavController: PlayerNavigationController!
       if currentContent is VOD {
@@ -233,8 +219,7 @@ public class AntWidget {
     let error = notification.userInfo?["error"]
     guard visible,
       !isBackground,
-      error == nil,
-      let dataSource = AntWidget.dataSource else {
+      error == nil else {
       set(state: .resting)
       return
     }
@@ -262,14 +247,14 @@ public class AntWidget {
   @objc
   func handleWillResignActive(_ notification: NSNotification) {
     isBackground = true
-    AntWidget.dataSource?.pauseUpdatingVods()
+    dataSource.pauseUpdatingVods()
     set(state: .resting)
   }
 
   @objc
   func handleDidBecomeActive(_ notification: NSNotification) {
     if isBackground {
-      AntWidget.dataSource?.startUpdatingVods()
+      dataSource.startUpdatingVods()
     }
     isBackground = false
   }
@@ -280,12 +265,12 @@ extension AntWidget: WidgetViewDelegate {
     currentContent = nil
     visible = true
     widgetView.isUserInteractionEnabled = true
-    AntWidget.dataSource?.startUpdatingVods()
+    dataSource.startUpdatingVods()
   }
 
   func widgetViewWillDisappear(_ widgetView: WidgetView) {
     visible = false
-    AntWidget.dataSource?.pauseUpdatingVods()
+    dataSource.pauseUpdatingVods()
     set(state: .resting)
   }
 

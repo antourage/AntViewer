@@ -149,8 +149,6 @@ class StreamListController: UIViewController {
   override var preferredStatusBarStyle: UIStatusBarStyle {
       .lightContent
   }
-  
-  var onViewerDismiss: ((NSDictionary) -> Void)?
 
   private var topInset: CGFloat = .zero
   private var failedToLoadVods = false
@@ -481,7 +479,6 @@ class StreamListController: UIViewController {
   
   @IBAction
   private func closeButtonPressed(_ sender: UIButton) {
-    onViewerDismiss?([:])
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
     let transition = CATransition()
     transition.duration = 0.3
