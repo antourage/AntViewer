@@ -8,8 +8,9 @@
 import Foundation
 
 extension Date {
-  func timeAgo() -> String {
-    guard let minutes = Calendar.current.dateComponents([.minute], from: self, to: Date()).minute,
+func timeAgo(shouldShowSeconds: Bool = false) -> String {
+    guard let seconds = Calendar.current.dateComponents([.second], from: self, to: Date()).second,
+    let minutes = Calendar.current.dateComponents([.minute], from: self, to: Date()).minute,
       let hours = Calendar.current.dateComponents([.hour], from: self, to: Date()).hour,
       let days = Calendar.current.dateComponents([.day], from: self, to: Date()).day,
       let weeks = Calendar.current.dateComponents([.weekOfMonth], from: self, to: Date()).weekOfMonth,
@@ -20,7 +21,12 @@ extension Date {
     var value = 0
     switch (minutes, hours, days, weeks, months, years) {
     case let (minutes, _, _ ,_ ,_, _) where minutes < 1:
-      return LocalizedStrings.justNow.localized
+        let _seconds = seconds - seconds % 5
+        if !shouldShowSeconds || _seconds == 0 {
+            return LocalizedStrings.justNow.localized
+        }
+        unit = "Seconds"
+        value = _seconds
     case let (minutes, hours, _, _, _, _) where hours < 1:
        unit = "Minutes"
        value = minutes
