@@ -212,7 +212,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AntViewer (2.0.5):
+  - AntViewer (2.0.8):
     - Firebase/Auth
     - Firebase/Firestore
   - BoringSSL-GRPC (0.0.7):
@@ -353,7 +353,6 @@ DEPENDENCIES:
   - AntViewer (from `../`)
   - Firebase/Core
   - Firebase/Messaging
-  - FirebaseFirestore (from `https://github.com/firebase/firebase-ios-sdk.git`, branch `master`)
 
 SPEC REPOS:
   trunk:
@@ -364,6 +363,7 @@ SPEC REPOS:
     - FirebaseAuth
     - FirebaseCore
     - FirebaseCoreDiagnostics
+    - FirebaseFirestore
     - FirebaseInstallations
     - FirebaseInstanceID
     - FirebaseMessaging
@@ -381,25 +381,17 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   AntViewer:
     :path: "../"
-  FirebaseFirestore:
-    :branch: master
-    :git: https://github.com/firebase/firebase-ios-sdk.git
-
-CHECKOUT OPTIONS:
-  FirebaseFirestore:
-    :commit: 28ff0c7f58d8f0207480443c31a166e8bf105f9e
-    :git: https://github.com/firebase/firebase-ios-sdk.git
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AntViewer: 88c1f3eb83ebcb6dae3ac18c940b664ee7570901
+  AntViewer: 5a6b01e5a8333a1d198d753bfc78cd3016bee20f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: ed042590caa0029392257529a8003c25ee82bc18
   FirebaseAnalytics: 5fa308e1b13f838d0f6dc74719ac2a72e8c5afc4
   FirebaseAuth: 06feef26ff3a98323677c76c4102146b872cd6b7
   FirebaseCore: 687b8e6a0a4337b898a6326d68254c2f80c143af
   FirebaseCoreDiagnostics: 7535fe695737f8c5b350584292a70b7f8ff0357b
-  FirebaseFirestore: ae6b2c7cc1cbda14bce72917ef05e243268df357
+  FirebaseFirestore: 436c2de95f42495fbb6daf86bebde483e66706c3
   FirebaseInstallations: 3c520c951305cbf9ca54eb891ff9e6d1fd384881
   FirebaseInstanceID: 358d5cb393d2750a745569ede06827c35aea530b
   FirebaseMessaging: bdd4d573eab37ebee29bad4e7c4b0ef18fa1a952
@@ -414,6 +406,6 @@ SPEC CHECKSUMS:
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
 
-PODFILE CHECKSUM: 2919dce8a4e26713071013faee5481d7723117e9
+PODFILE CHECKSUM: d95eaabec51d53126dcff985a0d5d4d0abb1a0d1
 
 COCOAPODS: 1.9.3
