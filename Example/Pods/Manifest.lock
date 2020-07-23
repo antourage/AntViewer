@@ -387,7 +387,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   FirebaseFirestore:
-    :commit: 54b137d646ab8540f95b4c9dd1b1f657d065083b
+    :commit: 05e73db5f9a99676c4e65b7c51567b16045a4dc9
     :git: https://github.com/firebase/firebase-ios-sdk.git
 
 SPEC CHECKSUMS:
@@ -399,7 +399,7 @@ SPEC CHECKSUMS:
   FirebaseAuth: 06feef26ff3a98323677c76c4102146b872cd6b7
   FirebaseCore: 687b8e6a0a4337b898a6326d68254c2f80c143af
   FirebaseCoreDiagnostics: 7535fe695737f8c5b350584292a70b7f8ff0357b
-  FirebaseFirestore: 436c2de95f42495fbb6daf86bebde483e66706c3
+  FirebaseFirestore: ae6b2c7cc1cbda14bce72917ef05e243268df357
   FirebaseInstallations: 3c520c951305cbf9ca54eb891ff9e6d1fd384881
   FirebaseInstanceID: 358d5cb393d2750a745569ede06827c35aea530b
   FirebaseMessaging: bdd4d573eab37ebee29bad4e7c4b0ef18fa1a952

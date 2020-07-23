@@ -252,7 +252,7 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     } else {
       let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
       let timeString = messageDate.timeAgo(shouldShowSeconds: true).localized()
-      cell.messageInfoLabel.text = String(format: "%@ %@", userName, timeString)
+      cell.messageInfoLabel.text = String(format: "%@ %@", userName, timeString.lowercased())
     }
     return cell
   }
