@@ -212,7 +212,8 @@ class ChatViewController: UIViewController {
   }
   
   func handleVODsChat(forTime time: Int) {
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time
+    guard let vod = videoContent as? VOD else { return }
+    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time - vod.duration.duration()
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
     let dif = filteredArr.count - messagesDataSource.count
     guard dif != 0 else { return }
@@ -245,9 +246,10 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
     cell.messageLabel.text = message.text
     let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
     let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
-    let time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
     cell.messageInfoLabel.text = userName
-    if videoContent is VOD {
+    if let vod = videoContent as? VOD {
+      var time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
+      time += vod.duration.duration()
       cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
     } else {
       let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
