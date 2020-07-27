@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Message" representedClassName="MessageMO" syncable="YES">
+        <attribute name="key" attributeType="String"/>
+        <attribute name="nickname" attributeType="String"/>
+        <attribute name="text" attributeType="String"/>
+        <attribute name="timestamp" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="userId" attributeType="String"/>
+        <relationship name="content" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="VideoContent" inverseName="messagesMO" inverseEntity="VideoContent"/>
+    </entity>
+    <entity name="Poll" representedClassName="PollMO" syncable="YES">
+        <attribute name="key" attributeType="String"/>
+        <attribute name="pollAnswers" attributeType="Transformable"/>
+        <attribute name="pollQuestion" attributeType="String"/>
+        <attribute name="userAnswer" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="NO"/>
+        <relationship name="content" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="VideoContent" inverseName="pollsMO" inverseEntity="VideoContent"/>
+    </entity>
+    <entity name="VideoContent" representedClassName="VideoContentMO" syncable="YES">
+        <attribute name="chatLoaded" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="id" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="latestCommentLoaded" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="latestMessage" optional="YES" attributeType="Transformable" customClassName=".NSObject"/>
+        <attribute name="stopTime" attributeType="String" defaultValueString="&quot;00:00:00&quot;"/>
+        <relationship name="messagesMO" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="content" inverseEntity="Message"/>
+        <relationship name="pollsMO" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Poll" inverseName="content" inverseEntity="Poll"/>
+    </entity>
+    <elements>
+        <element name="Message" positionX="337.9453125" positionY="-68.68359375" width="128" height="133"/>
+        <element name="Poll" positionX="336.49609375" positionY="50.796875" width="128" height="118"/>
+        <element name="VideoContent" positionX="-20.28515625" positionY="-22.30078125" width="128" height="163"/>
+    </elements>
+</model>

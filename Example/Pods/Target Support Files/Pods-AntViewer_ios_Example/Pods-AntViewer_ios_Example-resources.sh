@@ -97,7 +97,7 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/ChatViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
@@ -105,20 +105,18 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/SwiftMessage/MessageView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollStatisticCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollTableViewCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SponsoredBannerCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntWidget.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/ChatViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
@@ -126,15 +124,13 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/SwiftMessage/MessageView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyView.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/HeaderView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/LandscapeMessageCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/NewStreamCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollStatisticCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollTableViewCell.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamViewCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SponsoredBannerCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib"
+  install_resource "${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/AntViewer/AntWidget.bundle"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
@@ -150,7 +146,7 @@ rm -f "$RESOURCES_TO_COPY"
 if [[ -n "${WRAPPER_EXTENSION}" ]] && [ "`xcrun --find actool`" ] && [ -n "${XCASSET_FILES:-}" ]
 then
   # Find all other xcassets (this unfortunately includes those of path pods and other targets).
-  OTHER_XCASSETS=$(find "$PWD" -iname "*.xcassets" -type d)
+  OTHER_XCASSETS=$(find -L "$PWD" -iname "*.xcassets" -type d)
   while read line; do
     if [[ $line != "${PODS_ROOT}*" ]]; then
       XCASSET_FILES+=("$line")

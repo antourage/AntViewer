@@ -20,9 +20,16 @@ public class Chat {
   public var onRemove: ((Message) -> ())?
   public var onStateChange: ((Bool) -> ())?
   
-  public init(streamID: Int) {
+  public init(for videoContent: VideoContent) {
+    let contentMO = StorageManager.shared.loadVideoContent(content: videoContent)
+    if contentMO.chatLoaded {
+      DispatchQueue.main.asyncAfter(deadline: .now()+1) {
+        contentMO.messages?.forEach({ self.onAdd?($0) })
+      }
+      return
+    }
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
-    self.ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams").document("\(streamID)")
+    self.ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams").document("\(videoContent.id)")
     messagesListener = ref?.collection("messages").order(by: "timestamp").addSnapshotListener(messagesHandler())
     stateListener = ref?.addSnapshotListener(stateHandler())
   }
@@ -62,11 +69,10 @@ public class Chat {
   private func stateHandler() -> FIRDocumentSnapshotBlock {
     return { [weak self] (documentSnapshot, error) in
       guard let document = documentSnapshot?.data() else {
-        print("Error fetching snapshots: \(error)")
+        print("Error fetching snapshots: \(String(describing: error))")
         return
       }
       let isActive = (document["isChatActive"] as? Bool) ?? false
-      
       self?.onStateChange?(isActive)
     }
   }

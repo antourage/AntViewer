@@ -28,7 +28,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       switch result {
       case .success:
         //MARK: Connect PN to Antourage Firebase app
-        Messaging.messaging().retrieveFCMToken(forSenderID: "1090288296965") { (token, error) in
+				Messaging.messaging().retrieveFCMToken(forSenderID: AntWidget.AntSenderId) { (token, error) in
           guard let token = token else { return }
           AntWidget.registerNotifications(FCMToken: token) { (result) in
             switch result {
@@ -78,9 +78,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     print("\(userInfo)")
     if let category = userInfo["category"] as? String, category == "antourage" {
       if let vc = UIApplication.shared.delegate?.window??.rootViewController {
-        let antListController = AntWidget.getListController { (dict) in
-          print("list controller dismissed")
-        }
+				let antListController = AntWidget.shared.getListController()
         vc.present(antListController, animated: true, completion: nil)
       }
     }

@@ -1,0 +1,40 @@
+
+
+//ERRORS
+"Under maintenance" = "Underhåll pågår";
+"Unable to load. Please reopen widget" = "Innehållet kan inte visas. Försök öppna innehåll igen.";
+"Failed to load video" = "Video kan inte visas";
+"No connection" = "Ingen uppkoppling";
+"You are online" = "Du ha uppkoppling";
+"Something is not right. We are working to get this fixed" = "Något gick fel. Vi jobbar på en lösning";
+//FEED
+"LIVE INTERACTIVE VIDEOS COMING SOON" = "SNART KAN DU SE INTERAKTIV VIDEO HÄR";
+"New" = "Ny";
+"LIVE" = "LIVE";
+"most recent" = "Senaste";
+"JOIN CONVERSATION" = "GÅ MED I KONVERSATION";
+//CHAT
+"Chat" = "Chatta";
+"Joined" = "Gick med";
+"JUMP TO THE TOP" = "GÅ TILL BÖRJAN";
+"SEND" = "SKICKA";
+"Chat disabled" = "Chat avstängd";
+"recent" = "senaste";
+//DISPLAY NAME
+"Your chat name" = "Ditt chatt-namn";
+"Type your display name" = "Välj ett chatt-namn";
+"SAVE" = "SPARA";
+"CANCEL" = "AVSLUTA";
+"Start typing" = "Börja skriva";
+//POOLS
+"Vote to see results!" = "Rösta för att se resultat!";
+"Thanks for voting!" = "Tack för att du röstade!";
+"VOTE" = "RÖSTA";
+//OTHER
+"Just now" = "Alldeles nyss";
+"THANKS FOR WATCHING" = "TACK FÖR ATT DU TITTADE";
+"Choose link" = "Välj länk";
+"set" = "Ställ in";
+"%@ at %@" = "%@ vid %@";
+"SKIP CURTAIN" = "SKIPPA RIDÅ";
+

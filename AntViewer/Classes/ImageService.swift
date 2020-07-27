@@ -42,7 +42,7 @@ class ImageService {
     
     dataTask.resume()
   }
-  
+  @discardableResult
   static func getImage(withURL url:URL, completion: @escaping (_ image:UIImage?)->()) -> Bool {
     if let image = cache.object(forKey: url.absoluteString as NSString) {
       completion(image)

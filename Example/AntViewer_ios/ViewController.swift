@@ -13,9 +13,7 @@ class ViewController: UIViewController {
   
   var widget: AntWidget! {
     didSet {
-      view.addSubview(widget)
-      widget.bottomMargin = 100
-      widget.rightMargin = 40
+      view.addSubview(widget.view)
     }
   }
   
@@ -25,7 +23,7 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    widget = AntWidget()
+    widget = AntWidget.shared
   }
   
 }

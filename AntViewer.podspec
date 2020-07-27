@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   isDebug = false
 
   s.name             = 'AntViewer'
-  s.version          = '1.0.18'
+  s.version          = '2.0.9'
   s.summary          = 'AntViewer provides to users possibility to watch streams and use chat and polls'
 
 # This description is used to generate tags and improve search results.
@@ -39,9 +39,9 @@ Pod::Spec.new do |s|
     s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/AntViewerExt.framework'
   end
 
-  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist}'
+  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'
   s.resource_bundles = {
-    'AntWidget' => ['AntViewer/Assets/*']
+    'AntWidget' => ['AntViewer/Assets/**/*']
   }
   s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
   s.static_framework = true
@@ -49,9 +49,8 @@ Pod::Spec.new do |s|
     'HEADER_SEARCH_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources'
   }
   s.frameworks = 'UIKit', 'AVKit'
-  s.dependency 'Firebase/Core'
   s.dependency 'Firebase/Auth'
   s.dependency 'Firebase/Firestore'
 
-  s.swift_version = "5.1"
+  s.swift_version = "5.2"
 end

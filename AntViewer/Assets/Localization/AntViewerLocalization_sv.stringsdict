@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SecondsSeek</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d sekund</string>
+			<key>other</key>
+			<string>%d sekunder</string>
+		</dict>
+	</dict>
+	<key>Seconds</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d sekund sedan</string>
+			<key>other</key>
+			<string>%d sekunder sedan</string>
+		</dict>
+	</dict>
+	<key>Minutes</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d minut sedan</string>
+			<key>other</key>
+			<string>%d minuter sedan</string>
+		</dict>
+	</dict>
+	<key>Hours</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d timme sedan</string>
+			<key>other</key>
+			<string>%d timmar sedan</string>
+		</dict>
+	</dict>
+	<key>Days</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d dag sedan</string>
+			<key>other</key>
+			<string>%d dagar sedan</string>
+		</dict>
+	</dict>
+	<key>Weeks</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d vecka sedan</string>
+			<key>other</key>
+			<string>%d veckor sedan</string>
+		</dict>
+	</dict>
+	<key>Months</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d månad sedan</string>
+			<key>other</key>
+			<string>%d månader sedan</string>
+		</dict>
+	</dict>
+	<key>Years</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d år sedan</string>
+			<key>other</key>
+			<string>%d år sedan</string>
+		</dict>
+	</dict>
+	<key>NewComment</key>
+	<dict>
+		<key>NSStringLocalizedFormatKey</key>
+		<string>%#@Variable@</string>
+		<key>Variable</key>
+		<dict>
+			<key>NSStringFormatSpecTypeKey</key>
+			<string>NSStringPluralRuleType</string>
+			<key>NSStringFormatValueTypeKey</key>
+			<string>d</string>
+			<key>one</key>
+			<string>%d NY KOMMENTAR</string>
+			<key>other</key>
+			<string>%d NYA KOMMENTARER</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
