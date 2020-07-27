@@ -20,6 +20,7 @@ enum LocalizedStrings: String {
   case new = "New"
   case live = "LIVE"
   case mostRecent = "most recent"
+  case recent = "recent"
   case joinConversation = "Join conversation"
   //CHAT
   case chat = "Chat"

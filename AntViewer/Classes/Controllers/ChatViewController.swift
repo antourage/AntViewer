@@ -207,12 +207,16 @@ class ChatViewController: UIViewController {
   
   func reloadVisibleCells() {
     if let indexPaths = tableView.indexPathsForVisibleRows {
-      tableView.reloadRows(at: indexPaths, with: .none)
+      indexPaths.forEach { [weak self] (indexPath) in
+        guard let cell = self?.tableView.cellForRow(at: indexPath) as? PortraitMessageCell else { return }
+        self?.configureSubtitleFor(cell: cell, at: indexPath)
+      }
     }
   }
   
   func handleVODsChat(forTime time: Int) {
-    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time
+    guard let vod = videoContent as? VOD else { return }
+    let currentTime = Int(videoContent.date.timeIntervalSince1970) + time - vod.duration.duration()
     let filteredArr = vodMessages.filter({$0.timestamp <= currentTime })
     let dif = filteredArr.count - messagesDataSource.count
     guard dif != 0 else { return }
@@ -230,6 +234,22 @@ class ChatViewController: UIViewController {
       tableView.scrollToRow(at: lastIndexPath, at: .bottom, animated: false)
     }
   }
+  
+  private func configureSubtitleFor(cell: PortraitMessageCell, at indexPath: IndexPath) {
+    let message = messagesDataSource[indexPath.row]
+    let isCurrentUser = Int(message.userID) == User.current?.id
+    let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
+    let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
+    if let vod = videoContent as? VOD {
+      var time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
+      time += vod.duration.duration()
+      cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
+    } else {
+      let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
+      let timeString = messageDate.timeAgo(chatFlow: true).localized()
+      cell.messageInfoLabel.text = String(format: "%@ %@", userName, timeString.lowercased())
+    }
+  }
 }
 
 
@@ -241,19 +261,8 @@ extension ChatViewController: UITableViewDelegate, UITableViewDataSource {
   public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "portraitCell", for: indexPath) as! PortraitMessageCell
     let message = messagesDataSource[indexPath.row]
-    let isCurrentUser = Int(message.userID) == User.current?.id
     cell.messageLabel.text = message.text
-    let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
-    let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
-    let time = Calendar.current.dateComponents([.second], from: videoContent.date, to: messageDate).second ?? 0
-    cell.messageInfoLabel.text = userName
-    if videoContent is VOD {
-      cell.messageInfoLabel.text = String(format: "%@ at %@".localized(), userName, time.durationString())
-    } else {
-      let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
-      let timeString = messageDate.timeAgo(shouldShowSeconds: true).localized()
-      cell.messageInfoLabel.text = String(format: "%@ %@", userName, timeString.lowercased())
-    }
+    configureSubtitleFor(cell: cell, at: indexPath)
     return cell
   }
 
