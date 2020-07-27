@@ -8,7 +8,7 @@
 import Foundation
 
 extension Date {
-func timeAgo(shouldShowSeconds: Bool = false) -> String {
+func timeAgo(chatFlow: Bool = false) -> String {
     guard let seconds = Calendar.current.dateComponents([.second], from: self, to: Date()).second,
     let minutes = Calendar.current.dateComponents([.minute], from: self, to: Date()).minute,
       let hours = Calendar.current.dateComponents([.hour], from: self, to: Date()).hour,
@@ -21,15 +21,13 @@ func timeAgo(shouldShowSeconds: Bool = false) -> String {
     var value = 0
     switch (minutes, hours, days, weeks, months, years) {
     case let (minutes, _, _ ,_ ,_, _) where minutes < 1:
-        let _seconds = seconds - seconds % 5
-        if !shouldShowSeconds || _seconds == 0 {
-            return LocalizedStrings.justNow.localized
-        }
-        unit = "Seconds"
-        value = _seconds
+        let text = (!chatFlow || seconds <= 10) ?
+        LocalizedStrings.justNow.localized :
+        LocalizedStrings.recent.localized
+      return text
     case let (minutes, hours, _, _, _, _) where hours < 1:
-       unit = "Minutes"
-       value = minutes
+      unit = "Minutes"
+      value = minutes
     case let (_, hours, day, _, _, _) where day < 1:
       unit = "Hours"
       value = hours
