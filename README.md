@@ -116,18 +116,6 @@ it, simply add the following line to your Podfile:
 `pod 'AntViewer'`.
 And run `$ pod install`
 
-## Plist entries
-
-In order for your app to access camera,
-you'll need to ad these `plist entries` :
-
-- Privacy - Camera Usage Description (photo/videos)
-
-```xml
-<key>NSCameraUsageDescription</key>
-<string>yourWording</string>
-```
-
 ## Usage
 
 ### Auth
