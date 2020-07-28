@@ -14,9 +14,9 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "854C976A0A664A29B0C70398F82A04DA"
-               BuildableName = "AntViewer-AntWidget.bundle"
-               BlueprintName = "AntViewer-AntWidget"
+               BlueprintIdentifier = "E2D0F87A8AEAFAC341C031B8BA345AC9"
+               BuildableName = "libAntourage.a"
+               BlueprintName = "Antourage"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

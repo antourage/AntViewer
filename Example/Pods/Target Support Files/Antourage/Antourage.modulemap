@@ -1,0 +1,6 @@
+module Antourage {
+  umbrella header "Antourage-umbrella.h"
+
+  export *
+  module * { export * }
+}

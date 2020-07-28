@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint AntViewer.podspec' to ensure this is a
+# Be sure to run `pod lib lint Antourage.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -10,9 +10,9 @@ Pod::Spec.new do |s|
 
   isDebug = false
 
-  s.name             = 'AntViewer'
+  s.name             = 'Antourage'
   s.version          = '2.0.9'
-  s.summary          = 'AntViewer provides to users possibility to watch streams and use chat and polls'
+  s.summary          = 'Antourage provides to users possibility to watch streams and use chat and polls'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-                        AntViewer provides to users possibility to watch streams and use chat and polls.
+                        Antourage provides to users possibility to watch streams and use chat and polls.
                        DESC
 
   s.homepage         = 'https://github.com/antourage'

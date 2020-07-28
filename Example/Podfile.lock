@@ -212,7 +212,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - AntViewer (2.0.9):
+  - Antourage (2.0.9):
     - Firebase/Auth
     - Firebase/Firestore
   - BoringSSL-GRPC (0.0.7):
@@ -350,7 +350,7 @@ PODS:
   - Protobuf (3.12.0)
 
 DEPENDENCIES:
-  - AntViewer (from `../`)
+  - Antourage (from `../`)
   - Firebase/Core
   - Firebase/Messaging
 
@@ -379,12 +379,12 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
-  AntViewer:
+  Antourage:
     :path: "../"
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  AntViewer: 01bcf32569fcdb6a83a6e36552423811436be208
+  Antourage: cb3285419ef89342e04aa954ab8865f23146ff74
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: ed042590caa0029392257529a8003c25ee82bc18
   FirebaseAnalytics: 5fa308e1b13f838d0f6dc74719ac2a72e8c5afc4
@@ -406,6 +406,6 @@ SPEC CHECKSUMS:
   PromisesObjC: b48e0338dbbac2207e611750777895f7a5811b75
   Protobuf: 2793fcd0622a00b546c60e7cbbcc493e043e9bb9
 
-PODFILE CHECKSUM: d95eaabec51d53126dcff985a0d5d4d0abb1a0d1
+PODFILE CHECKSUM: 50021729c2228a5fcc510b4b50132307870846be
 
 COCOAPODS: 1.9.3

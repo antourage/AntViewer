@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double AntViewerVersionNumber;
-FOUNDATION_EXPORT const unsigned char AntViewerVersionString[];
+FOUNDATION_EXPORT double AntourageVersionNumber;
+FOUNDATION_EXPORT const unsigned char AntourageVersionString[];
 

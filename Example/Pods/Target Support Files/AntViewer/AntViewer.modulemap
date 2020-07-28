@@ -1,6 +1,0 @@
-module AntViewer {
-  umbrella header "AntViewer-umbrella.h"
-
-  export *
-  module * { export * }
-}

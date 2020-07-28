@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_9" orientation="landscape" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayerController" customModule="AntViewer">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PlayerController" customModule="Antourage">
             <connections>
                 <outlet property="bottomContainerLandscapeTop" destination="aoO-Zn-1i2" id="UZF-Fu-A4H"/>
                 <outlet property="bottomContainerLeading" destination="ild-vh-Dmh" id="6jq-M4-gKN"/>
@@ -141,7 +141,7 @@
                         </mask>
                     </variation>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6SG-AQ-Vmv" customClass="AVPlayerView" customModule="AntViewer">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6SG-AQ-Vmv" customClass="AVPlayerView" customModule="Antourage">
                     <rect key="frame" x="0.0" y="0.0" width="812" height="375"/>
                     <subviews>
                         <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cLA-Rd-OPc">
@@ -263,7 +263,7 @@
                                         <action selector="goToButtonPressed:" destination="-1" eventType="touchUpInside" id="aCN-ks-MoR"/>
                                     </connections>
                                 </button>
-                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RTE-4f-BaG" customClass="LocalizedButton" customModule="AntViewer">
+                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RTE-4f-BaG" customClass="LocalizedButton" customModule="Antourage">
                                     <rect key="frame" x="375" y="249.66666666666663" width="62" height="30"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                     <state key="normal" title="CANCEL">
@@ -282,7 +282,7 @@
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="CLJ-4Y-mmc" customClass="CustomSlide" customModule="AntViewer">
+                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="CLJ-4Y-mmc" customClass="CustomSlide" customModule="Antourage">
                                     <rect key="frame" x="54" y="333" width="696" height="31"/>
                                     <color key="tintColor" name="a_pink"/>
                                     <color key="maximumTrackTintColor" white="1" alpha="0.59999999999999998" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -479,7 +479,7 @@
                                 </mask>
                             </variation>
                         </stackView>
-                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LIVE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVY-fl-H6n" customClass="LocalizedLabel" customModule="AntViewer">
+                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LIVE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jVY-fl-H6n" customClass="LocalizedLabel" customModule="Antourage">
                             <rect key="frame" x="56" y="66" width="36" height="20"/>
                             <color key="backgroundColor" red="0.89411764709999997" green="0.41176470590000003" blue="0.60784313729999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
@@ -495,7 +495,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </label>
-                        <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vrg-3O-49T" customClass="LocalizedButton" customModule="AntViewer">
+                        <button hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vrg-3O-49T" customClass="LocalizedButton" customModule="Antourage">
                             <rect key="frame" x="662" y="320" width="94" height="20"/>
                             <color key="backgroundColor" red="0.058823529411764705" green="0.058823529411764705" blue="0.058823529411764705" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
@@ -601,7 +601,7 @@
                             <color key="textColor" red="0.23529411764705882" green="0.25098039215686274" blue="0.2627450980392157" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="300" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LRC-02-Exh" customClass="LocalizedButton" customModule="AntViewer">
+                        <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="300" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LRC-02-Exh" customClass="LocalizedButton" customModule="Antourage">
                             <rect key="frame" x="59" y="8.6666666666666856" width="0.0" height="27"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                             <state key="normal" title="VOTE">
@@ -702,7 +702,7 @@
                         <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IH0-sC-vt7">
                             <rect key="frame" x="60" y="8" width="740" height="36"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sop-fK-jch" customClass="LocalizedButton" customModule="AntViewer">
+                                <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sop-fK-jch" customClass="LocalizedButton" customModule="Antourage">
                                     <rect key="frame" x="748" y="12" width="34" height="12"/>
                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
                                     <color key="tintColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -713,7 +713,7 @@
                                         <action selector="sendButtonPressed:" destination="-1" eventType="touchUpInside" id="ZZQ-zr-eHo"/>
                                     </connections>
                                 </button>
-                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="VBH-QZ-0Zs" customClass="IQTextView" customModule="AntViewer">
+                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="VBH-QZ-0Zs" customClass="IQTextView" customModule="Antourage">
                                     <rect key="frame" x="20" y="2" width="708" height="32"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
@@ -790,7 +790,7 @@
                         </mask>
                     </variation>
                 </view>
-                <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="AntViewer">
+                <slider hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="O7y-qk-2G8" customClass="CustomSlide" customModule="Antourage">
                     <rect key="frame" x="-2" y="303.66666666666669" width="379" height="31"/>
                     <color key="tintColor" name="a_pink"/>
                     <color key="minimumTrackTintColor" name="a_pink"/>

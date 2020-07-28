@@ -1,7 +1,7 @@
 # Acknowledgements
 This application makes use of the following third party libraries:
 
-## AntViewer
+## Antourage
 
 Copyright (c) 2019 Mykola Vaniurskyi <mv@leobit.co>
 

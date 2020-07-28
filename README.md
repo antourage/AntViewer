@@ -1,8 +1,8 @@
 # Antourage Widget SDK
 
-[![Version](https://img.shields.io/cocoapods/v/AntViewer.svg?style=flat)](https://cocoapods.org/pods/AntViewer)
-[![License](https://img.shields.io/cocoapods/l/AntViewer.svg?style=flat)](https://cocoapods.org/pods/AntViewer)
-[![Platform](https://img.shields.io/cocoapods/p/AntViewer.svg?style=flat)](https://cocoapods.org/pods/AntViewer)
+[![Version](https://img.shields.io/cocoapods/v/Antourage.svg?style=flat)](https://cocoapods.org/pods/Antourage)
+[![License](https://img.shields.io/cocoapods/l/Antourage.svg?style=flat)](https://cocoapods.org/pods/Antourage)
+[![Platform](https://img.shields.io/cocoapods/p/Antourage.svg?style=flat)](https://cocoapods.org/pods/Antourage)
 
 ## Antourage SDK Functional Description
 <img src="./screenshots/image3.png" alt="Screenshots" width="150" />
@@ -111,9 +111,9 @@ iOS 11.3 +
 
 ## Installation
 
-AntViewer is available through [CocoaPods](https://cocoapods.org). To install
+Antourage is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
-`pod 'AntViewer'`.
+`pod 'Antourage'`.
 And run `$ pod install`
 
 ## Usage
@@ -192,4 +192,4 @@ Mykola Vaniurskyi, mv@leobit.com
 
 ## License
 
-AntViewer is available under the MIT license. See the LICENSE file for more info.
+Antourage is available under the MIT license. See the LICENSE file for more info.
