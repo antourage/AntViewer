@@ -1,6 +1,6 @@
 {
   "name": "Antourage",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "summary": "Antourage provides to users possibility to watch streams and use chat and polls",
   "description": "Antourage provides to users possibility to watch streams and use chat and polls.",
   "homepage": "https://github.com/antourage",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/antourage/AntViewer.git",
-    "tag": "2.0.9"
+    "tag": "2.0.10"
   },
   "platforms": {
     "ios": "11.3"
