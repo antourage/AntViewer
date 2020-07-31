@@ -247,7 +247,7 @@ class ChatViewController: UIViewController {
     } else {
       let messageDate = Date(timeIntervalSince1970: TimeInterval(message.timestamp))
       let timeString = messageDate.timeAgo(chatFlow: true).localized()
-      cell.messageInfoLabel.text = String(format: "%@ %@", userName, timeString.lowercased())
+      cell.messageInfoLabel.text = String(format: "%@ | %@", userName, timeString.lowercased())
     }
   }
 }
