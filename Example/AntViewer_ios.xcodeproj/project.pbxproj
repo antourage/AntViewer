@@ -51,7 +51,7 @@
 		607FACE51AFB9204008FA782 /* AntViewer_ios_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AntViewer_ios_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		7284DBEF24D06BFC00F47950 /* Antourage.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Antourage.podspec; path = ../Antourage.podspec; sourceTree = "<group>"; };
+		7284DBEF24D06BFC00F47950 /* Antourage.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Antourage.podspec; path = ../Antourage.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		7F293439A4195B9EF7320781 /* Pods-AntViewer_ios_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AntViewer_ios_Example.debug.xcconfig"; path = "Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		AC4AE77ECCF6A07A7D1267F7 /* Pods-AntViewer_ios_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AntViewer_ios_Tests.debug.xcconfig"; path = "Target Support Files/Pods-AntViewer_ios_Tests/Pods-AntViewer_ios_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B19E96D962E6CAD69CA55B20 /* libPods-AntViewer_ios_Example-AntViewer_ios_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-AntViewer_ios_Example-AntViewer_ios_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,8 +193,8 @@
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				702A7A22CE8EB60C97DAFE15 /* [CP] Embed Pods Frameworks */,
 				5E67F290395DAA038E0A5F74 /* [CP] Copy Pods Resources */,
+				C1F56BA4307DFDADAC6D0EF5 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -213,8 +213,8 @@
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
-				D360AA29092DF4B965E52DF9 /* [CP] Embed Pods Frameworks */,
 				A4E3CC8D1EBCAD452FE71EDA /* [CP] Copy Pods Resources */,
+				103F6D08E293E7329CBEFC78 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -298,6 +298,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		103F6D08E293E7329CBEFC78 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh",
+				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		5E67F290395DAA038E0A5F74 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -346,24 +364,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		702A7A22CE8EB60C97DAFE15 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh",
-				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AntViewerExt.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A48BDE3E0A609C1F2993303A /* [CP] Check Pods Manifest.lock */ = {
@@ -438,13 +438,13 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D360AA29092DF4B965E52DF9 /* [CP] Embed Pods Frameworks */ = {
+		C1F56BA4307DFDADAC6D0EF5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh",
 				"${PODS_ROOT}/../../AntViewer/MyFrameworks/AntViewerExt.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -453,7 +453,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example-AntViewer_ios_Tests/Pods-AntViewer_ios_Example-AntViewer_ios_Tests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AntViewer_ios_Example/Pods-AntViewer_ios_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EFA1707AC84B00E415294502 /* [CP] Check Pods Manifest.lock */ = {
