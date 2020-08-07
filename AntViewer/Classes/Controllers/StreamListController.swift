@@ -14,7 +14,7 @@ private let reuseIdentifier = "StreamCell"
 class StreamListController: UIViewController {
 
   @IBOutlet private var headerView: UIView!
-  @IBOutlet private var collectionView: UICollectionView!
+  @IBOutlet var collectionView: UICollectionView!
   @IBOutlet private var logoImageView: UIImageView!
   @IBOutlet private var tagLineLabel: UILabel!
   @IBOutlet private var collectionViewBottom: NSLayoutConstraint!
@@ -198,7 +198,6 @@ class StreamListController: UIViewController {
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
     collectionView.reloadData()
-//    collectionView.isUserInteractionEnabled = true
   }
 
   override func viewDidAppear(_ animated: Bool) {
@@ -281,7 +280,7 @@ class StreamListController: UIViewController {
       footerView?.isHidden = !isEnoughContent
     }
   }
-
+  
   @objc
   fileprivate func scrollToTop() {
     collectionView.setContentOffset(.zero, animated: true)
@@ -303,7 +302,7 @@ class StreamListController: UIViewController {
         self.isLoading = false
       case .failure(let error):
         print(error)
-        if !error.noInternetConnection /*&& self.hiddenAuthCompleted*/ {
+        if !error.noInternetConnection {
           self.showErrorMessage(autohide: false)
           self.skeleton?.setError()
         }
@@ -410,6 +409,7 @@ class StreamListController: UIViewController {
     if isDataSourceEmpty {
       skeleton?.collectionView?.delegate = skeleton
       skeleton?.collectionView?.dataSource = skeleton
+      skeleton?.collectionView?.reloadData()
     }
     skeleton?.startLoading()
     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -425,7 +425,7 @@ class StreamListController: UIViewController {
             self?.collectionView.reloadSections(IndexSet(arrayLiteral: 0, 1))
 
         case .failure(let error):
-          if !error.noInternetConnection /*&& self?.hiddenAuthCompleted == true*/ {
+          if !error.noInternetConnection {
             if self?.isReachable == true {
               self?.showErrorMessage(autohide: false)
               self?.skeleton?.setError()
@@ -833,13 +833,11 @@ extension StreamListController: ModernAVPlayerDelegate {
       }
     }
   }
-
 }
 
 extension StreamListController: SkeletonDelegate {
   func skeletonWillHide(_ skeleton: Skeleton) {
     collectionView.delegate = self
     collectionView.dataSource = self
-//    collectionView.isUserInteractionEnabled = true
   }
 }
