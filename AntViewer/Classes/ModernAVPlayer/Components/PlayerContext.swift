@@ -72,16 +72,16 @@ final class ModernAVPlayerContext: NSObject, PlayerContext {
     
     var bgToken: UIBackgroundTaskIdentifier?
     var currentItem: AVPlayerItem? {
-        return player.currentItem
+        player.currentItem
     }
     var currentMedia: PlayerMedia? {
         didSet { delegate?.playerContext(didCurrentMediaChange: currentMedia) }
     }
     var currentTime: Double {
-        return player.currentTime().seconds
+        player.currentTime().seconds
     }
     var itemDuration: Double? {
-        return currentItem?.duration.seconds
+        currentItem?.duration.seconds
     }
     var remoteCommands: [ModernAVPlayerRemoteCommand]? {
         didSet {
@@ -181,12 +181,12 @@ final class ModernAVPlayerContext: NSObject, PlayerContext {
         state.play()
     }
     
-    func updateMetadata(_ metadata: PlayerMediaMetadata) {
+    func updateMetadata(_ metadata: PlayerMediaMetadata?) {
         guard let media = currentMedia
             else { unaivalableCommand(reason: .loadMediaFirst); return }
         
         media.setMetadata(metadata)
-        nowPlaying.update(metadata: metadata, duration: nil, isLive: nil)
+        nowPlaying.update(metadata: metadata)
     }
 
     // MARK: - Helper
