@@ -747,12 +747,13 @@ public class DefaultReconnectPolicy : AntViewerExt.ReconnectPolicy {
 @objc public class LatestComment : ObjectiveC.NSObject, Foundation.NSCoding {
   public var nickname: Swift.String
   public var text: Swift.String
+  public var userID: Swift.String
   public var date: Foundation.Date? {
     get
   }
   @objc public func encode(with coder: Foundation.NSCoder)
   @objc required convenience public init?(coder: Foundation.NSCoder)
-  public init(nickname: Swift.String, text: Swift.String, timestamp: Swift.Int?)
+  public init(userID: Swift.String, nickname: Swift.String, text: Swift.String, timestamp: Swift.Int?)
   @objc deinit
   @objc override dynamic public init()
 }
