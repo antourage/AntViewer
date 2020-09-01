@@ -184,6 +184,8 @@ class ViewController: UIViewController {
 |-------------------|----------|------------------------------------------------------------------------|
 | onViewerAppear    | Closure | Called when the user opens the widget controller.                      |
 | onViewerDisappear | Closure | Called when the user dismisses the widget controller.                  |
+| widgetPosition | Enum | You can set any widget position from enum                  |
+| widgetMargins | Struct | You can set custom horizontal and vertical margin for each position. But some positions may ignore it. Max vertical - 220, max horizontal - 50.                  |
 
 
 ## Author
