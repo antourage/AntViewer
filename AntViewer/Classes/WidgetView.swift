@@ -10,6 +10,7 @@ import UIKit
 
 protocol WidgetViewDelegate: class {
   func widgetViewWillAppear(_ widgetView: WidgetView)
+  func widgetViewWillMove(_ widgetView: WidgetView, toSuperview withSize: CGSize?)
   func widgetViewWillDisappear(_ widgetView: WidgetView)
   func widgetViewDidPressButton(_ widgetView: WidgetView)
 }
@@ -62,6 +63,11 @@ class WidgetView: UIView {
     } else {
       delegate?.widgetViewWillAppear(self)
     }
+  }
+  
+  override func willMove(toSuperview newSuperview: UIView?) {
+    super.willMove(toSuperview: newSuperview)
+    delegate?.widgetViewWillMove(self, toSuperview: newSuperview?.frame.size)
   }
 
   func prepare(for state: WidgetState, completion: ((WidgetState) -> Void)?) {
