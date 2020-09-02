@@ -175,8 +175,6 @@ public class AntWidget {
     }
   }
   
-  
-
   public var widgetPosition: WidgetPosition {
     get {
       return position ?? .bottomRight
@@ -204,6 +202,7 @@ public class AntWidget {
   private init() {
     NotificationCenter.default.addObserver(self, selector: #selector(handleStreamUpdate(_:)), name: NSNotification.Name(rawValue: "StreamsUpdated"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerDisappear(_:)), name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleViewerAppear(_:)), name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
 
@@ -318,7 +317,6 @@ public class AntWidget {
       view.window?.layer.add(transition, forKey: kCATransition)
     }
     guard let vc = view.findViewController() else {return}
-    onViewerAppear?([:])
 
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: type(of: self)))
     listController.dataSource = dataSource
@@ -375,6 +373,11 @@ public class AntWidget {
   @objc
   func handleViewerDisappear(_ notification: NSNotification) {
     onViewerDisappear?([:])
+  }
+  
+  @objc
+  func handleViewerAppear(_ notification: NSNotification) {
+    onViewerAppear?([:])
   }
 
   @objc
