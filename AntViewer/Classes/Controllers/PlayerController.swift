@@ -450,6 +450,7 @@ class PlayerController: UIViewController {
       setPlayerControlsHidden(isPlayerControlsHidden)
     }
   }
+  fileprivate var goToPressed = false
 
   private lazy var bottomMessage = BottomMessage(presentingController: self)
 
@@ -1461,6 +1462,8 @@ class PlayerController: UIViewController {
 
   
   @IBAction func goToButtonPressed(_ sender: UIButton) {
+    guard !goToPressed else { return }
+    goToPressed = true
     let index = sender == nextButton ? 1 : -1
     
     guard let currentIndex = dataSource.videos.firstIndex(where: {$0.id == videoContent.id}), dataSource.videos.indices.contains(currentIndex + index),
