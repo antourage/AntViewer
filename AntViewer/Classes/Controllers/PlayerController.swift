@@ -1021,7 +1021,7 @@ class PlayerController: UIViewController {
     seekTo = Int(currentCurtain.range.upperBound)
     seekTo = nil
   }
-
+// FIXME: simplify (it executs every second)
   private func checkCurtains() {
     guard let vod = videoContent as? VOD,
     var curtain = vod.curtainRangeModels
@@ -1196,7 +1196,7 @@ class PlayerController: UIViewController {
     var isLeftSide = true
     if shouldCheckLocation, let geture = tapGesture {
       let views: [UIView] = [cancelButton, playButton, skipCurtainButton] + fullScreenButtons
-      onButtons = views.map { $0.frame.contains(geture.location(in: videoContainerView)) && !isPlayerControlsHidden }.reduce(false) { $0 || $1 }
+      onButtons = views.map { $0.frame.contains(geture.location(in: videoContainerView)) && (!isPlayerControlsHidden || $0 == skipCurtainButton) }.reduce(false) { $0 || $1 }
       isLeftSide = geture.location(in: self.videoContainerView).x < self.videoContainerView.bounds.width / 2
     }
 
