@@ -95,6 +95,7 @@ public class StreamCell: UICollectionViewCell {
 
   lazy var userImageView: CacheImageView = {
     let imageView = CacheImageView()
+    imageView.contentMode = .scaleAspectFill
     circleImageView.addSubview(imageView)
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.centerXAnchor.constraint(equalToSystemSpacingAfter: circleImageView.centerXAnchor, multiplier: 1).isActive = true
