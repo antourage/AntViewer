@@ -62,7 +62,7 @@ class StreamListController: UIViewController {
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
         self?.activeCell?.contentImageView.player = self?.player.player
         guard let url = URL(string: item.url) else { return }
-        let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: item is Live))
+        let media = ModernAVPlayerMedia(url: url, type: item is Live ? .stream(isLive: true) : .clip)
         var position: Double?
         if let item = item as? VOD {
           position = Double(item.stopTime.duration())
