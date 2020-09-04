@@ -42,8 +42,10 @@ public class StreamCell: UICollectionViewCell {
   var message: LatestComment? {
     didSet {
       if let message = self.message {
+        let isCurrentUser = Int(message.userID) == User.current?.id
+        let userName = isCurrentUser ? User.current?.displayName ?? message.nickname : message.nickname
         chatTextLabel.text = message.text
-        chatNameLabel.text = "\(message.nickname) • \(LocalizedStrings.mostRecent.localized)"
+        chatNameLabel.text = "\(userName) • \(LocalizedStrings.mostRecent.localized)"
         messageStackView.isHidden = false
         chatView.isHidden = false
       } else {
@@ -93,6 +95,7 @@ public class StreamCell: UICollectionViewCell {
 
   lazy var userImageView: CacheImageView = {
     let imageView = CacheImageView()
+    imageView.contentMode = .scaleAspectFill
     circleImageView.addSubview(imageView)
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.centerXAnchor.constraint(equalToSystemSpacingAfter: circleImageView.centerXAnchor, multiplier: 1).isActive = true

@@ -87,7 +87,8 @@ class MessageFetcher: FirebaseFetcher {
       if let json = snapshot?.documents.first?.data(),
         let nickname = json["nickname"] as? String,
         let text = json["text"] as? String {
-        completion([video.id : LatestComment(nickname: nickname, text: text, timestamp: 0)])
+        let userID = json["userID"] as? String ?? ""
+        completion([video.id : LatestComment(userID: userID,nickname: nickname, text: text, timestamp: 0)])
       } else {
         completion([:])
       }

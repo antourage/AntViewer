@@ -10,24 +10,6 @@ import AntViewerExt
 
 public class SeekPaddingView: UIView {
   
-  public init(showInView view: UIView ) {
-    self.parentView = view
-    self.superviewFrame = view.bounds
-    super.init(frame: view.bounds)
-  }
-  
-  override public init(frame: CGRect) {
-    self.parentView = UIView()
-    self.superviewFrame = frame
-    super.init(frame: frame)
-  }
-  
-  required init?(coder aDecoder: NSCoder) {
-    self.parentView = UIView()
-    self.superviewFrame = .zero
-    super.init(coder: aDecoder)
-  }
-  
   private var parentView: UIView
   private var superviewFrame: CGRect
   private var customLayer: CAShapeLayer?
@@ -62,7 +44,23 @@ public class SeekPaddingView: UIView {
     }
   }
   
+  public init(showInView view: UIView ) {
+    self.parentView = view
+    self.superviewFrame = view.bounds
+    super.init(frame: view.bounds)
+  }
   
+  override public init(frame: CGRect) {
+    self.parentView = UIView()
+    self.superviewFrame = frame
+    super.init(frame: frame)
+  }
+  
+  required init?(coder aDecoder: NSCoder) {
+    self.parentView = UIView()
+    self.superviewFrame = .zero
+    super.init(coder: aDecoder)
+  }
   
   public func seekBackward() {
     if isLastSeekBackward ?? false {
@@ -84,6 +82,7 @@ public class SeekPaddingView: UIView {
   }
   
   deinit {
+    //MARK: Why?
     self.seekView?.removeFromSuperview()
   }
   

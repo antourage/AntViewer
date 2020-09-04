@@ -24,6 +24,8 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     widget = AntWidget.shared
+    widget.widgetPosition = .midLeft
+    widget.widgetMargins = WidgetMargins(vertical: 0, horizontal: 0)
   }
   
 }

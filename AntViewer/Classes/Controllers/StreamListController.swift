@@ -155,6 +155,7 @@ class StreamListController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
     AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
       self?.hiddenAuthCompleted = true
       switch result {
@@ -349,6 +350,7 @@ class StreamListController: UIViewController {
     guard var visibleIndexPath = getTopVisibleRow(),
       var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
         reachedListsEnd = false
+      // MARK: merge to 1 line
         if skeleton == nil {
           if self.view.window != nil {
             self.activeCell = self.getTopVisibleCell()
@@ -407,6 +409,7 @@ class StreamListController: UIViewController {
   @objc
   private func didPullToRefresh(_ sender: Any) {
     if isDataSourceEmpty {
+      // MARK: wierd
       skeleton?.collectionView?.delegate = skeleton
       skeleton?.collectionView?.dataSource = skeleton
       skeleton?.collectionView?.reloadData()
