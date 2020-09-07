@@ -20,7 +20,7 @@ class PlayerController: UIViewController {
   private var player: ModernAVPlayer!
   private var isPaused: Bool {
     guard let player = self.player else { return true }
-    return player.state == .paused || player.state == .stopped
+    return player.state == .paused || player.state == .stopped || player.state == .failed
   }
   
   @IBOutlet weak var portraitMessageBottomSpace: NSLayoutConstraint!
@@ -1237,15 +1237,18 @@ class PlayerController: UIViewController {
     
     if isPaused {
       if isPlayerError {
-//        player.reconnect()
+        if let media = player.currentMedia {
+          player.load(media: media, autostart: true, position: player.currentTime)
+        }
       } else {
+        if videoContent is Live {
+          player.seek(position: Double.greatestFiniteMagnitude)
+        }
         player.play()
       }
-      
       controlsDebouncer.call { [weak self] in
         self?.isPlayerControlsHidden = true
       }
-      
     } else {
       player.pause()
       controlsDebouncer.call {}
@@ -1254,9 +1257,14 @@ class PlayerController: UIViewController {
   }
   
   func updatePlayButtonImage() {
-    guard !isAutoplayMode else { return }
-    let image = (player?.state == .paused) ? UIImage.image("Play") :
-      player?.state == .stopped ? UIImage.image("PlayAgain") : UIImage.image("Pause")
+    guard !isAutoplayMode, let player = player else { return }
+    var image: UIImage?
+    switch player.state {
+      case .paused, .failed: image = UIImage.image("Play")
+      case .stopped: image = UIImage.image("PlayAgain")
+      case .loading, .buffering: image = nil
+      default: image = UIImage.image("Pause")
+    }
     self.playButton.setImage(image, for: .normal)
   }
   
@@ -1549,7 +1557,6 @@ extension PlayerController: ModernAVPlayerDelegate {
     print("Player state: \(state)")
     switch state {
       case .failed:
-        playButton.setImage(UIImage.image("Play"), for: .normal)
         isPlayerControlsHidden = false
         videoContainerView.removeActivityIndicator()
         isControlsEnabled = true
@@ -1561,10 +1568,11 @@ extension PlayerController: ModernAVPlayerDelegate {
         isControlsEnabled = true
         videoContainerView.image = nil
         isPlayerError = false
-      case .buffering:
-        videoContainerView.showActivityIndicator()
+      case .buffering, .loading:
+        DispatchQueue.main.async { [weak self] in
+          self?.videoContainerView.showActivityIndicator()
+        }
       case .stopped:
-        playButton.setImage(UIImage.image("Play"), for: .normal)
         isVideoEnd = true
         if videoContent is VOD {
           isSeekByTappingMode = false
@@ -1586,6 +1594,7 @@ extension PlayerController: ModernAVPlayerDelegate {
         updateChatVisibility()
       default: break
     }
+    updatePlayButtonImage()
   }
   
   func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
