@@ -467,17 +467,7 @@ class PlayerController: UIViewController {
         player.player.rate = 0
         self.isVideoEnd = false
         playerSeekManualy = true
-        player.seek(position: Double(time))
-//        player.seek(to: CMTime(seconds: Double(time), preferredTimescale: 1), completionHandler: { [weak self] (value) in
-//          self?.player.isPlayerPaused ?? false ? self?.player.pause() : self?.player.play()
-//
-//          if self?.isSeekByTappingMode ?? true {
-//            self?.isSeekByTappingMode = false
-//          }
-//          self?.shouldShowSkipButton = false
-//          self?.setSkipButtonHidden(hidden: true)
-//
-//        })
+        player.seek(position: min(Double(time), (player.player.currentItem?.duration.seconds ?? 0.1) - 0.1))
         controlsDebouncer.call { [weak self] in
           if self?.isPaused == false {
             if OrientationUtility.isLandscape && self?.seekTo != nil {
@@ -664,18 +654,18 @@ class PlayerController: UIViewController {
   private func updateChatVisibility() {
     if videoContent is Live {
       guard !isVideoEnd else {
-        chatContainerView.alpha = currentOrientation.isLandscape ? 0 : 1//isHidden = currentOrientation.isLandscape
+        chatContainerView.alpha = currentOrientation.isLandscape ? 0 : 1
         return
       }
       if currentOrientation.isLandscape {
         let hidden = !isPlayerControlsHidden || !pollContainerView.isHidden
-        chatContainerView.alpha = hidden ? 0 : 1//!videoControlsView.isHidden || !pollContainerView.isHidden
+        chatContainerView.alpha = hidden ? 0 : 1
         return
       }
     } else {
       if currentOrientation.isLandscape {
         let hidden = !isPlayerControlsHidden || isAutoplayMode
-        chatContainerView.alpha = hidden ? 0 : 1//!videoControlsView.isHidden || isAutoplayMode
+        chatContainerView.alpha = hidden ? 0 : 1
         return
       }
     }
@@ -690,13 +680,13 @@ class PlayerController: UIViewController {
     }
     if videoContent is Live {
       guard !isVideoEnd else {
-        bottomContainerView.alpha = currentOrientation.isLandscape ? 0 : 1//isHidden = currentOrientation.isLandscape
+        bottomContainerView.alpha = currentOrientation.isLandscape ? 0 : 1
         bottomContainerGradientLayer.removeFromSuperlayer()
         return
       }
       if currentOrientation.isLandscape {
         let hidden = !isPlayerControlsHidden || !pollContainerView.isHidden
-        bottomContainerView.alpha = hidden ? 0 : 1//!videoControlsView.isHidden || !pollContainerView.isHidden
+        bottomContainerView.alpha = hidden ? 0 : 1
         bottomContainerLandscapeTop.isActive = isBottomContainerHidedByUser
         bottomContainerGradientLayer.removeFromSuperlayer()
         bottomContainerView.layer.insertSublayer(bottomContainerGradientLayer, at: 0)
@@ -793,6 +783,12 @@ class PlayerController: UIViewController {
     if isReachable {
       let color = UIColor.color("a_bottomMessageGreen")
       bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
+      //continue playing after connection established
+      if player.state == .failed {
+        if let media = player?.currentMedia {
+          player.load(media: media, autostart: true, position: player.player.currentTime().seconds)
+        }
+      }
     } else {
       let color = UIColor.color("a_bottomMessageGray")
       bottomMessage.showMessage(title: LocalizedStrings.noConnection.localized.uppercased(), backgroundColor: color ?? .gray)
@@ -835,88 +831,15 @@ class PlayerController: UIViewController {
       showError(autohide: false)
       return
     }
-
-    let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: videoContent is Live))
+    
+    let media = ModernAVPlayerMedia(url: url, type: videoContent is Live ? .stream(isLive: true) : .clip)
     player = ModernAVPlayer()
     player.load(media: media, autostart: true, position: seekTo)
-    player.player.isMuted = true
     player.delegate = self
-    
-//    player = Player(url: url, seekTo: seekTo)
-    
-//    player.addPeriodicTimeObserver { [weak self] (time, isLikelyToKeepUp) in
-//      guard let `self` = self else {return}
-//      if isLikelyToKeepUp {
-//        self.videoContainerView.removeActivityIndicator()
-//        self.playButton.isHidden = false
-//        if !self.videoControlsView.isHidden {
-//          self.updatePlayButtonImage()
-//        }
-//      } else if self.player.isPlayerPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
-//        self.videoContainerView.showActivityIndicator()
-//        self.playButton.isHidden = true
-//      }
-//      self.activeSpendTime += 0.2
-//
-//      if let vod = self.videoContent as? VOD {
-//        vod.stopTime = min(Int(time.seconds), vod.duration.duration()).durationString()
-//        self.chatController.handleVODsChat(forTime: Int(time.seconds))
-//        self.checkCurtains()
-//        //temp: needs refactoring
-//        self.seekLabel.text = String(format: "%@ / %@", Int(time.seconds).durationString(), vod.duration.duration().durationString())
-//        if self.seekTo == nil, self.player.player.rate == 1 {
-//          self.portraitSeekSlider.setValue(Float(time.seconds), animated: false)
-//          self.landscapeSeekSlider.setValue(Float(time.seconds), animated: false)
-//        }
-//      } else {
-//        self.seekLabel.text = String(format: "%@", Int(time.seconds).durationString())
-//      }
-//    }
-    
-//    player.playerReadyToPlay = { [weak self] in
-//      self?.isControlsEnabled = true
-//      self?.videoContainerView.image = nil
-//    }
-    
+     
     //TODO: AirPlay
     
     videoContainerView.player = player.player
-    
-//    player.onErrorApear = { [weak self] error in
-//      self?.playButton.setImage(UIImage.image("Play"), for: .normal)
-//      self?.isPlayerControlsHidden = false
-//      self?.videoContainerView.removeActivityIndicator()
-//      self?.isControlsEnabled = true
-//      if self?.isReachable == true {
-//        self?.showError()
-//      }
-//      self?.isPlayerError = true
-//    }
-    
-    
-//    player.onVideoEnd = { [weak self] in
-//      self?.playButton.setImage(UIImage.image("Play"), for: .normal)
-//      self?.isVideoEnd = true
-//      if self?.videoContent is VOD {
-//        self?.isSeekByTappingMode = false
-//        self?.seekByTapDebouncer.call {}
-//        self?.seekPaddingView = nil
-//        self?.isPlayerControlsHidden = false
-//        self?.startAutoplayNexItem()
-//      } else {
-//        //MARK: set thanks image
-//        self?.setThanksImage()
-//        self?.isChatEnabled = false
-//        self?.editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
-//        self?.editProfileButton.tintColor = UIColor.white.withAlphaComponent(0.2)
-//        self?.videoContainerView.layer.sublayers?.first?.isHidden = true
-//        self?.liveLabelWidth.constant = 0
-//        self?.playButton.isHidden = true
-//        self?.view.layoutIfNeeded()
-//      }
-//      self?.updateChatVisibility()
-//
-//    }
     videoContainerView.showActivityIndicator()
   }
 
@@ -1623,6 +1546,7 @@ extension PlayerController: UIGestureRecognizerDelegate {
 
 extension PlayerController: ModernAVPlayerDelegate {
   func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
+    print("Player state: \(state)")
     switch state {
       case .failed:
         playButton.setImage(UIImage.image("Play"), for: .normal)
@@ -1636,6 +1560,9 @@ extension PlayerController: ModernAVPlayerDelegate {
       case .loaded:
         isControlsEnabled = true
         videoContainerView.image = nil
+        isPlayerError = false
+      case .buffering:
+        videoContainerView.showActivityIndicator()
       case .stopped:
         playButton.setImage(UIImage.image("Play"), for: .normal)
         isVideoEnd = true
@@ -1662,43 +1589,46 @@ extension PlayerController: ModernAVPlayerDelegate {
   }
   
   func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
-    if playerSeekManualy {
-      playerSeekManualy = false
-      if isSeekByTappingMode  {
-        isSeekByTappingMode = false
+    DispatchQueue.main.async { [weak self] in
+      guard let `self` = self else { return }
+      if self.playerSeekManualy {
+        self.playerSeekManualy = false
+        if self.isSeekByTappingMode  {
+          self.isSeekByTappingMode = false
+        }
+        self.shouldShowSkipButton = false
+        self.setSkipButtonHidden(hidden: true)
+        return
       }
-      shouldShowSkipButton = false
-      setSkipButtonHidden(hidden: true)
-      return
-    }
-    guard let isPlaybackBufferFull = player.player.currentItem?.isPlaybackBufferFull,
-      let isPlaybackLikelyToKeepUp = player.player.currentItem?.isPlaybackLikelyToKeepUp else { return }
-    let isLikelyToKeepUp = isPlaybackBufferFull || isPlaybackLikelyToKeepUp
-    
-    if isLikelyToKeepUp {
-      self.videoContainerView.removeActivityIndicator()
-      self.playButton.isHidden = false
-      if !self.videoControlsView.isHidden {
-        self.updatePlayButtonImage()
+      guard let isPlaybackBufferFull = player.player.currentItem?.isPlaybackBufferFull,
+        let isPlaybackLikelyToKeepUp = player.player.currentItem?.isPlaybackLikelyToKeepUp else { return }
+      let isLikelyToKeepUp = isPlaybackBufferFull || isPlaybackLikelyToKeepUp
+      
+      if isLikelyToKeepUp {
+        self.videoContainerView.removeActivityIndicator()
+        self.playButton.isHidden = false
+        if !self.videoControlsView.isHidden {
+          self.updatePlayButtonImage()
+        }
+      } else if self.isPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
+        self.videoContainerView.showActivityIndicator()
+        self.playButton.isHidden = true
       }
-    } else if self.isPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
-      self.videoContainerView.showActivityIndicator()
-      self.playButton.isHidden = true
-    }
-    self.activeSpendTime += 0.2
-    
-    if let vod = self.videoContent as? VOD {
-      vod.stopTime = min(Int(currentTime), vod.duration.duration()).durationString()
-      self.chatController.handleVODsChat(forTime: Int(currentTime))
-      self.checkCurtains()
-      //temp: needs refactoring
-      self.seekLabel.text = String(format: "%@ / %@", Int(currentTime).durationString(), vod.duration.duration().durationString())
-      if self.seekTo == nil, self.player.player.rate == 1 {
-        self.portraitSeekSlider.setValue(Float(currentTime), animated: false)
-        self.landscapeSeekSlider.setValue(Float(currentTime), animated: false)
+      self.activeSpendTime += 0.2
+      
+      if let vod = self.videoContent as? VOD {
+        vod.stopTime = min(Int(currentTime), vod.duration.duration()).durationString()
+        self.chatController.handleVODsChat(forTime: Int(currentTime))
+        self.checkCurtains()
+        //temp: needs refactoring
+        self.seekLabel.text = String(format: "%@ / %@", Int(currentTime).durationString(), vod.duration.duration().durationString())
+        if self.seekTo == nil, self.player.player.rate == 1 {
+          self.portraitSeekSlider.setValue(Float(currentTime), animated: false)
+          self.landscapeSeekSlider.setValue(Float(currentTime), animated: false)
+        }
+      } else {
+        self.seekLabel.text = String(format: "%@", Int(currentTime).durationString())
       }
-    } else {
-      self.seekLabel.text = String(format: "%@", Int(currentTime).durationString())
     }
   }
 }

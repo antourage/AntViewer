@@ -46,7 +46,7 @@ public struct ModernAVPlayerConfiguration: PlayerConfiguration {
     //swiftlint:disable:next force_unwrapping
     public let reachabilityNetworkTestingURL = URL(string: "https://www.google.com")!
     public let reachabilityNetworkTestingTickTime: TimeInterval = 3
-    public let reachabilityNetworkTestingIteration: UInt = 10
+    public let reachabilityNetworkTestingIteration: UInt = 5
 
     public var useDefaultRemoteCommand = false
     
@@ -55,6 +55,6 @@ public struct ModernAVPlayerConfiguration: PlayerConfiguration {
     public let itemLoadedAssetKeys = ["playable", "duration"]
 
     public init() {
-        periodicPlayingTime = CMTime(seconds: 1, preferredTimescale: preferredTimescale)
+        periodicPlayingTime = CMTimeMake(value: 1, timescale: 5)
     }
 }
