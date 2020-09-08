@@ -568,9 +568,7 @@ class PlayerController: UIViewController {
     view.endEditing(true)
     UIApplication.shared.isIdleTimerDisabled = false
     if let vod = videoContent as? VOD {
-      let seconds = player?.currentTime ?? 0
       vod.isNew = false
-      vod.stopTime = min(Int(seconds.isNaN ? 0 : seconds), vod.duration.duration()).durationString()
     }
     dataSource.startUpdatingStreams()
     streamTimer?.invalidate()
@@ -801,7 +799,9 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
-      player.seek(position: Double.greatestFiniteMagnitude)
+      if let media = player.currentMedia {
+        player.load(media: media, autostart: false)
+      }
     } else {
       portraitSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: portraitSeekSlider), for: .normal)
       landscapeSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: landscapeSeekSlider), for: .normal)
@@ -1239,7 +1239,6 @@ class PlayerController: UIViewController {
     }
     
     if isPaused {
-      
       if isPlayerError {
         if let media = player.currentMedia, let vod = videoContent as? VOD {
           player.load(media: media, autostart: true, position: Double(vod.stopTime.duration()))
@@ -1252,7 +1251,8 @@ class PlayerController: UIViewController {
       controlsDebouncer.call { [weak self] in
         self?.isPlayerControlsHidden = true
       }
-      
+    } else if player.state == .loaded {
+      player.play()
     } else {
       player.pause()
       controlsDebouncer.call {}
@@ -1264,7 +1264,7 @@ class PlayerController: UIViewController {
     guard !isAutoplayMode, let player = player else { return }
     var image: UIImage?
     switch player.state {
-      case .paused, .failed: image = UIImage.image("Play")
+      case .paused, .failed, .loaded: image = UIImage.image("Play")
       case .stopped: image = UIImage.image("PlayAgain")
       case .loading, .buffering: image = nil
       default: image = UIImage.image("Pause")
@@ -1558,47 +1558,55 @@ extension PlayerController: UIGestureRecognizerDelegate {
 
 extension PlayerController: ModernAVPlayerDelegate {
   func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
-    print("Player state: \(state)")
-    switch state {
-      case .failed:
-        isPlayerControlsHidden = false
-        videoContainerView.removeActivityIndicator()
-        isControlsEnabled = true
-        if isReachable {
-          showError()
-        }
-        isPlayerError = true
-      case .loaded:
-        isControlsEnabled = true
-        videoContainerView.image = nil
-        isPlayerError = false
-      case .buffering, .loading:
-        DispatchQueue.main.async { [weak self] in
-          self?.videoContainerView.showActivityIndicator()
-        }
-      case .stopped:
-        isVideoEnd = true
-        if videoContent is VOD {
-          isSeekByTappingMode = false
-          seekByTapDebouncer.call {}
-          seekPaddingView = nil
-          isPlayerControlsHidden = false
-          startAutoplayNexItem()
-        } else {
-          //MARK: set thanks image
-          setThanksImage()
-          isChatEnabled = false
-          editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
-          editProfileButton.tintColor = UIColor.white.withAlphaComponent(0.2)
-          videoContainerView.layer.sublayers?.first?.isHidden = true
-          liveLabelWidth.constant = 0
-          playButton.isHidden = true
-          view.layoutIfNeeded()
-        }
-        updateChatVisibility()
-      default: break
+    DispatchQueue.main.async { [weak self] in
+      guard let `self` = self else { return }
+      print("Player state: \(state)")
+      switch state {
+        case .failed:
+          self.isPlayerControlsHidden = false
+          self.videoContainerView.removeActivityIndicator()
+          self.isControlsEnabled = true
+          if self.isReachable {
+            self.showError()
+          }
+          self.isPlayerError = true
+        case .loaded:
+          self.isControlsEnabled = true
+          self.videoContainerView.image = nil
+          self.isPlayerError = false
+          self.videoContainerView.removeActivityIndicator()
+          self.playButton.isHidden = false
+          if !self.videoControlsView.isHidden {
+            self.updatePlayButtonImage()
+          }
+        case .playing:
+          self.videoContainerView.removeActivityIndicator()
+        case .buffering, .loading:
+          self.videoContainerView.showActivityIndicator()
+        case .stopped:
+          self.isVideoEnd = true
+          if self.videoContent is VOD {
+            self.isSeekByTappingMode = false
+            self.seekByTapDebouncer.call {}
+            self.seekPaddingView = nil
+            self.isPlayerControlsHidden = false
+            self.startAutoplayNexItem()
+          } else {
+            //MARK: set thanks image
+            self.setThanksImage()
+            self.isChatEnabled = false
+            self.editProfileButton.layer.borderColor = UIColor.white.withAlphaComponent(0.2).cgColor
+            self.editProfileButton.tintColor = UIColor.white.withAlphaComponent(0.2)
+            self.videoContainerView.layer.sublayers?.first?.isHidden = true
+            self.liveLabelWidth.constant = 0
+            self.playButton.isHidden = true
+            self.view.layoutIfNeeded()
+          }
+          self.updateChatVisibility()
+        default: break
+      }
+      self.updatePlayButtonImage()
     }
-    updatePlayButtonImage()
   }
   
   func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
@@ -1613,22 +1621,7 @@ extension PlayerController: ModernAVPlayerDelegate {
         self.setSkipButtonHidden(hidden: true)
         return
       }
-      guard let isPlaybackBufferFull = player.player.currentItem?.isPlaybackBufferFull,
-        let isPlaybackLikelyToKeepUp = player.player.currentItem?.isPlaybackLikelyToKeepUp else { return }
-      let isLikelyToKeepUp = isPlaybackBufferFull || isPlaybackLikelyToKeepUp
-      
-      if isLikelyToKeepUp {
-        self.videoContainerView.removeActivityIndicator()
-        self.playButton.isHidden = false
-        if !self.videoControlsView.isHidden {
-          self.updatePlayButtonImage()
-        }
-      } else if self.isPaused == false, !self.videoContainerView.isActivityIndicatorLoaded {
-        self.videoContainerView.showActivityIndicator()
-        self.playButton.isHidden = true
-      }
       self.activeSpendTime += 0.2
-      
       if let vod = self.videoContent as? VOD {
         vod.stopTime = min(Int(currentTime), vod.duration.duration()).durationString()
         self.chatController.handleVODsChat(forTime: Int(currentTime))
