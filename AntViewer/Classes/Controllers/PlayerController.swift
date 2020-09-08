@@ -785,8 +785,10 @@ class PlayerController: UIViewController {
       bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
       //continue playing after connection established
       if player.state == .failed {
-        if let media = player?.currentMedia {
-          player.load(media: media, autostart: true, position: player.player.currentTime().seconds)
+        if let media = player.currentMedia, let vod = videoContent as? VOD {
+          player.load(media: media, autostart: true, position: Double(vod.stopTime.duration()))
+        } else {
+          player.play()
         }
       }
     } else {
@@ -799,6 +801,7 @@ class PlayerController: UIViewController {
   private func handleWillBecomeActive(_ notification: NSNotification) {
     if videoContent is Live {
       landscapeSeekSlider.removeFromSuperview()
+      player.seek(position: Double.greatestFiniteMagnitude)
     } else {
       portraitSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: portraitSeekSlider), for: .normal)
       landscapeSeekSlider.setMaximumTrackImage(createMaxTrackImage(for: landscapeSeekSlider), for: .normal)
@@ -1236,19 +1239,20 @@ class PlayerController: UIViewController {
     }
     
     if isPaused {
+      
       if isPlayerError {
-        if let media = player.currentMedia {
-          player.load(media: media, autostart: true, position: player.currentTime)
+        if let media = player.currentMedia, let vod = videoContent as? VOD {
+          player.load(media: media, autostart: true, position: Double(vod.stopTime.duration()))
+        } else {
+          player.play()
         }
       } else {
-        if videoContent is Live {
-          player.seek(position: Double.greatestFiniteMagnitude)
-        }
         player.play()
       }
       controlsDebouncer.call { [weak self] in
         self?.isPlayerControlsHidden = true
       }
+      
     } else {
       player.pause()
       controlsDebouncer.call {}
