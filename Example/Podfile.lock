@@ -212,7 +212,7 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
-  - Antourage (2.0.13):
+  - Antourage (2.0.14):
     - Firebase/Auth
     - Firebase/Firestore
   - BoringSSL-GRPC (0.0.7):
@@ -384,7 +384,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
-  Antourage: f7aef8526852ec48d3fcc50d7b9a37d32bec5013
+  Antourage: 1188a4fa2f17e308e6dd4c558cfc90d162b04c3c
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   Firebase: 658370fa0181826a74b7cfca8d68c5856ca749ae
   FirebaseAnalytics: 0ca9aa2af7cc4dc92392b7a78bfc49feaa2eb60f
