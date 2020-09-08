@@ -1064,6 +1064,7 @@ class PlayerController: UIViewController {
   
   @IBAction func closeButtonPressed(_ sender: UIButton?) {
     NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+    player.delegate = nil
     player?.stop()
     dismiss(animated: true, completion: nil)
   }
@@ -1425,6 +1426,7 @@ class PlayerController: UIViewController {
     let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
     playerVC.videoContent = nextContent
     playerVC.dataSource = dataSource
+    player.delegate = nil
     player.stop()
     navController.pushViewController(playerVC, withPopAnimation: sender == previousButton)
     
