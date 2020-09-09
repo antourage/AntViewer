@@ -754,11 +754,25 @@ class PlayerController: UIViewController {
       let lowerBoudn = cur.range.lowerBound
       let upperBoudn = cur.range.upperBound
       let videoDuration = Double(content.duration.duration())
-      let context = UIGraphicsGetCurrentContext()!
       let origin = CGPoint(x: CGFloat(lowerBoudn/videoDuration)*width, y: 0)
       let size = CGSize(width: CGFloat(upperBoudn/videoDuration)*width - origin.x, height: imageSize.height)
-      UIColor.curtainYellow.setFill()
-      context.fill(CGRect(origin: origin, size: size))
+      let gradient = CAGradientLayer()
+      gradient.frame = CGRect(origin: .zero, size: size)
+      gradient.colors = [1, 0, 0, 1].map({ UIColor.clear.withAlphaComponent($0).cgColor})
+      gradient.startPoint = CGPoint(x: 0, y: 0.5)
+      gradient.endPoint = CGPoint(x: 1, y: 0.5)
+      gradient.locations = [0, 0.3, 0.7, 1]
+      
+      
+      let viewToRender = UIView(frame: CGRect(origin: .zero, size: size))
+      viewToRender.layer.backgroundColor = UIColor.curtainYellow.cgColor
+      viewToRender.layer.mask = gradient
+      UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
+      let context = UIGraphicsGetCurrentContext()
+      viewToRender.layer.render(in: context!)
+      let image = UIGraphicsGetImageFromCurrentImageContext()
+      UIGraphicsEndImageContext()
+      image?.draw(in: CGRect(origin: origin, size: size))
     }
     let newImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
