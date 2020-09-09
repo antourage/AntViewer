@@ -250,6 +250,7 @@ class PlayerController: UIViewController {
   lazy var userImageView: CacheImageView = {
     let imageView = CacheImageView()
     circleImageView.addSubview(imageView)
+    imageView.contentMode = .scaleAspectFill
     fixImageView(imageView, in: circleImageView)
     return imageView
   }()
@@ -257,6 +258,7 @@ class PlayerController: UIViewController {
   lazy var landscapeUserImageView: CacheImageView = {
     let imageView = CacheImageView()
     landscapeCircleImageView.addSubview(imageView)
+    imageView.contentMode = .scaleAspectFill
     fixImageView(imageView, in: landscapeCircleImageView)
     return imageView
   }()
