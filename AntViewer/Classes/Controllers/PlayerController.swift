@@ -438,6 +438,7 @@ class PlayerController: UIViewController {
   fileprivate var controlsDebouncer = Debouncer(delay: 1.2)
   fileprivate var controlsAppearingDebouncer = Debouncer(delay: 0.4)
   fileprivate var seekByTapDebouncer = Debouncer(delay: 0.7)
+  fileprivate var acivityIndicatorDebouncer = Debouncer(delay: 0.5)
   
   //MARK: For vods
   fileprivate var vodMessages: [Message]? = []
@@ -1566,6 +1567,7 @@ extension PlayerController: ModernAVPlayerDelegate {
       switch state {
         case .failed:
           self.isPlayerControlsHidden = false
+          self.acivityIndicatorDebouncer.call {}
           self.videoContainerView.removeActivityIndicator()
           self.isControlsEnabled = true
           if self.isReachable {
@@ -1576,15 +1578,20 @@ extension PlayerController: ModernAVPlayerDelegate {
           self.isControlsEnabled = true
           self.videoContainerView.image = nil
           self.isPlayerError = false
+          self.acivityIndicatorDebouncer.call {}
           self.videoContainerView.removeActivityIndicator()
           self.playButton.isHidden = false
           if !self.videoControlsView.isHidden {
             self.updatePlayButtonImage()
           }
         case .playing:
+          self.acivityIndicatorDebouncer.call {}
           self.videoContainerView.removeActivityIndicator()
         case .buffering, .loading:
-          self.videoContainerView.showActivityIndicator()
+          guard !self.videoContainerView.isActivityIndicatorLoaded else { break }
+          self.acivityIndicatorDebouncer.call { [weak self] in
+            self?.videoContainerView.showActivityIndicator()
+          }
         case .stopped:
           self.isVideoEnd = true
           if self.videoContent is VOD {
