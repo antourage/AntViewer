@@ -749,30 +749,35 @@ class PlayerController: UIViewController {
       UIGraphicsEndImageContext()
       return newImage ?? UIImage()
     }
+    
+    let context = UIGraphicsGetCurrentContext()!
+    let videoDuration = Double(content.duration.duration())
+    
+    let colors = [0, 1, 1, 0].map({ UIColor.curtainYellow.withAlphaComponent($0).cgColor})
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    let colorLocations: [CGFloat] = [0.0, 0.25, 0.75, 1.0]
+    
+    guard let gradient = CGGradient(
+      colorsSpace: colorSpace,
+      colors: colors as CFArray,
+      locations: colorLocations
+    ) else {
+      fatalError()
+    }
+    
     for curtain in content.curtainRangeModels {
       var cur = curtain
       let lowerBoudn = cur.range.lowerBound
       let upperBoudn = cur.range.upperBound
-      let videoDuration = Double(content.duration.duration())
+      
       let origin = CGPoint(x: CGFloat(lowerBoudn/videoDuration)*width, y: 0)
       let size = CGSize(width: CGFloat(upperBoudn/videoDuration)*width - origin.x, height: imageSize.height)
-      let gradient = CAGradientLayer()
-      gradient.frame = CGRect(origin: .zero, size: size)
-      gradient.colors = [1, 0, 0, 1].map({ UIColor.clear.withAlphaComponent($0).cgColor})
-      gradient.startPoint = CGPoint(x: 0, y: 0.5)
-      gradient.endPoint = CGPoint(x: 1, y: 0.5)
-      gradient.locations = [0, 0.3, 0.7, 1]
-      
-      
-      let viewToRender = UIView(frame: CGRect(origin: .zero, size: size))
-      viewToRender.layer.backgroundColor = UIColor.curtainYellow.cgColor
-      viewToRender.layer.mask = gradient
-      UIGraphicsBeginImageContextWithOptions(size, true, 0.0)
-      let context = UIGraphicsGetCurrentContext()
-      viewToRender.layer.render(in: context!)
-      let image = UIGraphicsGetImageFromCurrentImageContext()
-      UIGraphicsEndImageContext()
-      image?.draw(in: CGRect(origin: origin, size: size))
+      context.drawLinearGradient(
+        gradient,
+        start: CGPoint(x: origin.x, y: 0),
+        end: CGPoint(x: origin.x + size.width, y: 0),
+        options: []
+      )
     }
     let newImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
