@@ -456,10 +456,12 @@ class StreamListController: UIViewController {
       if let urlString = info.imageUrl, let url = URL(string: urlString) {
         ImageService.downloadImage(withURL: url) { [weak self] (image) in
           self?.logoImageView.image = image
+          self?.skeleton?.logoImage = image
           HeaderInfoModel.currentInfo?.imageData = image?.pngData()
         }
       } else {
         self?.logoImageView.image = nil
+        self?.skeleton?.logoImage = image
       }
     }
   }

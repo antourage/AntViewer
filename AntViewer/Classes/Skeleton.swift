@@ -15,8 +15,6 @@ protocol SkeletonDelegate: class {
 }
 
 class Skeleton: NSObject {
-
-  
   weak var delegate: SkeletonDelegate?
   var collectionView: UICollectionView? {
     didSet {
@@ -42,6 +40,11 @@ class Skeleton: NSObject {
     return view
   }()
 
+  var logoImage: UIImage? {
+    didSet {
+      emptyDataSourceView.logoImage = logoImage
+    }
+  }
 
   private var animator: Animator?
 
