@@ -83,6 +83,9 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
         /// item current time when receive end time notification
         /// is not so accurate according to duration
         /// added +1 make sure about the computation
+        if duration.isNaN {
+          return true
+        }
         let currentTime = player.currentTime().seconds + 1
         return currentTime >= duration
     }
@@ -124,18 +127,10 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
       return
     }
     print("Player state: Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
-    
-//    if errorLog.events.last?.errorStatusCode == -1009 {
-//      let playerError = NPlayerError(kind: .noInternerConnection, description: "No internet connection available")
-//      pause(withError: playerError)
-//    }
-//    if errorLog.events.last?.errorStatusCode == -12888 {
-//      errorsCount += 1
-//      if errorsCount > 2 {
-//        let playerError = NPlayerError(kind: .faildStatus, description: "Unexpected stream stop")
-//        pause(withError: playerError)
-//      }
-//    }
+
+    if errorLog.events.last?.errorStatusCode == -12888 {
+      onPlayToEndTime?()
+    }
     
   }
   

@@ -136,8 +136,7 @@ final class PlayingState: PlayerState {
         }
         itemPlaybackObservingService.onFailedToPlayToEndTime = { [weak self] in
           print("Player state: onFailedToPlayToEndTime")
-          // Stream end
-          self?.stop()
+          self?.redirectToWaitingForNetworkState()
         }
         itemPlaybackObservingService.onPlayToEndTime = { [weak self] in
             guard let strongSelf = self else { return }
