@@ -461,7 +461,7 @@ class StreamListController: UIViewController {
         }
       } else {
         self?.logoImageView.image = nil
-        self?.skeleton?.logoImage = image
+        self?.skeleton?.logoImage = nil
       }
     }
   }
