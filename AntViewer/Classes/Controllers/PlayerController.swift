@@ -756,7 +756,7 @@ class PlayerController: UIViewController {
     let colors = [0, 1, 1, 0].map({ UIColor.curtainYellow.withAlphaComponent($0).cgColor})
     let colorSpace = CGColorSpaceCreateDeviceRGB()
     let colorLocations: [CGFloat] = [0.0, 0.25, 0.75, 1.0]
-    
+    UIColor.curtainYellow.setFill()
     guard let gradient = CGGradient(
       colorsSpace: colorSpace,
       colors: colors as CFArray,
@@ -772,12 +772,14 @@ class PlayerController: UIViewController {
       
       let origin = CGPoint(x: CGFloat(lowerBoudn/videoDuration)*width, y: 0)
       let size = CGSize(width: CGFloat(upperBoudn/videoDuration)*width - origin.x, height: imageSize.height)
-      context.drawLinearGradient(
-        gradient,
-        start: CGPoint(x: origin.x, y: 0),
-        end: CGPoint(x: origin.x + size.width, y: 0),
-        options: []
-      )
+//      context.drawLinearGradient(
+//        gradient,
+//        start: CGPoint(x: origin.x, y: 0),
+//        end: CGPoint(x: origin.x + size.width, y: 0),
+//        options: []
+//      )
+      context.fill(CGRect(origin: origin, size: size))
+
     }
     let newImage = UIGraphicsGetImageFromCurrentImageContext()
     UIGraphicsEndImageContext()
