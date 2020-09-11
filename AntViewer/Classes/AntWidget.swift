@@ -382,6 +382,7 @@ public class AntWidget {
 
   @objc
   func handleWillResignActive(_ notification: NSNotification) {
+    guard visible else { return }
     isBackground = true
     dataSource.pauseUpdatingVods()
     set(state: .resting)
@@ -389,6 +390,7 @@ public class AntWidget {
 
   @objc
   func handleDidBecomeActive(_ notification: NSNotification) {
+    guard visible else { return }
     if isBackground {
       dataSource.startUpdatingVods()
     }
@@ -397,7 +399,7 @@ public class AntWidget {
 }
 
 extension AntWidget: WidgetViewDelegate {
-  func widgetViewWillMove(_ widgetView: WidgetView, toSuperview withSize: CGSize?) {
+  func widgetViewDidMove(_ widgetView: WidgetView, toSuperview withSize: CGSize?) {
     updatePosition(size: withSize)
   }
   
