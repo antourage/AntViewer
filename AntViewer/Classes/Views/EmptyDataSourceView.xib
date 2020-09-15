@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_0" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17124"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -21,12 +22,11 @@
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="23" translatesAutoresizingMaskIntoConstraints="NO" id="WTA-2v-KKP">
-                            <rect key="frame" x="29" y="246.5" width="262" height="75"/>
+                            <rect key="frame" x="29" y="234.5" width="262" height="99"/>
                             <subviews>
                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fFX-mX-K6N">
-                                    <rect key="frame" x="99" y="0.0" width="64" height="36"/>
+                                    <rect key="frame" x="77.5" y="0.0" width="107" height="60"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="64" id="QUg-an-TLf"/>
                                         <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="20" id="ZIX-4x-ONf"/>
                                         <constraint firstAttribute="width" secondItem="fFX-mX-K6N" secondAttribute="height" multiplier="16:9" id="fsj-HN-1tC"/>
                                     </constraints>
@@ -35,7 +35,7 @@
                                     </userDefinedRuntimeAttributes>
                                 </imageView>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="LIVE INTERACTIVE VIDEOS COMING SOON" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4MG-lB-hi0" customClass="LocalizedLabel" customModule="Antourage">
-                                    <rect key="frame" x="0.0" y="59" width="262" height="16"/>
+                                    <rect key="frame" x="0.0" y="83" width="262" height="16"/>
                                     <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="13"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
@@ -47,6 +47,7 @@
                     <constraints>
                         <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="WTA-2v-KKP" secondAttribute="trailing" constant="20" id="2WT-vN-E9d"/>
                         <constraint firstItem="WTA-2v-KKP" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="qEV-cT-BPa" secondAttribute="leading" constant="20" id="DC7-Mc-Bfk"/>
+                        <constraint firstItem="fFX-mX-K6N" firstAttribute="width" relation="lessThanOrEqual" secondItem="qEV-cT-BPa" secondAttribute="width" multiplier="0.35" id="X0x-dR-4Pp"/>
                         <constraint firstItem="WTA-2v-KKP" firstAttribute="centerX" secondItem="qEV-cT-BPa" secondAttribute="centerX" id="w9H-WA-IzP"/>
                         <constraint firstItem="WTA-2v-KKP" firstAttribute="centerY" secondItem="qEV-cT-BPa" secondAttribute="centerY" id="ysL-bz-6Oc"/>
                     </constraints>
