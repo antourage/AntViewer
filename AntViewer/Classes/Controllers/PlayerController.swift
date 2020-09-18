@@ -1264,6 +1264,14 @@ class PlayerController: UIViewController {
     }
     
     if isPaused {
+      //MARK: Bug, unable to start player when paused in the end of duration
+      if let vod = videoContent as? VOD {
+        let delta = Double(vod.duration.duration()) - player.currentTime
+        if delta < 1.5 {
+          player.seek(position: player.currentTime - 1)
+        }
+      }
+      
       if isPlayerError {
         if let media = player.currentMedia, let vod = videoContent as? VOD {
           player.load(media: media, autostart: true, position: Double(vod.stopTime.duration()))
@@ -1644,25 +1652,31 @@ extension PlayerController: ModernAVPlayerDelegate {
   func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
     DispatchQueue.main.async { [weak self] in
       guard let `self` = self else { return }
-      if self.playerSeekManualy {
-        self.playerSeekManualy = false
-        if self.isSeekByTappingMode  {
-          self.isSeekByTappingMode = false
-        }
-        self.shouldShowSkipButton = false
-        self.setSkipButtonHidden(hidden: true)
-        return
-      }
+
       self.activeSpendTime += 0.2
       if let vod = self.videoContent as? VOD {
+        let playerSeekManualy = self.playerSeekManualy
+        if playerSeekManualy {
+          self.playerSeekManualy = false
+          if self.isSeekByTappingMode  {
+            self.isSeekByTappingMode = false
+          }
+          self.shouldShowSkipButton = false
+          self.setSkipButtonHidden(hidden: true)
+        }
+        if !playerSeekManualy {
+          if self.seekTo == nil, self.player.player.rate == 1 {
+            self.checkCurtains()
+            self.portraitSeekSlider.setValue(Float(currentTime), animated: false)
+            self.landscapeSeekSlider.setValue(Float(currentTime), animated: false)
+          }
+        }
+        
         vod.stopTime = min(Int(currentTime), vod.duration.duration()).durationString()
-        self.chatController.handleVODsChat(forTime: Int(currentTime))
-        self.checkCurtains()
-        //temp: needs refactoring
-        self.seekLabel.text = String(format: "%@ / %@", Int(currentTime).durationString(), vod.duration.duration().durationString())
-        if self.seekTo == nil, self.player.player.rate == 1 {
-          self.portraitSeekSlider.setValue(Float(currentTime), animated: false)
-          self.landscapeSeekSlider.setValue(Float(currentTime), animated: false)
+        let chatTime = self.isVideoEnd ? vod.duration.duration() + 100500 : Int(currentTime)
+        self.chatController.handleVODsChat(forTime: chatTime)
+        if !self.isVideoEnd {
+          self.seekLabel.text = String(format: "%@ / %@", Int(currentTime).durationString(), vod.duration.duration().durationString())
         }
       } else {
         self.seekLabel.text = String(format: "%@", Int(currentTime).durationString())
