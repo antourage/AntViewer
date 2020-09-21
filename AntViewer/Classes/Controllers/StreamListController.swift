@@ -103,7 +103,7 @@ class StreamListController: UIViewController {
     player.delegate = self
     return player
   }()
-
+  fileprivate let initialVodDebouncer = Debouncer(delay: 1)
   fileprivate let playerDebouncer = Debouncer(delay: 0.5)
   fileprivate var isLoading = false {
     didSet {
@@ -143,7 +143,6 @@ class StreamListController: UIViewController {
     return skeleton
   }()
 
-  private var hiddenAuthCompleted = false
   fileprivate var shouldResetActiveCell = true
 
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -156,15 +155,21 @@ class StreamListController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
-    AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
-      self?.hiddenAuthCompleted = true
-      switch result {
-      case .success():
-        self?.initialVodsUpdate()
-      case .failure(let error):
-        print(error)
+    if isReachable {
+      AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
+        switch result {
+        case .success():
+          self?.initialVodDebouncer.call {
+            self?.initialVodsUpdate()
+          }
+        case .failure(let error):
+          print(error)
+        }
       }
+    } else {
+      NotificationCenter.default.addObserver(self, selector: #selector(self.handleUserUpdated), name: NSNotification.Name.init("UserUpdated"), object: nil)
     }
+
     configureHeader()
     dataSource.firebaseFetcher = MessageFetcher()
     if dataSource.streams.isEmpty {
@@ -173,7 +178,9 @@ class StreamListController: UIViewController {
 
     setupCollectionView()
     isLoading = true
-    initialVodsUpdate()
+    initialVodDebouncer.call { [weak self] in
+      self?.initialVodsUpdate()
+    }
 
     bottomMessage.onMessageAppear = { [weak self] height in
       self?.collectionViewBottom.constant += height
@@ -192,6 +199,14 @@ class StreamListController: UIViewController {
     collectionView.refreshControl = refreshControl
     topInset = view.safeAreaInsets.top
     skeleton?.loaded(videoContent: Live.self, isEmpty: dataSource.streams.isEmpty)
+  }
+  
+  @objc
+  fileprivate func handleUserUpdated() {
+    NotificationCenter.default.removeObserver(self, name: NSNotification.Name.init("UserUpdated"), object: nil)
+    initialVodDebouncer.call { [weak self] in
+      self?.initialVodsUpdate()
+    }
   }
 
   override func viewWillAppear(_ animated: Bool) {
@@ -229,7 +244,9 @@ class StreamListController: UIViewController {
       let color = UIColor.color("a_bottomMessageGreen")
       bottomMessage.showMessage(title: LocalizedStrings.youAreOnline.localized.uppercased(), duration: 2, backgroundColor: color ?? .green)
       if collectionView.numberOfItems(inSection: 1) == 0 {
-        initialVodsUpdate()
+        initialVodDebouncer.call { [weak self] in
+          self?.initialVodsUpdate()
+        }
       } else {
         if let lastCell = collectionView.cellForItem(at: IndexPath(item: dataSource.videos.count-1, section: 1)),
           collectionView.visibleCells.contains(lastCell), failedToLoadVods {
@@ -508,49 +525,47 @@ class StreamListController: UIViewController {
 
   @discardableResult
   fileprivate func configureCell(_ cell: StreamCell, forIndexPath indexPath: IndexPath) -> StreamCell {
-    let item = getItemWith(indexPath: indexPath)
-    cell.joinButton.isHidden = item is VOD || !item.isChatOn
-    cell.chatView.isHidden = true
-    cell.pollView.isHidden = true
-    cell.shareButton.isHidden = true
-    cell.chatEnabled = item.isChatOn
-    cell.message = item.latestMessage
-    cell.titleLabel.text = item.title
-    cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
-    cell.viewersCountLabel.text = item.viewsCount.formatUsingAbbrevation()
-    cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
-    cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
-    cell.isLive = item is Live
-    if let item = item as? VOD {
-      cell.chatView.isHidden = item.latestMessage == nil
-      cell.isNew = item.isNew
-      cell.duration = item.duration.duration()
-      //Temp solution
-      let duration = item.stopTime.duration() == 0 ? nil : item.stopTime.duration()
-      cell.watchedTime = item.isNew ? nil : duration
-      cell.replayView.isHidden = true
-    } else if let item = item as? Live {
-      let duration = Date().timeIntervalSince(item.date)
-      cell.duration = Int(duration)
-      cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
-      cell.pollView.isHidden = !item.isPollOn
-      cell.watchedTime = nil
-      cell.replayView.isHidden = true
-      cell.joinAction = { [weak self] itemCell in
-        guard let indexPath = self?.collectionView.indexPath(for: itemCell) else { return }
-        self?.openPlayer(indexPath: indexPath, shouldEnableChatField: true)
+    if let item = getItemWith(indexPath: indexPath) {
+      cell.joinButton.isHidden = item is VOD || !item.isChatOn
+      cell.chatView.isHidden = true
+      cell.pollView.isHidden = true
+      cell.shareButton.isHidden = true
+      cell.chatEnabled = item.isChatOn
+      cell.message = item.latestMessage
+      cell.titleLabel.text = item.title
+      cell.subtitleLabel.text = "\(item.creatorNickname) • \(item.date.timeAgo())"
+      cell.viewersCountLabel.text = item.viewsCount.formatUsingAbbrevation()
+      cell.userImageView.load(url: URL(string: item.broadcasterPicUrl), placeholder: UIImage.image("avaPic"))
+      cell.contentImageView.load(url: URL(string: item.thumbnailUrl), placeholder: UIImage.image("PlaceholderVideo"))
+      cell.isLive = item is Live
+      if let item = item as? VOD {
+        cell.chatView.isHidden = item.latestMessage == nil
+        cell.isNew = item.isNew
+        cell.duration = item.duration.duration()
+        //Temp solution
+        let duration = item.stopTime.duration() == 0 ? nil : item.stopTime.duration()
+        cell.watchedTime = item.isNew ? nil : duration
+        cell.replayView.isHidden = true
+      } else if let item = item as? Live {
+        let duration = Date().timeIntervalSince(item.date)
+        cell.duration = Int(duration)
+        cell.chatView.isHidden = !(item.isChatOn || item.latestMessage != nil)
+        cell.pollView.isHidden = !item.isPollOn
+        cell.watchedTime = nil
+        cell.replayView.isHidden = true
+        cell.joinAction = { [weak self] itemCell in
+          guard let indexPath = self?.collectionView.indexPath(for: itemCell) else { return }
+          self?.openPlayer(indexPath: indexPath, shouldEnableChatField: true)
+        }
       }
+      cell.buttonsStackView.isHidden = cell.chatView.isHidden && !item.isPollOn
     }
-    cell.buttonsStackView.isHidden = cell.chatView.isHidden && !item.isPollOn
     return cell
   }
   
-  fileprivate func getItemWith(indexPath: IndexPath) -> VideoContent {
-    if dataSource.streams.isEmpty || dataSource.videos.isEmpty {
-      return dataSource.streams.isEmpty ? dataSource.videos[indexPath.row] : dataSource.streams.reversed()[indexPath.row]
-    } else {
-      return indexPath.section == 0 ? dataSource.streams.reversed()[indexPath.row] : dataSource.videos[indexPath.row]
-    }
+  fileprivate func getItemWith(indexPath: IndexPath) -> VideoContent? {
+    guard isItemExist(at: indexPath) else { return nil }
+    return indexPath.section == 0 ? dataSource.streams.reversed()[indexPath.row] : dataSource.videos[indexPath.row]
   }
 
   fileprivate func getTopVisibleRow () -> IndexPath? {
@@ -754,8 +769,7 @@ extension StreamListController: UICollectionViewDelegateFlowLayout {
 
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
     var height = view.bounds.width
-    if isItemExist(at: indexPath) {
-      let item = getItemWith(indexPath: indexPath)
+    if let item = getItemWith(indexPath: indexPath) {
       if let message = item.latestMessage?.text {
         let width = view.bounds.width - 40
         let labelHeight = message.height(withConstrainedWidth: width, font: .systemFont(ofSize: 12))
