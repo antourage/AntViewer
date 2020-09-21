@@ -43,6 +43,7 @@ public class StorageManager {
       return
     }
     deleteExpiredContent()
+    NotificationCenter.default.addObserver(self, selector: #selector(deleteAll), name: NSNotification.Name("EnvironmentChanged"), object: nil)
   }
   static var shared = StorageManager()
 
@@ -100,16 +101,29 @@ extension StorageManager {
   }
 
   private func deleteExpiredContent() {
-    defer { saveContext() }
     guard let date = Calendar.current.date(byAdding: .weekOfYear, value: -2, to: Date()) else { return }
     let request: NSFetchRequest<VideoContentMO> = VideoContentMO.fetchRequest()
     let predicate = NSPredicate(format: "date < %@", date as NSDate)
     request.predicate = predicate
     do {
-      try persistentContainer.viewContext.fetch(request).forEach { persistentContainer.viewContext.delete($0) }
+      try persistentContainer.viewContext.fetch(request).forEach {
+        persistentContainer.viewContext.delete($0)
+      }
       saveContext()
     } catch let error {
       print("Error fetching video content: \(error.localizedDescription)")
+    }
+  }
+  
+  @objc
+  private func deleteAll() {
+    let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "VideoContent")
+    let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+    do {
+        try persistentContainer.viewContext.execute(deleteRequest)
+        saveContext()
+    } catch {
+        print ("There was an error")
     }
   }
 }
