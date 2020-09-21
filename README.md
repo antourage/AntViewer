@@ -123,18 +123,11 @@ And run `$ pod install`
 It's static method (no need object init), you can use it anywhere you want (login/app start etc).
 
 ```swift
-AntWidget.authWith(apiKey: "put_your_apiKey_there", refUserId: "put_user_id_from_your_base_or_nil", nickname: "put_user_nickname_from_your_base_or_nil") { result in
-  switch result {
-  case .success:
-    break
-  case .failure(let error):
-    print(error)
-  }
-}
+AntWidget.authWith(apiKey: "put_your_apiKey_there", refUserId: "put_user_id_from_your_base_or_nil", nickname: "put_user_nickname_from_your_base_or_nil")
 ```
 ### Push notifications (Firebase approach)
 
-To support PN on your side you should retrieve token for our senderID, send all needed data to us right after successful auth (you can call it in auth success block) and subscribe yourself to our topic.   
+To support PN on your side you should retrieve token for our senderID, send all needed data to us and subscribe yourself to our topic. You can put this code to MessagingDelegate method `messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String)`   
 
 ```swift
   //MARK: Connect PN to Antourage Firebase app

@@ -217,27 +217,13 @@ public class AntWidget {
 
   public static var AntSenderId = "1090288296965"
 
-  public static func authWith(apiKey: String, refUserId: String?, nickname: String?, completionHandler: @escaping (Result<Void, Error>) -> Void) {
-    AntViewerManager.shared.authWith(apiKey: apiKey, refUserId: refUserId, nickname: nickname, completionHandler: completionHandler)
+  @objc
+  public static func authWith(apiKey: String, refUserId: String?, nickname: String?) {
+    AntViewerManager.shared.authWith(apiKey: apiKey, refUserId: refUserId, nickname: nickname, completionHandler: {_ in })
   }
 
   public static func registerNotifications(FCMToken: String, completionHandler: @escaping (Result<String, Error>) -> Void) {
     AntViewerManager.shared.registerNotificationsWith(FCMToken: FCMToken, completionHandler: completionHandler)
-  }
-
-  @objc
-  public static func objc_authWith(apiKey: String, refUserId: String?, nickname: String?, completionHandler: @escaping (Error?) -> Void) {
-    AntViewerManager.shared.authWith(
-      apiKey: apiKey,
-      refUserId: refUserId,
-      nickname: nickname) { (result) in
-        switch result {
-        case .success():
-          completionHandler(nil)
-        case .failure(let error):
-          completionHandler(error)
-        }
-    }
   }
 
   @objc

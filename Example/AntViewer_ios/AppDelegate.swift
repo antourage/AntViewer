@@ -24,29 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Messaging.messaging().delegate = self
     
     
-    AntWidget.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil) { result in
-      switch result {
-      case .success:
-        //MARK: Connect PN to Antourage Firebase app
-				Messaging.messaging().retrieveFCMToken(forSenderID: AntWidget.AntSenderId) { (token, error) in
-          guard let token = token else { return }
-          AntWidget.registerNotifications(FCMToken: token) { (result) in
-            switch result {
-            case .success(let topic):
-              Messaging.messaging().subscribe(toTopic: topic) { error in
-                if error == nil {
-                  print("Subscribed to topic")
-                }
-              }
-            case .failure(let notificationError):
-              print(notificationError.localizedDescription)
-            }
-          }
-        }
-      case .failure(let error):
-        print(error)
-      }
-    }
+    AntWidget.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil)
     
     return true
   }
@@ -90,6 +68,21 @@ extension AppDelegate: MessagingDelegate {
   
   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
     print("Token: \(fcmToken)")
+    Messaging.messaging().retrieveFCMToken(forSenderID: AntWidget.AntSenderId) { (token, error) in
+      guard let token = token else { return }
+      AntWidget.registerNotifications(FCMToken: token) { (result) in
+        switch result {
+        case .success(let topic):
+          Messaging.messaging().subscribe(toTopic: topic) { error in
+            if error == nil {
+              print("Subscribed to topic")
+            }
+          }
+        case .failure(let notificationError):
+          print(notificationError.localizedDescription)
+        }
+      }
+    }
   }
   
 }
