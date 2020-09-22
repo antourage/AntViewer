@@ -468,6 +468,10 @@ public class Debouncer {
   public func call(delay: Foundation.TimeInterval? = nil, action: @escaping () -> Swift.Void)
   @objc deinit
 }
+extension OSLog {
+  public static let antNetworking: os.OSLog
+  public static let antButton: os.OSLog
+}
 public struct NotificationResponse : Swift.Codable {
   public let success: Swift.Bool
   public let topic: Swift.String

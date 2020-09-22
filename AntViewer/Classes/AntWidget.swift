@@ -7,6 +7,7 @@
 
 import AntViewerExt
 import AVKit
+import os.log
 
 enum WidgetState {
   case resting
@@ -258,6 +259,7 @@ public class AntWidget {
   }
 
   private func set(state: WidgetState) {
+    os_log("Trying to set state: %{public}@ ", log: OSLog.antButton, type: .info, state.description)
     switch currentState {
     case .resting:
       if case .resting = state { return }
@@ -278,7 +280,7 @@ public class AntWidget {
       self.player?.stop()
       self.player = nil
     }
-    print("Setting state: \(state)")
+    os_log("Setting state: %{public}@ ", log: OSLog.antButton, type: .info, state.description)
     currentState = state
   }
 
@@ -334,9 +336,11 @@ public class AntWidget {
   @objc
   func handleStreamUpdate(_ notification: NSNotification) {
     let error = notification.userInfo?["error"]
+    os_log("handleStreamUpdate", log: OSLog.antButton, type: .info)
     guard visible,
       !isBackground,
       error == nil else {
+      os_log("Invalid handleStreamUpdate - isVisible: %{public}@, isBackground: %{public}@, error: %{public}@ ", log: OSLog.antButton, type: .info, "\(visible)", "\(isBackground)", error.debugDescription)
       set(state: .resting)
       return
     }
@@ -390,6 +394,7 @@ extension AntWidget: WidgetViewDelegate {
   }
   
   func widgetViewWillAppear(_ widgetView: WidgetView) {
+    os_log("widgetViewWillAppear", log: OSLog.antButton, type: .info)
     currentContent = nil
     visible = true
     widgetView.isUserInteractionEnabled = true
@@ -397,6 +402,7 @@ extension AntWidget: WidgetViewDelegate {
   }
 
   func widgetViewWillDisappear(_ widgetView: WidgetView) {
+    os_log("widgetViewWillDisappear", log: OSLog.antButton, type: .info)
     visible = false
     dataSource.pauseUpdatingVods()
     set(state: .resting)

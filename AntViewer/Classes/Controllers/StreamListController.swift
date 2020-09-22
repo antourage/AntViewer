@@ -56,7 +56,8 @@ class StreamListController: UIViewController {
       curtainThumbnail.removeFromSuperview()
       player.stop()
       playerDebouncer.call {}
-      guard let item = activeItem else { return }
+      currentActiveItem = getActiveItem
+      guard let item = currentActiveItem else { return }
       playerDebouncer.call { [weak self] in
         self?.activeCell?.replayView.isHidden = true
         self?.activeCell?.contentImageView.playerLayer.videoGravity = .resizeAspectFill
@@ -89,13 +90,14 @@ class StreamListController: UIViewController {
     }
   }
 
-  fileprivate var activeItem: VideoContent? {
+  fileprivate var getActiveItem: VideoContent? {
     guard let cell = activeCell,
       let index = collectionView.indexPath(for: cell) else {
         return nil
     }
     return getItemWith(indexPath: index)
   }
+  fileprivate var currentActiveItem: VideoContent?
 
   fileprivate lazy var player: ModernAVPlayer = {
     let player = ModernAVPlayer()
@@ -699,7 +701,7 @@ extension StreamListController {
   }
 
   private func setActiveCell() {
-    if let cell = getTopVisibleCell(), activeCell != cell {
+    if let cell = getTopVisibleCell(), getActiveItem?.id != currentActiveItem?.id {
       activeCell = cell
     }
   }
@@ -827,11 +829,11 @@ extension StreamListController: ModernAVPlayerDelegate {
 
   public func modernAVPlayer(_ player: ModernAVPlayer, didCurrentTimeChange currentTime: Double) {
     DispatchQueue.main.async { [weak self] in
-      if let item = self?.activeItem as? VOD {
+      if let item = self?.getActiveItem as? VOD {
         self?.activeCell?.duration = item.duration.duration()
         self?.activeCell?.watchedTime = Int(currentTime)
         item.stopTime = min(Int(currentTime), item.duration.duration()).durationString()
-      } else if let item = self?.activeItem as? Live {
+      } else if let item = self?.getActiveItem as? Live {
         let duration = Date().timeIntervalSince(item.date)
         self?.activeCell?.duration = Int(duration)
         if self?.activeCell?.timeImageView.isAnimating == false {
