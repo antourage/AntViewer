@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   isDebug = false
 
   s.name             = 'Antourage'
-  s.version          = '2.0.19'
+  s.version          = '2.0.20'
   s.summary          = 'Antourage provides to users possibility to watch streams and use chat and polls'
 
 # This description is used to generate tags and improve search results.

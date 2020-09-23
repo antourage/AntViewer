@@ -701,7 +701,10 @@ extension StreamListController {
   }
 
   private func setActiveCell() {
-    if let cell = getTopVisibleCell(), getActiveItem?.id != currentActiveItem?.id {
+    guard
+      let cell = getTopVisibleCell(),
+      let index = collectionView.indexPath(for: cell) else { return }
+    if getItemWith(indexPath: index)?.id != currentActiveItem?.id {
       activeCell = cell
     }
   }
