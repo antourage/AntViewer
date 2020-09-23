@@ -374,6 +374,7 @@ public class AntWidget {
   func handleWillResignActive(_ notification: NSNotification) {
     guard visible else { return }
     isBackground = true
+    currentContent = nil
     dataSource.pauseUpdatingVods()
     set(state: .resting)
   }
