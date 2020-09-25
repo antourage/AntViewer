@@ -567,7 +567,7 @@ class StreamListController: UIViewController {
   
   fileprivate func getItemWith(indexPath: IndexPath) -> VideoContent? {
     guard isItemExist(at: indexPath) else { return nil }
-    return indexPath.section == 0 ? dataSource.streams.reversed()[indexPath.row] : dataSource.videos[indexPath.row]
+    return indexPath.section == 0 ? dataSource.streams[indexPath.row] : dataSource.videos[indexPath.row]
   }
 
   fileprivate func getTopVisibleRow () -> IndexPath? {
