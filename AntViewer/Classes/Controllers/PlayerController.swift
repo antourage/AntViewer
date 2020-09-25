@@ -388,6 +388,9 @@ class PlayerController: UIViewController {
   private var isChatEnabled = false {
     didSet {
       sendButton.isEnabled = isChatEnabled
+      if !isChatEnabled {
+        chatTextView.text = ""
+      }
       chatTextView.isEditable = isChatEnabled
 
       chatTextView.placeholder = isChatEnabled ? LocalizedStrings.chat.localized :
@@ -397,9 +400,7 @@ class PlayerController: UIViewController {
       chatTextViewHolderView.layer.borderColor = UIColor.white.withAlphaComponent(alpha).cgColor
       chatTextView.placeholderTextColor = isChatEnabled ? .cellGray : .bottomMessageGray
       view.layoutIfNeeded()
-      if !isChatEnabled {
-        chatTextView.text = ""
-      }
+
     }
   }
   
