@@ -163,6 +163,7 @@ public class AntWidget {
   private var currentContent: VideoContent?
   private var preparedContent: VideoContent?
   private var visible = false
+  private var feedShown = false
   
   private var position: WidgetPosition? {
     didSet {
@@ -240,16 +241,9 @@ public class AntWidget {
   }
 
   @objc
-  public func getListController() -> UIViewController {
-    AppAuth.shared.auth()
-    Statistic.sync()
-
-    let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: AntWidget.self))
-    listController.dataSource = dataSource
-
-    let navController = NavigationController(rootViewController: listController)
-    navController.modalPresentationStyle = .fullScreen
-    return navController
+  public func showFeed() {
+    if feedShown { return }
+    showFeed(with: nil, animated: false)
   }
   
   private func updatePosition(size: CGSize? = nil) {
@@ -295,7 +289,7 @@ public class AntWidget {
     set(state: .loading(player: player.player))
   }
 
-  private func didTapButton() {
+  fileprivate func showFeed(with content: VideoContent?, animated: Bool = false) {
     func configureTransitionAnimation(inView view: UIView = self.view) {
       let transition = CATransition()
       transition.duration = 0.3
@@ -304,13 +298,14 @@ public class AntWidget {
       transition.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
       view.window?.layer.add(transition, forKey: kCATransition)
     }
+    
     guard let vc = view.findViewController() else {return}
 
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: type(of: self)))
     listController.dataSource = dataSource
     let navController = NavigationController(rootViewController: listController)
     navController.modalPresentationStyle = .fullScreen
-    if let stream = currentContent {
+    if let stream = content {
       let playerVC = PlayerController(nibName: "PlayerController", bundle: Bundle(for: type(of: self)))
       playerVC.videoContent = stream
       playerVC.dataSource = dataSource
@@ -322,14 +317,18 @@ public class AntWidget {
       let controllerToPresent: UIViewController = currentContent is VOD ? playerNavController : playerVC
       controllerToPresent.modalPresentationStyle = .fullScreen
       vc.present(navController, animated: false, completion: {
+        if animated {
           configureTransitionAnimation(inView: navController.view)
-          navController.present(controllerToPresent, animated: false, completion: {
-            navController.view.isHidden = false
-          })
+        }
+        navController.present(controllerToPresent, animated: false, completion: {
+          navController.view.isHidden = false
+        })
       })
       return
     }
-    configureTransitionAnimation()
+    if animated {
+      configureTransitionAnimation()
+    }
     vc.present(navController, animated: false, completion: nil)
   }
 
@@ -362,11 +361,13 @@ public class AntWidget {
 
   @objc
   func handleViewerDisappear(_ notification: NSNotification) {
+    feedShown = false
     onViewerDisappear?([:])
   }
   
   @objc
   func handleViewerAppear(_ notification: NSNotification) {
+    feedShown = true
     onViewerAppear?([:])
   }
 
@@ -411,7 +412,7 @@ extension AntWidget: WidgetViewDelegate {
 
   func widgetViewDidPressButton(_ widgetView: WidgetView) {
     widgetView.isUserInteractionEnabled = false
-    didTapButton()
+    showFeed(with: currentContent, animated: true)
   }
 
 }

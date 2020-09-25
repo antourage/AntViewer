@@ -55,10 +55,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     let userInfo = response.notification.request.content.userInfo
     print("\(userInfo)")
     if let category = userInfo["category"] as? String, category == "antourage" {
-      if let vc = UIApplication.shared.delegate?.window??.rootViewController {
-				let antListController = AntWidget.shared.getListController()
-        vc.present(antListController, animated: true, completion: nil)
-      }
+      AntWidget.shared.showFeed()
     }
   }
   

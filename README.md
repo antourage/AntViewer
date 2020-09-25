@@ -149,10 +149,7 @@ To open directly Feed screen from PN interaction handler just get Feed controlle
     let userInfo = response.notification.request.content.userInfo
     print("\(userInfo)")
     if let category = userInfo["category"] as? String, category == "antourage" {
-      guard let vc = UIApplication.shared.delegate?.window??.rootViewController else { reutrn }
-      let antListController = AntWidget.shared.getListController()
-       vc.present(antListController, animated: true, completion: nil)
-    }
+     AntWidget.shared.showFeed()
   }
 ```
 ### Add UI part
