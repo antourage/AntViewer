@@ -900,6 +900,7 @@ class PlayerController: UIViewController {
 
         self.isPlayerControlsHidden = true
         self.liveDurationLabel.text = self.seekLabel.text
+        self.seekLabel.isHidden = true
         self.liveDurationLabel.isHidden = false
         self.videoContainerView.image = newImage
         self.videoContainerView.isUserInteractionEnabled = true
