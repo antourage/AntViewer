@@ -23,8 +23,9 @@ class StreamListController: UIViewController {
 
 
   fileprivate lazy var newLivesButton: UIButton = {
-    let button = UIButton()
+    let button = ButtonWithTouchSize()
     button.layer.cornerRadius = 10
+    button.touchAreaPadding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
     button.clipsToBounds = true
     button.backgroundColor = UIColor.color("a_button_blue")
     button.setImage(UIImage.image("ArrowSmallTop"), for: .normal)
