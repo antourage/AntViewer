@@ -183,3 +183,19 @@ public extension VOD {
     }
   }
 }
+
+@available(iOS 12.0, *)
+@objc(AntValueTransformer)
+final class AntValueTransformer: NSSecureUnarchiveFromDataTransformer {
+
+    static let name = NSValueTransformerName(rawValue: String(describing: AntValueTransformer.self))
+
+    override static var allowedTopLevelClasses: [AnyClass] {
+      return [LatestComment.self, NSNumber.self]
+    }
+
+    public static func register() {
+        let transformer = AntValueTransformer()
+        ValueTransformer.setValueTransformer(transformer, forName: name)
+    }
+}

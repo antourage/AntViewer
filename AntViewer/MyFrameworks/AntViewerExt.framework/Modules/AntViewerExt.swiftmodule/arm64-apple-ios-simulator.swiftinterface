@@ -65,7 +65,7 @@ extension DataSource {
   public func startUpdatingVods()
 }
 extension Int {
-  public func durationString() -> Swift.String
+  public func durationString(full: Swift.Bool = false) -> Swift.String
   public func formatUsingAbbrevation() -> Swift.String
 }
 extension String {
@@ -750,7 +750,10 @@ public class DefaultReconnectPolicy : AntViewerExt.ReconnectPolicy {
   public func nextAttemptInterval(retryContext: AntViewerExt.RetryContext) -> Dispatch.DispatchTimeInterval
   @objc deinit
 }
-@objc public class LatestComment : ObjectiveC.NSObject, Foundation.NSCoding {
+@objc public class LatestComment : ObjectiveC.NSObject, Foundation.NSSecureCoding {
+  @objc public static var supportsSecureCoding: Swift.Bool {
+    @objc get
+  }
   public var nickname: Swift.String
   public var text: Swift.String
   public var userID: Swift.String

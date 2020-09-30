@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19C57" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Message" representedClassName="MessageMO" syncable="YES">
         <attribute name="key" attributeType="String"/>
         <attribute name="nickname" attributeType="String"/>
@@ -10,7 +10,7 @@
     </entity>
     <entity name="Poll" representedClassName="PollMO" syncable="YES">
         <attribute name="key" attributeType="String"/>
-        <attribute name="pollAnswers" attributeType="Transformable"/>
+        <attribute name="pollAnswers" attributeType="Transformable" valueTransformerName="AntValueTransformer"/>
         <attribute name="pollQuestion" attributeType="String"/>
         <attribute name="userAnswer" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="NO"/>
         <relationship name="content" optional="YES" maxCount="1" deletionRule="No Action" destinationEntity="VideoContent" inverseName="pollsMO" inverseEntity="VideoContent"/>
@@ -20,7 +20,7 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="latestCommentLoaded" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="latestMessage" optional="YES" attributeType="Transformable" customClassName=".NSObject"/>
+        <attribute name="latestMessage" optional="YES" attributeType="Transformable" valueTransformerName="AntValueTransformer" customClassName=".LatestComment"/>
         <attribute name="stopTime" attributeType="String" defaultValueString="&quot;00:00:00&quot;"/>
         <relationship name="messagesMO" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="content" inverseEntity="Message"/>
         <relationship name="pollsMO" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Poll" inverseName="content" inverseEntity="Poll"/>

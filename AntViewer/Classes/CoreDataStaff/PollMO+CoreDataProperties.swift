@@ -17,7 +17,7 @@ extension PollMO {
     }
 
     @NSManaged public var key: String?
-    @NSManaged public var pollAnswers: NSObject?
+    @NSManaged public var pollAnswers: [NSNumber]?
     @NSManaged public var pollQuestion: String?
     @NSManaged public var userAnswer: NSNumber?
     @NSManaged public var content: VideoContentMO?
