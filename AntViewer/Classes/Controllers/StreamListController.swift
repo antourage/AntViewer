@@ -35,6 +35,7 @@ class StreamListController: UIViewController {
     button.semanticContentAttribute = .forceRightToLeft
     button.contentHorizontalAlignment = .center
     button.contentEdgeInsets.left = 3
+    button.isHidden = true
     view.addSubview(button)
     button.addTarget(self, action: #selector(scrollToTop), for: .touchUpInside)
     button.translatesAutoresizingMaskIntoConstraints = false
@@ -370,35 +371,42 @@ class StreamListController: UIViewController {
     guard var visibleIndexPath = getTopVisibleRow(),
       var differenceBetweenRowAndNavBar = heightDifferenceBetweenTopRowAndNavBar() else {
         reachedListsEnd = false
-      // MARK: merge to 1 line
-        if skeleton == nil {
-          if self.view.window != nil {
-            self.activeCell = self.getTopVisibleCell()
-          }
+        if skeleton == nil, self.view.window != nil {
+          self.activeCell = self.getTopVisibleCell()
         }
         return
     }
 
     var shouldScroll = true
     let streamsCount = dataSource.streams.count
+    let streamItemsCount = collectionView.numberOfItems(inSection: 0)
+    let isTop = collectionView.contentOffset.y < 10
+    
+    
+    
     if visibleIndexPath.section == 0 {
-      let itemsCount = collectionView.numberOfItems(inSection: 0)
       if streamsCount == 0 {
         shouldScroll = dataSource.videos.count > 0
         differenceBetweenRowAndNavBar = 0
         visibleIndexPath = IndexPath(item: 0, section: 1)
       } else {
-        let difference = streamsCount - itemsCount
+        let difference = streamsCount - streamItemsCount
+        ///
         let newItem = max(visibleIndexPath.item + difference, 0)
         visibleIndexPath.item = newItem
       }
     }
 
-      let deletedPaths = deletedIndexes.map { IndexPath(item: $0, section: 0) }
+    let deletedPaths = deletedIndexes.compactMap { $0 < streamItemsCount ? IndexPath(item: $0, section: 0) : nil }
       var addedPaths = [IndexPath]()
       for index in 0 ..< addedCount {
         addedPaths.append(IndexPath(item: index, section: 0))
       }
+    
+    if isTop, addedCount > 0 {
+      differenceBetweenRowAndNavBar = 0
+      visibleIndexPath = IndexPath(item: 0, section: 0)
+    }
     CATransaction.begin()
     CATransaction.setDisableActions(true)
       collectionView.performBatchUpdates({
@@ -407,7 +415,7 @@ class StreamListController: UIViewController {
       }, completion: { _ in
         self.collectionView.collectionViewLayout.invalidateLayout()
         self.updateVisibleCells()
-        if addedCount > 0, self.newLivesButton.isHidden {
+        if addedCount > 0, self.newLivesButton.isHidden, !isTop {
           let shouldShow = visibleIndexPath.section == 1 || visibleIndexPath.item > 0
           self.newLivesButton.isHidden = !shouldShow
         } else if streamsCount == 0 {
