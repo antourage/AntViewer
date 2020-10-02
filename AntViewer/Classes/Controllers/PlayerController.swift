@@ -389,6 +389,9 @@ class PlayerController: UIViewController {
     didSet {
       sendButton.isEnabled = isChatEnabled
       if !isChatEnabled {
+        if !isKeyboardShown {
+          chatTextViewTrailing.isActive = true
+        }
         chatTextView.text = ""
       }
       chatTextView.isEditable = isChatEnabled
