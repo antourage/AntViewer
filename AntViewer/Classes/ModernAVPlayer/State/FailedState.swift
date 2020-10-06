@@ -62,7 +62,7 @@ final class FailedState: PlayerState {
     // MARK: - Shared actions
 
     func load(media: PlayerMedia, autostart: Bool, position: Double? = nil) {
-        let state = LoadingMediaState(context: context, media: media, autostart: autostart, position: position)
+        let state = LoadingMediaState(context: context, media: media, autostart: autostart, position: position, isFailed: true)
         context.changeState(state: state)
     }
 
@@ -76,7 +76,7 @@ final class FailedState: PlayerState {
         guard let media = context.currentMedia
             else { assertionFailure("should not possible to be in failed state without load any media"); return }
         
-        let state = LoadingMediaState(context: context, media: media, autostart: true)
+        let state = LoadingMediaState(context: context, media: media, autostart: true, isFailed: true)
         context.changeState(state: state)
     }
 

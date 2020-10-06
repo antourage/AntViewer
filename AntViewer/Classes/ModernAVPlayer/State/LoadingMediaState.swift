@@ -42,6 +42,7 @@ final class LoadingMediaState: PlayerState {
     private var itemStatusObserving: ModernAVPLayerItemStatusObservingService?
     private var interruptionAudioService: InterruptionAudioService
     private let itemInitService: AVPlayerItemInitService
+    private let isFailed: Bool
 
     // MARK: - Init
 
@@ -50,7 +51,8 @@ final class LoadingMediaState: PlayerState {
          autostart: Bool,
          position: Double? = nil,
          interruptionAudioService: InterruptionAudioService = ModernAVPlayerInterruptionAudioService(),
-         itemInitService: AVPlayerItemInitService = ModernAVPlayerItemInitService()) {
+         itemInitService: AVPlayerItemInitService = ModernAVPlayerItemInitService(),
+         isFailed: Bool = false) {
         ModernAVPlayerLogger.instance.log(message: "Init", domain: .lifecycleState)
         
         self.context = context
@@ -59,6 +61,7 @@ final class LoadingMediaState: PlayerState {
         self.position = position
         self.interruptionAudioService = interruptionAudioService
         self.itemInitService = itemInitService
+        self.isFailed = isFailed
     }
     
     func contextUpdated() {
@@ -166,6 +169,14 @@ final class LoadingMediaState: PlayerState {
             let state = FailedState(context: context, error: .loadingFailed)
             context.changeState(state: state)
         case .readyToPlay:
+          //FIXED LIVE -> VOD bug
+            if isFailed, media.isLive() {
+              let hasDuration = context.itemDuration?.isFinite == true
+              if !hasDuration {
+                self.position = nil
+              }
+            }
+
             guard let position = self.position else { moveToLoadedState(); return }
             let seekPosition = CMTime(seconds: position, preferredTimescale: context.config.preferredTimescale)
             context.player.seek(to: seekPosition) { [weak self] completed in

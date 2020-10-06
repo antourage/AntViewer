@@ -28,7 +28,7 @@ import AVFoundation
 
 //sourcery: AutoMockable
 protocol PlaybackObservingService {
-    var onPlaybackStalled: (() -> Void)? { get set }
+    var onPlaybackStalled: ((Bool) -> Void)? { get set }
     var onPlayToEndTime: (() -> Void)? { get set }
     var onFailedToPlayToEndTime: (() -> Void)? { get set }
 }
@@ -40,8 +40,10 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     private let player: AVPlayer
     
     // MARK: - Outputs
+  
+    var withError = false
     
-    var onPlaybackStalled: (() -> Void)?
+    var onPlaybackStalled: ((_ withError: Bool) -> Void)?
     var onPlayToEndTime: (() -> Void)?
     var onFailedToPlayToEndTime: (() -> Void)?
     
@@ -93,7 +95,7 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     @objc
     private func itemPlaybackStalled() {
         ModernAVPlayerLogger.instance.log(message: "Item playback stalled notification", domain: .service)
-        onPlaybackStalled?()
+        onPlaybackStalled?(withError)
     }
     
     ///
@@ -103,7 +105,6 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     @objc
     private func itemPlayToEndTime() {
         guard hasReallyReachedEndTime(player: player) else {
-          print("Player state: hasReallyReachedEndTime")
           itemFailedToPlayToEndTime()
           return
         }
@@ -126,10 +127,12 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     guard let errorLog: AVPlayerItemErrorLog = playerItem.errorLog() else {
       return
     }
-    print("Player state: Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
-
-    if errorLog.events.last?.errorStatusCode == -12888 {
-      onPlayToEndTime?()
+    print("Player state: \(Date().debugDescription) Error newErrorLogEntry: \(errorLog.events.map({"\($0.errorStatusCode): \($0.errorComment ?? "")"}))")
+    let count = errorLog.events.filter({ [-12938, -12888].contains($0.errorStatusCode) }).count
+    print("Player state: \(Date().debugDescription) Errors count: \(count)")
+    
+    if [-12938, -12888].contains(errorLog.events.last?.errorStatusCode) {
+      withError = true
     }
     
   }

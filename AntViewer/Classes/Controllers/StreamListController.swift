@@ -817,7 +817,11 @@ extension StreamListController: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
     switch state {
     case .failed:
-      activeCell = nil
+      if getActiveItem is Live, let media = player.currentMedia, let time = activeCell?.duration {
+        player.load(media: media, autostart: true, position: Double(time))
+      } else {
+        activeCell = nil
+      }
     case .loaded:
       UIView.animate(withDuration: 0.3, animations: {
         self.curtainThumbnail.alpha = 0
@@ -845,9 +849,8 @@ extension StreamListController: ModernAVPlayerDelegate {
         self?.activeCell?.duration = item.duration.duration()
         self?.activeCell?.watchedTime = Int(currentTime)
         item.stopTime = min(Int(currentTime), item.duration.duration()).durationString()
-      } else if let item = self?.getActiveItem as? Live {
-        let duration = Date().timeIntervalSince(item.date)
-        self?.activeCell?.duration = Int(duration)
+      } else {
+        self?.activeCell?.duration = Int(currentTime)
         if self?.activeCell?.timeImageView.isAnimating == false {
           self?.activeCell?.timeImageView.startAnimating()
         }

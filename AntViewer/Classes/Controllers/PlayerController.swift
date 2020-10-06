@@ -1241,7 +1241,7 @@ class PlayerController: UIViewController {
       self.controlsDebouncer.call { [weak self] in
         guard let `self` = self else { return }
         if !self.isPaused || !(self.isVideoEnd && self.isAutoplayMode) {
-          if OrientationUtility.isLandscape && self.seekTo != nil {
+          if (OrientationUtility.isLandscape && self.seekTo != nil) || self.isPlayerError {
             return
           }
           self.isPlayerControlsHidden = true
@@ -1277,11 +1277,12 @@ class PlayerController: UIViewController {
         }
       }
       
-      if isPlayerError {
-        if let media = player.currentMedia, let vod = videoContent as? VOD {
+      if isPlayerError, let media = player.currentMedia {
+        if let vod = videoContent as? VOD {
           player.load(media: media, autostart: true, position: Double(vod.stopTime.duration()))
         } else {
-          player.play()
+          let position = seekLabel.text?.duration()
+          player.load(media: media, autostart: true, position: Double(position ?? 0))
         }
       } else {
         player.play()
@@ -1599,7 +1600,7 @@ extension PlayerController: ModernAVPlayerDelegate {
   func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
     DispatchQueue.main.async { [weak self] in
       guard let `self` = self else { return }
-      print("Player state: \(state)")
+      print("Player state: \(Date().debugDescription) \(state)")
       switch state {
         case .failed:
           self.isPlayerControlsHidden = false

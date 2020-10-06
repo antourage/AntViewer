@@ -164,6 +164,8 @@ public class AntWidget {
   private var preparedContent: VideoContent?
   private var visible = false
   private var feedShown = false
+  private var failedPlaybackCount = 0
+  private var failedPlaybackDebouncer = Debouncer(delay: 15)
   
   private var position: WidgetPosition? {
     didSet {
@@ -257,6 +259,7 @@ public class AntWidget {
     switch currentState {
     case .resting:
       if case .resting = state { return }
+      if case .live = state { return }
     case .vod:
       if case .vod = state {
         currentContent = preparedContent
@@ -283,6 +286,7 @@ public class AntWidget {
     let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: true))
     let player = ModernAVPlayer()
     player.delegate = self
+    failedPlaybackCount = 0
     player.load(media: media, autostart: true)
     self.player = player
     player.player.isMuted = true
@@ -343,7 +347,7 @@ public class AntWidget {
       set(state: .resting)
       return
     }
-    if let stream = dataSource.streams.last {
+    if let stream = dataSource.streams.first {
       if currentContent?.id != stream.id, animationProcessing == false {
         preparedContent = stream
         showLive(with: stream)
@@ -421,7 +425,16 @@ extension AntWidget: ModernAVPlayerDelegate {
   public func modernAVPlayer(_ player: ModernAVPlayer, didStateChange state: ModernAVPlayer.State) {
     switch state {
     case .failed:
+      failedPlaybackCount += 1
+      if failedPlaybackCount > 2 {
         set(state: .resting)
+      } else {
+        player.play()
+        failedPlaybackDebouncer.call { [weak self] in
+          self?.failedPlaybackCount = 0
+        }
+      }
+        
     default:
       return
     }
