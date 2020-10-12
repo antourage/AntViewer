@@ -139,6 +139,19 @@ final class LoadingMediaState: PlayerState {
         let item = itemInitService.getItem(media: media,
                                            loadedAssetKeys: context.config.itemLoadedAssetKeys,
                                            failedUsedItem: context.failedUsedAVPlayerItem)
+      if media.isLive() {
+        if #available(iOS 13.0, *) {
+          let howFarNow = item.configuredTimeOffsetFromLive
+          let recommended = item.recommendedTimeOffsetFromLive
+          if howFarNow < recommended {
+            item.configuredTimeOffsetFromLive = recommended
+          }
+          
+          item.automaticallyPreservesTimeOffsetFromLive = true
+        }
+        item.preferredForwardBufferDuration = 10
+      }
+
         startObservingItemStatus(item: item)
         context.player.replaceCurrentItem(with: item)
         

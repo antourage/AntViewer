@@ -133,9 +133,14 @@ final class PlayingState: PlayerState {
         itemPlaybackObservingService.onPlaybackStalled = { [weak self] withError in
           print("Player state: \(Date().debugDescription) onPlaybackStalled")
           if withError {
+            self?.context.player.pause()
             self?.redirectToFailedState()
           } else {
-            self?.redirectToWaitingForNetworkState()
+            guard let context = self?.context else { return }
+            context.player.play()
+            let state = BufferingState(context: context)
+            self?.changeState(state: state)
+            state.playCommand()
           }
         }
         itemPlaybackObservingService.onFailedToPlayToEndTime = { [weak self] in
@@ -162,11 +167,11 @@ final class PlayingState: PlayerState {
         changeState(state: state)
     }
   
-  private func redirectToFailedState() {
-      startBgTask()
-      let state = FailedState(context: context, error: .playbackStalled)
-      changeState(state: state)
-  }
+    private func redirectToFailedState() {
+        startBgTask()
+        let state = FailedState(context: context, error: .playbackStalled)
+        changeState(state: state)
+    }
     
     // MARK: - Interruption Service
     

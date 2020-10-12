@@ -131,7 +131,7 @@ final class ModernAVPlayerPlaybackObservingService: PlaybackObservingService {
     let count = errorLog.events.filter({ [-12938, -12888].contains($0.errorStatusCode) }).count
     print("Player state: \(Date().debugDescription) Errors count: \(count)")
     
-    if [-12938, -12888].contains(errorLog.events.last?.errorStatusCode) {
+    if count > 1 {
       withError = true
     }
     
