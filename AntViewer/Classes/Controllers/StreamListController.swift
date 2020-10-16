@@ -265,7 +265,10 @@ class StreamListController: UIViewController {
     skeleton?.didChangeReachability(isReachable)
   }
 
-
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    Statistic.sync()
+  }
   override func viewDidDisappear(_ animated: Bool) {
     super.viewDidDisappear(animated)
     NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)

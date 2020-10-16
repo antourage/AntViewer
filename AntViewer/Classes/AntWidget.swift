@@ -209,9 +209,8 @@ public class AntWidget {
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerAppear(_:)), name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
-
+    UIDevice.current.isBatteryMonitoringEnabled = true
     AppAuth.shared.auth()
-    Statistic.sync()
     widgetView.prepare(for: .resting, completion: nil)
   }
 

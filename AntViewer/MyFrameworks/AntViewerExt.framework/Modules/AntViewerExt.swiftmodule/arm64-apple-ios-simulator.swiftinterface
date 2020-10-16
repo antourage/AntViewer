@@ -10,13 +10,22 @@ import UIKit
 import os.log
 import os
 import zlib
+public enum ContentType : Swift.String, Swift.Codable {
+  case VOD
+  case live
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
 public struct Statistic {
   public enum Action {
     case open
     case close(span: Swift.Int)
   }
-  public static func save(action: AntViewerExt.Statistic.Action, for content: AntViewerExt.VideoContent)
-  public static func send(action: AntViewerExt.Statistic.Action, for content: AntViewerExt.VideoContent)
+  public static func save(action: AntViewerExt.Statistic.Action, for contentType: AntViewerExt.ContentType, contentID: Swift.Int)
+  public static func send(action: AntViewerExt.Statistic.Action, for contentType: AntViewerExt.ContentType, contentID: Swift.Int)
   public static func sync()
 }
 @_hasMissingDesignatedInitializers public class AntViewerManager {
@@ -877,6 +886,9 @@ extension ConnectionDelegate {
 @_hasMissingDesignatedInitializers public class HttpResponse {
   @objc deinit
 }
+extension AntViewerExt.ContentType : Swift.Equatable {}
+extension AntViewerExt.ContentType : Swift.Hashable {}
+extension AntViewerExt.ContentType : Swift.RawRepresentable {}
 extension AntViewerExt.AntViewerManager.AuthError : Swift.Equatable {}
 extension AntViewerExt.AntViewerManager.AuthError : Swift.Hashable {}
 extension AntViewerExt.LogLevel : Swift.Equatable {}

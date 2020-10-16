@@ -120,7 +120,8 @@ class PlayerController: UIViewController {
   
   var activeSpendTime: Double = 0 {
     didSet {
-      Statistic.save(action: .close(span: Int(activeSpendTime)), for: videoContent)
+      let type: ContentType = videoContent is VOD ? .VOD : .live
+      Statistic.save(action: .close(span: Int(activeSpendTime)), for: type, contentID: videoContent.id)
     }
   }
   
@@ -547,7 +548,8 @@ class PlayerController: UIViewController {
       guard let `self` = self else { return }
       self.isChatEnabled = false
       try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
-      Statistic.send(action: .open, for: self.videoContent)
+      let type: ContentType = self.videoContent is VOD ? .VOD : .live
+      Statistic.send(action: .open, for: type, contentID: self.videoContent.id)
       self.chat = Chat(for: self.videoContent)
       self.startPlayer()
     }
@@ -585,7 +587,8 @@ class PlayerController: UIViewController {
   deinit {
     print("Player DEINITED")
     pollManager?.removeFirObserver()
-    Statistic.send(action: .close(span: Int(activeSpendTime)), for: videoContent)
+    let type: ContentType = self.videoContent is VOD ? .VOD : .live
+    Statistic.send(action: .close(span: Int(activeSpendTime)), for: type, contentID: self.videoContent.id)
     SponsoredBanner.current = nil
   }
 
@@ -1679,6 +1682,7 @@ extension PlayerController: ModernAVPlayerDelegate {
         }
         
         vod.stopTime = min(Int(currentTime), vod.duration.duration()).durationString()
+        
         let chatTime = self.isVideoEnd ? vod.duration.duration() + 100500 : Int(currentTime)
         self.chatController.handleVODsChat(forTime: chatTime)
         if !self.isVideoEnd {
