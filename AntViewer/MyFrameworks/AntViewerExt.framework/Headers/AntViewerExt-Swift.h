@@ -224,7 +224,6 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL supportsSecureC
 
 
 
-
 enum WebSocketReadyState : NSInteger;
 
 /// WebSocket objects are bidirectional network streams that communicate over HTTP. RFC 6455.

@@ -53,8 +53,10 @@ public class HttpConnectionOptions {
   public init()
   @objc deinit
 }
-extension UIViewController {
-  public func presentChangeHostAlert(with title: Swift.String?)
+public protocol HostChangeable : AnyObject {
+}
+extension HostChangeable where Self : UIKit.UIViewController {
+  public func presentChangeHostAlert()
 }
 public class DataSource {
   public init()

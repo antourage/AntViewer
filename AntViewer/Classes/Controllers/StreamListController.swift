@@ -11,7 +11,7 @@ import AntViewerExt
 
 private let reuseIdentifier = "StreamCell"
 
-class StreamListController: UIViewController {
+class StreamListController: UIViewController, HostChangeable {
 
   @IBOutlet private var headerView: UIView!
   @IBOutlet var collectionView: UICollectionView!
@@ -509,8 +509,11 @@ class StreamListController: UIViewController {
   @IBAction
   private func changeHost(_ sender: UITapGestureRecognizer) {
     let version = Bundle(identifier: "org.cocoapods.AntWidget")?.infoDictionary?["CFBundleShortVersionString"] as? String
-    presentChangeHostAlert(with: version)
-    
+    tagLineLabel.text = version
+    DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+      self.tagLineLabel.text = HeaderInfoModel.currentInfo?.tagLine
+    }
+    presentChangeHostAlert()
   }
   
   @IBAction
