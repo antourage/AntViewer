@@ -99,17 +99,17 @@ public enum WidgetPosition: String {
     if isLeft {
       x = validMargins.horizontal
     } else if isRight {
-      x = screenSize.width - width - validMargins.horizontal - 6 // badge
+      x = screenSize.width - AntWidget.width - validMargins.horizontal - 6 // badge
     } else {
-      x = (screenSize.width - width)/2
+      x = (screenSize.width - AntWidget.width)/2
     }
     
     if isTop {
       y = validMargins.vertical
     } else if isBottom {
-      y = screenSize.height - width - validMargins.vertical
+      y = screenSize.height - AntWidget.width - validMargins.vertical
     } else {
-      y = (screenSize.height - width)/2
+      y = (screenSize.height - AntWidget.width)/2
     }
     return CGPoint(x: x, y: y)
   }
@@ -125,10 +125,15 @@ public struct WidgetMargins {
   }
 }
 
-private let width: CGFloat = 84
-
-public class AntWidget {
+@objc
+public class AntWidget: NSObject {
+  
+  @objc
+  public static let width: CGFloat = 84
+  
+  @objc
   public static let shared = AntWidget()
+  
   private var dataSource = DataSource()
   private var animationProcessing = false
   private var isBackground = false
@@ -152,7 +157,7 @@ public class AntWidget {
   
   private lazy var widgetView: WidgetView = {
     let point = widgetPosition.getPointWith(margins: margins, for: nil)
-    let rect = CGRect(x: point.x, y: point.y, width: width, height: width)
+    let rect = CGRect(x: point.x, y: point.y, width: AntWidget.width, height: AntWidget.width)
     
     let view = WidgetView(frame: rect)
     view.backgroundColor = .clear
@@ -179,6 +184,7 @@ public class AntWidget {
     }
   }
   
+  
   public var widgetPosition: WidgetPosition {
     get {
       return position ?? .bottomRight
@@ -196,14 +202,15 @@ public class AntWidget {
       margins = newValue
     }
   }
-  
+  @objc
   public var view: UIView { widgetView }
   @objc
   public var onViewerAppear: ((NSDictionary) -> Void)?
   @objc
   public var onViewerDisappear: ((NSDictionary) -> Void)?
 
-  private init() {
+  private override init() {
+    super.init()
     NotificationCenter.default.addObserver(self, selector: #selector(handleStreamUpdate(_:)), name: NSNotification.Name(rawValue: "StreamsUpdated"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerDisappear(_:)), name: NSNotification.Name(rawValue: "ViewerWillDisappear"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerAppear(_:)), name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)

@@ -15,7 +15,7 @@ protocol WidgetViewDelegate: class {
   func widgetViewDidPressButton(_ widgetView: WidgetView)
 }
 
-class WidgetView: UIView {
+public class WidgetView: UIView {
   private lazy var circleAnimator = Animator(view: circleView, type: .pulse)
   private lazy var playAnimator = Animator(view: playIconView, type: .pulseFade)
   private var playerView: AVPlayerView?
@@ -45,19 +45,19 @@ class WidgetView: UIView {
 
   weak var delegate: WidgetViewDelegate?
 
-  override func layoutSubviews() {
+  public override func layoutSubviews() {
     super.layoutSubviews()
     updateUI()
     delegate?.widgetViewDidMove(self, toSuperview: superview?.frame.size)
   }
 
-  override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+  public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
     super.touchesEnded(touches, with: event)
     self.isUserInteractionEnabled = false
     delegate?.widgetViewDidPressButton(self)
   }
 
-  override func willMove(toWindow newWindow: UIWindow?) {
+  public override func willMove(toWindow newWindow: UIWindow?) {
     super.willMove(toWindow: newWindow)
     if newWindow == nil {
       delegate?.widgetViewWillDisappear(self)
@@ -202,5 +202,58 @@ class WidgetView: UIView {
     logoView.center = center
     playIconView.center = center
     circleView.center = center
+  }
+}
+
+//MARK: For RN purpose
+public extension WidgetView {
+  @objc
+  var onViewerAppear: ((NSDictionary) -> Void)? {
+    set {
+      AntWidget.shared.onViewerAppear = newValue
+    }
+    get {
+      return AntWidget.shared.onViewerAppear
+    }
+  }
+  
+  @objc
+  var onViewerDisappear: ((NSDictionary) -> Void)? {
+    set {
+      AntWidget.shared.onViewerDisappear = newValue
+    }
+    get {
+      return AntWidget.shared.onViewerDisappear
+    }
+  }
+  
+  @objc
+  var widgetPosition: String {
+    set {
+      if let newPosition = WidgetPosition(rawValue: newValue) {
+        AntWidget.shared.widgetPosition = newPosition
+      }
+    }
+    get {
+      AntWidget.shared.widgetPosition.rawValue
+    }
+  }
+  
+  @objc
+  var widgetMargins: NSDictionary {
+    set {
+      guard
+        let vertical = newValue["vertical"] as? CGFloat,
+        let horizontal = newValue["horizontal"] as? CGFloat else {
+        return
+      }
+      let margins = WidgetMargins(vertical: vertical, horizontal: horizontal)
+      AntWidget.shared.widgetMargins = margins
+    }
+    get {
+      let margins = AntWidget.shared.widgetMargins
+      return ["vertical": margins.vertical,
+              "horizontal": margins.horizontal]
+    }
   }
 }
