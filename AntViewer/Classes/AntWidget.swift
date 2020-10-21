@@ -309,7 +309,7 @@ public class AntWidget: NSObject {
       view.window?.layer.add(transition, forKey: kCATransition)
     }
     
-    guard let vc = view.findViewController() else {return}
+    guard let vc = view.findViewController() ?? UIApplication.getTopViewController() else {return}
 
     let listController = StreamListController(nibName: "StreamListController", bundle: Bundle(for: type(of: self)))
     listController.dataSource = dataSource
