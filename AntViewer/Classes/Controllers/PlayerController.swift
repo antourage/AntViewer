@@ -1268,7 +1268,6 @@ class PlayerController: UIViewController {
         return
       }
       self.isVideoEnd = false
-      self.player.seek(position: .zero)
     }
     
     if isPaused {

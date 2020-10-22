@@ -33,7 +33,7 @@ import AVFoundation
 public struct ModernAVPlayerConfiguration: PlayerConfiguration {
 
     // Buffering State
-    public let rateObservingTimeout: TimeInterval = 9
+    public let rateObservingTimeout: TimeInterval = 6
     public let rateObservingTickTime: TimeInterval = 0.3
 
     // General Audio preferences
