@@ -877,10 +877,9 @@ class PlayerController: UIViewController {
     videoContainerView.showActivityIndicator()
   }
 
-  private func showError(autohide: Bool = true) {
+  private func showError(autohide: Bool = true, message: String = LocalizedStrings.generalError.localized) {
     let color = UIColor.color("a_bottomMessageGray") ?? .gray
-    let text = LocalizedStrings.generalError.localized.uppercased()
-    bottomMessage.showMessage(title: text, duration: autohide ? 3 : .infinity, backgroundColor: color)
+    bottomMessage.showMessage(title: message.uppercased(), duration: autohide ? 3 : .infinity, backgroundColor: color)
   }
 
   private func setThanksImage() {
@@ -1610,7 +1609,7 @@ extension PlayerController: ModernAVPlayerDelegate {
           self.videoContainerView.removeActivityIndicator()
           self.isControlsEnabled = true
           if self.isReachable {
-            self.showError()
+            self.showError(message: LocalizedStrings.streamInterrupted.localized)
           }
           self.isPlayerError = true
         case .loaded:

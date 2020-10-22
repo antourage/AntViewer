@@ -7,6 +7,7 @@
 "No connection" = "Ingen uppkoppling";
 "You are online" = "Du har uppkoppling";
 "Something is not right. We are working to get this fixed" = "Något gick fel. Vi jobbar på en lösning";
+"The live stream was interrupted. Press play to resume" = "Livesändningen blev avbruten. Tryck på play för att fortsätta";
 //FEED
 "LIVE INTERACTIVE VIDEOS COMING SOON" = "SNART KAN DU SE INTERAKTIV VIDEO HÄR";
 "New" = "Ny";

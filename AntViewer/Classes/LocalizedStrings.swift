@@ -15,6 +15,7 @@ enum LocalizedStrings: String {
   case noConnection = "No connection"
   case youAreOnline = "You are online"
   case generalError = "Something is not right. We are working to get this fixed"
+  case streamInterrupted = "The live stream was interrupted. Press play to resume"
   //FEED
   case emptyDataSource = "Live interactive videos coming soon"
   case new = "New"
