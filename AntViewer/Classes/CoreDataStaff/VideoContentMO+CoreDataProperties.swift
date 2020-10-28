@@ -8,7 +8,7 @@
 
 import Foundation
 import CoreData
-import AntViewerExt
+import ViewerExtension
 
 
 extension VideoContentMO {

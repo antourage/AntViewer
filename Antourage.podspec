@@ -34,9 +34,9 @@ Pod::Spec.new do |s|
   s.source_files = 'AntViewer/Classes/**/*.{swift}'
 
   if isDebug
-    s.dependency 'AntViewerExt'
+    s.dependency 'ViewerExtension'
   else
-    s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/AntViewerExt.framework'
+    s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
   end
 
   s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'

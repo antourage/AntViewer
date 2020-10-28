@@ -1,0 +1,11 @@
+framework module ViewerExtension {
+  umbrella header "ViewerExtension.h"
+
+  export *
+  module * { export * }
+}
+
+module ViewerExtension.Swift {
+    header "ViewerExtension-Swift.h"
+    requires objc
+}

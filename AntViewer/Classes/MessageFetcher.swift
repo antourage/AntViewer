@@ -7,7 +7,7 @@
 
 import Foundation
 import Firebase
-import AntViewerExt
+import ViewerExtension
 
 class MessageFetcher: FirebaseFetcher {
 

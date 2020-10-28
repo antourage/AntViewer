@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import AntViewerExt
+import ViewerExtension
 
 public class SeekPaddingView: UIView {
   

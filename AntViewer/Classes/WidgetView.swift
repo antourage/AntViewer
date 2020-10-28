@@ -10,7 +10,7 @@ import UIKit
 
 protocol WidgetViewDelegate: class {
   func widgetViewWillAppear(_ widgetView: WidgetView)
-  func widgetViewDidMove(_ widgetView: WidgetView, toSuperview withSize: CGSize?)
+  func widgetDidMoveToSuperview(_ widgetView: WidgetView, superview: UIView?)
   func widgetViewWillDisappear(_ widgetView: WidgetView)
   func widgetViewDidPressButton(_ widgetView: WidgetView)
 }
@@ -48,7 +48,11 @@ public class WidgetView: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     updateUI()
-    delegate?.widgetViewDidMove(self, toSuperview: superview?.frame.size)
+  }
+  
+  public override func didMoveToSuperview() {
+    super.didMoveToSuperview()
+    delegate?.widgetDidMoveToSuperview(self, superview: superview)
   }
 
   public override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

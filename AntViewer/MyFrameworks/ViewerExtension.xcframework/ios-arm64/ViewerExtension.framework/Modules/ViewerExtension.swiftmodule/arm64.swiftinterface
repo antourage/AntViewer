@@ -1,0 +1,943 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.3 (swiftlang-1200.0.29.2 clang-1200.0.30.1)
+// swift-module-flags: -target arm64-apple-ios11.3 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name ViewerExtension
+import AVKit
+import Foundation
+import Swift
+import SystemConfiguration
+import UIKit
+@_exported import ViewerExtension
+import os.log
+import os
+import zlib
+public class JSONHubProtocol : ViewerExtension.HubProtocol {
+  final public let name: Swift.String
+  final public let version: Swift.Int
+  final public let type: ViewerExtension.ProtocolType
+  public init(logger: ViewerExtension.Logger, encoder: Foundation.JSONEncoder = JSONEncoder(), decoder: Foundation.JSONDecoder = JSONDecoder())
+  public func parseMessages(input: Foundation.Data) throws -> [ViewerExtension.HubMessage]
+  public func createHubMessage(payload: Foundation.Data) throws -> ViewerExtension.HubMessage
+  public func writeMessage(message: ViewerExtension.HubMessage) throws -> Foundation.Data
+  @objc deinit
+}
+@objc public class LatestComment : ObjectiveC.NSObject, Foundation.NSSecureCoding {
+  @objc public static var supportsSecureCoding: Swift.Bool {
+    @objc get
+  }
+  public var nickname: Swift.String
+  public var text: Swift.String
+  public var userID: Swift.String
+  public var date: Foundation.Date? {
+    get
+  }
+  @objc public func encode(with coder: Foundation.NSCoder)
+  @objc required convenience public init?(coder: Foundation.NSCoder)
+  public init(userID: Swift.String, nickname: Swift.String, text: Swift.String, timestamp: Swift.Int?)
+  @objc deinit
+  @objc override dynamic public init()
+}
+extension String {
+  public func height(withConstrainedWidth width: CoreGraphics.CGFloat, font: UIKit.UIFont) -> CoreGraphics.CGFloat
+}
+public struct TransportType : Swift.OptionSet {
+  public let rawValue: Swift.Int
+  public init(rawValue: Swift.Int)
+  public static let longPolling: ViewerExtension.TransportType
+  public static let webSockets: ViewerExtension.TransportType
+  public static let all: ViewerExtension.TransportType
+  public typealias Element = ViewerExtension.TransportType
+  public typealias ArrayLiteralElement = ViewerExtension.TransportType
+  public typealias RawValue = Swift.Int
+}
+@_hasMissingDesignatedInitializers public class StreamHandle {
+  @objc deinit
+}
+extension Int {
+  public func durationString(full: Swift.Bool = false) -> Swift.String
+  public func formatUsingAbbrevation() -> Swift.String
+}
+extension String {
+  public func duration() -> Swift.Int
+}
+public class HttpConnectionOptions {
+  public var headers: [Swift.String : Swift.String]
+  public var accessTokenProvider: () -> Swift.String?
+  public var httpClientFactory: (ViewerExtension.HttpConnectionOptions) -> ViewerExtension.HttpClientProtocol
+  public var skipNegotiation: Swift.Bool
+  public var requestTimeout: Swift.Double
+  public init()
+  @objc deinit
+}
+extension OSLog {
+  public static let antNetworking: os.OSLog
+  public static let antButton: os.OSLog
+}
+public struct NotificationResponse : Swift.Codable {
+  public let success: Swift.Bool
+  public let topic: Swift.String
+  public let error: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public protocol HostChangeable : AnyObject {
+}
+extension HostChangeable where Self : UIKit.UIViewController {
+  public func presentChangeHostAlert()
+}
+public enum LogLevel : Swift.Int {
+  case error
+  case warning
+  case info
+  case debug
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol Logger {
+  func log(logLevel: ViewerExtension.LogLevel, message: @autoclosure () -> Swift.String)
+}
+extension LogLevel {
+  public func toString() -> Swift.String
+}
+public class PrintLogger : ViewerExtension.Logger {
+  public init()
+  public func log(logLevel: ViewerExtension.LogLevel, message: @autoclosure () -> Swift.String)
+  @objc deinit
+}
+public class NullLogger : ViewerExtension.Logger {
+  public init()
+  public func log(logLevel: ViewerExtension.LogLevel, message: @autoclosure () -> Swift.String)
+  @objc deinit
+}
+public enum ConnError : Swift.Error {
+  case invalidURL
+  case noData
+  case noToken
+  case unknown(Swift.String)
+}
+extension ConnError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+public protocol NetworkDispatcher {
+  var isReachable: Swift.Bool { get set }
+  func dispatch(request: ViewerExtension.RequestData, onSuccess: @escaping (Foundation.Data) -> Swift.Void, onError: @escaping (Swift.Error) -> Swift.Void)
+}
+@_hasMissingDesignatedInitializers public class URLSessionNetworkDispatcher : ViewerExtension.NetworkDispatcher {
+  public static let instance: ViewerExtension.URLSessionNetworkDispatcher
+  public var isReachable: Swift.Bool
+  public func dispatch(request: ViewerExtension.RequestData, onSuccess: @escaping (Foundation.Data) -> Swift.Void, onError: @escaping (Swift.Error) -> Swift.Void)
+  @objc deinit
+}
+public class DataSource {
+  public init()
+  public var streams: [ViewerExtension.Live]
+  public var videos: [ViewerExtension.VOD]
+  public var newVod: ViewerExtension.VOD?
+  public var firebaseFetcher: ViewerExtension.FirebaseFetcher?
+  public func getViewers(for liveID: Swift.Int, complitionHandler: @escaping (Swift.Result<Swift.Int, Swift.Error>) -> Swift.Void)
+  public func updateVods(complitionHandler: @escaping (Swift.Result<Swift.Void, Swift.Error>) -> Swift.Void)
+  public func fetchNextItemsFrom(index: Swift.Int, completion: @escaping (Swift.Result<Swift.Void, Swift.Error>) -> Swift.Void)
+  @objc deinit
+}
+extension DataSource {
+  public func pauseUpdatingStreams()
+  public func pauseUpdatingVods()
+  public func startUpdatingStreams()
+  public func startUpdatingVods()
+}
+public enum ProtocolType : Swift.Int {
+  case Text
+  case Binary
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol HubProtocol {
+  var name: Swift.String { get }
+  var version: Swift.Int { get }
+  var type: ViewerExtension.ProtocolType { get }
+  func parseMessages(input: Foundation.Data) throws -> [ViewerExtension.HubMessage]
+  func writeMessage(message: ViewerExtension.HubMessage) throws -> Foundation.Data
+}
+public enum MessageType : Swift.Int, Swift.Codable {
+  case Invocation
+  case StreamItem
+  case Completion
+  case StreamInvocation
+  case CancelInvocation
+  case Ping
+  case Close
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol HubMessage {
+  var type: ViewerExtension.MessageType { get }
+}
+@_hasMissingDesignatedInitializers public class ServerInvocationMessage : ViewerExtension.HubMessage, Swift.Encodable {
+  final public let type: ViewerExtension.MessageType
+  final public let invocationId: Swift.String?
+  final public let target: Swift.String
+  final public let arguments: [Swift.Encodable]
+  public func encode(to encoder: Swift.Encoder) throws
+  @objc deinit
+}
+public class ClientInvocationMessage : ViewerExtension.HubMessage, Swift.Decodable {
+  final public let type: ViewerExtension.MessageType
+  final public let target: Swift.String
+  required public init(from decoder: Swift.Decoder) throws
+  public func getArgument<T>(type: T.Type) throws -> T where T : Swift.Decodable
+  @objc deinit
+}
+public class StreamItemMessage : ViewerExtension.HubMessage, Swift.Decodable {
+  final public let type: ViewerExtension.MessageType
+  final public let invocationId: Swift.String
+  required public init(from decoder: Swift.Decoder) throws
+  public func getItem<T>(_ type: T.Type) throws -> T where T : Swift.Decodable
+  @objc deinit
+}
+public class CompletionMessage : ViewerExtension.HubMessage, Swift.Decodable {
+  final public let type: ViewerExtension.MessageType
+  final public let invocationId: Swift.String
+  final public let error: Swift.String?
+  final public let hasResult: Swift.Bool
+  required public init(from decoder: Swift.Decoder) throws
+  public func getResult<T>(_ type: T.Type) throws -> T? where T : Swift.Decodable
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class StreamInvocationMessage : ViewerExtension.HubMessage, Swift.Encodable {
+  final public let type: ViewerExtension.MessageType
+  final public let invocationId: Swift.String
+  final public let target: Swift.String
+  final public let arguments: [Swift.Encodable]
+  public func encode(to encoder: Swift.Encoder) throws
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class CancelInvocationMessage : ViewerExtension.HubMessage, Swift.Encodable {
+  final public let type: ViewerExtension.MessageType
+  final public let invocationId: Swift.String
+  @objc deinit
+  public func encode(to encoder: Swift.Encoder) throws
+}
+@_hasMissingDesignatedInitializers public class PingMessage : ViewerExtension.HubMessage {
+  final public let type: ViewerExtension.MessageType
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class CloseMessage : ViewerExtension.HubMessage, Swift.Decodable {
+  public var type: ViewerExtension.MessageType {
+    get
+  }
+  final public let error: Swift.String?
+  @objc deinit
+  required public init(from decoder: Swift.Decoder) throws
+}
+public struct SponsoredBanner : Swift.Codable {
+  public let imageUrl: Swift.String
+  public let externalUrl: Swift.String?
+  public static var current: ViewerExtension.SponsoredBanner? {
+    get
+    set
+  }
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public protocol VideoContent {
+  var id: Swift.Int { get }
+  var title: Swift.String { get }
+  var url: Swift.String { get }
+  var creatorName: Swift.String { get }
+  var creatorNickname: Swift.String { get }
+  var thumbnailUrl: Swift.String { get }
+  var date: Foundation.Date { get }
+  var broadcasterPicUrl: Swift.String { get }
+  var latestMessage: ViewerExtension.LatestComment? { get set }
+  var isChatOn: Swift.Bool { get }
+  var isPollOn: Swift.Bool { get }
+  var shareLink: Swift.String? { get }
+  var viewsCount: Swift.Int { get }
+}
+public struct Live : ViewerExtension.VideoContent {
+  public let id: Swift.Int
+  public let title: Swift.String
+  public var latestMessage: ViewerExtension.LatestComment?
+  public var isChatOn: Swift.Bool
+  public var isPollOn: Swift.Bool
+  public var shareLink: Swift.String?
+  public var creatorName: Swift.String
+  public let creatorNickname: Swift.String
+  public let thumbnailUrl: Swift.String
+  public var url: Swift.String {
+    get
+  }
+  public let date: Foundation.Date
+  public var viewsCount: Swift.Int
+  public var broadcasterPicUrl: Swift.String
+}
+extension Live : Swift.Codable {
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public class VOD : ViewerExtension.VideoContent {
+  public var isNew: Swift.Bool
+  public var viewsCount: Swift.Int
+  public var stopTime: Swift.String
+  public var id: Swift.Int
+  public var title: Swift.String
+  public var url: Swift.String
+  public var creatorName: Swift.String
+  public var creatorNickname: Swift.String
+  public var thumbnailUrl: Swift.String
+  public var creatorId: Swift.Int
+  public var date: Foundation.Date
+  public var duration: Swift.String {
+    get
+  }
+  public var broadcasterPicUrl: Swift.String
+  public var watchedTime: Swift.Int?
+  public var latestMessage: ViewerExtension.LatestComment?
+  public var isChatOn: Swift.Bool
+  public var isPollOn: Swift.Bool
+  public var shareLink: Swift.String?
+  public var curtainRangeModels: [ViewerExtension.CurtainRange]
+  required public init(from decoder: Swift.Decoder) throws
+  @objc deinit
+}
+extension VOD : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public protocol HttpClientProtocol {
+  func get(url: Foundation.URL, completionHandler: @escaping (ViewerExtension.HttpResponse?, Swift.Error?) -> Swift.Void)
+  func post(url: Foundation.URL, body: Foundation.Data?, completionHandler: @escaping (ViewerExtension.HttpResponse?, Swift.Error?) -> Swift.Void)
+  func delete(url: Foundation.URL, completionHandler: @escaping (ViewerExtension.HttpResponse?, Swift.Error?) -> Swift.Void)
+}
+public protocol TransportDelegate : AnyObject {
+  func transportDidOpen()
+  func transportDidReceiveData(_ data: Foundation.Data)
+  func transportDidClose(_ error: Swift.Error?)
+}
+public protocol FirebaseFetcher {
+  func setLatestMessagesTo(VODs: [ViewerExtension.VOD], completion: @escaping (([ViewerExtension.VOD]) -> ()))
+  func setInfoTo(lives: [ViewerExtension.Live], completion: @escaping (([ViewerExtension.Live]) -> ()))
+}
+@_hasMissingDesignatedInitializers public class HttpResponse {
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class HttpConnection : ViewerExtension.Connection {
+  weak public var delegate: ViewerExtension.ConnectionDelegate?
+  public var connectionId: Swift.String? {
+    get
+  }
+  convenience public init(url: Foundation.URL, options: ViewerExtension.HttpConnectionOptions = HttpConnectionOptions(), logger: ViewerExtension.Logger = NullLogger())
+  @objc deinit
+  public func start()
+  public func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  public func stop(stopError: Swift.Error? = nil)
+}
+@_hasMissingDesignatedInitializers public class ConnectionTransportDelegate : ViewerExtension.TransportDelegate {
+  public func transportDidOpen()
+  public func transportDidReceiveData(_ data: Foundation.Data)
+  public func transportDidClose(_ error: Swift.Error?)
+  @objc deinit
+}
+public enum ContentType : Swift.String, Swift.Codable {
+  case VOD
+  case live
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct Statistic {
+  public enum Action {
+    case open
+    case close(span: Swift.Int)
+  }
+  public static func save(action: ViewerExtension.Statistic.Action, for contentType: ViewerExtension.ContentType, contentID: Swift.Int)
+  public static func send(action: ViewerExtension.Statistic.Action, for contentType: ViewerExtension.ContentType, contentID: Swift.Int)
+  public static func sync()
+}
+public class HubConnection {
+  weak public var delegate: ViewerExtension.HubConnectionDelegate?
+  public var connectionId: Swift.String? {
+    get
+  }
+  public init(connection: ViewerExtension.Connection, hubProtocol: ViewerExtension.HubProtocol, logger: ViewerExtension.Logger = NullLogger())
+  @objc deinit
+  public func start()
+  public func stop()
+  public func on(method: Swift.String, callback: @escaping (ViewerExtension.ArgumentExtractor) throws -> Swift.Void)
+  public func send(method: Swift.String, arguments: [Swift.Encodable], sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  public func invoke(method: Swift.String, arguments: [Swift.Encodable], invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  public func invoke<T>(method: Swift.String, arguments: [Swift.Encodable], resultType: T.Type, invocationDidComplete: @escaping (T?, Swift.Error?) -> Swift.Void) where T : Swift.Decodable
+  public func stream<T>(method: Swift.String, arguments: [Swift.Encodable], streamItemReceived: @escaping (T) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T : Swift.Decodable
+  public func cancelStreamInvocation(streamHandle: ViewerExtension.StreamHandle, cancelDidFail: @escaping (Swift.Error) -> Swift.Void)
+}
+@_hasMissingDesignatedInitializers public class ArgumentExtractor {
+  public func getArgument<T>(type: T.Type) throws -> T where T : Swift.Decodable
+  public func hasMoreArgs() -> Swift.Bool
+  @objc deinit
+}
+extension AVPlayer {
+  public var isPlaying: Swift.Bool {
+    get
+  }
+}
+public struct RetryContext {
+  public let failedAttemptsCount: Swift.Int
+  public let reconnectStartTime: Foundation.Date
+  public let error: Swift.Error
+}
+public protocol ReconnectPolicy {
+  func nextAttemptInterval(retryContext: ViewerExtension.RetryContext) -> Dispatch.DispatchTimeInterval
+}
+public class DefaultReconnectPolicy : ViewerExtension.ReconnectPolicy {
+  public init(retryIntervals: [Dispatch.DispatchTimeInterval] = [.milliseconds(0), .seconds(2), .seconds(10), .seconds(30)])
+  public func nextAttemptInterval(retryContext: ViewerExtension.RetryContext) -> Dispatch.DispatchTimeInterval
+  @objc deinit
+}
+extension HubConnection {
+  public func invoke(method: Swift.String, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  public func invoke<T1>(method: Swift.String, _ arg1: T1, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable
+  public func invoke<T1, T2>(method: Swift.String, _ arg1: T1, _ arg2: T2, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable
+  public func invoke<T1, T2, T3>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable
+  public func invoke<T1, T2, T3, T4>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable
+  public func invoke<T1, T2, T3, T4, T5>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable
+  public func invoke<T1, T2, T3, T4, T5, T6>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable
+  public func invoke<T1, T2, T3, T4, T5, T6, T7>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable
+  public func invoke<T1, T2, T3, T4, T5, T6, T7, T8>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable
+  public func invoke<TRes>(method: Swift.String, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where TRes : Swift.Decodable
+  public func invoke<T1, TRes>(method: Swift.String, _ arg1: T1, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, T3, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, T3, T4, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, T3, T4, T5, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, T3, T4, T5, T6, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, T3, T4, T5, T6, T7, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, TRes : Swift.Decodable
+  public func invoke<T1, T2, T3, T4, T5, T6, T7, T8, TRes>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, resultType: TRes.Type, invocationDidComplete: @escaping (TRes?, Swift.Error?) -> Swift.Void) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable, TRes : Swift.Decodable
+  public func send(method: Swift.String, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in})
+  public func send<T1>(method: Swift.String, _ arg1: T1, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable
+  public func send<T1, T2>(method: Swift.String, _ arg1: T1, _ arg2: T2, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable
+  public func send<T1, T2, T3>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable
+  public func send<T1, T2, T3, T4>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable
+  public func send<T1, T2, T3, T4, T5>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable
+  public func send<T1, T2, T3, T4, T5, T6>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable
+  public func send<T1, T2, T3, T4, T5, T6, T7>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable
+  public func send<T1, T2, T3, T4, T5, T6, T7, T8>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void = {_ in}) where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable
+  public func on(method: Swift.String, callback: @escaping () -> Swift.Void)
+  public func on<T1>(method: Swift.String, callback: @escaping (T1) -> Swift.Void) where T1 : Swift.Decodable
+  public func on<T1, T2>(method: Swift.String, callback: @escaping (T1, T2) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable
+  public func on<T1, T2, T3>(method: Swift.String, callback: @escaping (T1, T2, T3) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable, T3 : Swift.Decodable
+  public func on<T1, T2, T3, T4>(method: Swift.String, callback: @escaping (T1, T2, T3, T4) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable, T3 : Swift.Decodable, T4 : Swift.Decodable
+  public func on<T1, T2, T3, T4, T5>(method: Swift.String, callback: @escaping (T1, T2, T3, T4, T5) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable, T3 : Swift.Decodable, T4 : Swift.Decodable, T5 : Swift.Decodable
+  public func on<T1, T2, T3, T4, T5, T6>(method: Swift.String, callback: @escaping (T1, T2, T3, T4, T5, T6) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable, T3 : Swift.Decodable, T4 : Swift.Decodable, T5 : Swift.Decodable, T6 : Swift.Decodable
+  public func on<T1, T2, T3, T4, T5, T6, T7>(method: Swift.String, callback: @escaping (T1, T2, T3, T4, T5, T6, T7) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable, T3 : Swift.Decodable, T4 : Swift.Decodable, T5 : Swift.Decodable, T6 : Swift.Decodable, T7 : Swift.Decodable
+  public func on<T1, T2, T3, T4, T5, T6, T7, T8>(method: Swift.String, callback: @escaping (T1, T2, T3, T4, T5, T6, T7, T8) -> Swift.Void) where T1 : Swift.Decodable, T2 : Swift.Decodable, T3 : Swift.Decodable, T4 : Swift.Decodable, T5 : Swift.Decodable, T6 : Swift.Decodable, T7 : Swift.Decodable, T8 : Swift.Decodable
+  public func stream<TItemType>(method: Swift.String, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where TItemType : Swift.Decodable
+  public func stream<T1, TItemType>(method: Swift.String, _ arg1: T1, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, T3, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, T3, T4, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, T3, T4, T5, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, T3, T4, T5, T6, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, T3, T4, T5, T6, T7, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, TItemType : Swift.Decodable
+  public func stream<T1, T2, T3, T4, T5, T6, T7, T8, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable, TItemType : Swift.Decodable
+}
+@_hasMissingDesignatedInitializers public class WebsocketsTransport : ViewerExtension.Transport {
+  weak public var delegate: ViewerExtension.TransportDelegate?
+  public func start(url: Foundation.URL, options: ViewerExtension.HttpConnectionOptions)
+  public func send(data: Foundation.Data, sendDidComplete: (Swift.Error?) -> Swift.Void)
+  public func close()
+  @objc deinit
+}
+public protocol Connection {
+  var delegate: ViewerExtension.ConnectionDelegate? { get set }
+  var connectionId: Swift.String? { get }
+  func start()
+  func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  func stop(stopError: Swift.Error?)
+}
+@_hasMissingDesignatedInitializers public class AntViewerManager {
+  public enum AuthError : Swift.Error {
+    case noCredentials
+    public static func == (a: ViewerExtension.AntViewerManager.AuthError, b: ViewerExtension.AntViewerManager.AuthError) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public static let shared: ViewerExtension.AntViewerManager
+  public func authWith(apiKey: Swift.String, refUserId: Swift.String?, nickname: Swift.String?, completionHandler: @escaping (Swift.Result<Swift.Void, Swift.Error>) -> Swift.Void)
+  public func hiddenAuthIfNeededWith(completionHandler: @escaping (Swift.Result<Swift.Void, Swift.Error>) -> Swift.Void)
+  public func change(displayName: Swift.String, completionHandler: @escaping (Swift.Result<Swift.Bool, Swift.Error>) -> Swift.Void)
+  public func uploadImage(data: Foundation.Data, completionHandler: @escaping (Swift.Result<Swift.Bool, Swift.Error>) -> Swift.Void)
+  public func registerNotificationsWith(FCMToken: Swift.String, completionHandler: @escaping (Swift.Result<Swift.String, Swift.Error>) -> Swift.Void)
+  @objc deinit
+}
+public class Debouncer {
+  public init(delay: Foundation.TimeInterval, queue: Dispatch.DispatchQueue = DispatchQueue.main)
+  public func call(delay: Foundation.TimeInterval? = nil, action: @escaping () -> Swift.Void)
+  @objc deinit
+}
+public struct ViewersCount : Swift.Codable {
+  public let liveStreamId: Swift.Int
+  public let viewers: Swift.Int
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+extension UIColor {
+  public func as1ptImage() -> UIKit.UIImage
+}
+public protocol Transport : AnyObject {
+  var delegate: ViewerExtension.TransportDelegate? { get set }
+  func start(url: Foundation.URL, options: ViewerExtension.HttpConnectionOptions)
+  func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  func close()
+}
+public struct UploadImageResponse : Swift.Codable {
+  public let success: Swift.Bool
+  public let imageUrl: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public enum HTTPMethod : Swift.String {
+  case get
+  case post
+  case put
+  case delete
+  case patch
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.String)
+}
+public struct RequestData {
+}
+@_hasMissingDesignatedInitializers public class LongPollingTransport : ViewerExtension.Transport {
+  public var delegate: ViewerExtension.TransportDelegate?
+  public func start(url: Foundation.URL, options: ViewerExtension.HttpConnectionOptions)
+  public func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
+  public func close()
+  @objc deinit
+}
+public protocol ConnectionDelegate : AnyObject {
+  func connectionDidOpen(connection: ViewerExtension.Connection)
+  func connectionDidFailToOpen(error: Swift.Error)
+  func connectionDidReceiveData(connection: ViewerExtension.Connection, data: Foundation.Data)
+  func connectionDidClose(error: Swift.Error?)
+  func connectionWillReconnect(error: Swift.Error)
+  func connectionDidReconnect()
+}
+extension ConnectionDelegate {
+  public func connectionWillReconnect(error: Swift.Error)
+  public func connectionDidReconnect()
+}
+public enum ReachabilityError : Swift.Error {
+  case failedToCreateWithAddress(Darwin.sockaddr, Swift.Int32)
+  case failedToCreateWithHostname(Swift.String, Swift.Int32)
+  case unableToSetCallback(Swift.Int32)
+  case unableToSetDispatchQueue(Swift.Int32)
+  case unableToGetFlags(Swift.Int32)
+}
+@available(*, unavailable, renamed: "Notification.Name.reachabilityChanged")
+public let ReachabilityChangedNotification: Foundation.NSNotification.Name
+extension NSNotification.Name {
+  public static let reachabilityChanged: Foundation.Notification.Name
+}
+public class Reachability {
+  public typealias NetworkReachable = (ViewerExtension.Reachability) -> ()
+  public typealias NetworkUnreachable = (ViewerExtension.Reachability) -> ()
+  @available(*, unavailable, renamed: "Connection")
+  public enum NetworkStatus : Swift.CustomStringConvertible {
+    case notReachable, reachableViaWiFi, reachableViaWWAN
+    public var description: Swift.String {
+      get
+    }
+    public static func == (a: ViewerExtension.Reachability.NetworkStatus, b: ViewerExtension.Reachability.NetworkStatus) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public enum Connection : Swift.CustomStringConvertible {
+    @available(*, deprecated, renamed: "unavailable")
+    case none
+    case unavailable, wifi, cellular
+    public var description: Swift.String {
+      get
+    }
+    public static func == (a: ViewerExtension.Reachability.Connection, b: ViewerExtension.Reachability.Connection) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public var whenReachable: ViewerExtension.Reachability.NetworkReachable?
+  public var whenUnreachable: ViewerExtension.Reachability.NetworkUnreachable?
+  @available(*, deprecated, renamed: "allowsCellularConnection")
+  final public let reachableOnWWAN: Swift.Bool
+  public var allowsCellularConnection: Swift.Bool
+  public var notificationCenter: Foundation.NotificationCenter
+  @available(*, deprecated, renamed: "connection.description")
+  public var currentReachabilityString: Swift.String {
+    get
+  }
+  @available(*, unavailable, renamed: "connection")
+  public var currentReachabilityStatus: ViewerExtension.Reachability.Connection {
+    get
+  }
+  public var connection: ViewerExtension.Reachability.Connection {
+    get
+  }
+  required public init(reachabilityRef: SystemConfiguration.SCNetworkReachability, queueQoS: Dispatch.DispatchQoS = .default, targetQueue: Dispatch.DispatchQueue? = nil, notificationQueue: Dispatch.DispatchQueue? = .main)
+  convenience public init(hostname: Swift.String, queueQoS: Dispatch.DispatchQoS = .default, targetQueue: Dispatch.DispatchQueue? = nil, notificationQueue: Dispatch.DispatchQueue? = .main) throws
+  convenience public init(queueQoS: Dispatch.DispatchQoS = .default, targetQueue: Dispatch.DispatchQueue? = nil, notificationQueue: Dispatch.DispatchQueue? = .main) throws
+  @objc deinit
+}
+extension Reachability {
+  public func startNotifier() throws
+  public func stopNotifier()
+  @available(*, deprecated, message: "Please use `connection != .none`")
+  public var isReachable: Swift.Bool {
+    get
+  }
+  @available(*, deprecated, message: "Please use `connection == .cellular`")
+  public var isReachableViaWWAN: Swift.Bool {
+    get
+  }
+  @available(*, deprecated, message: "Please use `connection == .wifi`")
+  public var isReachableViaWiFi: Swift.Bool {
+    get
+  }
+  public var description: Swift.String {
+    get
+  }
+}
+public struct WebSocketEvents {
+  public var open: () -> ()
+  public var close: (Swift.Int, Swift.String, Swift.Bool) -> ()
+  public var error: (Swift.Error) -> ()
+  public var message: (Any) -> ()
+  public var pong: (Any) -> ()
+  public var end: (Swift.Int, Swift.String, Swift.Bool, Swift.Error?) -> ()
+}
+public enum WebSocketBinaryType : Swift.CustomStringConvertible {
+  case uInt8Array
+  case nsData
+  case uInt8UnsafeBufferPointer
+  public var description: Swift.String {
+    get
+  }
+  public static func == (a: ViewerExtension.WebSocketBinaryType, b: ViewerExtension.WebSocketBinaryType) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+@objc public enum WebSocketReadyState : Swift.Int, Swift.CustomStringConvertible {
+  case connecting = 0
+  case open = 1
+  case closing = 2
+  case closed = 3
+  public var description: Swift.String {
+    get
+  }
+  public typealias RawValue = Swift.Int
+  public init?(rawValue: Swift.Int)
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public struct WebSocketCompression {
+  public var on: Swift.Bool
+  public var noContextTakeover: Swift.Bool
+  public var maxWindowBits: Swift.Int
+}
+public struct WebSocketService : Swift.OptionSet {
+  public typealias RawValue = Swift.UInt
+  public init(rawValue value: Swift.UInt)
+  public init(nilLiteral: ())
+  public static var allZeros: ViewerExtension.WebSocketService {
+    get
+  }
+  public var rawValue: Swift.UInt {
+    get
+  }
+  public static var None: ViewerExtension.WebSocketService {
+    get
+  }
+  public static var VoIP: ViewerExtension.WebSocketService {
+    get
+  }
+  public static var Video: ViewerExtension.WebSocketService {
+    get
+  }
+  public static var Background: ViewerExtension.WebSocketService {
+    get
+  }
+  public static var Voice: ViewerExtension.WebSocketService {
+    get
+  }
+  public typealias Element = ViewerExtension.WebSocketService
+  public typealias ArrayLiteralElement = ViewerExtension.WebSocketService
+}
+public enum WebSocketError : Swift.Error, Swift.CustomStringConvertible {
+  case memory
+  case needMoreInput
+  case invalidHeader
+  case invalidAddress
+  case network(Swift.String)
+  case libraryError(Swift.String)
+  case payloadError(Swift.String)
+  case protocolError(Swift.String)
+  case invalidResponse(Swift.String)
+  case invalidCompressionOptions(Swift.String)
+  public var description: Swift.String {
+    get
+  }
+  public var details: Swift.String {
+    get
+  }
+}
+@objc public protocol WebSocketDelegate {
+  @objc func webSocketOpen()
+  @objc func webSocketClose(_ code: Swift.Int, reason: Swift.String, wasClean: Swift.Bool)
+  @objc func webSocketError(_ error: Foundation.NSError)
+  @objc optional func webSocketMessageText(_ text: Swift.String)
+  @objc optional func webSocketMessageData(_ data: Foundation.Data)
+  @objc optional func webSocketPong()
+  @objc optional func webSocketEnd(_ code: Swift.Int, reason: Swift.String, wasClean: Swift.Bool, error: Foundation.NSError?)
+}
+@objc @_inheritsConvenienceInitializers @objcMembers open class WebSocket : ObjectiveC.NSObject {
+  @objc override dynamic open var hash: Swift.Int {
+    @objc get
+  }
+  @objc override dynamic open func isEqual(_ other: Any?) -> Swift.Bool
+  @objc convenience public init(_ url: Swift.String)
+  @objc convenience public init(url: Foundation.URL)
+  @objc convenience public init(_ url: Swift.String, subProtocols: [Swift.String])
+  @objc convenience public init(_ url: Swift.String, subProtocol: Swift.String)
+  @objc public init(request: Foundation.URLRequest, subProtocols: [Swift.String] = [])
+  @objc convenience override dynamic public init()
+  @objc open var url: Swift.String {
+    @objc get
+  }
+  @objc open var subProtocol: Swift.String {
+    @objc get
+  }
+  open var compression: ViewerExtension.WebSocketCompression {
+    get
+    set
+  }
+  @objc open var allowSelfSignedSSL: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  open var services: ViewerExtension.WebSocketService {
+    get
+    set
+  }
+  open var event: ViewerExtension.WebSocketEvents {
+    get
+    set
+  }
+  @objc open var eventQueue: Dispatch.DispatchQueue? {
+    @objc get
+    @objc set
+  }
+  open var binaryType: ViewerExtension.WebSocketBinaryType {
+    get
+    set
+  }
+  @objc open var readyState: ViewerExtension.WebSocketReadyState {
+    @objc get
+  }
+  @objc open func open(_ url: Swift.String)
+  @objc open func open(nsurl url: Foundation.URL)
+  @objc open func open(_ url: Swift.String, subProtocols: [Swift.String])
+  @objc open func open(_ url: Swift.String, subProtocol: Swift.String)
+  @objc open func open(request: Foundation.URLRequest, subProtocols: [Swift.String] = [])
+  @objc open func open()
+  @objc open func close(_ code: Swift.Int = 1000, reason: Swift.String = "Normal Closure")
+  @objc open func send(_ message: Any)
+  @objc open func ping(_ message: Any)
+  @objc open func ping()
+  @objc deinit
+}
+public func == (lhs: ViewerExtension.WebSocket, rhs: ViewerExtension.WebSocket) -> Swift.Bool
+extension WebSocket {
+  @objc dynamic public var delegate: ViewerExtension.WebSocketDelegate? {
+    @objc get
+    @objc set
+  }
+  @objc dynamic public func send(text: Swift.String)
+  @objc dynamic public func send(data: Foundation.Data)
+}
+public enum TransferFormat : Swift.String {
+  case text
+  case binary
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct CurtainRange : Swift.Codable {
+  public init(start: Swift.String, end: Swift.String)
+  public init(from decoder: Swift.Decoder) throws
+  public mutating func setAccuracy(to newAccuracy: Swift.Double)
+  public var range: Swift.ClosedRange<Swift.Double> {
+    mutating get
+    set
+  }
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public struct Environment {
+  public enum EnvironmentType : Swift.String {
+    case prod
+    case staging
+    case dev
+    case load
+    case demo
+    public var host: Swift.String {
+      get
+    }
+    public typealias RawValue = Swift.String
+    public var rawValue: Swift.String {
+      get
+    }
+    public init?(rawValue: Swift.String)
+  }
+  public static var current: ViewerExtension.Environment.EnvironmentType {
+    get
+  }
+  public static func set(environment: ViewerExtension.Environment.EnvironmentType)
+}
+public struct User : Swift.Codable {
+  public let id: Swift.Int
+  public var displayName: Swift.String
+  public var imageUrl: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+extension User {
+  public static var current: ViewerExtension.User? {
+    get
+    set
+  }
+}
+public protocol HubConnectionDelegate : AnyObject {
+  func connectionDidOpen(hubConnection: ViewerExtension.HubConnection)
+  func connectionDidFailToOpen(error: Swift.Error)
+  func connectionDidClose(error: Swift.Error?)
+  func connectionWillReconnect(error: Swift.Error)
+  func connectionDidReconnect()
+}
+extension HubConnectionDelegate {
+  public func connectionWillReconnect(error: Swift.Error)
+  public func connectionDidReconnect()
+}
+public struct HeaderInfoModel : Swift.Codable {
+  public let imageUrl: Swift.String?
+  public let tagLine: Swift.String?
+  public var imageData: Foundation.Data?
+  public static var currentInfo: ViewerExtension.HeaderInfoModel? {
+    get
+    set
+  }
+  public static func fetchInfo(completion: @escaping ((ViewerExtension.HeaderInfoModel?) -> ()))
+  public init(imageUrl: Swift.String?, tagLine: Swift.String?, imageData: Foundation.Data?)
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public class HubConnectionBuilder {
+  public init(url: Foundation.URL)
+  public func withHubProtocol(hubProtocolFactory: @escaping (ViewerExtension.Logger) -> ViewerExtension.HubProtocol) -> ViewerExtension.HubConnectionBuilder
+  public func withHttpConnectionOptions(configureHttpOptions: (ViewerExtension.HttpConnectionOptions) -> Swift.Void) -> ViewerExtension.HubConnectionBuilder
+  public func withLogging(minLogLevel: ViewerExtension.LogLevel) -> ViewerExtension.HubConnectionBuilder
+  public func withLogging(logger: ViewerExtension.Logger) -> ViewerExtension.HubConnectionBuilder
+  public func withLogging(minLogLevel: ViewerExtension.LogLevel, logger: ViewerExtension.Logger) -> ViewerExtension.HubConnectionBuilder
+  public func withHubConnectionDelegate(delegate: ViewerExtension.HubConnectionDelegate) -> ViewerExtension.HubConnectionBuilder
+  public func withAutoReconnect(reconnectPolicy: ViewerExtension.ReconnectPolicy = DefaultReconnectPolicy()) -> ViewerExtension.HubConnectionBuilder
+  public func withPermittedTransportTypes(_ permittedTransportTypes: ViewerExtension.TransportType) -> ViewerExtension.HubConnectionBuilder
+  @available(*, deprecated)
+  public func withLegacyHttpConnection() -> ViewerExtension.HubConnectionBuilder
+  public func build() -> ViewerExtension.HubConnection
+  @objc deinit
+}
+extension HubConnectionBuilder {
+  public func withJSONHubProtocol() -> ViewerExtension.HubConnectionBuilder
+}
+extension Formatter {
+  public static let iso8601: Foundation.ISO8601DateFormatter
+}
+extension JSONDecoder.DateDecodingStrategy {
+  public static let customISO8601: Foundation.JSONDecoder.DateDecodingStrategy
+}
+public struct BooleanResponse : Swift.Codable {
+  public let success: Swift.Bool
+  public let error: Swift.String?
+  public init(from decoder: Swift.Decoder) throws
+  public func encode(to encoder: Swift.Encoder) throws
+}
+public enum SignalRError : Swift.Error {
+  case invalidState
+  case webError(statusCode: Swift.Int)
+  case hubInvocationError(message: Swift.String)
+  case hubInvocationCancelled
+  case unknownMessageType
+  case invalidMessage
+  case unsupportedType
+  case serializationError(underlyingError: Swift.Error)
+  case connectionIsBeingClosed
+  case invalidOperation(message: Swift.String)
+  case protocolViolation(underlyingError: Swift.Error)
+  case handshakeError(message: Swift.String)
+  case invalidNegotiationResponse(message: Swift.String)
+  case serverClose(message: Swift.String?)
+  case noSupportedTransportAvailable
+  case connectionIsReconnecting
+}
+extension ViewerExtension.LogLevel : Swift.Equatable {}
+extension ViewerExtension.LogLevel : Swift.Hashable {}
+extension ViewerExtension.LogLevel : Swift.RawRepresentable {}
+extension ViewerExtension.ProtocolType : Swift.Equatable {}
+extension ViewerExtension.ProtocolType : Swift.Hashable {}
+extension ViewerExtension.ProtocolType : Swift.RawRepresentable {}
+extension ViewerExtension.MessageType : Swift.Equatable {}
+extension ViewerExtension.MessageType : Swift.Hashable {}
+extension ViewerExtension.MessageType : Swift.RawRepresentable {}
+extension ViewerExtension.ContentType : Swift.Equatable {}
+extension ViewerExtension.ContentType : Swift.Hashable {}
+extension ViewerExtension.ContentType : Swift.RawRepresentable {}
+extension ViewerExtension.AntViewerManager.AuthError : Swift.Equatable {}
+extension ViewerExtension.AntViewerManager.AuthError : Swift.Hashable {}
+extension ViewerExtension.HTTPMethod : Swift.Equatable {}
+extension ViewerExtension.HTTPMethod : Swift.Hashable {}
+extension ViewerExtension.HTTPMethod : Swift.RawRepresentable {}
+@available(*, unavailable, renamed: "Connection")
+extension ViewerExtension.Reachability.NetworkStatus : Swift.Equatable {}
+@available(*, unavailable, renamed: "Connection")
+extension ViewerExtension.Reachability.NetworkStatus : Swift.Hashable {}
+extension ViewerExtension.Reachability.Connection : Swift.Equatable {}
+extension ViewerExtension.Reachability.Connection : Swift.Hashable {}
+extension ViewerExtension.WebSocketBinaryType : Swift.Equatable {}
+extension ViewerExtension.WebSocketBinaryType : Swift.Hashable {}
+extension ViewerExtension.WebSocketReadyState : Swift.Equatable {}
+extension ViewerExtension.WebSocketReadyState : Swift.Hashable {}
+extension ViewerExtension.WebSocketReadyState : Swift.RawRepresentable {}
+extension ViewerExtension.TransferFormat : Swift.Equatable {}
+extension ViewerExtension.TransferFormat : Swift.Hashable {}
+extension ViewerExtension.TransferFormat : Swift.RawRepresentable {}
+extension ViewerExtension.Environment.EnvironmentType : Swift.Equatable {}
+extension ViewerExtension.Environment.EnvironmentType : Swift.Hashable {}
+extension ViewerExtension.Environment.EnvironmentType : Swift.RawRepresentable {}

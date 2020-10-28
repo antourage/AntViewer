@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import AntViewerExt
+import ViewerExtension
 
 protocol PollControllerDelegate: class {
   func pollControllerCloseButtonPressed()

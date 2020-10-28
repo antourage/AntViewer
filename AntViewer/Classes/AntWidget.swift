@@ -5,7 +5,7 @@
 //  Created by Mykola Vaniurskyi on 25.03.2020.
 //
 
-import AntViewerExt
+import ViewerExtension
 import AVKit
 import os.log
 
@@ -99,17 +99,17 @@ public enum WidgetPosition: String {
     if isLeft {
       x = validMargins.horizontal
     } else if isRight {
-      x = screenSize.width - AntWidget.width - validMargins.horizontal - 6 // badge
+      x = screenSize.width - width - validMargins.horizontal - 6 // badge
     } else {
-      x = (screenSize.width - AntWidget.width)/2
+      x = (screenSize.width - width)/2
     }
     
     if isTop {
       y = validMargins.vertical
     } else if isBottom {
-      y = screenSize.height - AntWidget.width - validMargins.vertical
+      y = screenSize.height - width - validMargins.vertical
     } else {
-      y = (screenSize.height - AntWidget.width)/2
+      y = (screenSize.height - width)/2
     }
     return CGPoint(x: x, y: y)
   }
@@ -125,11 +125,10 @@ public struct WidgetMargins {
   }
 }
 
+private let width: CGFloat = 84
+
 @objc
 public class AntWidget: NSObject {
-  
-  @objc
-  public static let width: CGFloat = 84
   
   @objc
   public static let shared = AntWidget()
@@ -155,11 +154,14 @@ public class AntWidget: NSObject {
 
   private var player: ModernAVPlayer?
   
+  private var topConstraint: NSLayoutConstraint?
+  private var leadingConstraint: NSLayoutConstraint?
+  
   private lazy var widgetView: WidgetView = {
-    let point = widgetPosition.getPointWith(margins: margins, for: nil)
-    let rect = CGRect(x: point.x, y: point.y, width: AntWidget.width, height: AntWidget.width)
-    
-    let view = WidgetView(frame: rect)
+    let view = WidgetView()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    view.heightAnchor.constraint(equalToConstant: width).isActive = true
+    view.widthAnchor.constraint(equalToConstant: width).isActive = true
     view.backgroundColor = .clear
     view.delegate = self
     return view
@@ -216,6 +218,7 @@ public class AntWidget: NSObject {
     NotificationCenter.default.addObserver(self, selector: #selector(handleViewerAppear(_:)), name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(handleDidBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(handleOrientationDidChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     UIDevice.current.isBatteryMonitoringEnabled = true
     AppAuth.shared.auth()
     widgetView.prepare(for: .resting, completion: nil)
@@ -255,9 +258,11 @@ public class AntWidget: NSObject {
   }
   
   private func updatePosition(size: CGSize? = nil) {
-    let size = size ?? widgetView.superview?.frame.size
+    guard let superview = widgetView.superview else { return }
+    let size = size ?? superview.frame.size
     let point = widgetPosition.getPointWith(margins: margins, for: size)
-    widgetView.frame.origin = point
+    topConstraint?.constant = point.y
+    leadingConstraint?.constant = point.x
   }
 
   private func set(state: WidgetState) {
@@ -398,11 +403,30 @@ public class AntWidget: NSObject {
     }
     isBackground = false
   }
+  
+  @objc
+  func handleOrientationDidChange(_ notification: NSNotification) {
+    updatePosition()
+  }
 }
 
 extension AntWidget: WidgetViewDelegate {
-  func widgetViewDidMove(_ widgetView: WidgetView, toSuperview withSize: CGSize?) {
-    updatePosition(size: withSize)
+  
+  func widgetDidMoveToSuperview(_ widgetView: WidgetView, superview: UIView?) {
+    guard let superview = superview else { return }
+    let size = superview.frame.size
+    let point = widgetPosition.getPointWith(margins: margins, for: size)
+    if let topConstraint = topConstraint {
+      widgetView.removeConstraint(topConstraint)
+    }
+    if let leadingConstraint = leadingConstraint {
+      widgetView.removeConstraint(leadingConstraint)
+    }
+    topConstraint = widgetView.topAnchor.constraint(equalTo: superview.topAnchor, constant: point.y)
+    topConstraint?.isActive = true
+    leadingConstraint = widgetView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: point.x)
+    leadingConstraint?.isActive = true
+    updatePosition(size: superview.bounds.size)
   }
   
   func widgetViewWillAppear(_ widgetView: WidgetView) {

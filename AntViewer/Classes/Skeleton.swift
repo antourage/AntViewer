@@ -5,9 +5,8 @@
 //  Created by Maryan Luchko on 13.05.2020.
 //
 
-import Foundation
 import UIKit
-import AntViewerExt
+import ViewerExtension
 
 protocol SkeletonDelegate: class {
   var collectionView: UICollectionView! { get set }

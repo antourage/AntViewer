@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import AntViewerExt
+import ViewerExtension
 
 public class StreamCell: UICollectionViewCell {
 

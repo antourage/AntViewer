@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import AntViewerExt
+import ViewerExtension
 
 private let reuseIdentifier = "StreamCell"
 

@@ -7,7 +7,7 @@
 //
 import Foundation
 import CoreData      
-import AntViewerExt
+import ViewerExtension
 
 public class StorageManager {
 

@@ -8,7 +8,7 @@
 
 import UIKit
 import AVKit
-import AntViewerExt
+import ViewerExtension
 
 private let maxTextLength = 250
 private let maxUserNameLength = 50
@@ -1321,7 +1321,7 @@ class PlayerController: UIViewController {
       self.adjustHeightForTextView(self.chatTextView)
       return
     }
-    guard let _ = videoContent as? AntViewerExt.Live else {return}
+    guard let _ = videoContent as? ViewerExtension.Live else {return}
     sender.isEnabled = false
     let message = Message(userID: "\(user.id)", nickname: user.displayName, text: text, avatarUrl: User.current?.imageUrl)
     chatTextView.text.removeAll()

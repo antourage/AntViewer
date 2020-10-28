@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import AntViewerExt
+import ViewerExtension
 
 protocol EditProfileControllerDelegate: class {
   func editProfileCloseButtonPressed(withChanges: Bool)

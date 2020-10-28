@@ -9,7 +9,7 @@
 
 import Foundation
 import Firebase
-import AntViewerExt
+import ViewerExtension
 
 public class PollManager {
   
