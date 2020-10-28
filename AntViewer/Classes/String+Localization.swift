@@ -11,9 +11,12 @@ import Foundation
 extension String {
   func localized() -> String {
     let podBundle = Bundle(for: AntWidget.self)
-    if let url = podBundle.url(forResource: "AntWidget", withExtension: "bundle"),
-      let bundle = Bundle(url: url),
-      let languageCode = Locale.current.languageCode {
+    guard
+      let url = podBundle.url(forResource: "AntWidget", withExtension: "bundle"),
+      let bundle = Bundle(url: url) else {
+      return self
+    }
+    if let languageCode = AntWidget.shared.widgetLocale?.rawValue ?? Locale.current.languageCode {
       return NSLocalizedString(self, tableName: "AntViewerLocalization_\(languageCode)", bundle: bundle, value: "", comment: "")
     }
     return self

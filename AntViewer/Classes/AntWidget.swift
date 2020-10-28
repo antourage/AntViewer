@@ -9,7 +9,12 @@ import ViewerExtension
 import AVKit
 import os.log
 
-enum WidgetState {
+public enum WidgetLocale: String {
+  case english = "en"
+  case swedish = "sv"
+}
+
+public enum WidgetState {
   case resting
   case vod
   case live
@@ -186,6 +191,7 @@ public class AntWidget: NSObject {
     }
   }
   
+  public var widgetLocale: WidgetLocale?
   
   public var widgetPosition: WidgetPosition {
     get {
