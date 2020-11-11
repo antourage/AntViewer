@@ -11,6 +11,7 @@ import UIKit
 protocol WidgetViewDelegate: class {
   func widgetViewWillAppear(_ widgetView: WidgetView)
   func widgetDidMoveToSuperview(_ widgetView: WidgetView, superview: UIView?)
+  func widgetLayoutSubviews(_ widgetView: WidgetView)
   func widgetViewWillDisappear(_ widgetView: WidgetView)
   func widgetViewDidPressButton(_ widgetView: WidgetView)
 }
@@ -48,6 +49,7 @@ public class WidgetView: UIView {
   public override func layoutSubviews() {
     super.layoutSubviews()
     updateUI()
+    delegate?.widgetLayoutSubviews(self)
   }
   
   public override func didMoveToSuperview() {
@@ -260,4 +262,17 @@ public extension WidgetView {
               "horizontal": margins.horizontal]
     }
   }
+  
+  @objc
+  var widgetLocale: String {
+    set {
+      if let newLocale = WidgetLocale(rawValue: newValue) {
+        AntWidget.shared.widgetLocale = newLocale
+      }
+    }
+    get {
+      return AntWidget.shared.widgetLocale?.rawValue ?? Locale.current.languageCode ?? "en"
+    }
+  }
+  
 }

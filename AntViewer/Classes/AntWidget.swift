@@ -178,6 +178,7 @@ public class AntWidget: NSObject {
   private var feedShown = false
   private var failedPlaybackCount = 0
   private var failedPlaybackDebouncer = Debouncer(delay: 15)
+  private var updateSizeDebouncer = Debouncer(delay: 0.1)
   
   private var position: WidgetPosition? {
     didSet {
@@ -264,11 +265,15 @@ public class AntWidget: NSObject {
   }
   
   private func updatePosition(size: CGSize? = nil) {
-    guard let superview = widgetView.superview else { return }
-    let size = size ?? superview.frame.size
-    let point = widgetPosition.getPointWith(margins: margins, for: size)
-    topConstraint?.constant = point.y
-    leadingConstraint?.constant = point.x
+    //MARK: superview.frame != .zero cause RN
+    updateSizeDebouncer.call { [weak self] in
+      guard let superview = self?.widgetView.superview, superview.frame != .zero else { return }
+      let size = size ?? superview.frame.size
+      let point = self?.widgetPosition.getPointWith(margins: self?.margins, for: size) ?? .zero
+      self?.topConstraint?.constant = point.y
+      self?.leadingConstraint?.constant = point.x
+    }
+
   }
 
   private func set(state: WidgetState) {
@@ -433,6 +438,10 @@ extension AntWidget: WidgetViewDelegate {
     leadingConstraint = widgetView.leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: point.x)
     leadingConstraint?.isActive = true
     updatePosition(size: superview.bounds.size)
+  }
+  
+  func widgetLayoutSubviews(_ widgetView: WidgetView) {
+    updatePosition()
   }
   
   func widgetViewWillAppear(_ widgetView: WidgetView) {
