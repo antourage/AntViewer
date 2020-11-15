@@ -306,7 +306,7 @@ public class AntWidget: NSObject {
   private func showLive(with content: Live) {
     guard let url = URL(string: content.url) else { return }
     let media = ModernAVPlayerMedia(url: url, type: .stream(isLive: true))
-    let player = ModernAVPlayer()
+    let player = ModernAVPlayer(config: AntourageAVPlayerConfiguration())
     player.delegate = self
     failedPlaybackCount = 0
     player.load(media: media, autostart: true)

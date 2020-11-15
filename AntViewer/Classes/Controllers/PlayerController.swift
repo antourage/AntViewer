@@ -617,7 +617,6 @@ class PlayerController: UIViewController {
   }
 
   func expandPollBanner() {
-
     pollBannerAspectRatio.isActive = false
     if OrientationUtility.currentOrientatin.isPortrait {
       pollBannerPortraitLeading.isActive = true
@@ -867,7 +866,7 @@ class PlayerController: UIViewController {
     }
     
     let media = ModernAVPlayerMedia(url: url, type: videoContent is Live ? .stream(isLive: true) : .clip)
-    player = ModernAVPlayer()
+    player = ModernAVPlayer(config: AntourageAVPlayerConfiguration())
     player.load(media: media, autostart: true, position: seekTo)
     player.delegate = self
      
