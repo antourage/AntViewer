@@ -37,6 +37,8 @@ public class StorageManager {
 
   private init() {
     managedObjectContext = persistentContainer.viewContext
+    //Cause renamed class(
+    NSKeyedUnarchiver.setClass(ViewerExtension.LatestComment.self, forClassName: "AntViewerExt.LatestComment")
 
     guard managedObjectContext != nil else {
       print("Cann't get right managed object context.")
@@ -191,7 +193,7 @@ final class AntValueTransformer: NSSecureUnarchiveFromDataTransformer {
     static let name = NSValueTransformerName(rawValue: String(describing: AntValueTransformer.self))
 
     override static var allowedTopLevelClasses: [AnyClass] {
-      return [LatestComment.self, NSNumber.self]
+      return [ViewerExtension.LatestComment.self, NSNumber.self]
     }
 
     public static func register() {

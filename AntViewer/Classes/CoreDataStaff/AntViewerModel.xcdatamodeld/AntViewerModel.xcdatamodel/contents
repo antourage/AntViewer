@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19H2" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17511" systemVersion="20C5048k" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Message" representedClassName="MessageMO" syncable="YES">
         <attribute name="key" attributeType="String"/>
         <attribute name="nickname" attributeType="String"/>
@@ -20,7 +20,7 @@
         <attribute name="date" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="latestCommentLoaded" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="latestMessage" optional="YES" attributeType="Transformable" valueTransformerName="AntValueTransformer" customClassName=".LatestComment"/>
+        <attribute name="latestMessage" optional="YES" attributeType="Transformable" valueTransformerName="AntValueTransformer" customClassName="LatestComment"/>
         <attribute name="stopTime" attributeType="String" defaultValueString="&quot;00:00:00&quot;"/>
         <relationship name="messagesMO" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Message" inverseName="content" inverseEntity="Message"/>
         <relationship name="pollsMO" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Poll" inverseName="content" inverseEntity="Poll"/>
@@ -28,6 +28,6 @@
     <elements>
         <element name="Message" positionX="337.9453125" positionY="-68.68359375" width="128" height="133"/>
         <element name="Poll" positionX="336.49609375" positionY="50.796875" width="128" height="118"/>
-        <element name="VideoContent" positionX="-20.28515625" positionY="-22.30078125" width="128" height="163"/>
+        <element name="VideoContent" positionX="-20.28515625" positionY="-22.30078125" width="128" height="149"/>
     </elements>
 </model>

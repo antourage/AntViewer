@@ -107,7 +107,7 @@ class StreamListController: UIViewController, HostChangeable {
     player.delegate = self
     return player
   }()
-  fileprivate let initialVodDebouncer = Debouncer(delay: 1)
+  fileprivate let initialVodDebouncer = Debouncer(delay: 0.5)
   fileprivate let playerDebouncer = Debouncer(delay: 0.5)
   fileprivate var isLoading = false {
     didSet {
@@ -160,16 +160,7 @@ class StreamListController: UIViewController, HostChangeable {
     super.viewDidLoad()
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
     if isReachable {
-      AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
-        switch result {
-        case .success():
-          self?.initialVodDebouncer.call {
-            self?.initialVodsUpdate()
-          }
-        case .failure(let error):
-          print(error)
-        }
-      }
+      AntViewerManager.shared.hiddenAuthIfNeededWith { _ in }
     } else {
       NotificationCenter.default.addObserver(self, selector: #selector(self.handleUserUpdated), name: NSNotification.Name.init("UserUpdated"), object: nil)
     }
