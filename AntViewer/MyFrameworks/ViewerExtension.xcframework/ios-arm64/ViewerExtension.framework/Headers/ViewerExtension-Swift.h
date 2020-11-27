@@ -188,6 +188,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #if __has_warning("-Watimport-in-framework-header")
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
+@import CoreData;
 @import Dispatch;
 @import Foundation;
 @import ObjectiveC;
@@ -222,7 +223,77 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) BOOL supportsSecureC
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+@class NSEntityDescription;
+@class NSManagedObjectContext;
 
+SWIFT_CLASS_NAMED("MessageMO")
+@interface MessageMO : NSManagedObject
+- (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class VideoContentMO;
+
+@interface MessageMO (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) NSString * _Nonnull nickname;
+@property (nonatomic, copy) NSString * _Nonnull text;
+@property (nonatomic) int64_t timestamp;
+@property (nonatomic, copy) NSString * _Nonnull userId;
+@property (nonatomic, copy) NSString * _Nonnull key;
+@property (nonatomic, strong) VideoContentMO * _Nullable content;
+@end
+
+
+
+SWIFT_CLASS_NAMED("PollMO")
+@interface PollMO : NSManagedObject
+- (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class NSNumber;
+
+@interface PollMO (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) NSString * _Nullable key;
+@property (nonatomic, copy) NSArray<NSNumber *> * _Nullable pollAnswers;
+@property (nonatomic, copy) NSString * _Nullable pollQuestion;
+@property (nonatomic, strong) NSNumber * _Nullable userAnswer;
+@property (nonatomic, strong) VideoContentMO * _Nullable content;
+@end
+
+
+
+SWIFT_CLASS_NAMED("VideoContentMO")
+@interface VideoContentMO : NSManagedObject
+- (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class NSSet;
+
+@interface VideoContentMO (SWIFT_EXTENSION(ViewerExtension))
+- (void)addMessagesMOObject:(MessageMO * _Nonnull)value;
+- (void)removeMessagesMOObject:(MessageMO * _Nonnull)value;
+- (void)addMessagesMO:(NSSet * _Nonnull)values;
+- (void)removeMessagesMO:(NSSet * _Nonnull)values;
+@end
+
+
+@interface VideoContentMO (SWIFT_EXTENSION(ViewerExtension))
+- (void)addPollsMOObject:(PollMO * _Nonnull)value;
+- (void)removePollsMOObject:(PollMO * _Nonnull)value;
+- (void)addPollsMO:(NSSet * _Nonnull)values;
+- (void)removePollsMO:(NSSet * _Nonnull)values;
+@end
+
+
+@interface VideoContentMO (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) NSDate * _Nonnull date;
+@property (nonatomic) int64_t id;
+@property (nonatomic, strong) LatestComment * _Nullable latestMessage;
+@property (nonatomic, copy) NSString * _Nonnull stopTime;
+@property (nonatomic) BOOL chatLoaded;
+@property (nonatomic) BOOL latestCommentLoaded;
+@property (nonatomic, strong) NSSet * _Nullable messagesMO;
+@property (nonatomic, strong) NSSet * _Nullable pollsMO;
+@end
 
 enum WebSocketReadyState : NSInteger;
 

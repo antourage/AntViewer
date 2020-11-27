@@ -323,7 +323,7 @@ class PlayerController: UIViewController {
   var activePoll: Poll? {
     didSet {
       NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : activePoll ?? 0])
-      guard let poll = activePoll else {
+      guard activePoll != nil else {
         pollBannerDebouncer.call {}
         self.shouldShowPollAnswers = false
         self.shouldShowExpandedBanner = true
@@ -335,12 +335,12 @@ class PlayerController: UIViewController {
         return
       }
 
-      poll.onUpdate = { [weak self] in
+      activePoll?.onUpdate = { [weak self] in
         guard let `self` = self, self.activePoll != nil else { return }
         if self.pollBannerView.isHidden {
           self.updatePollBannerVisibility()
-          poll.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
-          self.pollTitleLabel.text = poll.pollQuestion
+          self.activePoll?.userAnswer != nil ? self.collapsePollBanner(animated: false) : self.expandPollBanner()
+          self.pollTitleLabel.text = self.activePoll?.pollQuestion
         }
 
         NotificationCenter.default.post(name: NSNotification.Name.init(rawValue: "PollUpdated"), object: nil, userInfo: ["poll" : self.activePoll ?? 0])
@@ -498,8 +498,8 @@ class PlayerController: UIViewController {
      }
 
     if self.videoContent is Live {
-
-       self.pollManager = PollManager(streamId: self.videoContent.id)
+      // Move me
+       self.pollManager = FirePollManager(streamId: self.videoContent.id)
        self.pollManager?.observePolls(completion: { [weak self] (poll) in
           self?.activePoll = poll
         })
@@ -528,7 +528,7 @@ class PlayerController: UIViewController {
       try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
       let type: ContentType = self.videoContent is VOD ? .VOD : .live
       Statistic.send(action: .open, for: type, contentID: self.videoContent.id)
-      self.chat = Chat(for: self.videoContent)
+      self.chat = FireChat(for: self.videoContent)
       self.startPlayer()
     }
     self.adjustHeightForTextView(self.chatTextView)
@@ -564,7 +564,7 @@ class PlayerController: UIViewController {
   
   deinit {
     print("Player DEINITED")
-    pollManager?.removeFirObserver()
+    pollManager?.removeFirebaseObserver()
     let type: ContentType = self.videoContent is VOD ? .VOD : .live
     Statistic.send(action: .close(span: Int(activeSpendTime)), for: type, contentID: self.videoContent.id)
     SponsoredBanner.current = nil

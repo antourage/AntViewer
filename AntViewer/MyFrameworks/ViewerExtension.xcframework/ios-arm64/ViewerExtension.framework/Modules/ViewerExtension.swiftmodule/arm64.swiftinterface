@@ -2,6 +2,7 @@
 // swift-compiler-version: Apple Swift version 5.3.1 (swiftlang-1200.0.41 clang-1200.0.32.8)
 // swift-module-flags: -target arm64-apple-ios11.3 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name ViewerExtension
 import AVKit
+import CoreData
 import Foundation
 import Swift
 import SystemConfiguration
@@ -136,11 +137,48 @@ public protocol HostChangeable : AnyObject {
 extension HostChangeable where Self : UIKit.UIViewController {
   public func presentChangeHostAlert()
 }
+extension MessageMO {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<ViewerExtension.MessageMO>
+  @objc @NSManaged dynamic public var nickname: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var text: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var timestamp: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userId: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var key: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var content: ViewerExtension.VideoContentMO? {
+    @objc get
+    @objc set
+  }
+}
 public protocol Transport : AnyObject {
   var delegate: ViewerExtension.TransportDelegate? { get set }
   func start(url: Foundation.URL, options: ViewerExtension.HttpConnectionOptions)
   func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
   func close()
+}
+public struct Message {
+  public var key: Swift.String
+  public let timestamp: Swift.Int
+  public let userID: Swift.String
+  public let nickname: Swift.String
+  public let text: Swift.String
+  public let avatarUrl: Swift.String?
+  public init(userID: Swift.String, timestamp: Swift.Int = Int(Date().timeIntervalSince1970), nickname: Swift.String, text: Swift.String, key: Swift.String = "", avatarUrl: Swift.String? = nil)
+  public init?(data: [Swift.String : Any], docID: Swift.String, date: Foundation.Date?)
 }
 public enum ConnError : Swift.Error {
   case invalidURL
@@ -162,6 +200,16 @@ public protocol NetworkDispatcher {
   public var isReachable: Swift.Bool
   public func dispatch(request: ViewerExtension.RequestData, onSuccess: @escaping (Foundation.Data) -> Swift.Void, onError: @escaping (Swift.Error) -> Swift.Void)
   @objc deinit
+}
+public protocol Poll {
+  var key: Swift.String { get set }
+  var userAnswer: Swift.Int? { get set }
+  var pollQuestion: Swift.String { get set }
+  var pollAnswers: [Swift.String] { get set }
+  var answersCount: [Swift.Int] { get set }
+  var onUpdate: (() -> ())? { get set }
+  var percentForEachAnswer: [Swift.Int] { get set }
+  func saveAnswerWith(index: Swift.Int)
 }
 public struct WebSocketEvents {
   public var open: () -> ()
@@ -358,6 +406,68 @@ public enum SignalRError : Swift.Error {
   case noSupportedTransportAvailable
   case connectionIsReconnecting
 }
+@_hasMissingDesignatedInitializers public class StorageManager {
+  public static var shared: ViewerExtension.StorageManager
+  @objc deinit
+}
+extension StorageManager {
+  public func loadVideoContent(content: ViewerExtension.VideoContent) -> ViewerExtension.VideoContentMO
+  public func loadStoptime(for videoContent: ViewerExtension.VideoContent) -> Swift.String
+  public func saveStoptime(for videoContent: ViewerExtension.VideoContent, value: Swift.String)
+  public func saveLatestComment(for videoContent: ViewerExtension.VideoContent, value: ViewerExtension.LatestComment?)
+  public func saveChat(for videoContent: ViewerExtension.VideoContent, value: [ViewerExtension.Message])
+  public func savePolls(for videoContent: ViewerExtension.VideoContent, value: [ViewerExtension.Poll])
+}
+extension VideoContentMO {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<ViewerExtension.VideoContentMO>
+  @objc @NSManaged dynamic public var date: Foundation.Date {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var id: Swift.Int64 {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var latestMessage: ViewerExtension.LatestComment? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var stopTime: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var chatLoaded: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var latestCommentLoaded: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var messagesMO: Foundation.NSSet? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pollsMO: Foundation.NSSet? {
+    @objc get
+    @objc set
+  }
+  public var messages: [ViewerExtension.Message]? {
+    get
+  }
+}
+extension VideoContentMO {
+  @objc(addMessagesMOObject:) @NSManaged dynamic public func addToMessagesMO(_ value: ViewerExtension.MessageMO)
+  @objc(removeMessagesMOObject:) @NSManaged dynamic public func removeFromMessagesMO(_ value: ViewerExtension.MessageMO)
+  @objc(addMessagesMO:) @NSManaged dynamic public func addToMessagesMO(_ values: Foundation.NSSet)
+  @objc(removeMessagesMO:) @NSManaged dynamic public func removeFromMessagesMO(_ values: Foundation.NSSet)
+}
+extension VideoContentMO {
+  @objc(addPollsMOObject:) @NSManaged dynamic public func addToPollsMO(_ value: ViewerExtension.PollMO)
+  @objc(removePollsMOObject:) @NSManaged dynamic public func removeFromPollsMO(_ value: ViewerExtension.PollMO)
+  @objc(addPollsMO:) @NSManaged dynamic public func addToPollsMO(_ values: Foundation.NSSet)
+  @objc(removePollsMO:) @NSManaged dynamic public func removeFromPollsMO(_ values: Foundation.NSSet)
+}
 public struct SponsoredBanner : Swift.Codable {
   public let imageUrl: Swift.String
   public let externalUrl: Swift.String?
@@ -407,7 +517,10 @@ extension Live : Swift.Codable {
 public class VOD : ViewerExtension.VideoContent {
   public var isNew: Swift.Bool
   public var viewsCount: Swift.Int
-  public var stopTime: Swift.String
+  public var stopTime: Swift.String {
+    get
+    set
+  }
   public var id: Swift.Int
   public var title: Swift.String
   public var url: Swift.String
@@ -453,6 +566,40 @@ public struct Statistic {
   public static func save(action: ViewerExtension.Statistic.Action, for contentType: ViewerExtension.ContentType, contentID: Swift.Int)
   public static func send(action: ViewerExtension.Statistic.Action, for contentType: ViewerExtension.ContentType, contentID: Swift.Int)
   public static func sync()
+}
+public protocol Chat {
+  var onAdd: ((ViewerExtension.Message) -> ())? { get set }
+  var onRemove: ((ViewerExtension.Message) -> ())? { get set }
+  var onStateChange: ((Swift.Bool) -> ())? { get set }
+  init(for videoContent: ViewerExtension.VideoContent)
+  func send(message: ViewerExtension.Message, withCompletionBlock: @escaping (Swift.Error?) -> ())
+}
+extension PollMO {
+  @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<ViewerExtension.PollMO>
+  @objc @NSManaged dynamic public var key: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pollAnswers: [Foundation.NSNumber]? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var pollQuestion: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var userAnswer: Foundation.NSNumber? {
+    @objc get
+    @objc set
+  }
+  @objc @NSManaged dynamic public var content: ViewerExtension.VideoContentMO? {
+    @objc get
+    @objc set
+  }
+}
+@_inheritsConvenienceInitializers @objc(MessageMO) public class MessageMO : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
 }
 @_hasMissingDesignatedInitializers public class StreamHandle {
   @objc deinit
@@ -540,6 +687,10 @@ public enum TransferFormat : Swift.String {
   public var rawValue: Swift.String {
     get
   }
+}
+@_inheritsConvenienceInitializers @objc(PollMO) public class PollMO : CoreData.NSManagedObject {
+  @objc deinit
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
 }
 public struct RetryContext {
   public let failedAttemptsCount: Swift.Int
@@ -894,6 +1045,15 @@ public struct HeaderInfoModel : Swift.Codable {
   public init(imageUrl: Swift.String?, tagLine: Swift.String?, imageData: Foundation.Data?)
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
+}
+@_inheritsConvenienceInitializers @objc(VideoContentMO) public class VideoContentMO : CoreData.NSManagedObject {
+  @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
+  @objc deinit
+}
+public protocol PollManager {
+  init(streamId: Swift.Int)
+  func observePolls(completion: @escaping ((ViewerExtension.Poll?) -> ()))
+  func removeFirebaseObserver()
 }
 extension Formatter {
   public static let iso8601: Foundation.ISO8601DateFormatter
