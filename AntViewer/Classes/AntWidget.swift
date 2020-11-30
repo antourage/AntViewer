@@ -336,11 +336,7 @@ public class AntWidget: NSObject {
       playerVC.videoContent = stream
       playerVC.dataSource = dataSource
       navController.view.isHidden = true
-      var playerNavController: PlayerNavigationController!
-      if currentContent is VOD {
-        playerNavController = PlayerNavigationController(rootViewController: playerVC)
-      }
-      let controllerToPresent: UIViewController = currentContent is VOD ? playerNavController : playerVC
+      let controllerToPresent: UIViewController = currentContent is VOD ? PlayerNavigationController(rootViewController: playerVC) : playerVC
       controllerToPresent.modalPresentationStyle = .fullScreen
       vc.present(navController, animated: false, completion: {
         if animated {

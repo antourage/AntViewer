@@ -107,9 +107,10 @@ class Skeleton: NSObject {
   }
 
   private func resetView() {
-    animator?.stop(immediately: true)
-
-    delegate?.skeletonWillHide(self)
+    DispatchQueue.main.async {
+      self.animator?.stop(immediately: true)
+      self.delegate?.skeletonWillHide(self)
+    }
   }
 
   func loaded(videoContent: VideoContent.Type, isEmpty: Bool) {

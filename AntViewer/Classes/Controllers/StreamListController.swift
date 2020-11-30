@@ -160,7 +160,16 @@ class StreamListController: UIViewController, HostChangeable {
     super.viewDidLoad()
     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "ViewerWillAppear"), object: nil)
     if isReachable {
-      AntViewerManager.shared.hiddenAuthIfNeededWith { _ in }
+      AntViewerManager.shared.hiddenAuthIfNeededWith { [weak self] (result) in
+        switch result {
+        case .success():
+          self?.initialVodDebouncer.call {
+            self?.initialVodsUpdate()
+          }
+        case .failure(let error):
+          print(error)
+        }
+      }
     } else {
       NotificationCenter.default.addObserver(self, selector: #selector(self.handleUserUpdated), name: NSNotification.Name.init("UserUpdated"), object: nil)
     }
