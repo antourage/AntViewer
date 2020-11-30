@@ -26,31 +26,35 @@
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios.swiftdoc</key>
 		<data>
-		vGOS7HpVN0l2+PQIvGg4ZLiPfOs=
+		qpwWZm+WqpzX8TvQUWSdipxtZjU=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
-		/Nn/YxFUWM2cZs3PeAthIlGp8QU=
+		Qy8BBYySKFc/y+tNHjPw/cUVD9c=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<data>
-		rZYKtnGLta1TUn9xq2m/3sJpGyk=
+		aOxt2pVGaCdNmxOVIic256K+OYs=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		vGOS7HpVN0l2+PQIvGg4ZLiPfOs=
+		qpwWZm+WqpzX8TvQUWSdipxtZjU=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		/Nn/YxFUWM2cZs3PeAthIlGp8QU=
+		Qy8BBYySKFc/y+tNHjPw/cUVD9c=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		rZYKtnGLta1TUn9xq2m/3sJpGyk=
+		aOxt2pVGaCdNmxOVIic256K+OYs=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
 		o8/oIy0XpuiTsfa71EV2rHKRH8A=
+		</data>
+		<key>ViewerExtension.podspec</key>
+		<data>
+		lSxPXeeqV9lCIHZCeI65W1WPemg=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -87,42 +91,42 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Usho8J4skP0NW8JiFxUGZ/+VWYaQyd+ohM71/c2bxRk=
+			lXmglenM0y4fJqwT2zP4K7chzNKZ/hK2Uk26wy140pU=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+DKGUHqu7eSBl/HLeI/uvS8J88VmQLX82Ro3ZoJ/ZxY=
+			QaAeLOj60Lt0OKlr+xTaKL4PpyhLaXDnyne/Xvvujks=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mXWX75RsoJpezRw0jBnJpLoD4A6GQojj+O5vQf+p18w=
+			25n7Fkb30IfVywA7JTYoPdXFPbdJxCFgzRC63vKNWD4=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Usho8J4skP0NW8JiFxUGZ/+VWYaQyd+ohM71/c2bxRk=
+			lXmglenM0y4fJqwT2zP4K7chzNKZ/hK2Uk26wy140pU=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			+DKGUHqu7eSBl/HLeI/uvS8J88VmQLX82Ro3ZoJ/ZxY=
+			QaAeLOj60Lt0OKlr+xTaKL4PpyhLaXDnyne/Xvvujks=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			mXWX75RsoJpezRw0jBnJpLoD4A6GQojj+O5vQf+p18w=
+			25n7Fkb30IfVywA7JTYoPdXFPbdJxCFgzRC63vKNWD4=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -130,6 +134,13 @@
 			<key>hash2</key>
 			<data>
 			VhbaWiNG26gbQu+DyBIH7fF/gOFHsdOeT5shYbOmyYY=
+			</data>
+		</dict>
+		<key>ViewerExtension.podspec</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			qux/FSrw8+VMQToDlljLB0P4A6VhcfxlrxLWfXNRQVU=
 			</data>
 		</dict>
 	</dict>

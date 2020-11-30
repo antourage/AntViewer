@@ -141,7 +141,7 @@ class PlayerController: UIViewController {
 
   @IBOutlet weak var viewersCountLabel: UILabel! {
     didSet {
-      viewersCountLabel.text = videoContent.viewsCount.formatUsingAbbrevation()
+      viewersCountLabel.text = max(videoContent.viewsCount, 1).formatUsingAbbrevation()
     }
   }
 
@@ -511,7 +511,7 @@ class PlayerController: UIViewController {
           self.dataSource.getViewers(for: self.videoContent.id) { (result) in
             switch result {
             case .success(let count):
-              self.viewersCountLabel.text = count.formatUsingAbbrevation()
+              self.viewersCountLabel.text = max(count, 1).formatUsingAbbrevation()
             case .failure(let error):
               print(error.localizedDescription)
             }

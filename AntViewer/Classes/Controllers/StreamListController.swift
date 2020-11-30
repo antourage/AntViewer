@@ -107,7 +107,7 @@ class StreamListController: UIViewController, HostChangeable {
     player.delegate = self
     return player
   }()
-  fileprivate let initialVodDebouncer = Debouncer(delay: 0.5)
+  fileprivate let initialVodDebouncer = Debouncer(delay: 0.7)
   fileprivate let playerDebouncer = Debouncer(delay: 0.5)
   fileprivate var isLoading = false {
     didSet {
