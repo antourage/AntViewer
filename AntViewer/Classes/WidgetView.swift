@@ -16,12 +16,10 @@ protocol WidgetViewDelegate: class {
   func widgetViewDidPressButton(_ widgetView: WidgetView)
 }
 
-public class WidgetView: UIView {
+public final class WidgetView: UIView {
   private lazy var circleAnimator = Animator(view: circleView, type: .pulse)
   private lazy var playAnimator = Animator(view: playIconView, type: .pulseFade)
   private var playerView: AVPlayerView?
-  private var preparingStarted = false
-  private var shouldShowPlayer = false
   private lazy var logoView: UIImageView = {
     let logoView = UIImageView(image: UIImage.image("Logo"))
     logoView.contentMode = .scaleAspectFill
@@ -43,6 +41,9 @@ public class WidgetView: UIView {
     addSubview(imageView)
     return imageView
   }()
+  
+  let queue = DispatchQueue(label: "com.antourage.widgetView")
+  let group = DispatchGroup()
 
   weak var delegate: WidgetViewDelegate?
 
@@ -72,38 +73,46 @@ public class WidgetView: UIView {
     }
   }
 
-  func prepare(for state: WidgetState, completion: ((WidgetState) -> Void)?) {
-    if case .live = state {
-      if preparingStarted {
-        preparingStarted = false
-        showPlayerView()
-      } else {
-        shouldShowPlayer = true
+  public func prepare(for state: WidgetState, immediately: Bool, completion: ((WidgetState) -> Void)?) {
+    queue.async {
+      self.group.wait()
+      self.group.enter()
+      DispatchQueue.main.async {
+        self._prepare(for: state, immediately: immediately, completion: completion)
       }
-    } else if circleAnimator.isActive {
+    }
+  }
+  
+  private func _prepare(for state: WidgetState, immediately: Bool, completion: ((WidgetState) -> Void)?) {
+    var isLive = false
+    if case .live = state { isLive = true }
+    if circleAnimator.isActive || isLive {
       circleAnimator.completion = { [weak self] in
-        self?.handle(state: state)
+        self?.handle(state: state, immediately: immediately)
         completion?(state)
+        self?.group.leave()
       }
-      circleAnimator.stop()
+      circleAnimator.stop(immediately: immediately)
     } else {
-      handle(state: state)
+      handle(state: state, immediately: immediately)
       completion?(state)
+      group.leave()
     }
   }
 
-  private func handle(state: WidgetState) {
-    showLogo()
+  private func handle(state: WidgetState, immediately: Bool) {
     switch state {
     case .loading(player: let player):
+      showLogo()
       prepareLive(with: player)
     case .vod:
+      showLogo()
       prepareVOD()
     case .resting:
-      removeBadge()
-      break
-    default:
-      break
+      showLogo()
+      removeBadge(immediately: immediately)
+    case .live:
+      showPlayerView()
     }
   }
 
@@ -126,8 +135,10 @@ public class WidgetView: UIView {
     self.badge(text: text, appearance: badgeAppearance)
   }
 
-  private func removeBadge() {
-    self.badge(text: nil)
+  private func removeBadge(immediately: Bool) {
+    var appearance = BadgeAppearance()
+    appearance.animate = !immediately
+    self.badge(text: nil, appearance: appearance)
   }
 
   private func prepareLive(with player: AVPlayer) {
@@ -141,26 +152,17 @@ public class WidgetView: UIView {
     playerView.playerLayer.videoGravity = .resizeAspectFill
     playerView.player = player
     self.playerView = playerView
-    if shouldShowPlayer {
-      showPlayerView()
-      shouldShowPlayer = false
-    } else {
-      preparingStarted = true
-    }
   }
 
   private func showPlayerView() {
-    circleAnimator.completion = { [weak self] in
-      self?.circleAnimator.swapType(to: .spin)
-      self?.circleAnimator.animate(repeatCount: .infinity)
-      if let playerView = self?.playerView {
-        self?.addSubview(playerView)
-        playerView.fadeIn()
-      }
-      self?.showPlayIcon()
-      self?.updateUI()
+    circleAnimator.swapType(to: .spin)
+    circleAnimator.animate(repeatCount: .infinity)
+    if let playerView = playerView {
+      addSubview(playerView)
+      playerView.fadeIn()
     }
-    circleAnimator.stop()
+    showPlayIcon()
+    updateUI()
   }
 
   private func prepareVOD() {

@@ -139,20 +139,16 @@ public class AntWidget: NSObject {
   public static let shared = AntWidget()
   
   private var dataSource = DataSource()
-  private var animationProcessing = false
   private var isBackground = false
   private var currentState = WidgetState.resting {
     didSet {
-      if case .loading = currentState {
-        animationProcessing = true
-      }
-      widgetView.prepare(for: currentState, completion: { state in
+      var immediately = false
+      if case .resting = currentState { immediately = isBackground }
+      widgetView.prepare(for: currentState, immediately: immediately, completion: { state in
         print("Button state: \(state.description)")
+        if case .live = state { return }
         self.currentContent = self.preparedContent
         self.preparedContent = nil
-        if case .loading = state {
-          self.animationProcessing = false
-        }
       })
     }
   }
@@ -228,7 +224,7 @@ public class AntWidget: NSObject {
     NotificationCenter.default.addObserver(self, selector: #selector(handleOrientationDidChange(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     UIDevice.current.isBatteryMonitoringEnabled = true
     AppAuth.shared.auth()
-    widgetView.prepare(for: .resting, completion: nil)
+    widgetView.prepare(for: .resting, immediately: true, completion: nil)
   }
 
   deinit {
@@ -366,7 +362,7 @@ public class AntWidget: NSObject {
       return
     }
     if let stream = dataSource.streams.first {
-      if currentContent?.id != stream.id, animationProcessing == false {
+      if currentContent?.id != stream.id && preparedContent?.id != stream.id {
         preparedContent = stream
         showLive(with: stream)
       }
