@@ -22,25 +22,8 @@ public class AppAuth {
     }
 
     self.fbApp = FirebaseApp.app(name: "AntViewerFirebase")!
-    if let app = self.fbApp {
-      Auth.auth(app: app).signInAnonymously(completion: { [weak self] (result, error) in
-        let user = result?.user
-        self?._userID = user?.uid
-      })
-    }
-    
-  }
-  
-  private var _userID: String?
-  
-  public var userID: String? {
-    if let id = _userID {
-      return id
-    }
-    if let app = self.fbApp {
-      return Auth.auth(app: app).currentUser?.uid
-    }
-    return nil
+    guard let app = fbApp else { return }
+    Auth.auth(app: app).signInAnonymously()
   }
   
 }

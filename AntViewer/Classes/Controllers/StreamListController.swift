@@ -109,10 +109,7 @@ class StreamListController: UIViewController, HostChangeable {
   }()
   fileprivate let initialVodDebouncer = Debouncer(delay: 0.7)
   fileprivate let playerDebouncer = Debouncer(delay: 0.5)
-  fileprivate var isLoading = false {
-    didSet {
-    }
-  }
+  fileprivate var isLoading = false
   
   fileprivate var isDataSourceEmpty: Bool {
     return dataSource.videos.isEmpty && dataSource.streams.isEmpty
@@ -318,13 +315,15 @@ class StreamListController: UIViewController, HostChangeable {
       case .success:
         self.bottomMessage.hideMessage()
         self.skeleton?.loaded(videoContent: VOD.self , isEmpty: self.dataSource.videos.isEmpty)
-        self.collectionView.reloadData()
-        self.collectionView.performBatchUpdates(nil) { (result) in
+        self.isLoading = false
+        CATransaction.setCompletionBlock {
           if self.activeCell == nil, self.view.window != nil {
             self.activeCell = self.getTopVisibleCell()
           }
         }
-        self.isLoading = false
+        CATransaction.begin()
+        self.collectionView.reloadData()
+        CATransaction.commit()
       case .failure(let error):
         print(error)
         if !error.noInternetConnection {
@@ -364,8 +363,7 @@ class StreamListController: UIViewController, HostChangeable {
     if collectionView.contentOffset.y < 0 {
        collectionView.contentOffset = .zero
      }
-    //MARK: wait 0.1 sec because visible cells is empty in moment notification triggering
-    DispatchQueue.main.asyncAfter(deadline: .now()+0.1) { [weak self] in
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
       self?.activeCell = self?.getTopVisibleCell()
     }
   }
