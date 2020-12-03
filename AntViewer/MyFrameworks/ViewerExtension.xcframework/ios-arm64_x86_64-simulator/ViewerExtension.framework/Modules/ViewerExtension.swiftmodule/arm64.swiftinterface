@@ -462,61 +462,60 @@ public protocol VideoContent {
   var shareLink: Swift.String? { get }
   var viewsCount: Swift.Int { get }
 }
-public struct Live : ViewerExtension.VideoContent {
-  public let id: Swift.Int
-  public let title: Swift.String
-  public var latestMessage: ViewerExtension.LatestComment?
-  public var isChatOn: Swift.Bool
-  public var isPollOn: Swift.Bool
-  public var shareLink: Swift.String?
-  public var creatorName: Swift.String
-  public let creatorNickname: Swift.String
-  public let thumbnailUrl: Swift.String
-  public var url: Swift.String {
+@_hasMissingDesignatedInitializers final public class Live : ViewerExtension.VideoContent, Swift.Codable {
+  final public var id: Swift.Int
+  final public var title: Swift.String
+  final public var latestMessage: ViewerExtension.LatestComment?
+  final public var isChatOn: Swift.Bool
+  final public var isPollOn: Swift.Bool
+  final public var shareLink: Swift.String?
+  final public var creatorName: Swift.String
+  final public var creatorNickname: Swift.String
+  final public var thumbnailUrl: Swift.String
+  final public var url: Swift.String {
     get
   }
-  public let date: Foundation.Date
-  public var viewsCount: Swift.Int
-  public var broadcasterPicUrl: Swift.String
-}
-extension Live : Swift.Codable {
+  final public var date: Foundation.Date
+  final public var viewsCount: Swift.Int
+  final public var broadcasterPicUrl: Swift.String
+  @objc deinit
   public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
+  final public func encode(to encoder: Swift.Encoder) throws
 }
-public class VOD : ViewerExtension.VideoContent {
-  public var isNew: Swift.Bool
-  public var viewsCount: Swift.Int
-  public var stopTime: Swift.String {
+final public class VOD : ViewerExtension.VideoContent {
+  final public var isNew: Swift.Bool
+  final public var viewsCount: Swift.Int
+  final public var stopTime: Swift.String {
     get
     set
   }
-  public var id: Swift.Int
-  public var title: Swift.String
-  public var url: Swift.String
-  public var creatorName: Swift.String
-  public var creatorNickname: Swift.String
-  public var thumbnailUrl: Swift.String
-  public var creatorId: Swift.Int
-  public var date: Foundation.Date
-  public var duration: Swift.String {
+  final public var id: Swift.Int
+  final public var title: Swift.String
+  final public var url: Swift.String
+  final public var creatorName: Swift.String
+  final public var creatorNickname: Swift.String
+  final public var thumbnailUrl: Swift.String
+  final public var creatorId: Swift.Int
+  final public var date: Foundation.Date
+  final public var duration: Swift.String {
     get
   }
-  public var broadcasterPicUrl: Swift.String
-  public var watchedTime: Swift.Int?
-  public var latestMessage: ViewerExtension.LatestComment?
-  public var isChatOn: Swift.Bool
-  public var isPollOn: Swift.Bool
-  public var shareLink: Swift.String?
-  public var curtainRangeModels: [ViewerExtension.CurtainRange]
+  final public var broadcasterPicUrl: Swift.String
+  final public var watchedTime: Swift.Int?
+  final public var latestMessage: ViewerExtension.LatestComment?
+  final public var isChatOn: Swift.Bool
+  final public var isPollOn: Swift.Bool
+  final public var shareLink: Swift.String?
+  final public var curtainRangeModels: [ViewerExtension.CurtainRange]
   required public init(from decoder: Swift.Decoder) throws
   @objc deinit
 }
 extension VOD : Swift.Codable {
-  public func encode(to encoder: Swift.Encoder) throws
+  final public func encode(to encoder: Swift.Encoder) throws
 }
 public protocol FirebaseFetcher {
-  func setLatestMessagesTo(VODs: [ViewerExtension.VOD], completion: @escaping (([ViewerExtension.VOD]) -> ()))
-  func setInfoTo(lives: [ViewerExtension.Live], completion: @escaping (([ViewerExtension.Live]) -> ()))
+  func setLatestMessagesTo(VODs: [ViewerExtension.VOD], completion: @escaping (() -> ()))
+  func setInfoTo(lives: [ViewerExtension.Live], completion: @escaping (() -> ()))
 }
 public enum ContentType : Swift.String, Swift.Codable {
   case VOD

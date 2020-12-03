@@ -6,7 +6,7 @@
 //
 
 import AVFoundation
-import ViewerExtension
+//import ViewerExtension
 
 public struct AntourageAVPlayerConfiguration: PlayerConfiguration {
 
