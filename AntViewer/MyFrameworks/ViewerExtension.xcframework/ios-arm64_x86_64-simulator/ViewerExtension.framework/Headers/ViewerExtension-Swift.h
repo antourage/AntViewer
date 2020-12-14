@@ -191,9 +191,11 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
 @import CoreData;
+@import CoreGraphics;
 @import Dispatch;
 @import Foundation;
 @import ObjectiveC;
+@import UIKit;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
@@ -214,6 +216,48 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 
 @class NSCoder;
+
+SWIFT_CLASS("_TtC15ViewerExtension19EmptyDataSourceView")
+@interface EmptyDataSourceView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC15ViewerExtension10FooterView")
+@interface FooterView : UICollectionReusableView
+- (void)awakeFromNib;
+- (void)layoutSubviews;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+@class NSTextContainer;
+@class UIColor;
+@class NSAttributedString;
+@class UIFont;
+@protocol UITextViewDelegate;
+
+/// @abstract UITextView with placeholder support
+SWIFT_CLASS("_TtC15ViewerExtension10IQTextView")
+@interface IQTextView : UITextView
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame textContainer:(NSTextContainer * _Nullable)textContainer OBJC_DESIGNATED_INITIALIZER;
+- (void)awakeFromNib;
+/// @abstract To set textView’s placeholder text color.
+@property (nonatomic, strong) IBInspectable UIColor * _Nullable placeholderTextColor;
+/// @abstract To set textView’s placeholder text. Default is nil.
+@property (nonatomic, copy) IBInspectable NSString * _Nullable placeholder;
+- (void)layoutSubviews;
+@property (nonatomic, copy) NSString * _Null_unspecified text;
+@property (nonatomic, strong) NSAttributedString * _Null_unspecified attributedText;
+@property (nonatomic, strong) UIFont * _Nullable font;
+@property (nonatomic) NSTextAlignment textAlignment;
+@property (nonatomic, strong) id <UITextViewDelegate> _Nullable delegate;
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+@end
+
 
 SWIFT_CLASS("_TtC15ViewerExtension13LatestComment")
 @interface LatestComment : NSObject <NSSecureCoding>
@@ -245,6 +289,15 @@ SWIFT_CLASS_NAMED("MessageMO")
 @end
 
 
+SWIFT_CLASS("_TtC15ViewerExtension14ModernAVPlayer")
+@interface ModernAVPlayer : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
 
 SWIFT_CLASS_NAMED("PollMO")
 @interface PollMO : NSManagedObject
@@ -260,6 +313,61 @@ SWIFT_CLASS_NAMED("PollMO")
 @property (nonatomic, strong) NSNumber * _Nullable userAnswer;
 @property (nonatomic, strong) VideoContentMO * _Nullable content;
 @end
+
+@class UILabel;
+
+SWIFT_CLASS("_TtC15ViewerExtension17PollTableViewCell")
+@interface PollTableViewCell : UITableViewCell
+@property (nonatomic, strong) IBOutlet UILabel * _Null_unspecified titleLabel;
+- (void)awakeFromNib;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER SWIFT_AVAILABILITY(ios,introduced=3.0);
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_CLASS("_TtC15ViewerExtension15SeekPaddingView")
+@interface SeekPaddingView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
+@interface StreamCell : UICollectionViewCell
+- (void)layoutSubviews;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+
+
+@interface UIBarButtonItem (SWIFT_EXTENSION(ViewerExtension))
+- (void)badgeWithText:(NSString * _Nullable)text;
+@end
+
+
+@interface UIButton (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) IBInspectable NSString * _Nonnull imageFromBundle;
+@end
+
+
+
+
+@interface UIImage (SWIFT_EXTENSION(ViewerExtension)) <NSDiscardableContent>
+- (BOOL)beginContentAccess SWIFT_WARN_UNUSED_RESULT;
+- (void)endContentAccess;
+- (void)discardContentIfPossible;
+- (BOOL)isContentDiscarded SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface UIImageView (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) IBInspectable NSString * _Nonnull imageFromBundle;
+@end
+
+
+
 
 
 
@@ -398,6 +506,30 @@ typedef SWIFT_ENUM(NSInteger, WebSocketReadyState, open) {
 /// The connection is closed or couldn’t be opened.
   WebSocketReadyStateClosed = 3,
 };
+
+@class UITouch;
+@class UIEvent;
+@class UIWindow;
+
+SWIFT_CLASS("_TtC15ViewerExtension10WidgetView")
+@interface WidgetView : UIView
+- (void)layoutSubviews;
+- (void)didMoveToSuperview;
+- (void)touchesEnded:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)willMoveToWindow:(UIWindow * _Nullable)newWindow;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class NSDictionary;
+
+@interface WidgetView (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) void (^ _Nullable onViewerAppear)(NSDictionary * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onViewerDisappear)(NSDictionary * _Nonnull);
+@property (nonatomic, copy) NSString * _Nonnull widgetPosition;
+@property (nonatomic, strong) NSDictionary * _Nonnull widgetMargins;
+@property (nonatomic, copy) NSString * _Nonnull widgetLocale;
+@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
@@ -597,9 +729,11 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #pragma clang diagnostic ignored "-Watimport-in-framework-header"
 #endif
 @import CoreData;
+@import CoreGraphics;
 @import Dispatch;
 @import Foundation;
 @import ObjectiveC;
+@import UIKit;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
@@ -620,6 +754,48 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 
 @class NSCoder;
+
+SWIFT_CLASS("_TtC15ViewerExtension19EmptyDataSourceView")
+@interface EmptyDataSourceView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC15ViewerExtension10FooterView")
+@interface FooterView : UICollectionReusableView
+- (void)awakeFromNib;
+- (void)layoutSubviews;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+@class NSTextContainer;
+@class UIColor;
+@class NSAttributedString;
+@class UIFont;
+@protocol UITextViewDelegate;
+
+/// @abstract UITextView with placeholder support
+SWIFT_CLASS("_TtC15ViewerExtension10IQTextView")
+@interface IQTextView : UITextView
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithFrame:(CGRect)frame textContainer:(NSTextContainer * _Nullable)textContainer OBJC_DESIGNATED_INITIALIZER;
+- (void)awakeFromNib;
+/// @abstract To set textView’s placeholder text color.
+@property (nonatomic, strong) IBInspectable UIColor * _Nullable placeholderTextColor;
+/// @abstract To set textView’s placeholder text. Default is nil.
+@property (nonatomic, copy) IBInspectable NSString * _Nullable placeholder;
+- (void)layoutSubviews;
+@property (nonatomic, copy) NSString * _Null_unspecified text;
+@property (nonatomic, strong) NSAttributedString * _Null_unspecified attributedText;
+@property (nonatomic, strong) UIFont * _Nullable font;
+@property (nonatomic) NSTextAlignment textAlignment;
+@property (nonatomic, strong) id <UITextViewDelegate> _Nullable delegate;
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+@end
+
 
 SWIFT_CLASS("_TtC15ViewerExtension13LatestComment")
 @interface LatestComment : NSObject <NSSecureCoding>
@@ -651,6 +827,15 @@ SWIFT_CLASS_NAMED("MessageMO")
 @end
 
 
+SWIFT_CLASS("_TtC15ViewerExtension14ModernAVPlayer")
+@interface ModernAVPlayer : NSObject
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+
+
+
 
 SWIFT_CLASS_NAMED("PollMO")
 @interface PollMO : NSManagedObject
@@ -666,6 +851,61 @@ SWIFT_CLASS_NAMED("PollMO")
 @property (nonatomic, strong) NSNumber * _Nullable userAnswer;
 @property (nonatomic, strong) VideoContentMO * _Nullable content;
 @end
+
+@class UILabel;
+
+SWIFT_CLASS("_TtC15ViewerExtension17PollTableViewCell")
+@interface PollTableViewCell : UITableViewCell
+@property (nonatomic, strong) IBOutlet UILabel * _Null_unspecified titleLabel;
+- (void)awakeFromNib;
+- (nonnull instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString * _Nullable)reuseIdentifier OBJC_DESIGNATED_INITIALIZER SWIFT_AVAILABILITY(ios,introduced=3.0);
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_CLASS("_TtC15ViewerExtension15SeekPaddingView")
+@interface SeekPaddingView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder SWIFT_UNAVAILABLE;
+@end
+
+
+SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
+@interface StreamCell : UICollectionViewCell
+- (void)layoutSubviews;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+
+
+@interface UIBarButtonItem (SWIFT_EXTENSION(ViewerExtension))
+- (void)badgeWithText:(NSString * _Nullable)text;
+@end
+
+
+@interface UIButton (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) IBInspectable NSString * _Nonnull imageFromBundle;
+@end
+
+
+
+
+@interface UIImage (SWIFT_EXTENSION(ViewerExtension)) <NSDiscardableContent>
+- (BOOL)beginContentAccess SWIFT_WARN_UNUSED_RESULT;
+- (void)endContentAccess;
+- (void)discardContentIfPossible;
+- (BOOL)isContentDiscarded SWIFT_WARN_UNUSED_RESULT;
+@end
+
+
+@interface UIImageView (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) IBInspectable NSString * _Nonnull imageFromBundle;
+@end
+
+
+
 
 
 
@@ -804,6 +1044,30 @@ typedef SWIFT_ENUM(NSInteger, WebSocketReadyState, open) {
 /// The connection is closed or couldn’t be opened.
   WebSocketReadyStateClosed = 3,
 };
+
+@class UITouch;
+@class UIEvent;
+@class UIWindow;
+
+SWIFT_CLASS("_TtC15ViewerExtension10WidgetView")
+@interface WidgetView : UIView
+- (void)layoutSubviews;
+- (void)didMoveToSuperview;
+- (void)touchesEnded:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)willMoveToWindow:(UIWindow * _Nullable)newWindow;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
+
+@class NSDictionary;
+
+@interface WidgetView (SWIFT_EXTENSION(ViewerExtension))
+@property (nonatomic, copy) void (^ _Nullable onViewerAppear)(NSDictionary * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onViewerDisappear)(NSDictionary * _Nonnull);
+@property (nonatomic, copy) NSString * _Nonnull widgetPosition;
+@property (nonatomic, strong) NSDictionary * _Nonnull widgetMargins;
+@property (nonatomic, copy) NSString * _Nonnull widgetLocale;
+@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop

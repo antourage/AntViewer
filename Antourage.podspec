@@ -36,7 +36,9 @@ Pod::Spec.new do |s|
   if isDebug
     s.dependency 'ViewerExtension'
   else
-    s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
+    #s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
+    s.preserve_paths      = 'ViewerExtension.xcframework', 'ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64.dSYM',  'ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64_x86_64-simulator.dSYM'
+    s.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
   end
 
   s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'
@@ -45,7 +47,9 @@ Pod::Spec.new do |s|
   }
   s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
   s.static_framework = true
-  s.xcconfig = { 'SWIFT_INCLUDE_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources',
+  s.xcconfig = {
+    'FRAMEWORK_SEARCH_PATHS' => '\'$(PODS_ROOT)/Antourage/AntViewer/MyFrameworks/**\'',
+    'SWIFT_INCLUDE_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources',
     'HEADER_SEARCH_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources'
   }
   s.pod_target_xcconfig = {
@@ -53,9 +57,10 @@ Pod::Spec.new do |s|
   }
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
     
-  s.frameworks = 'UIKit', 'AVKit'
+  s.frameworks = 'UIKit', 'AVKit', 'MediaPlayer', 'Foundation'
   s.dependency 'Firebase/Auth'
   s.dependency 'Firebase/Firestore'
 
   s.swift_version = "5.2"
+  
 end

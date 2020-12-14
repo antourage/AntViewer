@@ -4,6 +4,18 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>AntViewerLocalization_en.stringsdict</key>
+		<data>
+		+ld7+OIloj+Xt7AXe6X8R/vYc8w=
+		</data>
+		<key>AntViewerLocalization_sv.strings</key>
+		<data>
+		PcxX1GfUn3aADZsQR99fGVtRkXM=
+		</data>
+		<key>AntViewerLocalization_sv.stringsdict</key>
+		<data>
+		PbBMvBDvmUXM4GyzgzVcQqcUhGw=
+		</data>
 		<key>AntViewerModel.momd/AntViewerModel.mom</key>
 		<data>
 		jKVcAFmgKP9mVDpN/8iR0SVXyno=
@@ -12,9 +24,33 @@
 		<data>
 		45gg9uf1v15yw34BYFnA3WX+AaM=
 		</data>
+		<key>Assets.car</key>
+		<data>
+		d9QIoCVgsWuQ5dwzp1ZLaTPX8QQ=
+		</data>
+		<key>ChatViewController.nib</key>
+		<data>
+		N9ztZ0RoouLM6RW2c1msBsvlPDE=
+		</data>
+		<key>EditProfileViewController.nib</key>
+		<data>
+		XzcyHDLiyhV40W2/TOxLd315/6w=
+		</data>
+		<key>EmptyDataSourceView.nib</key>
+		<data>
+		45hyz61Em+bynFvLrp49PxJiXM4=
+		</data>
+		<key>FooterView.nib/objects-13.0+.nib</key>
+		<data>
+		rU1bdWxcNq2Y+9rTPEmA9H4jEqE=
+		</data>
+		<key>FooterView.nib/runtime.nib</key>
+		<data>
+		shlLxorpFAJPT/6GNKZCUNW4Wto=
+		</data>
 		<key>Headers/ViewerExtension-Swift.h</key>
 		<data>
-		h21e4qxgiir0A2IR9muG7PhQYjg=
+		cJwKGqf/wwsRGdOcdNvqFY6+/XE=
 		</data>
 		<key>Headers/ViewerExtension.h</key>
 		<data>
@@ -22,67 +58,148 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		rS+lXzdXo2Va+GNlLbK8AEB+vq0=
+		HZrAU/w8ubEd2ZsUEP5FIwzUSVA=
+		</data>
+		<key>MessageView.nib</key>
+		<data>
+		xRDiwGUE56Vw5Lf64Qz2lITMl5k=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		nTleNP6o6nkNKdVrVL+++2yicx4=
+		qEAh3AjyNK4wAEU2EzrHaQ5F4u8=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		G8R2JDB8qgT9/T70le40tLhY+OU=
+		B4djQZi1mT6Hvd7LhK7CbFqHt9M=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		RwFJizjJP/h9yhuN/x7q5j/eRbQ=
+		TkfntY4l17eMjYwCAYZfCU97Hpg=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		nTleNP6o6nkNKdVrVL+++2yicx4=
+		qEAh3AjyNK4wAEU2EzrHaQ5F4u8=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftinterface</key>
 		<data>
-		G8R2JDB8qgT9/T70le40tLhY+OU=
+		B4djQZi1mT6Hvd7LhK7CbFqHt9M=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		RwFJizjJP/h9yhuN/x7q5j/eRbQ=
+		TkfntY4l17eMjYwCAYZfCU97Hpg=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		sIM7621gKkuIVcyS698qhO0um5k=
+		xNnMnvD0+99KIVmNhCZf0JtVrtg=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		oqhhbZB8UU91y2k6HjONgUM6eEg=
+		KcHh+koaHDhvIZxp1/B9iPmvmAU=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		GeuHT8oU0ijTk/TqHQtyXqubQ9o=
+		isyyGgfdY143YehDBgAMBFFd3Jg=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64.swiftdoc</key>
 		<data>
-		sIM7621gKkuIVcyS698qhO0um5k=
+		xNnMnvD0+99KIVmNhCZf0JtVrtg=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64.swiftinterface</key>
 		<data>
-		oqhhbZB8UU91y2k6HjONgUM6eEg=
+		KcHh+koaHDhvIZxp1/B9iPmvmAU=
 		</data>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64.swiftmodule</key>
 		<data>
-		GeuHT8oU0ijTk/TqHQtyXqubQ9o=
+		isyyGgfdY143YehDBgAMBFFd3Jg=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
 		o8/oIy0XpuiTsfa71EV2rHKRH8A=
 		</data>
+		<key>PlayerController.nib/objects-13.0+.nib</key>
+		<data>
+		54DaIVQUSUwBgeMi1370a7ujdWE=
+		</data>
+		<key>PlayerController.nib/runtime.nib</key>
+		<data>
+		bHVSEQueOEqiKwytTGu0ImClmTU=
+		</data>
+		<key>PollController.nib/objects-13.0+.nib</key>
+		<data>
+		laQyKzYkbRQA44d3eMqyjRwkPgg=
+		</data>
+		<key>PollController.nib/runtime.nib</key>
+		<data>
+		wTK0aVj2TPRc3w1uyiUgM7JU1+w=
+		</data>
+		<key>PollTableViewCell.nib/objects-13.0+.nib</key>
+		<data>
+		mkR3M2wIuRFw3x1xp2jNqGldkbY=
+		</data>
+		<key>PollTableViewCell.nib/runtime.nib</key>
+		<data>
+		/6BrDWOskwquaUIRHO8tGFwGoCc=
+		</data>
+		<key>PortraitMessageCell.nib</key>
+		<data>
+		ux8tDF4IXSxF9It7kp2kgEIAv1c=
+		</data>
+		<key>SkeletonCell.nib/objects-12.3+.nib</key>
+		<data>
+		M88sTQAD0qFIySzTWAVM4j6FRdo=
+		</data>
+		<key>SkeletonCell.nib/runtime.nib</key>
+		<data>
+		Y3z2Alf0NB+rLiEc3qkSDPxRzYQ=
+		</data>
+		<key>SponsoredBannerCell.nib</key>
+		<data>
+		nTluYwiAlBIoNgcPelm/9w8jDqM=
+		</data>
+		<key>StreamCell.nib/objects-12.3+.nib</key>
+		<data>
+		vmpb1O5idWrqWehKCWeu6q6gmLs=
+		</data>
+		<key>StreamCell.nib/objects-13.0+.nib</key>
+		<data>
+		rw8ZsFTs3BECUAeTliLO+5gRBwU=
+		</data>
+		<key>StreamCell.nib/runtime.nib</key>
+		<data>
+		BNQT9mbPD3yZ1BZhPsI4xlyzrKo=
+		</data>
+		<key>StreamListController.nib</key>
+		<data>
+		5lR0VLTROwzP7WU7wjMEBJmfD4s=
+		</data>
 		<key>ViewerExtension.podspec</key>
 		<data>
-		lSxPXeeqV9lCIHZCeI65W1WPemg=
+		IFuScU7MCfXPQKWs5MpRh7N40KE=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>AntViewerLocalization_en.stringsdict</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			rKb6OBfoD73G08fqZt8ZvKFtoEt2qpuXGAV+bCoB400=
+			</data>
+		</dict>
+		<key>AntViewerLocalization_sv.strings</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			4WITaat4+LmrL0WpUjj0Ez4QP0yoJcK/GJmYx+yCZ9Q=
+			</data>
+		</dict>
+		<key>AntViewerLocalization_sv.stringsdict</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			kDjm0UNr16Nnp9yKxt2z2R2pIymeUooHQKWfy3FWRZc=
+			</data>
+		</dict>
 		<key>AntViewerModel.momd/AntViewerModel.mom</key>
 		<dict>
 			<key>hash2</key>
@@ -97,11 +214,53 @@
 			W6DC5k00hQUCz6U+yVwm4ZTAI4pvHen8lNrHVVBKpKc=
 			</data>
 		</dict>
+		<key>Assets.car</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			2Tytbpvrh3zPJaa9Jm1mMmyqUa7xCLN45r7KxLtWIp8=
+			</data>
+		</dict>
+		<key>ChatViewController.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			e+lz2GccA5VgY1k2BLR08PrVFAOT3qoIos0Dt+C33ZQ=
+			</data>
+		</dict>
+		<key>EditProfileViewController.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			9/Ejd+5OS1tAM+gC1SK7jrcCwPjgW0hUfx7un1FKCi0=
+			</data>
+		</dict>
+		<key>EmptyDataSourceView.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			4ujYId9+vsJO0EpzeEF5TLZhRqfChLjt1Sla4sJTtxw=
+			</data>
+		</dict>
+		<key>FooterView.nib/objects-13.0+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			4MLvW+7rhQgMWfDlT43di6GrxabxihJUapmq0wfgpLI=
+			</data>
+		</dict>
+		<key>FooterView.nib/runtime.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			xTfyCySzuVbojeatEw94zbrIOaRUXvA04VokH9ge1rA=
+			</data>
+		</dict>
 		<key>Headers/ViewerExtension-Swift.h</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			TS2O+ZwtCZcOr+v+V5qDZM788TZoHfT/zCSrsxcN0FY=
+			CJZlJOPhZSFL4WE4x58sIRdzo7HO4ummewQkxYF4skM=
 			</data>
 		</dict>
 		<key>Headers/ViewerExtension.h</key>
@@ -111,88 +270,95 @@
 			MwqoA43sZ/enXG8HlpPG6wdfJx0GYesli24W0knozcA=
 			</data>
 		</dict>
+		<key>MessageView.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			z0bjH9teGNNWjlok2KsB2ipslsx2x0z85j5NP28din8=
+			</data>
+		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KqzHFVdsKgOUfHoWMaBPN0uGbqQuwGMh1Xzn9x+rr2E=
+			OB2WUPWCu18Gqvc2BcRcUpU0XWhQOLiDQLbMPAGfrR0=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			THdIeU82j1ncBYzRSGe/XQ8VBWpAfp4DZsctnYk9BP4=
+			09ojFNN91b7p4BPbKNXOr4UyiVdua09yXFb8qcSUJRU=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6dP3PXDuk37CuAgjxZSxoBMIdIRBM9f2lzZcj8iG6FM=
+			mP5f05wmUklm29x317m/xvoeUT8Y+3nCLBSjT6T/fQQ=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KqzHFVdsKgOUfHoWMaBPN0uGbqQuwGMh1Xzn9x+rr2E=
+			OB2WUPWCu18Gqvc2BcRcUpU0XWhQOLiDQLbMPAGfrR0=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			THdIeU82j1ncBYzRSGe/XQ8VBWpAfp4DZsctnYk9BP4=
+			09ojFNN91b7p4BPbKNXOr4UyiVdua09yXFb8qcSUJRU=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/arm64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			6dP3PXDuk37CuAgjxZSxoBMIdIRBM9f2lzZcj8iG6FM=
+			mP5f05wmUklm29x317m/xvoeUT8Y+3nCLBSjT6T/fQQ=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			HVRbLjOhc72IJsTZRlQo9uswNB33F0mQPdUXnrw2rKE=
+			EMJCeLhOMPc6QjfkxfhqBg2oUjoj4tvD2ew4NEwgyJk=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KKoteDwRkGO6AK545wrHiVC/I5tjTIr1WBWeBhXzdFk=
+			T5vOO+qzghWZqrQiMVH2pQHLz/7nR7QlCTgU190TLwM=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uinJLGyNCehF3CpHwYBnMVJhQ6QtM8GRrQLgpd1JFts=
+			+QNKHsDtILdffg1NgioVSNgM5HlQtuwPSvri22PgeLk=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			HVRbLjOhc72IJsTZRlQo9uswNB33F0mQPdUXnrw2rKE=
+			EMJCeLhOMPc6QjfkxfhqBg2oUjoj4tvD2ew4NEwgyJk=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KKoteDwRkGO6AK545wrHiVC/I5tjTIr1WBWeBhXzdFk=
+			T5vOO+qzghWZqrQiMVH2pQHLz/7nR7QlCTgU190TLwM=
 			</data>
 		</dict>
 		<key>Modules/ViewerExtension.swiftmodule/x86_64.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			uinJLGyNCehF3CpHwYBnMVJhQ6QtM8GRrQLgpd1JFts=
+			+QNKHsDtILdffg1NgioVSNgM5HlQtuwPSvri22PgeLk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
@@ -202,11 +368,109 @@
 			VhbaWiNG26gbQu+DyBIH7fF/gOFHsdOeT5shYbOmyYY=
 			</data>
 		</dict>
+		<key>PlayerController.nib/objects-13.0+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			QKltb6rBzBSmO1E/voow3AfG1QacDWDd9vvwJYcvYE8=
+			</data>
+		</dict>
+		<key>PlayerController.nib/runtime.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ti50w9l82eLXU0uX9baFP/fXbJslNz9bt2R08tlpNws=
+			</data>
+		</dict>
+		<key>PollController.nib/objects-13.0+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			wrGPAUQrjMwBYVGmYwBOghKhFP7jrjB9gZhyl7205TQ=
+			</data>
+		</dict>
+		<key>PollController.nib/runtime.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			ymmZqCOu+XDc54tyvFmKuAsGMDp2+CQ0muxKRvU4Ous=
+			</data>
+		</dict>
+		<key>PollTableViewCell.nib/objects-13.0+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			bJGoCLxclyz7RIe77ztqiHvN+bI7KdYU6GVaZCcDL0c=
+			</data>
+		</dict>
+		<key>PollTableViewCell.nib/runtime.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			K/ZmHo++L0DD0ymqB4jIHTmB3Y/KLa44RACjYboln1Y=
+			</data>
+		</dict>
+		<key>PortraitMessageCell.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			IPqwwBHGSg8Xf/sdlz5u4LiSDV4qnCWoav7l8pQKASk=
+			</data>
+		</dict>
+		<key>SkeletonCell.nib/objects-12.3+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			eBLOgfgFrH/4i3/bx26Ljp+7KAhAQPyETea1k+D6jwo=
+			</data>
+		</dict>
+		<key>SkeletonCell.nib/runtime.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			JJ/LNkfTOLZowx2c2lcI+JZ8xSBmo94Ce2xXgOT47es=
+			</data>
+		</dict>
+		<key>SponsoredBannerCell.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			g7HZAfJbJ4SgpDjM7C8108kvheqUFWN7wnM9n5MkylM=
+			</data>
+		</dict>
+		<key>StreamCell.nib/objects-12.3+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			zA1AekZcw41lE+d36hjNCR+uIfHJxm13w5Z9A+dOZUE=
+			</data>
+		</dict>
+		<key>StreamCell.nib/objects-13.0+.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			0krxEgu/AhFThsaidikqiYLDNUGW43PG77VsXlvwbn4=
+			</data>
+		</dict>
+		<key>StreamCell.nib/runtime.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			RtMEjY6jSRrq86gAF4cmfysIuC8bEzlnupI+Tgbmmkk=
+			</data>
+		</dict>
+		<key>StreamListController.nib</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			QzZS4nLuhSreKltWGBfx/3qgAFzAIOSIWVazqG8pu/0=
+			</data>
+		</dict>
 		<key>ViewerExtension.podspec</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			qux/FSrw8+VMQToDlljLB0P4A6VhcfxlrxLWfXNRQVU=
+			OF8S6MrzHrU88Bmz2expdLCFPBOaWuP5nD7B/+wk4cY=
 			</data>
 		</dict>
 	</dict>
