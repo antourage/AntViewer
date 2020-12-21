@@ -12,14 +12,13 @@ Pod::Spec.new do |s|
     
     s.source       = { :path => '.' }
     s.framework = "UIKit"
-    s.source_files = "ViewerExtension/**/*.{swift,xcdatamodeld}", "Third_party/SignalR/Sources/SignalRClient/**/*.{swift}"
-    s.resources = ["ViewerExtension/**/*.{xcdatamodeld}"]
-
-    # "ViewerExtension/Third_party/ModernAVPlayer/Sources/Core"
-    # s.resources = "AntViewerExt/Resources/*.{png,jpeg,jpg,json,xcassets,plist}"
-    
-    # 10
-    s.swift_version = "5"
+    s.source_files = "ViewerExtension/**/*.{swift,xcdatamodeld}", "Third_party/SignalR/Sources/SignalRClient/**/*.{swift}",
+        "Third_party/ModernAVPlayer/Sources/Core/**/*.{swift}"
+    s.resources = ["ViewerExtension/**/*.{xcdatamodeld,xib}"]
+    s.resource_bundles = {
+    'ViewerExtension' => ['ViewerExtension/Assets/**/*', "ViewerExtension/Localization/**/*.{strings,stringsdict}"]
+  }
+    s.swift_version = "5.2"
     
     end
     

@@ -1,11 +1,3 @@
-#
-# Be sure to run `pod lib lint Antourage.podspec' to ensure this is a
-# valid spec before submitting.
-#
-# Any lines starting with a # are optional, but their use is encouraged
-# To learn more about a Podspec see https://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
 
   isDebug = false
@@ -13,19 +5,11 @@ Pod::Spec.new do |s|
   s.name             = 'Antourage'
   s.version          = '2.0.29'
   s.summary          = 'Antourage provides to users possibility to watch streams and use chat and polls'
-
-# This description is used to generate tags and improve search results.
-#   * Think: What does it do? Why did you write it? What is the focus?
-#   * Try to keep it short, snappy and to the point.
-#   * Write the description between the DESC delimiters below.
-#   * Finally, don't worry about the indent, CocoaPods strips it!
-
   s.description      = <<-DESC
                         Antourage provides to users possibility to watch streams and use chat and polls.
                        DESC
 
   s.homepage         = 'https://github.com/antourage'
-  # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'Mykola Vaniurskyi' => 'mv@leobit.com' }
   s.source           = { :git => 'https://github.com/antourage/AntViewer.git', :tag => s.version.to_s }
@@ -36,15 +20,11 @@ Pod::Spec.new do |s|
   if isDebug
     s.dependency 'ViewerExtension'
   else
-    #s.ios.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
     s.preserve_paths      = 'ViewerExtension.xcframework', 'ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64.dSYM',  'ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64_x86_64-simulator.dSYM'
     s.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
   end
 
-  s.resources = 'AntViewer/Classes/**/*.{storyboard,xib,plist,xcdatamodeld}'
-  s.resource_bundles = {
-    'AntWidget' => ['AntViewer/Assets/**/*']
-  }
+  s.resources = 'AntViewer/Classes/**/*.{plist}'
   s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
   s.static_framework = true
   s.xcconfig = {
