@@ -117,9 +117,6 @@ public protocol PlayerCommand {
   func seek(position: Swift.Double)
   func stop()
 }
-extension String {
-  public func height(withConstrainedWidth width: CoreGraphics.CGFloat, font: UIKit.UIFont) -> CoreGraphics.CGFloat
-}
 public struct AntourageAVPlayerConfiguration : ViewerExtension.PlayerConfiguration {
   public let rateObservingTimeout: Swift.Double
   public let rateObservingTickTime: Swift.Double
@@ -333,13 +330,6 @@ extension WebSocket {
   @objc dynamic public func send(text: Swift.String)
   @objc dynamic public func send(data: Foundation.Data)
 }
-extension Int {
-  public func durationString(full: Swift.Bool = false) -> Swift.String
-  public func formatUsingAbbrevation() -> Swift.String
-}
-extension String {
-  public func duration() -> Swift.Int
-}
 public class ModernAVPlayerRemoteCommandFactory {
   public var defaultCommands: [ViewerExtension.ModernAVPlayerRemoteCommand] {
     get
@@ -378,10 +368,6 @@ public class ModernAVPlayerMediaItem : ViewerExtension.PlayerMediaItem {
   public func getMetadata() -> ViewerExtension.PlayerMediaMetadata?
   public func setMetadata(_ metadata: ViewerExtension.PlayerMediaMetadata?)
   @objc deinit
-}
-extension OSLog {
-  public static let antNetworking: os.OSLog
-  public static let antButton: os.OSLog
 }
 public struct NotificationResponse : Swift.Codable {
   public let success: Swift.Bool
@@ -534,23 +520,6 @@ extension HubConnection {
   public func stream<T1, T2, T3, T4, T5, T6, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, TItemType : Swift.Decodable
   public func stream<T1, T2, T3, T4, T5, T6, T7, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, TItemType : Swift.Decodable
   public func stream<T1, T2, T3, T4, T5, T6, T7, T8, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable, TItemType : Swift.Decodable
-}
-public class DataSource {
-  public init()
-  public var streams: [ViewerExtension.Live]
-  public var videos: [ViewerExtension.VOD]
-  public var newVod: ViewerExtension.VOD?
-  public var firebaseFetcher: ViewerExtension.FirebaseFetcher?
-  public func getViewers(for liveID: Swift.Int, complitionHandler: @escaping (Swift.Result<Swift.Int, Swift.Error>) -> Swift.Void)
-  public func updateVods(complitionHandler: @escaping (Swift.Result<Swift.Void, Swift.Error>) -> Swift.Void)
-  public func fetchNextItemsFrom(index: Swift.Int, completion: @escaping (Swift.Result<Swift.Void, Swift.Error>) -> Swift.Void)
-  @objc deinit
-}
-extension DataSource {
-  public func pauseUpdatingStreams()
-  public func pauseUpdatingVods()
-  public func startUpdatingStreams()
-  public func startUpdatingVods()
 }
 public struct SponsoredBanner : Swift.Codable {
   public let imageUrl: Swift.String
@@ -750,17 +719,7 @@ extension PollMO {
   @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
   @objc deinit
 }
-extension AVPlayer {
-  public var isPlaying: Swift.Bool {
-    get
-  }
-}
 @_hasMissingDesignatedInitializers public class HttpResponse {
-  @objc deinit
-}
-public class Debouncer {
-  public init(delay: Foundation.TimeInterval, queue: Dispatch.DispatchQueue = DispatchQueue.main)
-  public func call(delay: Foundation.TimeInterval? = nil, action: @escaping () -> Swift.Void)
   @objc deinit
 }
 public protocol PlayerConfiguration {
@@ -862,34 +821,6 @@ public struct Message {
   public func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
   public func close()
   @objc deinit
-}
-extension UIColor {
-  public func as1ptImage() -> UIKit.UIImage
-  public static func color(_ name: Swift.String) -> UIKit.UIColor?
-  public static var darkTitle: UIKit.UIColor {
-    get
-  }
-  public static var pink: UIKit.UIColor {
-    get
-  }
-  public static var cellGray: UIKit.UIColor {
-    get
-  }
-  public static var designerGreen: UIKit.UIColor {
-    get
-  }
-  public static var designerBlue: UIKit.UIColor {
-    get
-  }
-  public static var gradientDark: UIKit.UIColor {
-    get
-  }
-  public static var bottomMessageGray: UIKit.UIColor {
-    get
-  }
-  public static var curtainYellow: UIKit.UIColor {
-    get
-  }
 }
 public class HubConnectionBuilder {
   public init(url: Foundation.URL)
@@ -1256,34 +1187,6 @@ public protocol FirebaseCreator {
   func createMessageFetcher() -> ViewerExtension.FirebaseFetcher
 }
 extension UIView {
-  public func findViewController() -> UIKit.UIViewController?
-  public func showActivityIndicator()
-  public func removeActivityIndicator()
-  public var isActivityIndicatorLoaded: Swift.Bool {
-    get
-  }
-  public func fixInView(_ container: UIKit.UIView!)
-  public func fadeIn(duration: Foundation.TimeInterval = 0.3, delay: Foundation.TimeInterval = 0.0, completion: @escaping ((Swift.Bool) -> Swift.Void) = {(finished: Bool) -> Void in })
-  public func fadeOut(duration: Foundation.TimeInterval = 0.3, delay: Foundation.TimeInterval = 0.0, completion: @escaping (Swift.Bool) -> Swift.Void = {(finished: Bool) -> Void in })
-  public func addBadge(title: Swift.String, corner: UIKit.UIRectCorner = .topRight, belowView: UIKit.UIView? = nil)
-  public func hideBadge()
-}
-extension UIButton {
-  @objc @IBInspectable dynamic public var imageFromBundle: Swift.String {
-    @objc get
-    @objc set
-  }
-}
-extension UIImageView {
-  @objc @IBInspectable dynamic public var imageFromBundle: Swift.String {
-    @objc get
-    @objc set
-  }
-}
-extension UIImage {
-  public static func image(_ name: Swift.String) -> UIKit.UIImage?
-}
-extension UIView {
   public func badge(text badgeText: Swift.String?, badgeEdgeInsets: UIKit.UIEdgeInsets? = nil, appearance: ViewerExtension.BadgeAppearance = BadgeAppearance())
 }
 extension UIBarButtonItem {
@@ -1396,12 +1299,6 @@ public struct HeaderInfoModel : Swift.Codable {
   public init(imageUrl: Swift.String?, tagLine: Swift.String?, imageData: Foundation.Data?)
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
-}
-extension Formatter {
-  public static let iso8601: Foundation.ISO8601DateFormatter
-}
-extension JSONDecoder.DateDecodingStrategy {
-  public static let customISO8601: Foundation.JSONDecoder.DateDecodingStrategy
 }
 public enum ProtocolType : Swift.Int {
   case Text

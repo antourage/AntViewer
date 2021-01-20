@@ -97,41 +97,11 @@ EOM
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/ChatViewController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/SwiftMessage/MessageView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollTableViewCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SponsoredBannerCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld"
-  install_resource "${PODS_CONFIGURATION_BUILD_DIR}/Antourage/AntWidget.bundle"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/ChatViewController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/EditProfileViewController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PlayerController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/PollController.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Controllers/StreamListController.xib"
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/SwiftMessage/MessageView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/EmptyDataSourceView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/FooterView.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PollTableViewCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/PortraitMessageCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SkeletonCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/SponsoredBannerCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/Views/StreamCell.xib"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/CoreDataStaff/AntViewerModel.xcdatamodeld"
-  install_resource "${PODS_CONFIGURATION_BUILD_DIR}/Antourage/AntWidget.bundle"
   install_resource "${PODS_CONFIGURATION_BUILD_DIR}/gRPC-C++/gRPCCertificates-Cpp.bundle"
 fi
 

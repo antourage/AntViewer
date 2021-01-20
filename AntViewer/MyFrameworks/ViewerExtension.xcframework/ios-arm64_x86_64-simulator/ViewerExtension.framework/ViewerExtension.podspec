@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
     s.version = "1.0.0"
     s.license = "MIT"
     s.author = { "Mykola Vaniurskyi" => "mv@leobit.co" }
-    s.homepage = "https://github.com/blabla"
+    s.homepage = "https://github.com/antourage"
     
     s.source       = { :path => '.' }
     s.framework = "UIKit"
@@ -18,7 +18,6 @@ Pod::Spec.new do |s|
     s.resource_bundles = {
     'ViewerExtension' => ['ViewerExtension/Assets/**/*', "ViewerExtension/Localization/**/*.{strings,stringsdict}"]
   }
-    s.swift_version = "5.2"
     
     end
     

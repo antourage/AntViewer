@@ -40,12 +40,13 @@ public class Antourage: NSObject {
     }
   }
   
-  public var widgetMargins: WidgetMargins {
+  public var widgetMargins: UIOffset {
     get {
-      AntWidget.shared.widgetMargins
+      let margins = AntWidget.shared.widgetMargins
+      return UIOffset(horizontal: margins.horizontal, vertical: margins.vertical)
     }
     set {
-      AntWidget.shared.widgetMargins = newValue
+      AntWidget.shared.widgetMargins = WidgetMargins(vertical: newValue.vertical, horizontal: newValue.horizontal)
     }
   }
   

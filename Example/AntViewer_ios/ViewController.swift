@@ -11,7 +11,7 @@ import Antourage
 
 class ViewController: UIViewController {
   
-  var widget: AntWidget! {
+  var widget: Antourage! {
     didSet {
       view.addSubview(widget.view)
     }
@@ -23,9 +23,10 @@ class ViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    widget = AntWidget.shared
+    widget = Antourage.shared
     widget.widgetPosition = .midLeft
-    widget.widgetMargins = WidgetMargins(vertical: 0, horizontal: 0)
+    widget.widgetLocale = .swedish
+//    widget.widgetMargins = AntMargins(vertical: 0, horizontal: 0)
   }
   
 }

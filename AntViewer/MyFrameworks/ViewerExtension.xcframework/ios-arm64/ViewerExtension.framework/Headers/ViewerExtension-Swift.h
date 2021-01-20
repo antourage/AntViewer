@@ -212,7 +212,6 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 
-
 @class NSCoder;
 
 SWIFT_CLASS("_TtC15ViewerExtension19EmptyDataSourceView")
@@ -345,10 +344,6 @@ SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
 @end
 
 
-@interface UIButton (SWIFT_EXTENSION(ViewerExtension))
-@property (nonatomic, copy) IBInspectable NSString * _Nonnull imageFromBundle;
-@end
-
 
 
 
@@ -360,9 +355,7 @@ SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
 @end
 
 
-@interface UIImageView (SWIFT_EXTENSION(ViewerExtension))
-@property (nonatomic, copy) IBInspectable NSString * _Nonnull imageFromBundle;
-@end
+
 
 
 

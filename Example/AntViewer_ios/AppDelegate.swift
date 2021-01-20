@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     Messaging.messaging().delegate = self
     
     
-    AntWidget.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil)
+    Antourage.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil)
     
     return true
   }
@@ -55,7 +55,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
     let userInfo = response.notification.request.content.userInfo
     print("\(userInfo)")
     if let category = userInfo["category"] as? String, category == "antourage" {
-      AntWidget.shared.showFeed()
+      Antourage.shared.showFeed()
     }
   }
   
@@ -65,9 +65,9 @@ extension AppDelegate: MessagingDelegate {
   
   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     print("Token: \(fcmToken)")
-    Messaging.messaging().retrieveFCMToken(forSenderID: AntWidget.AntSenderId) { (token, error) in
+    Messaging.messaging().retrieveFCMToken(forSenderID: Antourage.AntourageSenderId) { (token, error) in
       guard let token = token else { return }
-      AntWidget.registerNotifications(FCMToken: token) { (result) in
+      Antourage.registerNotifications(FCMToken: token) { (result) in
         switch result {
         case .success(let topic):
           Messaging.messaging().subscribe(toTopic: topic) { error in

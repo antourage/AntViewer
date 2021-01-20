@@ -40,7 +40,5 @@ Pod::Spec.new do |s|
   s.frameworks = 'UIKit', 'AVKit', 'MediaPlayer', 'Foundation'
   s.dependency 'Firebase/Auth'
   s.dependency 'Firebase/Firestore'
-
-  s.swift_version = "5.2"
   
 end
