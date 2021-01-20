@@ -20,7 +20,6 @@ Pod::Spec.new do |s|
   if isDebug
     s.dependency 'ViewerExtension'
   else
-    s.preserve_paths      = 'ViewerExtension.xcframework', 'ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64.dSYM',  'ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64_x86_64-simulator.dSYM'
     s.vendored_frameworks = 'AntViewer/MyFrameworks/ViewerExtension.xcframework'
   end
 
