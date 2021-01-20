@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   isDebug = false
 
   s.name             = 'Antourage'
-  s.version          = '2.0.29'
+  s.version          = '2.1.0'
   s.summary          = 'Antourage provides to users possibility to watch streams and use chat and polls'
   s.description      = <<-DESC
                         Antourage provides to users possibility to watch streams and use chat and polls.
