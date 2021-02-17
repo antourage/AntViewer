@@ -12,17 +12,20 @@ import Firebase
 import ViewerExtension
 
 final class FirePollManager: PollManager {
-  
+
   private var streamId: Int
+  private var path: String
   private  var pollListener: ListenerRegistration?
   
-  public init(streamId: Int) {
+  public init(streamId: Int, andPath path: String) {
     self.streamId = streamId
+    self.path = path
   }
   
-  public func observePolls(completion: @escaping((Poll?) -> ())) {
+  func observePolls(withUserID userID: Int?, completion: @escaping((Poll?) -> ())) {
+
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
-    let ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams/\(streamId)/polls")
+    let ref = Firestore.firestore(app: app).collection(path)
     
     pollListener = ref.whereField("isActive", isEqualTo: true).addSnapshotListener( { (querySnapshot, error) in
       guard let document = querySnapshot?.documents.first else {
@@ -30,13 +33,13 @@ final class FirePollManager: PollManager {
         completion(nil)
         return
       }
-      if let newPoll = FirePoll(snapshot: document) {
+      if let newPoll = FirePoll(snapshot: document, userID: userID) {
         completion(newPoll)
       }
     })
   }
   
-  public func removeFirebaseObserver() {
+  func removeFirebaseObserver() {
     pollListener?.remove()
     pollListener = nil
   }

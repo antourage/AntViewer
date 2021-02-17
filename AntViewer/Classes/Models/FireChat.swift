@@ -20,7 +20,7 @@ final class FireChat: Chat {
   public var onRemove: ((Message) -> ())?
   public var onStateChange: ((Bool) -> ())?
   
-  public init(for videoContent: VideoContent) {
+  public init(for videoContent: VideoContent, andPath path: String) {
     let contentMO = StorageManager.shared.loadVideoContent(content: videoContent)
     if contentMO.chatLoaded {
       DispatchQueue.main.asyncAfter(deadline: .now()+1) {
@@ -29,7 +29,7 @@ final class FireChat: Chat {
       return
     }
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
-    self.ref = Firestore.firestore(app: app).collection("antourage/\(Environment.current.rawValue)/streams").document("\(videoContent.id)")
+    self.ref = Firestore.firestore(app: app).collection(path).document("\(videoContent.id)")
     messagesListener = ref?.collection("messages").order(by: "timestamp").addSnapshotListener(messagesHandler())
     stateListener = ref?.addSnapshotListener(stateHandler())
   }
@@ -53,7 +53,6 @@ final class FireChat: Chat {
           let data = diff.document.data()
           let date = (data["timestamp"] as? Timestamp)?.dateValue()
           let docID = diff.document.documentID
-          print("New message: \(data)")
           if let message = Message(data: data, docID: docID, date: date) {
             self.onAdd?(message)
           }
@@ -61,7 +60,6 @@ final class FireChat: Chat {
           let data = diff.document.data()
           let date = (data["timestamp"] as? Timestamp)?.dateValue()
           let docID = diff.document.documentID
-          print("Removed message: \(data)")
           if let message = Message(data: data, docID: docID, date: date) {
             self.onRemove?(message)
           }

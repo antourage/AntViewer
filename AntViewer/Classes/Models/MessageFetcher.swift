@@ -12,14 +12,16 @@ import ViewerExtension
 final class MessageFetcher: FirebaseFetcher {
 
   var firebaseApp: FirebaseApp
+  let path: String
 
-  init() {
+  init(path: String) {
+    self.path = path
     self.firebaseApp = FirebaseApp.app(name: "AntViewerFirebase")!
   }
 
-  func setLatestMessagesTo(VODs: [VOD], completion: @escaping(()->())) {
+  func setLatestMessagesTo(VODs: [Content], completion: @escaping(()->())) {
      let group = DispatchGroup()
-     for video in VODs {
+    for case let video as VOD in VODs {
        group.enter()
        let vodFromCache = StorageManager.shared.loadVideoContent(content: video)
        if vodFromCache.latestCommentLoaded {
@@ -68,7 +70,7 @@ final class MessageFetcher: FirebaseFetcher {
 
   private func getLatestMessageFor(video: VideoContent, completion: @escaping(([Int: LatestComment])->())) {
     let ref = Firestore.firestore(app: firebaseApp)
-      .collection("antourage/\(Environment.current.rawValue)/streams")
+      .collection(path)
       .document("\(video.id)")
       .collection("messages")
       .whereField("type", isEqualTo: 1)
@@ -89,7 +91,7 @@ final class MessageFetcher: FirebaseFetcher {
 
   private func checkPollStatus(live: VideoContent, completion: @escaping(([Int: Bool])->())) {
     let ref = Firestore.firestore(app: firebaseApp)
-      .collection("antourage/\(Environment.current.rawValue)/streams/\(live.id)/polls")
+      .collection("\(path)/\(live.id)/polls")
       .whereField("isActive", isEqualTo: true)
     ref.getDocuments { (snapshot, _) in
       completion([live.id: !(snapshot?.documents.isEmpty ?? true)])
@@ -98,7 +100,7 @@ final class MessageFetcher: FirebaseFetcher {
 
   private func checkChatState(live: VideoContent, completion: @escaping(([Int: Bool])->())) {
     let ref = Firestore.firestore(app: firebaseApp)
-      .collection("antourage/\(Environment.current.rawValue)/streams/")
+      .collection("\(path)/")
       .document("\(live.id)")
     ref.getDocument { (snapshot, _) in
       let chatOn = snapshot?.data()?["isChatActive"] as? Bool ?? false

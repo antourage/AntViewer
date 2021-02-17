@@ -9,16 +9,16 @@ import Foundation
 import ViewerExtension
 
 struct FireCreator: FirebaseCreator {
-  func createPollManagerFor(streamId: Int) -> PollManager {
-    return FirePollManager(streamId: streamId)
+  func createPollManagerFor(streamId: Int, withPath path: String) -> PollManager {
+    return FirePollManager(streamId: streamId, andPath: path)
   }
   
-  func createChatFor(videoContent: VideoContent) -> Chat {
-    return FireChat(for: videoContent)
+  func createChatFor(videoContent: VideoContent, andPath path: String) -> Chat {
+    return FireChat(for: videoContent, andPath: path)
   }
   
-  func createMessageFetcher() -> FirebaseFetcher {
-    return MessageFetcher()
+  func createMessageFetcher(withPath path: String) -> FirebaseFetcher {
+    return MessageFetcher(path: path)
   }
   
 }

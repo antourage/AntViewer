@@ -14,6 +14,7 @@ final class FirePoll: Poll {
   
   private var ref: DocumentReference?
   private var answersListener: ListenerRegistration?
+  private var userID: Int?
   public var key: String
   public var userAnswer: Int?
   public var pollQuestion: String
@@ -32,20 +33,21 @@ final class FirePoll: Poll {
     }
   }
   
-  public init?(snapshot: DocumentSnapshot) {
+  public init?(snapshot: DocumentSnapshot, userID: Int?) {
     guard
       let value = snapshot.data(),
       let pollQuestion = value["question"] as? String,
       let pollAnswers = value["answers"] as? [String] else {
         return nil
     }
+    self.userID = userID
     self.ref = snapshot.reference
     self.key = snapshot.documentID
     self.pollQuestion = pollQuestion
     self.pollAnswers = pollAnswers
     self.percentForEachAnswer = pollAnswers.map {_ in 0}
     self.answersCount = pollAnswers.map {_ in 0}
-    if String(User.current?.id ?? 0) == snapshot.documentID {
+    if let userID = userID, String(userID) == snapshot.documentID {
       self.userAnswer = value["chosenAnswer"] as? Int
     }
     answersListener = ref?.collection("answeredUsers").addSnapshotListener(answersHandler())
@@ -82,11 +84,10 @@ final class FirePoll: Poll {
         return
       }
       
-      if let id = User.current?.id {
-        let userDocument = documents.first(where: { $0.documentID == "\(id)" })
+      if let userID = self?.userID {
+        let userDocument = documents.first(where: { $0.documentID == "\(userID)" })
         self?.userAnswer = userDocument?.data()["chosenAnswer"] as? Int
       }
-      
       let answers = documents.compactMap {$0.data()["chosenAnswer"] as? Int}
       let answersDict = Dictionary(grouping: answers, by: {$0})
       var result = [Int]()
@@ -99,10 +100,8 @@ final class FirePoll: Poll {
   }
   
   
-  public func saveAnswerWith(index: Int) {
-    if let id = User.current?.id {
-      ref?.collection("answeredUsers").document("\(id)").setData(["chosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
-    }
+  public func saveAnswerWith(index: Int, userID: Int) {
+    ref?.collection("answeredUsers").document("\(userID)").setData(["chosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
   }
   
 }

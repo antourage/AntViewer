@@ -23,7 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     setupNotificationsFor(application: application)
     Messaging.messaging().delegate = self
     
-    
     Antourage.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil)
     
     return true
