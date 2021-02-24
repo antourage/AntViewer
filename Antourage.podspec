@@ -3,7 +3,7 @@ Pod::Spec.new do |s|
   isDebug = false
 
   s.name             = 'Antourage'
-  s.version          = '2.1.0'
+  s.version          = '2.1.1'
   s.summary          = 'Antourage provides to users possibility to watch streams and use chat and polls'
   s.description      = <<-DESC
                         Antourage provides to users possibility to watch streams and use chat and polls.
@@ -24,10 +24,7 @@ Pod::Spec.new do |s|
   end
 
   s.resources = 'AntViewer/Classes/**/*.{plist}'
-  s.pod_target_xcconfig = {'DEFINES_MODULE' => 'YES'}
-  s.static_framework = true
   s.xcconfig = {
-    'FRAMEWORK_SEARCH_PATHS' => '\'$(PODS_ROOT)/Antourage/AntViewer/MyFrameworks/**\'',
     'SWIFT_INCLUDE_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources',
     'HEADER_SEARCH_PATHS' => '$(PODS_ROOT)/Firebase/CoreOnly/Sources'
   }
