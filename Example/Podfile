@@ -1,12 +1,15 @@
 platform :ios, '11.3'
-#use_frameworks!
 
 target 'AntViewer_ios_Example' do
-  pod 'Antourage', :path => '../'
+  use_frameworks!
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
+  pod 'Firebase/Crashlytics'
+  pod 'Antourage', :path => '../'
+  pod 'Firebase/Analytics'
   # debug
-  #pod 'AntViewerExt', :path => '../../AntViewerExt/AntViewerExt/'
+  #pod 'ViewerExtension', :path => '../../ViewerExtension/'
+  
 
   target 'AntViewer_ios_Tests' do
     inherit! :complete

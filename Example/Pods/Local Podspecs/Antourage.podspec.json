@@ -1,6 +1,6 @@
 {
   "name": "Antourage",
-  "version": "2.0.29",
+  "version": "2.1.0",
   "summary": "Antourage provides to users possibility to watch streams and use chat and polls",
   "description": "Antourage provides to users possibility to watch streams and use chat and polls.",
   "homepage": "https://github.com/antourage",
@@ -13,17 +13,12 @@
   },
   "source": {
     "git": "https://github.com/antourage/AntViewer.git",
-    "tag": "2.0.29"
+    "tag": "2.1.0"
   },
   "platforms": {
     "ios": "11.3"
   },
   "source_files": "AntViewer/Classes/**/*.{swift}",
-  "preserve_paths": [
-    "ViewerExtension.xcframework",
-    "ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64.dSYM",
-    "ViewerExtension.dSYMs/ViewerExtension.framework.ios-arm64_x86_64-simulator.dSYM"
-  ],
   "vendored_frameworks": "AntViewer/MyFrameworks/ViewerExtension.xcframework",
   "resources": "AntViewer/Classes/**/*.{plist}",
   "pod_target_xcconfig": {

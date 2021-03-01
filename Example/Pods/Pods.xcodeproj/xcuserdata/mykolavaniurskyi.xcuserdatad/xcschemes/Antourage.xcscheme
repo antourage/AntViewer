@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E2D0F87A8AEAFAC341C031B8BA345AC9"
-               BuildableName = "libAntourage.a"
+               BuildableName = "Antourage.framework"
                BlueprintName = "Antourage"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
