@@ -22,7 +22,7 @@ final class FirePollManager: PollManager {
     self.path = path
   }
   
-  func observePolls(withUserID userID: Int?, completion: @escaping((Poll?) -> ())) {
+  func observePolls(withUserID userID: String?, completion: @escaping((Poll?) -> ())) {
 
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
     let ref = Firestore.firestore(app: app).collection(path)

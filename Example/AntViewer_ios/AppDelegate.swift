@@ -30,15 +30,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       uuid = UUID().uuidString
       UserDefaults.standard.set(uuid, forKey: "user_id")
     }
+    let apiKey = getApiKeys() ?? ("put_your_clientID", "put_your_secret")
+    Antourage.authWith(clientID: apiKey.0, secret: apiKey.1)
     
     if setupFirebase() {
       setupNotificationsFor(application: application)
     }
-    
-    let apiKey = getApiKey() ?? "put_your_api_key"
-    
-    Antourage.authWith(apiKey: apiKey, refUserId: uuid, nickname: nil)
-    
     return true
   }
   
@@ -51,12 +48,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     return true
   }
   
-  private func getApiKey() -> String? {
+  private func getApiKeys() -> (String, String)? {
     guard let path = Bundle.main.path(forResource: "Keys", ofType: "plist"),
           let dict = NSDictionary(contentsOfFile: path),
-          let key = dict["Test API Key"] as? String
+          let keys = dict["Test Keys"] as? [String: String],
+          let clientID = keys["clientID"],
+          let secret = keys["secret"]
     else { return nil }
-    return key
+    return (clientID, secret)
   }
   
   private func setupNotificationsFor(application: UIApplication) {

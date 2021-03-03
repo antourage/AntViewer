@@ -14,7 +14,7 @@ final class FirePoll: Poll {
   
   private var ref: DocumentReference?
   private var answersListener: ListenerRegistration?
-  private var userID: Int?
+  private var userID: String?
   public var key: String
   public var userAnswer: Int?
   public var pollQuestion: String
@@ -33,7 +33,7 @@ final class FirePoll: Poll {
     }
   }
   
-  public init?(snapshot: DocumentSnapshot, userID: Int?) {
+  public init?(snapshot: DocumentSnapshot, userID: String?) {
     guard
       let value = snapshot.data(),
       let pollQuestion = value["question"] as? String,
@@ -99,8 +99,11 @@ final class FirePoll: Poll {
     }
   }
   
+  func updateUserID(_ userID: String?) {
+    self.userID = userID
+  }
   
-  public func saveAnswerWith(index: Int, userID: Int) {
+  public func saveAnswerWith(index: Int, userID: String) {
     ref?.collection("answeredUsers").document("\(userID)").setData(["chosenAnswer": index, "timestamp": FieldValue.serverTimestamp()])
   }
   
