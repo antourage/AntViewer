@@ -1,4 +1,4 @@
-module Pods_AntViewer_ios_Example {
+framework module Pods_AntViewer_ios_Example {
   umbrella header "Pods-AntViewer_ios_Example-umbrella.h"
 
   export *

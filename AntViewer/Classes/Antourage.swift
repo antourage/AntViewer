@@ -7,6 +7,7 @@
 
 import UIKit
 import ViewerExtension
+import Firebase
 
 
 @objc
@@ -17,9 +18,9 @@ public class Antourage: NSObject {
   @objc
   public static let shared = Antourage()
   private override init() {
-    AppAuth.shared.auth()
-    AntWidget.shared.firebaseCreator = FireCreator()
     super.init()
+    firebaseAuth()
+    AntWidget.shared.firebaseCreator = FireCreator()
   }
   
   public var widgetLocale: WidgetLocale? {
@@ -88,6 +89,18 @@ public class Antourage: NSObject {
   @objc
   public func showFeed() {
     AntWidget.shared.showFeed()
+  }
+  
+  private func firebaseAuth() {
+    if FirebaseApp.app(name: "AntViewerFirebase") == nil {
+      let filePath = Bundle(for: type(of: self)).path(forResource: "AntGoogleService", ofType: "plist")
+      guard let fileopts = FirebaseOptions(contentsOfFile: filePath!)
+        else { return }
+      FirebaseApp.configure(name: "AntViewerFirebase", options: fileopts)
+    }
+
+    let fbApp = FirebaseApp.app(name: "AntViewerFirebase")!
+    Auth.auth(app: fbApp).signInAnonymously()
   }
   
 }

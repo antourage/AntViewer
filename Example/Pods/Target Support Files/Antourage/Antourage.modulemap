@@ -1,4 +1,4 @@
-module Antourage {
+framework module Antourage {
   umbrella header "Antourage-umbrella.h"
 
   export *
