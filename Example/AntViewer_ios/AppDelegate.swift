@@ -23,14 +23,40 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.rootViewController = FakeController(nibName: "FakeController", bundle: nil)
     window?.makeKeyAndVisible()
     
-    FirebaseApp.configure()
-    setupNotificationsFor(application: application)
-    Messaging.messaging().delegate = self
+    var uuid: String
+    if let string = UserDefaults.standard.string(forKey: "user_id") {
+      uuid = string
+    } else {
+      uuid = UUID().uuidString
+      UserDefaults.standard.set(uuid, forKey: "user_id")
+    }
     
+    if setupFirebase() {
+      setupNotificationsFor(application: application)
+    }
     
-    Antourage.authWith(apiKey: "put_your_api_key", refUserId: "userID", nickname: nil)
+    let apiKey = getApiKey() ?? "put_your_api_key"
+    
+    Antourage.authWith(apiKey: apiKey, refUserId: uuid, nickname: nil)
     
     return true
+  }
+  
+  private func setupFirebase() -> Bool {
+    guard let path = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist"),
+          let fileopts = FirebaseOptions(contentsOfFile: path)
+    else { return false }
+    FirebaseApp.configure(options: fileopts)
+    Messaging.messaging().delegate = self
+    return true
+  }
+  
+  private func getApiKey() -> String? {
+    guard let path = Bundle.main.path(forResource: "Keys", ofType: "plist"),
+          let dict = NSDictionary(contentsOfFile: path),
+          let key = dict["Test API Key"] as? String
+    else { return nil }
+    return key
   }
   
   private func setupNotificationsFor(application: UIApplication) {
