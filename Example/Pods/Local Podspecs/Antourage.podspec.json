@@ -1,6 +1,6 @@
 {
   "name": "Antourage",
-  "version": "2.1.0",
+  "version": "2.1.2",
   "summary": "Antourage provides to users possibility to watch streams and use chat and polls",
   "description": "Antourage provides to users possibility to watch streams and use chat and polls.",
   "homepage": "https://github.com/antourage",
@@ -13,38 +13,43 @@
   },
   "source": {
     "git": "https://github.com/antourage/AntViewer.git",
-    "tag": "2.1.0"
+    "tag": "2.1.2"
   },
+  "documentation_url": "https://antourage.github.io",
   "platforms": {
     "ios": "11.3"
   },
   "source_files": "AntViewer/Classes/**/*.{swift}",
   "vendored_frameworks": "AntViewer/MyFrameworks/ViewerExtension.xcframework",
-  "resources": "AntViewer/Classes/**/*.{plist}",
+  "resources": [
+    "AntViewer/Classes/**/*.{plist}",
+    "ant_version.json"
+  ],
   "pod_target_xcconfig": {
     "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "arm64"
   },
   "static_framework": true,
   "xcconfig": {
-    "FRAMEWORK_SEARCH_PATHS": "'$(PODS_ROOT)/Antourage/AntViewer/MyFrameworks/**'",
     "SWIFT_INCLUDE_PATHS": "$(PODS_ROOT)/Firebase/CoreOnly/Sources",
     "HEADER_SEARCH_PATHS": "$(PODS_ROOT)/Firebase/CoreOnly/Sources"
   },
   "user_target_xcconfig": {
-    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "arm64"
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "arm64",
+    "OTHER_LDFLAGS": "-lObjC"
   },
   "frameworks": [
     "UIKit",
     "AVKit",
     "MediaPlayer",
-    "Foundation"
+    "Foundation",
+    "CoreData"
   ],
   "dependencies": {
     "Firebase/Auth": [
-
+      "~> 7.0"
     ],
     "Firebase/Firestore": [
-
+      "~> 7.0"
     ]
   }
 }

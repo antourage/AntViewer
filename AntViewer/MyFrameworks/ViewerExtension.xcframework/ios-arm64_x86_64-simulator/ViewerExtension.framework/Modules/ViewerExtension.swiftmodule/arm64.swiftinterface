@@ -117,21 +117,6 @@ public protocol PlayerCommand {
   func seek(position: Swift.Double)
   func stop()
 }
-public struct AntourageAVPlayerConfiguration : ViewerExtension.PlayerConfiguration {
-  public let rateObservingTimeout: Swift.Double
-  public let rateObservingTickTime: Swift.Double
-  public let preferredTimescale: CoreMedia.CMTimeScale
-  public let periodicPlayingTime: CoreMedia.CMTime
-  public let audioSessionCategory: AVFoundation.AVAudioSession.Category
-  public let reachabilityURLSessionTimeout: Swift.Double
-  public let reachabilityNetworkTestingURL: Foundation.URL
-  public let reachabilityNetworkTestingTickTime: Swift.Double
-  public let reachabilityNetworkTestingIteration: Swift.UInt
-  public var useDefaultRemoteCommand: Swift.Bool
-  public let allowsExternalPlayback: Swift.Bool
-  public let itemLoadedAssetKeys: [Swift.String]
-  public init()
-}
 public enum WidgetState {
   case resting
   case vod
@@ -522,7 +507,7 @@ extension HubConnection {
   public func stream<T1, T2, T3, T4, T5, T6, T7, T8, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable, TItemType : Swift.Decodable
 }
 public struct SponsoredBanner : Swift.Codable {
-  public let imageUrl: Swift.String
+  public let imageUrl: Swift.String?
   public let externalUrl: Swift.String?
   public static var current: ViewerExtension.SponsoredBanner? {
     get
@@ -1056,6 +1041,21 @@ public struct Environment {
   @objc override dynamic open var intrinsicContentSize: CoreGraphics.CGSize {
     @objc get
   }
+}
+public struct AntourageAVPlayerConfiguration : ViewerExtension.PlayerConfiguration {
+  public let rateObservingTimeout: Swift.Double
+  public let rateObservingTickTime: Swift.Double
+  public let preferredTimescale: CoreMedia.CMTimeScale
+  public let periodicPlayingTime: CoreMedia.CMTime
+  public let audioSessionCategory: AVFoundation.AVAudioSession.Category
+  public let reachabilityURLSessionTimeout: Swift.Double
+  public let reachabilityNetworkTestingURL: Foundation.URL
+  public let reachabilityNetworkTestingTickTime: Swift.Double
+  public let reachabilityNetworkTestingIteration: Swift.UInt
+  public var useDefaultRemoteCommand: Swift.Bool
+  public let allowsExternalPlayback: Swift.Bool
+  public let itemLoadedAssetKeys: [Swift.String]
+  public init()
 }
 public enum TransferFormat : Swift.String {
   case text
