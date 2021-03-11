@@ -30,12 +30,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       uuid = UUID().uuidString
       UserDefaults.standard.set(uuid, forKey: "user_id")
     }
-    let apiKey = getApiKeys() ?? ("put_your_clientID", "put_your_secret")
-    Antourage.authWith(clientID: apiKey.0, secret: apiKey.1)
+    
+    Antourage.configure()
     
     if setupFirebase() {
       setupNotificationsFor(application: application)
     }
+    
     return true
   }
   
@@ -46,16 +47,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     FirebaseApp.configure(options: fileopts)
     Messaging.messaging().delegate = self
     return true
-  }
-  
-  private func getApiKeys() -> (String, String)? {
-    guard let path = Bundle.main.path(forResource: "Keys", ofType: "plist"),
-          let dict = NSDictionary(contentsOfFile: path),
-          let keys = dict["Test Keys"] as? [String: String],
-          let clientID = keys["clientID"],
-          let secret = keys["secret"]
-    else { return nil }
-    return (clientID, secret)
   }
   
   private func setupNotificationsFor(application: UIApplication) {
@@ -93,7 +84,7 @@ extension AppDelegate: MessagingDelegate {
   func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     Messaging.messaging().retrieveFCMToken(forSenderID: Antourage.AntourageSenderId) { (token, error) in
       guard let token = token else { return }
-      Antourage.registerNotifications(FCMToken: token) { (result) in
+      Antourage.registerNotifications(fcmToken: token) { (result) in
         switch result {
         case .success(let topic):
           Messaging.messaging().subscribe(toTopic: topic) { error in

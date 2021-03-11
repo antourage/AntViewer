@@ -328,7 +328,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "KEYS=\"../../Plists/Keys.plist\"\nFIREBASE=\"../../Plists/GoogleService-Info.plist\"\nif [ -f \"${KEYS}\" ]\nthen\ncp \"${KEYS}\" ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\nfi\nif [ -f \"${FIREBASE}\" ]\nthen\ncp \"${FIREBASE}\" ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\nfi\n";
+			shellScript = "KEYS=\"../../Plists/Antourage-Info.plist\"\nFIREBASE=\"../../Plists/GoogleService-Info.plist\"\nif [ -f \"${KEYS}\" ]\nthen\ncp \"${KEYS}\" ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\nfi\nif [ -f \"${FIREBASE}\" ]\nthen\ncp \"${FIREBASE}\" ${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app\nfi\n";
 		};
 		A48BDE3E0A609C1F2993303A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

@@ -41,7 +41,7 @@ Pod::Spec.new do |s|
   s.user_target_xcconfig = { 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'arm64' }
     
   s.frameworks = 'UIKit', 'AVKit', 'MediaPlayer', 'Foundation', 'CoreData'
-  s.dependency 'Firebase/Auth', '~> 7.0'
-  s.dependency 'Firebase/Firestore', '~> 7.0'
+  s.dependency 'Firebase/Auth'
+  s.dependency 'Firebase/Firestore'
   
 end

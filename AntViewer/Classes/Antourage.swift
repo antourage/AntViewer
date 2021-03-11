@@ -73,12 +73,12 @@ public class Antourage: NSObject {
   }
   
   @objc
-  public static func authWith(clientID: String, secret: String) {
-    AntWidget.authWith(clientID: clientID, secret: secret)
+  public static func configure(path: String = "") {
+    AntWidget.configure(path: path)
   }
 
-  public static func registerNotifications(FCMToken: String, completionHandler: @escaping (Result<String, Error>) -> Void) {
-    AntWidget.registerNotifications(FCMToken: FCMToken, completionHandler: completionHandler)
+  public static func registerNotifications(fcmToken: String, completionHandler: @escaping (Result<String, Error>) -> Void) {
+    AntWidget.registerNotifications(fcmToken: fcmToken, completionHandler: completionHandler)
   }
 
   @objc
