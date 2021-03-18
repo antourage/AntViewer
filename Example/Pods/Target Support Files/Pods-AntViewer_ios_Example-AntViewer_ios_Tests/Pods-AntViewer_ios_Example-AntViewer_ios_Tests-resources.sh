@@ -98,11 +98,11 @@ EOM
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntGoogleService.plist"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
+  install_resource "${PODS_ROOT}/../../ant_version.json"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_resource "${PODS_ROOT}/../../AntViewer/Classes/AntGoogleService.plist"
-  install_resource "${PODS_ROOT}/../../AntViewer/Classes/GoogleService-Kek.plist"
+  install_resource "${PODS_ROOT}/../../ant_version.json"
 fi
 
 mkdir -p "${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}"

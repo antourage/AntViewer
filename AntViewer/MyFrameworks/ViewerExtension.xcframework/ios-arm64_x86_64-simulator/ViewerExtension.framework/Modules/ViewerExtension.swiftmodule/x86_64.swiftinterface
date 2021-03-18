@@ -5,12 +5,14 @@ import AVFoundation
 import AVKit
 import AVFoundation.AVPlayerItem
 import CoreData
+import CoreGraphics
 import Foundation
 import MediaPlayer
 import Swift
 import SystemConfiguration
 import UIKit
 @_exported import ViewerExtension
+import WebKit
 import os.log
 import os
 import zlib
@@ -29,6 +31,26 @@ import zlib
   public init(userID: Swift.String, nickname: Swift.String, text: Swift.String, timestamp: Swift.Int?)
   @objc deinit
   @objc override dynamic public init()
+}
+@objc @_inheritsConvenienceInitializers public class PollTableViewCell : UIKit.UITableViewCell {
+  @objc @IBOutlet public var titleLabel: UIKit.UILabel!
+  public var isStatistic: Swift.Bool {
+    get
+    set
+  }
+  public var isUserChoise: Swift.Bool {
+    get
+    set
+  }
+  public var percentage: Swift.Int {
+    get
+    set
+  }
+  @objc override dynamic public func awakeFromNib()
+  @objc deinit
+  @available(iOS 3.0, *)
+  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
 @_hasMissingDesignatedInitializers public class StreamHandle {
   @objc deinit
@@ -86,12 +108,6 @@ public enum PlayerError : Swift.Error {
   }
   public func hash(into hasher: inout Swift.Hasher)
 }
-@objc @_inheritsConvenienceInitializers public class StreamCell : UIKit.UICollectionViewCell {
-  @objc override dynamic public func layoutSubviews()
-  @objc deinit
-  @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc required dynamic public init?(coder: Foundation.NSCoder)
-}
 public struct ModernAVPlayerConfiguration : ViewerExtension.PlayerConfiguration {
   public let rateObservingTimeout: Swift.Double
   public let rateObservingTickTime: Swift.Double
@@ -117,57 +133,34 @@ public protocol PlayerCommand {
   func seek(position: Swift.Double)
   func stop()
 }
-public struct AntourageAVPlayerConfiguration : ViewerExtension.PlayerConfiguration {
-  public let rateObservingTimeout: Swift.Double
-  public let rateObservingTickTime: Swift.Double
-  public let preferredTimescale: CoreMedia.CMTimeScale
-  public let periodicPlayingTime: CoreMedia.CMTime
-  public let audioSessionCategory: AVFoundation.AVAudioSession.Category
-  public let reachabilityURLSessionTimeout: Swift.Double
-  public let reachabilityNetworkTestingURL: Foundation.URL
-  public let reachabilityNetworkTestingTickTime: Swift.Double
-  public let reachabilityNetworkTestingIteration: Swift.UInt
-  public var useDefaultRemoteCommand: Swift.Bool
-  public let allowsExternalPlayback: Swift.Bool
-  public let itemLoadedAssetKeys: [Swift.String]
-  public init()
-}
-public enum WidgetState {
-  case resting
-  case vod
-  case live
-  case loading(player: AVFoundation.AVPlayer)
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SeekPaddingView : UIKit.UIView {
+  public var soughtTime: Swift.Int {
+    get
+    set
+  }
+  public init(showInView view: UIKit.UIView)
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  public func seekBackward()
+  @objc deinit
+  public func seekForward()
 }
 @objc @_inheritsConvenienceInitializers final public class WidgetView : UIKit.UIView {
   @objc override final public func layoutSubviews()
   @objc override final public func didMoveToSuperview()
   @objc override final public func touchesEnded(_ touches: Swift.Set<UIKit.UITouch>, with event: UIKit.UIEvent?)
   @objc override final public func willMove(toWindow newWindow: UIKit.UIWindow?)
-  final public func prepare(for state: ViewerExtension.WidgetState, immediately: Swift.Bool, completion: ((ViewerExtension.WidgetState) -> Swift.Void)?)
   @objc deinit
   @objc override dynamic public init(frame: CoreGraphics.CGRect)
   @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
-extension WidgetView {
-  @objc final public var onViewerAppear: ((Foundation.NSDictionary) -> Swift.Void)? {
-    @objc get
-    @objc set
-  }
-  @objc final public var onViewerDisappear: ((Foundation.NSDictionary) -> Swift.Void)? {
-    @objc get
-    @objc set
-  }
-  @objc final public var widgetPosition: Swift.String {
-    @objc get
-    @objc set
-  }
-  @objc final public var widgetMargins: Foundation.NSDictionary {
-    @objc get
-    @objc set
-  }
-  @objc final public var widgetLocale: Swift.String {
-    @objc get
-    @objc set
+public enum WidgetPosition : Swift.String {
+  case topLeft, midLeft, bottomLeft
+  case topMid, bottomMid
+  case topRight, midRight, bottomRight
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
   }
 }
 public struct WebSocketEvents {
@@ -359,6 +352,24 @@ public class ModernAVPlayerRemoteCommandFactory {
   public func skipForwardCommand(preferredIntervals: [Foundation.NSNumber] = [10]) -> ViewerExtension.ModernAVPlayerRemoteCommand
   @objc deinit
 }
+public protocol Content {
+  var id: Swift.Int { get }
+  var title: Swift.String { get }
+  var creatorName: Swift.String { get }
+  var creatorNickname: Swift.String { get }
+  var images: [Foundation.URL] { get }
+  var date: Foundation.Date { get }
+  var broadcasterPicUrl: Swift.String { get }
+  var type: ViewerExtension.ContentType { get }
+}
+public protocol VideoContent : ViewerExtension.Content {
+  var url: Swift.String { get }
+  var latestMessage: ViewerExtension.LatestComment? { get set }
+  var isChatOn: Swift.Bool { get }
+  var isPollOn: Swift.Bool { get }
+  var shareLink: Swift.String? { get }
+  var viewsCount: Swift.Int { get }
+}
 public class ModernAVPlayerMediaItem : ViewerExtension.PlayerMediaItem {
   final public let item: AVFoundation.AVPlayerItem
   final public let url: Foundation.URL
@@ -368,13 +379,6 @@ public class ModernAVPlayerMediaItem : ViewerExtension.PlayerMediaItem {
   public func getMetadata() -> ViewerExtension.PlayerMediaMetadata?
   public func setMetadata(_ metadata: ViewerExtension.PlayerMediaMetadata?)
   @objc deinit
-}
-public struct NotificationResponse : Swift.Codable {
-  public let success: Swift.Bool
-  public let topic: Swift.String
-  public let error: Swift.String?
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
 }
 @_hasMissingDesignatedInitializers public class WebsocketsTransport : ViewerExtension.Transport {
   weak public var delegate: ViewerExtension.TransportDelegate?
@@ -456,23 +460,13 @@ public protocol AVPlayerRemoteCommand {
 public enum ConnError : Swift.Error {
   case invalidURL
   case noData
-  case noToken
+  case unauthorized
   case unknown(Swift.String)
 }
 extension ConnError : Foundation.LocalizedError {
   public var errorDescription: Swift.String? {
     get
   }
-}
-public protocol NetworkDispatcher {
-  var isReachable: Swift.Bool { get set }
-  func dispatch(request: ViewerExtension.RequestData, onSuccess: @escaping (Foundation.Data) -> Swift.Void, onError: @escaping (Swift.Error) -> Swift.Void)
-}
-@_hasMissingDesignatedInitializers public class URLSessionNetworkDispatcher : ViewerExtension.NetworkDispatcher {
-  public static let instance: ViewerExtension.URLSessionNetworkDispatcher
-  public var isReachable: Swift.Bool
-  public func dispatch(request: ViewerExtension.RequestData, onSuccess: @escaping (Foundation.Data) -> Swift.Void, onError: @escaping (Swift.Error) -> Swift.Void)
-  @objc deinit
 }
 extension HubConnection {
   public func invoke(method: Swift.String, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void)
@@ -522,12 +516,8 @@ extension HubConnection {
   public func stream<T1, T2, T3, T4, T5, T6, T7, T8, TItemType>(method: Swift.String, _ arg1: T1, _ arg2: T2, _ arg3: T3, _ arg4: T4, _ arg5: T5, _ arg6: T6, _ arg7: T7, _ arg8: T8, streamItemReceived: @escaping (TItemType) -> Swift.Void, invocationDidComplete: @escaping (Swift.Error?) -> Swift.Void) -> ViewerExtension.StreamHandle where T1 : Swift.Encodable, T2 : Swift.Encodable, T3 : Swift.Encodable, T4 : Swift.Encodable, T5 : Swift.Encodable, T6 : Swift.Encodable, T7 : Swift.Encodable, T8 : Swift.Encodable, TItemType : Swift.Decodable
 }
 public struct SponsoredBanner : Swift.Codable {
-  public let imageUrl: Swift.String
+  public let imageUrl: Swift.String?
   public let externalUrl: Swift.String?
-  public static var current: ViewerExtension.SponsoredBanner? {
-    get
-    set
-  }
   public init(from decoder: Swift.Decoder) throws
   public func encode(to encoder: Swift.Encoder) throws
 }
@@ -593,104 +583,15 @@ extension VideoContentMO {
   @objc(addPollsMO:) @NSManaged dynamic public func addToPollsMO(_ values: Foundation.NSSet)
   @objc(removePollsMO:) @NSManaged dynamic public func removeFromPollsMO(_ values: Foundation.NSSet)
 }
-public protocol VideoContent {
-  var id: Swift.Int { get }
-  var title: Swift.String { get }
-  var url: Swift.String { get }
-  var creatorName: Swift.String { get }
-  var creatorNickname: Swift.String { get }
-  var thumbnailUrl: Swift.String? { get }
-  var date: Foundation.Date { get }
-  var broadcasterPicUrl: Swift.String { get }
-  var latestMessage: ViewerExtension.LatestComment? { get set }
-  var isChatOn: Swift.Bool { get }
-  var isPollOn: Swift.Bool { get }
-  var shareLink: Swift.String? { get }
-  var viewsCount: Swift.Int { get }
-}
-@_hasMissingDesignatedInitializers final public class Live : ViewerExtension.VideoContent, Swift.Codable {
-  final public var id: Swift.Int
-  final public var title: Swift.String
-  final public var latestMessage: ViewerExtension.LatestComment?
-  final public var isChatOn: Swift.Bool
-  final public var isPollOn: Swift.Bool
-  final public var shareLink: Swift.String?
-  final public var creatorName: Swift.String
-  final public var creatorNickname: Swift.String
-  final public var thumbnailUrl: Swift.String?
-  final public var url: Swift.String {
-    get
-  }
-  final public var date: Foundation.Date
-  final public var viewsCount: Swift.Int
-  final public var broadcasterPicUrl: Swift.String
-  @objc deinit
-  public init(from decoder: Swift.Decoder) throws
-  final public func encode(to encoder: Swift.Encoder) throws
-}
-final public class VOD : ViewerExtension.VideoContent {
-  final public var isNew: Swift.Bool
-  final public var viewsCount: Swift.Int
-  final public var stopTime: Swift.String {
-    get
-    set
-  }
-  final public var id: Swift.Int
-  final public var title: Swift.String
-  final public var url: Swift.String
-  final public var creatorName: Swift.String
-  final public var creatorNickname: Swift.String
-  final public var thumbnailUrl: Swift.String?
-  final public var creatorId: Swift.Int
-  final public var date: Foundation.Date
-  final public var duration: Swift.String {
-    get
-  }
-  final public var broadcasterPicUrl: Swift.String
-  final public var watchedTime: Swift.Int?
-  final public var latestMessage: ViewerExtension.LatestComment?
-  final public var isChatOn: Swift.Bool
-  final public var isPollOn: Swift.Bool
-  final public var shareLink: Swift.String?
-  final public var curtainRangeModels: [ViewerExtension.CurtainRange]
-  required public init(from decoder: Swift.Decoder) throws
-  @objc deinit
-}
-extension VOD : Swift.Codable {
-  final public func encode(to encoder: Swift.Encoder) throws
-}
-public protocol FirebaseFetcher {
-  func setLatestMessagesTo(VODs: [ViewerExtension.VOD], completion: @escaping (() -> ()))
-  func setInfoTo(lives: [ViewerExtension.Live], completion: @escaping (() -> ()))
-}
 public enum ContentType : Swift.String, Swift.Codable {
-  case VOD
+  case vod
   case live
+  case post
   public typealias RawValue = Swift.String
   public init?(rawValue: Swift.String)
   public var rawValue: Swift.String {
     get
   }
-}
-public struct Statistic {
-  public enum Action {
-    case open
-    case close(span: Swift.Int)
-  }
-  public static func save(action: ViewerExtension.Statistic.Action, for contentType: ViewerExtension.ContentType, contentID: Swift.Int)
-  public static func send(action: ViewerExtension.Statistic.Action, for contentType: ViewerExtension.ContentType, contentID: Swift.Int)
-  public static func sync()
-}
-@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class SeekPaddingView : UIKit.UIView {
-  public var soughtTime: Swift.Int {
-    get
-    set
-  }
-  public init(showInView view: UIKit.UIView)
-  @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  public func seekBackward()
-  @objc deinit
-  public func seekForward()
 }
 extension PollMO {
   @nonobjc public class func fetchRequest() -> CoreData.NSFetchRequest<ViewerExtension.PollMO>
@@ -763,6 +664,10 @@ public class NullLogger : ViewerExtension.Logger {
   public func log(logLevel: ViewerExtension.LogLevel, message: @autoclosure () -> Swift.String)
   @objc deinit
 }
+public protocol FirebaseFetcher {
+  func setLatestMessagesTo(VODs: [ViewerExtension.Content], completion: @escaping (() -> ()))
+  func setInfoTo(lives: [ViewerExtension.Live], completion: @escaping (() -> ()))
+}
 public protocol HubConnectionDelegate : AnyObject {
   func connectionDidOpen(hubConnection: ViewerExtension.HubConnection)
   func connectionDidFailToOpen(error: Swift.Error)
@@ -788,12 +693,6 @@ public struct ModernAVPlayerMediaMetadata : ViewerExtension.PlayerMediaMetadata,
   public init(title: Swift.String? = nil, albumTitle: Swift.String? = nil, artist: Swift.String? = nil, image: Foundation.Data? = nil, remoteImageUrl: Foundation.URL? = nil)
   public static func == (a: ViewerExtension.ModernAVPlayerMediaMetadata, b: ViewerExtension.ModernAVPlayerMediaMetadata) -> Swift.Bool
 }
-public struct ViewersCount : Swift.Codable {
-  public let liveStreamId: Swift.Int
-  public let viewers: Swift.Int
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
-}
 public protocol Chat {
   var onAdd: ((ViewerExtension.Message) -> ())? { get set }
   var onRemove: ((ViewerExtension.Message) -> ())? { get set }
@@ -801,6 +700,15 @@ public protocol Chat {
   func send(message: ViewerExtension.Message, withCompletionBlock: @escaping (Swift.Error?) -> ())
 }
 public typealias ModernAVPlayerExposable = ViewerExtension.MediaPlayer & ViewerExtension.ModernAVPlayerCurrentState
+public enum WidgetLocale : Swift.String {
+  case english
+  case swedish
+  public typealias RawValue = Swift.String
+  public init?(rawValue: Swift.String)
+  public var rawValue: Swift.String {
+    get
+  }
+}
 @_inheritsConvenienceInitializers @objc(PollMO) public class PollMO : CoreData.NSManagedObject {
   @objc deinit
   @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
@@ -859,6 +767,61 @@ public enum HTTPMethod : Swift.String {
   public init?(rawValue: Swift.String)
 }
 public struct RequestData {
+}
+open class KeychainWrapper {
+  @available(*, deprecated, message: "KeychainWrapper.defaultKeychainWrapper is deprecated since version 2.2.1, use KeychainWrapper.standard instead")
+  public static let defaultKeychainWrapper: ViewerExtension.KeychainWrapper
+  public static let standard: ViewerExtension.KeychainWrapper
+  public var serviceName: Swift.String {
+    get
+  }
+  public var accessGroup: Swift.String? {
+    get
+  }
+  public init(serviceName: Swift.String, accessGroup: Swift.String? = nil)
+  open func hasValue(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  open func accessibilityOfKey(_ key: Swift.String) -> ViewerExtension.KeychainItemAccessibility?
+  open func allKeys() -> Swift.Set<Swift.String>
+  open func integer(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Int?
+  open func float(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Float?
+  open func double(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Double?
+  open func bool(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool?
+  open func string(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.String?
+  open func object(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Foundation.NSCoding?
+  open func data(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Foundation.Data?
+  open func dataRef(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Foundation.Data?
+  @discardableResult
+  open func set(_ value: Swift.Int, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Swift.Float, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Swift.Double, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Swift.Bool, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Swift.String, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Foundation.NSCoding, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func set(_ value: Foundation.Data, forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @available(*, deprecated, message: "remove is deprecated since version 2.2.1, use removeObject instead")
+  @discardableResult
+  open func remove(key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func removeObject(forKey key: Swift.String, withAccessibility accessibility: ViewerExtension.KeychainItemAccessibility? = nil, isSynchronizable: Swift.Bool = false) -> Swift.Bool
+  @discardableResult
+  open func removeAllKeys() -> Swift.Bool
+  open class func wipeKeychain()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @IBDesignable public class GradientView : UIKit.UIView {
+  @objc override dynamic public class var layerClass: Swift.AnyClass {
+    @objc get
+  }
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
 public protocol ConnectionDelegate : AnyObject {
   func connectionDidOpen(connection: ViewerExtension.Connection)
@@ -974,16 +937,6 @@ public protocol TransportDelegate : AnyObject {
   func transportDidReceiveData(_ data: Foundation.Data)
   func transportDidClose(_ error: Swift.Error?)
 }
-public struct CurtainRange : Swift.Codable {
-  public init(start: Swift.String, end: Swift.String)
-  public init(from decoder: Swift.Decoder) throws
-  public mutating func setAccuracy(to newAccuracy: Swift.Double)
-  public var range: Swift.ClosedRange<Swift.Double> {
-    mutating get
-    set
-  }
-  public func encode(to encoder: Swift.Encoder) throws
-}
 public protocol Poll {
   var key: Swift.String { get set }
   var userAnswer: Swift.Int? { get set }
@@ -992,28 +945,8 @@ public protocol Poll {
   var answersCount: [Swift.Int] { get set }
   var onUpdate: (() -> ())? { get set }
   var percentForEachAnswer: [Swift.Int] { get set }
-  func saveAnswerWith(index: Swift.Int)
-}
-public struct Environment {
-  public enum EnvironmentType : Swift.String {
-    case prod
-    case staging
-    case dev
-    case load
-    case demo
-    public var host: Swift.String {
-      get
-    }
-    public typealias RawValue = Swift.String
-    public var rawValue: Swift.String {
-      get
-    }
-    public init?(rawValue: Swift.String)
-  }
-  public static var current: ViewerExtension.Environment.EnvironmentType {
-    get
-  }
-  public static func set(environment: ViewerExtension.Environment.EnvironmentType)
+  func updateUserID(_ userID: Swift.String?)
+  func saveAnswerWith(index: Swift.Int, userID: Swift.String)
 }
 @objc @_inheritsConvenienceInitializers open class IQTextView : UIKit.UITextView {
   @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
@@ -1057,6 +990,21 @@ public struct Environment {
     @objc get
   }
 }
+public struct AntourageAVPlayerConfiguration : ViewerExtension.PlayerConfiguration {
+  public let rateObservingTimeout: Swift.Double
+  public let rateObservingTickTime: Swift.Double
+  public let preferredTimescale: CoreMedia.CMTimeScale
+  public let periodicPlayingTime: CoreMedia.CMTime
+  public let audioSessionCategory: AVFoundation.AVAudioSession.Category
+  public let reachabilityURLSessionTimeout: Swift.Double
+  public let reachabilityNetworkTestingURL: Foundation.URL
+  public let reachabilityNetworkTestingTickTime: Swift.Double
+  public let reachabilityNetworkTestingIteration: Swift.UInt
+  public var useDefaultRemoteCommand: Swift.Bool
+  public let allowsExternalPlayback: Swift.Bool
+  public let itemLoadedAssetKeys: [Swift.String]
+  public init()
+}
 public enum TransferFormat : Swift.String {
   case text
   case binary
@@ -1078,6 +1026,31 @@ extension MediaType : Swift.CustomStringConvertible {
 extension MediaType : Swift.Equatable {
 }
 public func == (lhs: ViewerExtension.MediaType, rhs: ViewerExtension.MediaType) -> Swift.Bool
+@_hasMissingDesignatedInitializers final public class VOD : ViewerExtension.VideoContent {
+  final public var viewsCount: Swift.Int
+  final public var stopTime: Swift.String {
+    get
+    set
+  }
+  final public var id: Swift.Int
+  final public var title: Swift.String
+  final public var url: Swift.String
+  final public var creatorName: Swift.String
+  final public var creatorNickname: Swift.String
+  final public var images: [Foundation.URL]
+  final public var type: ViewerExtension.ContentType
+  final public var date: Foundation.Date
+  final public var duration: Swift.String {
+    get
+  }
+  final public var broadcasterPicUrl: Swift.String
+  final public var watchedTime: Swift.Int?
+  final public var latestMessage: ViewerExtension.LatestComment?
+  final public var isChatOn: Swift.Bool
+  final public var isPollOn: Swift.Bool
+  final public var shareLink: Swift.String?
+  @objc deinit
+}
 public struct ModernAVPlayerRemoteCommand : ViewerExtension.AVPlayerRemoteCommand, Swift.CustomDebugStringConvertible {
   public let reference: MPRemoteCommand
   public let isEnabled: (ViewerExtension.MediaType) -> Swift.Bool
@@ -1181,10 +1154,38 @@ extension ModernAVPlayer {
     }
   }
 }
+@objc @_inheritsConvenienceInitializers public class FooterView : UIKit.UICollectionReusableView {
+  @objc override dynamic public func awakeFromNib()
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
 public protocol FirebaseCreator {
-  func createPollManagerFor(streamId: Swift.Int) -> ViewerExtension.PollManager
-  func createChatFor(videoContent: ViewerExtension.VideoContent) -> ViewerExtension.Chat
-  func createMessageFetcher() -> ViewerExtension.FirebaseFetcher
+  func createPollManagerFor(streamId: Swift.Int, withPath path: Swift.String) -> ViewerExtension.PollManager
+  func createChatFor(videoContent: ViewerExtension.VideoContent, andPath path: Swift.String) -> ViewerExtension.Chat
+  func createMessageFetcher(withPath path: Swift.String) -> ViewerExtension.FirebaseFetcher
+}
+public enum KeychainItemAccessibility {
+  @available(iOS 4, *)
+  case afterFirstUnlock
+  @available(iOS 4, *)
+  case afterFirstUnlockThisDeviceOnly
+  @available(iOS 4, *)
+  case always
+  @available(iOS 8, *)
+  case whenPasscodeSetThisDeviceOnly
+  @available(iOS 4, *)
+  case alwaysThisDeviceOnly
+  @available(iOS 4, *)
+  case whenUnlocked
+  @available(iOS 4, *)
+  case whenUnlockedThisDeviceOnly
+  public static func == (a: ViewerExtension.KeychainItemAccessibility, b: ViewerExtension.KeychainItemAccessibility) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
 }
 extension UIView {
   public func badge(text badgeText: Swift.String?, badgeEdgeInsets: UIKit.UIEdgeInsets? = nil, appearance: ViewerExtension.BadgeAppearance = BadgeAppearance())
@@ -1225,42 +1226,45 @@ public protocol Connection {
   func send(data: Foundation.Data, sendDidComplete: @escaping (Swift.Error?) -> Swift.Void)
   func stop(stopError: Swift.Error?)
 }
-public protocol PollManager {
-  func observePolls(completion: @escaping ((ViewerExtension.Poll?) -> ()))
-  func removeFirebaseObserver()
-}
-@objc @_inheritsConvenienceInitializers public class PollTableViewCell : UIKit.UITableViewCell {
-  @objc @IBOutlet public var titleLabel: UIKit.UILabel!
-  public var isStatistic: Swift.Bool {
+@_hasMissingDesignatedInitializers final public class Live : ViewerExtension.VideoContent, Swift.Codable {
+  final public var id: Swift.Int
+  final public var title: Swift.String
+  final public var latestMessage: ViewerExtension.LatestComment?
+  final public var isChatOn: Swift.Bool
+  final public var isPollOn: Swift.Bool
+  final public var shareLink: Swift.String?
+  final public var creatorName: Swift.String
+  final public var creatorNickname: Swift.String
+  final public var thumbnailUrl: Swift.String?
+  final public var images: [Foundation.URL] {
     get
     set
   }
-  public var isUserChoise: Swift.Bool {
+  final public var url: Swift.String {
     get
-    set
   }
-  public var percentage: Swift.Int {
-    get
-    set
-  }
-  @objc override dynamic public func awakeFromNib()
+  final public var type: ViewerExtension.ContentType
+  final public var date: Foundation.Date
+  final public var viewsCount: Swift.Int
+  final public var broadcasterPicUrl: Swift.String
   @objc deinit
-  @available(iOS 3.0, *)
-  @objc override dynamic public init(style: UIKit.UITableViewCell.CellStyle, reuseIdentifier: Swift.String?)
-  @objc required dynamic public init?(coder: Foundation.NSCoder)
+  public init(from decoder: Swift.Decoder) throws
+  final public func encode(to encoder: Swift.Encoder) throws
+}
+public struct WidgetMargins {
+  public let vertical: CoreGraphics.CGFloat
+  public let horizontal: CoreGraphics.CGFloat
+  public init(vertical: CoreGraphics.CGFloat, horizontal: CoreGraphics.CGFloat)
+}
+public protocol PollManager {
+  func observePolls(withUserID userID: Swift.String?, completion: @escaping ((ViewerExtension.Poll?) -> ()))
+  func removeFirebaseObserver()
 }
 extension UIImage : Foundation.NSDiscardableContent {
   @objc dynamic public func beginContentAccess() -> Swift.Bool
   @objc dynamic public func endContentAccess()
   @objc dynamic public func discardContentIfPossible()
   @objc dynamic public func isContentDiscarded() -> Swift.Bool
-}
-@objc @_inheritsConvenienceInitializers public class FooterView : UIKit.UICollectionReusableView {
-  @objc override dynamic public func awakeFromNib()
-  @objc override dynamic public func layoutSubviews()
-  @objc deinit
-  @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc required dynamic public init?(coder: Foundation.NSCoder)
 }
 public protocol ModernAVPlayerCurrentState : AnyObject {
   var state: ViewerExtension.ModernAVPlayer.State { get }
@@ -1274,31 +1278,62 @@ public class HttpConnectionOptions {
   public init()
   @objc deinit
 }
-public struct User : Swift.Codable {
-  public let id: Swift.Int
-  public var displayName: Swift.String
-  public var imageUrl: Swift.String?
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
+extension KeychainWrapper {
+  public func remove(forKey key: ViewerExtension.KeychainWrapper.Key)
 }
-extension User {
-  public static var current: ViewerExtension.User? {
+extension KeychainWrapper {
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> Swift.String? {
+    get
+    set
+  }
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> Swift.Bool? {
+    get
+    set
+  }
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> Swift.Int? {
+    get
+    set
+  }
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> Swift.Double? {
+    get
+    set
+  }
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> Swift.Float? {
+    get
+    set
+  }
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> CoreGraphics.CGFloat? {
+    get
+    set
+  }
+  public subscript(key: ViewerExtension.KeychainWrapper.Key) -> Foundation.Data? {
     get
     set
   }
 }
-public struct HeaderInfoModel : Swift.Codable {
-  public let imageUrl: Swift.String?
-  public let tagLine: Swift.String?
-  public var imageData: Foundation.Data?
-  public static var currentInfo: ViewerExtension.HeaderInfoModel? {
-    get
-    set
+extension KeychainWrapper {
+  public func data(forKey key: ViewerExtension.KeychainWrapper.Key) -> Foundation.Data?
+  public func bool(forKey key: ViewerExtension.KeychainWrapper.Key) -> Swift.Bool?
+  public func integer(forKey key: ViewerExtension.KeychainWrapper.Key) -> Swift.Int?
+  public func float(forKey key: ViewerExtension.KeychainWrapper.Key) -> Swift.Float?
+  public func cgFloat(forKey key: ViewerExtension.KeychainWrapper.Key) -> CoreGraphics.CGFloat?
+  public func double(forKey key: ViewerExtension.KeychainWrapper.Key) -> Swift.Double?
+  public func string(forKey key: ViewerExtension.KeychainWrapper.Key) -> Swift.String?
+}
+extension KeychainWrapper {
+  public struct Key : Swift.Hashable, Swift.RawRepresentable, Swift.ExpressibleByStringLiteral {
+    public var rawValue: Swift.String
+    public init(rawValue: Swift.String)
+    public init(stringLiteral value: Swift.String)
+    public typealias StringLiteralType = Swift.String
+    public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+    public typealias UnicodeScalarLiteralType = Swift.String
+    public typealias RawValue = Swift.String
   }
-  public static func fetchInfo(completion: @escaping ((ViewerExtension.HeaderInfoModel?) -> ()))
-  public init(imageUrl: Swift.String?, tagLine: Swift.String?, imageData: Foundation.Data?)
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class EmptyDataSourceView : UIKit.UIView {
+  @objc override dynamic public init(frame: CoreGraphics.CGRect)
+  @objc deinit
 }
 public enum ProtocolType : Swift.Int {
   case Text
@@ -1411,57 +1446,33 @@ public class CompletionMessage : ViewerExtension.HubMessage, Swift.Decodable {
   @objc override dynamic public init(entity: CoreData.NSEntityDescription, insertInto context: CoreData.NSManagedObjectContext?)
   @objc deinit
 }
-public enum WidgetLocale : Swift.String {
-  case english
-  case swedish
-  public typealias RawValue = Swift.String
-  public init?(rawValue: Swift.String)
-  public var rawValue: Swift.String {
-    get
-  }
-}
-public enum WidgetPosition : Swift.String {
-  case topLeft, midLeft, bottomLeft
-  case topMid, bottomMid
-  case topRight, midRight, bottomRight
-  public typealias RawValue = Swift.String
-  public init?(rawValue: Swift.String)
-  public var rawValue: Swift.String {
-    get
-  }
-}
-public struct WidgetMargins {
-  public let vertical: CoreGraphics.CGFloat
-  public let horizontal: CoreGraphics.CGFloat
-  public init(vertical: CoreGraphics.CGFloat, horizontal: CoreGraphics.CGFloat)
-}
-@_hasMissingDesignatedInitializers public class AntWidget {
+@_hasMissingDesignatedInitializers final public class AntWidget {
   public static let shared: ViewerExtension.AntWidget
-  public var firebaseCreator: ViewerExtension.FirebaseCreator?
-  public var widgetView: ViewerExtension.WidgetView {
+  final public var firebaseCreator: ViewerExtension.FirebaseCreator?
+  final public var widgetView: ViewerExtension.WidgetView {
     get
     set
   }
-  public var widgetLocale: ViewerExtension.WidgetLocale?
-  public var widgetPosition: ViewerExtension.WidgetPosition {
+  final public var widgetLocale: ViewerExtension.WidgetLocale?
+  final public var widgetPosition: ViewerExtension.WidgetPosition {
     get
     set
   }
-  public var widgetMargins: ViewerExtension.WidgetMargins {
+  final public var widgetMargins: ViewerExtension.WidgetMargins {
     get
     set
   }
-  public var onViewerAppear: ((Foundation.NSDictionary) -> Swift.Void)?
-  public var onViewerDisappear: ((Foundation.NSDictionary) -> Swift.Void)?
+  final public var onViewerAppear: ((Foundation.NSDictionary) -> Swift.Void)?
+  final public var onViewerDisappear: ((Foundation.NSDictionary) -> Swift.Void)?
   @objc deinit
-  public static func authWith(apiKey: Swift.String, refUserId: Swift.String?, nickname: Swift.String?)
-  public static func registerNotifications(FCMToken: Swift.String, completionHandler: @escaping (Swift.Result<Swift.String, Swift.Error>) -> Swift.Void)
+  public static func configure(path: Swift.String)
+  public static func registerNotifications(fcmToken: Swift.String, completionHandler: @escaping (Swift.Result<Swift.String, Swift.Error>) -> Swift.Void)
   public static func objc_registerNotifications(FCMToken: Swift.String, completionHandler: @escaping (Swift.String?, Swift.Error?) -> Swift.Void)
-  public func showFeed()
+  final public func showFeed()
 }
 extension AntWidget : ViewerExtension.ModernAVPlayerDelegate {
-  public func modernAVPlayer(_ player: ViewerExtension.ModernAVPlayer, didStateChange state: ViewerExtension.ModernAVPlayer.State)
-  public func modernAVPlayer(_ player: ViewerExtension.ModernAVPlayer, didItemDurationChange itemDuration: Swift.Double?)
+  final public func modernAVPlayer(_ player: ViewerExtension.ModernAVPlayer, didStateChange state: ViewerExtension.ModernAVPlayer.State)
+  final public func modernAVPlayer(_ player: ViewerExtension.ModernAVPlayer, didItemDurationChange itemDuration: Swift.Double?)
 }
 public enum PlayerUnavailableActionReason {
   case alreadyPaused
@@ -1478,12 +1489,6 @@ public enum PlayerUnavailableActionReason {
     get
   }
   public func hash(into hasher: inout Swift.Hasher)
-}
-public struct BooleanResponse : Swift.Codable {
-  public let success: Swift.Bool
-  public let error: Swift.String?
-  public init(from decoder: Swift.Decoder) throws
-  public func encode(to encoder: Swift.Encoder) throws
 }
 public protocol PlayerPlugin {
   func didInit(player: AVFoundation.AVPlayer)
@@ -1525,12 +1530,11 @@ public class JSONHubProtocol : ViewerExtension.HubProtocol {
   public func writeMessage(message: ViewerExtension.HubMessage) throws -> Foundation.Data
   @objc deinit
 }
-@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class EmptyDataSourceView : UIKit.UIView {
-  @objc override dynamic public init(frame: CoreGraphics.CGRect)
-  @objc deinit
-}
 extension ViewerExtension.PlayerError : Swift.Equatable {}
 extension ViewerExtension.PlayerError : Swift.Hashable {}
+extension ViewerExtension.WidgetPosition : Swift.Equatable {}
+extension ViewerExtension.WidgetPosition : Swift.Hashable {}
+extension ViewerExtension.WidgetPosition : Swift.RawRepresentable {}
 extension ViewerExtension.WebSocketBinaryType : Swift.Equatable {}
 extension ViewerExtension.WebSocketBinaryType : Swift.Hashable {}
 extension ViewerExtension.WebSocketReadyState : Swift.Equatable {}
@@ -1542,6 +1546,9 @@ extension ViewerExtension.ContentType : Swift.RawRepresentable {}
 extension ViewerExtension.LogLevel : Swift.Equatable {}
 extension ViewerExtension.LogLevel : Swift.Hashable {}
 extension ViewerExtension.LogLevel : Swift.RawRepresentable {}
+extension ViewerExtension.WidgetLocale : Swift.Equatable {}
+extension ViewerExtension.WidgetLocale : Swift.Hashable {}
+extension ViewerExtension.WidgetLocale : Swift.RawRepresentable {}
 extension ViewerExtension.HTTPMethod : Swift.Equatable {}
 extension ViewerExtension.HTTPMethod : Swift.Hashable {}
 extension ViewerExtension.HTTPMethod : Swift.RawRepresentable {}
@@ -1551,9 +1558,6 @@ extension ViewerExtension.Reachability.NetworkStatus : Swift.Equatable {}
 extension ViewerExtension.Reachability.NetworkStatus : Swift.Hashable {}
 extension ViewerExtension.Reachability.Connection : Swift.Equatable {}
 extension ViewerExtension.Reachability.Connection : Swift.Hashable {}
-extension ViewerExtension.Environment.EnvironmentType : Swift.Equatable {}
-extension ViewerExtension.Environment.EnvironmentType : Swift.Hashable {}
-extension ViewerExtension.Environment.EnvironmentType : Swift.RawRepresentable {}
 extension ViewerExtension.TransferFormat : Swift.Equatable {}
 extension ViewerExtension.TransferFormat : Swift.Hashable {}
 extension ViewerExtension.TransferFormat : Swift.RawRepresentable {}
@@ -1562,17 +1566,13 @@ extension ViewerExtension.ModernAVPlayerLoggerDomain : Swift.Hashable {}
 extension ViewerExtension.ModernAVPlayer.State : Swift.Equatable {}
 extension ViewerExtension.ModernAVPlayer.State : Swift.Hashable {}
 extension ViewerExtension.ModernAVPlayer.State : Swift.RawRepresentable {}
+extension ViewerExtension.KeychainItemAccessibility : Swift.Equatable {}
+extension ViewerExtension.KeychainItemAccessibility : Swift.Hashable {}
 extension ViewerExtension.ProtocolType : Swift.Equatable {}
 extension ViewerExtension.ProtocolType : Swift.Hashable {}
 extension ViewerExtension.ProtocolType : Swift.RawRepresentable {}
 extension ViewerExtension.MessageType : Swift.Equatable {}
 extension ViewerExtension.MessageType : Swift.Hashable {}
 extension ViewerExtension.MessageType : Swift.RawRepresentable {}
-extension ViewerExtension.WidgetLocale : Swift.Equatable {}
-extension ViewerExtension.WidgetLocale : Swift.Hashable {}
-extension ViewerExtension.WidgetLocale : Swift.RawRepresentable {}
-extension ViewerExtension.WidgetPosition : Swift.Equatable {}
-extension ViewerExtension.WidgetPosition : Swift.Hashable {}
-extension ViewerExtension.WidgetPosition : Swift.RawRepresentable {}
 extension ViewerExtension.PlayerUnavailableActionReason : Swift.Equatable {}
 extension ViewerExtension.PlayerUnavailableActionReason : Swift.Hashable {}

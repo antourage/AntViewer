@@ -214,6 +214,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 
+
 @class NSCoder;
 
 SWIFT_CLASS("_TtC15ViewerExtension19EmptyDataSourceView")
@@ -231,6 +232,17 @@ SWIFT_CLASS("_TtC15ViewerExtension10FooterView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+
+IB_DESIGNABLE
+SWIFT_CLASS("_TtC15ViewerExtension12GradientView")
+@interface GradientView : UIView
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layerClass;)
++ (Class _Nonnull)layerClass SWIFT_WARN_UNUSED_RESULT;
+- (void)layoutSubviews;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
 
 @class NSTextContainer;
 @class UIColor;
@@ -331,14 +343,6 @@ SWIFT_CLASS("_TtC15ViewerExtension15SeekPaddingView")
 @end
 
 
-SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
-@interface StreamCell : UICollectionViewCell
-- (void)layoutSubviews;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
 
 
 @interface UIBarButtonItem (SWIFT_EXTENSION(ViewerExtension))
@@ -355,6 +359,7 @@ SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
 - (void)discardContentIfPossible;
 - (BOOL)isContentDiscarded SWIFT_WARN_UNUSED_RESULT;
 @end
+
 
 
 
@@ -514,15 +519,6 @@ SWIFT_CLASS("_TtC15ViewerExtension10WidgetView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class NSDictionary;
-
-@interface WidgetView (SWIFT_EXTENSION(ViewerExtension))
-@property (nonatomic, copy) void (^ _Nullable onViewerAppear)(NSDictionary * _Nonnull);
-@property (nonatomic, copy) void (^ _Nullable onViewerDisappear)(NSDictionary * _Nonnull);
-@property (nonatomic, copy) NSString * _Nonnull widgetPosition;
-@property (nonatomic, strong) NSDictionary * _Nonnull widgetMargins;
-@property (nonatomic, copy) NSString * _Nonnull widgetLocale;
-@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
@@ -745,6 +741,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 
+
 @class NSCoder;
 
 SWIFT_CLASS("_TtC15ViewerExtension19EmptyDataSourceView")
@@ -762,6 +759,17 @@ SWIFT_CLASS("_TtC15ViewerExtension10FooterView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+
+IB_DESIGNABLE
+SWIFT_CLASS("_TtC15ViewerExtension12GradientView")
+@interface GradientView : UIView
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layerClass;)
++ (Class _Nonnull)layerClass SWIFT_WARN_UNUSED_RESULT;
+- (void)layoutSubviews;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@end
 
 @class NSTextContainer;
 @class UIColor;
@@ -862,14 +870,6 @@ SWIFT_CLASS("_TtC15ViewerExtension15SeekPaddingView")
 @end
 
 
-SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
-@interface StreamCell : UICollectionViewCell
-- (void)layoutSubviews;
-- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
-- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
-@end
-
-
 
 
 @interface UIBarButtonItem (SWIFT_EXTENSION(ViewerExtension))
@@ -886,6 +886,7 @@ SWIFT_CLASS("_TtC15ViewerExtension10StreamCell")
 - (void)discardContentIfPossible;
 - (BOOL)isContentDiscarded SWIFT_WARN_UNUSED_RESULT;
 @end
+
 
 
 
@@ -1045,15 +1046,6 @@ SWIFT_CLASS("_TtC15ViewerExtension10WidgetView")
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
 @end
 
-@class NSDictionary;
-
-@interface WidgetView (SWIFT_EXTENSION(ViewerExtension))
-@property (nonatomic, copy) void (^ _Nullable onViewerAppear)(NSDictionary * _Nonnull);
-@property (nonatomic, copy) void (^ _Nullable onViewerDisappear)(NSDictionary * _Nonnull);
-@property (nonatomic, copy) NSString * _Nonnull widgetPosition;
-@property (nonatomic, strong) NSDictionary * _Nonnull widgetMargins;
-@property (nonatomic, copy) NSString * _Nonnull widgetLocale;
-@end
 
 #if __has_attribute(external_source_symbol)
 # pragma clang attribute pop
