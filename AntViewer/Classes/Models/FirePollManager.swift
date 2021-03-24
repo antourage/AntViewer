@@ -17,12 +17,12 @@ final class FirePollManager: PollManager {
   private var path: String
   private  var pollListener: ListenerRegistration?
   
-  public init(streamId: Int, andPath path: String) {
+  public init(streamId: Int, path: String) {
     self.streamId = streamId
     self.path = path
   }
   
-  func observePolls(withUserID userID: String?, completion: @escaping((Poll?) -> ())) {
+  func observePolls(deviceID: String, completion: @escaping((Poll?) -> ())) {
 
     let app = FirebaseApp.app(name: "AntViewerFirebase")!
     let ref = Firestore.firestore(app: app).collection(path)
@@ -33,7 +33,7 @@ final class FirePollManager: PollManager {
         completion(nil)
         return
       }
-      if let newPoll = FirePoll(snapshot: document, userID: userID) {
+      if let newPoll = FirePoll(snapshot: document, deviceID: deviceID) {
         completion(newPoll)
       }
     })

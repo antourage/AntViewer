@@ -19,7 +19,7 @@ final class MessageFetcher: FirebaseFetcher {
     self.firebaseApp = FirebaseApp.app(name: "AntViewerFirebase")!
   }
 
-  func setLatestMessagesTo(VODs: [Content], completion: @escaping(()->())) {
+  func setLatestMessages(VODs: [Content], completion: @escaping(()->())) {
      let group = DispatchGroup()
     for case let video as VOD in VODs {
        group.enter()
@@ -28,7 +28,7 @@ final class MessageFetcher: FirebaseFetcher {
          video.latestMessage = vodFromCache.latestMessage
          group.leave()
        } else {
-         getLatestMessageFor(video: video, completion: { infoDict in
+         getLatestMessage(video: video, completion: { infoDict in
           let latestComment = infoDict[video.id]
           video.latestMessage = latestComment
           StorageManager.shared.saveLatestComment(for: video, value: latestComment)
@@ -41,14 +41,14 @@ final class MessageFetcher: FirebaseFetcher {
      }
   }
 
-  func setInfoTo(lives: [Live], completion: @escaping(()->())) {
+  func setInfo(lives: [Live], completion: @escaping(()->())) {
     var liveInfo = Dictionary<Int, (LatestComment?, Bool, Bool)>()
     lives.forEach { liveInfo[$0.id] = (nil, false, false) }
     let group = DispatchGroup()
 
     for video in lives {
       group.enter()
-      getLatestMessageFor(video: video, completion: { infoDict in
+      getLatestMessage(video: video, completion: { infoDict in
         video.latestMessage = infoDict[video.id]
         group.leave()
       })
@@ -68,7 +68,7 @@ final class MessageFetcher: FirebaseFetcher {
     }
   }
 
-  private func getLatestMessageFor(video: VideoContent, completion: @escaping(([Int: LatestComment])->())) {
+  private func getLatestMessage(video: VideoContent, completion: @escaping(([Int: LatestComment])->())) {
     let ref = Firestore.firestore(app: firebaseApp)
       .collection(path)
       .document("\(video.id)")
@@ -108,7 +108,4 @@ final class MessageFetcher: FirebaseFetcher {
     }
   }
 
-  deinit {
-    print("FB fetcher: DEINITED")
-  }
 }

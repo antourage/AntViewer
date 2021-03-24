@@ -20,7 +20,7 @@ final class FireChat: Chat {
   public var onRemove: ((Message) -> ())?
   public var onStateChange: ((Bool) -> ())?
   
-  public init(for videoContent: VideoContent, andPath path: String) {
+  public init(videoContent: VideoContent, path: String) {
     let contentMO = StorageManager.shared.loadVideoContent(content: videoContent)
     if contentMO.chatLoaded {
       DispatchQueue.main.asyncAfter(deadline: .now()+1) {
@@ -81,25 +81,13 @@ final class FireChat: Chat {
     }
   }
   
-  public func send(message: Message, withCompletionBlock: @escaping (Error?) -> ()) {
-    ref?.collection("messages").addDocument(data: message.toAnyObject(), completion: { (error) in
-      withCompletionBlock(error)
+  public func send(message: Message, completionBlock: @escaping (Error?) -> ()) {
+    var messageDict = message.toAnyObject()
+    messageDict["timestamp"] = FieldValue.serverTimestamp()
+    ref?.collection("messages").addDocument(data: messageDict, completion: { (error) in
+      completionBlock(error)
     })
   }
   
-  
 }
 
-
-extension Message {
-  func toAnyObject() -> [String: Any] {
-    return [
-      "avatarUrl": avatarUrl ?? "",
-      "type": 1,
-      "timestamp": FieldValue.serverTimestamp(),
-      "userID": userID,
-      "nickname": nickname,
-      "text": text
-    ]
-  }
-}
